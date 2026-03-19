@@ -97,6 +97,19 @@
         .split-iframe-container.mobile-mode .iframe-wrapper { width: 375px; height: 812px; flex-shrink: 0; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-radius: 36px; overflow: hidden; border: 12px solid #0f172a; }
 
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center; padding: 40px; }
+        
+        /* Preview Modal */
+        .preview-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.95); z-index: 9999; padding: 40px; flex-direction: column; }
+        .preview-modal.active { display: flex; }
+        .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .preview-title { color: white; font-size: 1.25rem; font-weight: 600; word-break: break-all; padding-right: 20px; }
+        .btn-close-preview { background: white; color: var(--text-main); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.9rem; flex-shrink: 0; }
+        .btn-close-preview:hover { background: var(--border); }
+        .preview-iframe-wrapper { flex: 1; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .preview-iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
+        
+        .btn-action { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border: 1px solid var(--border); background: white; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: var(--text-main); cursor: pointer; text-decoration: none; transition: background 0.2s; }
+        .btn-action:hover { background: var(--tag-gray-bg); }
     </style>
 </head>
 <body>
@@ -122,6 +135,15 @@
     </aside>
 
     <main class="main-content">
+        <!-- Preview Modal -->
+        <div class="preview-modal" id="preview-modal">
+            <div class="preview-header">
+                <div class="preview-title" id="preview-title">Widget Preview</div>
+                <button class="btn-close-preview" onclick="closePreview()">✕ Close Preview</button>
+            </div>
+            <div class="preview-iframe-wrapper" id="preview-content"></div>
+        </div>
+
         <div class="view-header">
             <h2 class="view-title" id="view-title">Global Portfolio Audit</h2>
             <a href="Widget_Audit_Report.csv" class="export-link" download id="csv-export-link">📥 Export Audit Matrix (.csv)</a>
@@ -328,12 +350,33 @@
             document.getElementById('view-title').textContent = 'Global Portfolio Audit';
         }
 
+        function openPreview(title, path) {
+            document.getElementById('preview-title').textContent = title;
+            document.getElementById('preview-content').innerHTML = `<iframe src="${path}" title="${title}"></iframe>`;
+            document.getElementById('preview-modal').classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('preview-modal').classList.remove('active');
+            document.getElementById('preview-content').innerHTML = '';
+        }
+
         function buildWidgetCard(widget) {
+            const safePath = widget.path.replace(/'/g, "\\'");
+            const safeName = widget.filename.replace(/'/g, "\\'");
             return `
                 <div class="widget-card">
                     <div class="widget-card-header">
-                        <div class="widget-card-course">${widget.course}</div>
-                        <div class="widget-card-title">${widget.filename}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="padding-right: 12px;">
+                                <div class="widget-card-course">${widget.course}</div>
+                                <div class="widget-card-title" style="margin-bottom:0;">${widget.filename}</div>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                                <button onclick="openPreview('${safeName}', '${safePath}')" class="btn-action">🔍 Expand</button>
+                                <a href="${widget.path}" target="_blank" class="btn-action">↗️ Open</a>
+                            </div>
+                        </div>
                         <div class="trait-tags">
                             <span class="tag tag-font">${widget.traits.font}</span>
                             <span class="tag tag-color">${widget.traits.color}</span>
