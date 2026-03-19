@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise: Finding Your SGR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff; --correct: #48825d; --incorrect: #c45a5a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--green); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        .data-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .data-card h2 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+        .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--grey-light); }
+        .data-row:last-child { border-bottom: none; }
+        .data-label { font-size: 0.9rem; color: var(--text-secondary); }
+        .data-value { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+        .step-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .step-number { background-color: var(--green); color: var(--text-primary); min-width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; }
+        .step-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .step-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
+        .calculation-box { background-color: var(--grey-bg); border-radius: 8px; padding: 16px; margin: 12px 0; }
+        .calculation-box .formula { font-family: 'Courier New', monospace; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 8px; }
+        .calculation-box .result { font-size: 1rem; font-weight: 600; color: var(--green-dark); }
+        .input-group { margin: 16px 0; }
+        .input-label { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+        .input-field { width: 100%; padding: 12px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-primary); transition: border-color 0.2s ease; }
+        .input-field:focus { outline: none; border-color: var(--green-dark); }
+        .input-field.correct { border-color: var(--correct); background-color: var(--green); }
+        .input-field.incorrect { border-color: var(--incorrect); }
+        .check-btn { background-color: var(--text-primary); color: var(--white); border: none; padding: 10px 24px; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; }
+        .check-btn:hover { background-color: var(--text-secondary); }
+        .feedback { margin-top: 12px; padding: 12px 14px; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; display: none; }
+        .feedback.correct { background-color: var(--green); border-left: 3px solid var(--correct); color: var(--text-primary); display: block; }
+        .feedback.incorrect { background-color: #f8e8e8; border-left: 3px solid var(--incorrect); color: var(--text-primary); display: block; }
+        .reflection-area { width: 100%; min-height: 100px; padding: 12px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-primary); resize: vertical; transition: border-color 0.2s ease; }
+        .reflection-area:focus { outline: none; border-color: var(--green-dark); }
+        .hint-box { background-color: var(--turquoise); border-radius: 8px; padding: 14px; margin-top: 12px; font-size: 0.85rem; color: var(--text-primary); }
+        .hint-box strong { color: var(--text-primary); }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header h1 { font-size: 1.5rem; } .step-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Interactive Exercise</div>
+            <h1>Finding Your SGR: Summit Sports Inc.</h1>
+            <p>Calculate the sustainable growth rate step by step</p>
+        </div>
+
+        <div class="data-card">
+            <h2>Company Data</h2>
+            <div class="data-row">
+                <span class="data-label">Return on Equity (ROE)</span>
+                <span class="data-value">16.8%</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Dividend Payout Ratio</span>
+                <span class="data-value">35%</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Management's Target Growth Rate</span>
+                <span class="data-value">15%</span>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Calculate the Retention Ratio</div>
+            </div>
+            <div class="step-description">
+                The retention ratio is the portion of earnings kept in the business rather than paid as dividends.
+            </div>
+            <div class="calculation-box">
+                <div class="formula">Retention Ratio = 1 − Dividend Payout Ratio</div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Enter the retention ratio as a decimal (e.g., 0.XX):</label>
+                <input type="text" class="input-field" id="retention-input" placeholder="Your answer">
+                <button class="check-btn" onclick="checkRetention()">Check Answer</button>
+                <div class="feedback" id="retention-feedback"></div>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Calculate Summit's Sustainable Growth Rate</div>
+            </div>
+            <div class="step-description">
+                Use the SGR formula to determine the maximum growth rate Summit can sustain without changing its financial policies.
+            </div>
+            <div class="calculation-box">
+                <div class="formula">SGR = ROE × Retention Ratio</div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Enter the SGR as a percentage:</label>
+                <input type="text" class="input-field" id="sgr-input" placeholder="Your answer">
+                <button class="check-btn" onclick="checkSGR()">Check Answer</button>
+                <div class="feedback" id="sgr-feedback"></div>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">Compare to Target Growth</div>
+            </div>
+            <div class="step-description">
+                Management wants to grow at 15%. Is this above or below the sustainable growth rate of 10.9%?
+            </div>
+            <div class="hint-box">
+                <strong>Target Growth:</strong> 15%<br>
+                <strong>Sustainable Growth Rate:</strong> ~10.9%<br>
+                <strong>Gap:</strong> 15% − 10.9% = 4.1 percentage points above SGR
+            </div>
+            <div class="input-group" style="margin-top: 20px;">
+                <label class="input-label">Reflect: What options does Summit have to bridge this gap?</label>
+                <textarea class="reflection-area" id="reflection-input" placeholder="Consider: Could they improve ROE? Increase retention (reduce dividends)? Raise external financing? Which seems most realistic?"></textarea>
+            </div>
+            <div class="hint-box" style="margin-top: 16px;">
+                <strong>Options to close the gap:</strong><br>
+                • <strong>Improve ROE:</strong> Increase profit margins, asset turnover, or leverage<br>
+                • <strong>Increase retention:</strong> Reduce dividend payout (keep more earnings)<br>
+                • <strong>Raise external financing:</strong> Issue debt or equity<br>
+                • <strong>Slow growth target:</strong> Reduce from 15% to match SGR
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkRetention() {
+            const input = document.getElementById('retention-input');
+            const feedback = document.getElementById('retention-feedback');
+            const value = parseFloat(input.value);
+            
+            if (isNaN(value)) {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Please enter a valid number.';
+                return;
+            }
+            
+            if (Math.abs(value - 0.65) < 0.01) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ Correct! Retention Ratio = 1 − 0.35 = 0.65 or 65%. This means Summit retains 65% of earnings for reinvestment.';
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Not quite. Try calculating: 1 − 0.35 = ?';
+            }
+        }
+
+        function checkSGR() {
+            const input = document.getElementById('sgr-input');
+            const feedback = document.getElementById('sgr-feedback');
+            const value = parseFloat(input.value.replace('%', ''));
+            
+            if (isNaN(value)) {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Please enter a valid number.';
+                return;
+            }
+            
+            if (Math.abs(value - 10.9) < 0.5) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ Correct! SGR = 0.168 × 0.65 ≈ 0.109 or 10.9%. This is the maximum rate Summit can grow using only retained earnings, without changing its leverage or dividend policy.';
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = 'Not quite. Remember: SGR = ROE × Retention Ratio = 0.168 × 0.65. Try the calculation again.';
+            }
+        }
+    </script>
+</body>
+</html>

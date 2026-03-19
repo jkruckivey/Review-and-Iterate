@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection: Apply Module 2 to Your Role</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--text-primary); padding: 32px 24px; border-radius: 12px; color: var(--white); }
+        .header-label { display: inline-block; background-color: rgba(255,255,255,0.2); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 14px; border-radius: 4px; margin-bottom: 16px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; opacity: 0.9; }
+        .intro-box { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .intro-box h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .intro-box p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+        .question-number { background-color: var(--turquoise); color: var(--text-primary); min-width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1rem; flex-shrink: 0; }
+        .question-content h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .question-content p { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .text-area { width: 100%; min-height: 140px; padding: 16px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; resize: vertical; transition: border-color 0.2s; color: var(--text-primary); }
+        .text-area:focus { outline: none; border-color: var(--turquoise-dark); }
+        .text-area::placeholder { color: var(--text-muted); }
+        .char-count { text-align: right; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+        .prompt-box { background-color: var(--green); border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .prompt-box h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .prompt-box p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7; }
+        .concept-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .tag { display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        .tag.statements { background-color: var(--purple); color: var(--text-primary); }
+        .tag.ratios { background-color: var(--turquoise); color: var(--text-primary); }
+        .tag.roe { background-color: var(--green); color: var(--text-primary); }
+        .tag.wc { background-color: var(--purple); color: var(--text-primary); }
+        .save-section { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); text-align: center; }
+        .save-btn { background-color: var(--text-primary); color: var(--white); border: none; padding: 14px 40px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .save-btn:hover { background-color: var(--text-secondary); }
+        .save-message { margin-top: 16px; padding: 14px; border-radius: 8px; display: none; background-color: var(--turquoise); color: var(--text-primary); font-size: 0.9rem; }
+        .save-message.show { display: block; }
+        .completion-box { background-color: var(--turquoise); border-radius: 12px; padding: 28px; text-align: center; }
+        .completion-box h3 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .completion-box p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header { padding: 24px 20px; } .header h1 { font-size: 1.5rem; } .question-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Module 2 Wrap-Up</div>
+            <h1>Reflection: Apply to Your Role</h1>
+            <p>Connect Module 2 concepts to your professional context</p>
+        </div>
+        <div class="intro-box">
+            <h3>Making It Personal</h3>
+            <p>You've completed Module 2 and learned how to measure and manage financial performance. Now it's time to connect these analytical tools to your own work. This reflection will help you identify how financial statements, ratios, ROE, and working capital management relate to your organization.</p>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">1</div>
+                <div class="question-content">
+                    <h3>Which ratio or indicator do you find most useful for understanding your organization's financial health?</h3>
+                    <p>Consider what metrics are most relevant to your role or industry.</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q1" placeholder="Identify a specific ratio or indicator and explain why it matters most in your context..."></textarea>
+            <div class="char-count"><span id="count1">0</span> characters</div>
+            <div class="prompt-box">
+                <h4>Consider These Categories:</h4>
+                <div class="concept-tags">
+                    <span class="tag statements">Profitability — margins, ROA</span>
+                    <span class="tag ratios">Efficiency — turnover ratios</span>
+                    <span class="tag roe">Leverage — debt ratios</span>
+                    <span class="tag wc">Liquidity — current ratio, CCC</span>
+                </div>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">2</div>
+                <div class="question-content">
+                    <h3>How does working capital management affect your company's ability to invest or grow?</h3>
+                    <p>Think about inventory, receivables, payables, and cash flow timing.</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q2" placeholder="Describe how working capital considerations influence strategic decisions in your organization..."></textarea>
+            <div class="char-count"><span id="count2">0</span> characters</div>
+            <div class="prompt-box">
+                <h4>Consider:</h4>
+                <p>Does your organization face seasonal cash needs? Are there trade-offs between offering customer credit and maintaining liquidity? How does the cash conversion cycle affect funding requirements?</p>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">3</div>
+                <div class="question-content">
+                    <h3>If ROE has improved or deteriorated recently in your organization, what part of the decomposition do you think is driving it?</h3>
+                    <p>Consider margin, turnover, or leverage changes.</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q3" placeholder="Analyze which component of ROE (margin, turnover, leverage) is most likely driving recent performance changes..."></textarea>
+            <div class="char-count"><span id="count3">0</span> characters</div>
+            <div class="prompt-box">
+                <h4>The ROE Framework:</h4>
+                <p>ROE = Net Profit Margin × Asset Turnover × Equity Multiplier. Changes in any component affect overall returns. Which lever is your organization pulling — or being affected by?</p>
+            </div>
+        </div>
+        <div class="save-section">
+            <button class="save-btn" onclick="saveReflection()">Save My Reflection</button>
+            <div class="save-message" id="save-message">Your reflection has been saved. Great job completing Module 2!</div>
+        </div>
+        <div class="completion-box">
+            <h3>Ready for Module 3</h3>
+            <p>You've built the analytical foundation every financial manager needs. In Module 3, you'll shift from measuring the past to planning for the future — learning to project financial requirements and manage sustainable growth.</p>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.text-area').forEach((textarea, index) => {
+            textarea.addEventListener('input', () => {
+                document.getElementById(`count${index + 1}`).textContent = textarea.value.length;
+            });
+        });
+        function saveReflection() {
+            const reflection = { q1: document.getElementById('q1').value, q2: document.getElementById('q2').value, q3: document.getElementById('q3').value, timestamp: new Date().toISOString() };
+            localStorage.setItem('module2_reflection', JSON.stringify(reflection));
+            document.getElementById('save-message').classList.add('show');
+        }
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('module2_reflection');
+            if (saved) {
+                const reflection = JSON.parse(saved);
+                document.getElementById('q1').value = reflection.q1 || '';
+                document.getElementById('q2').value = reflection.q2 || '';
+                document.getElementById('q3').value = reflection.q3 || '';
+                document.querySelectorAll('.text-area').forEach((textarea, index) => {
+                    document.getElementById(`count${index + 1}`).textContent = textarea.value.length;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

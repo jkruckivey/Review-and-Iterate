@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusivity Bidding Simulator - NHL Rights Deal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.5rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1rem; }
+
+        /* Scenario box */
+        .scenario-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .scenario-label { font-size: 0.75rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .scenario-text { font-size: 0.9rem; color: var(--color-neutral-700); }
+
+        /* Bidders grid */
+        .bidders-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .bidder-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; text-align: center; transition: all 0.2s; }
+        .bidder-card.revealed { border-color: var(--color-accent); background: var(--color-accent-light); }
+        .bidder-name { font-size: 0.9rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .bidder-amount { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); opacity: 0; transition: opacity 0.3s; }
+        .bidder-card.revealed .bidder-amount { opacity: 1; }
+        .bidder-rationale { font-size: 0.75rem; color: var(--color-neutral-600); margin-top: 0.5rem; opacity: 0; transition: opacity 0.3s 0.1s; }
+        .bidder-card.revealed .bidder-rationale { opacity: 1; }
+
+        /* Reveal button */
+        .reveal-btn { display: block; margin: 0 auto 1.25rem; background: var(--color-neutral-800); color: white; border: none; padding: 0.625rem 1.5rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .reveal-btn:hover:not(:disabled) { background: var(--color-neutral-700); }
+        .reveal-btn:disabled { background: var(--color-neutral-400); cursor: not-allowed; }
+
+        /* Options grid */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .options-grid.visible { opacity: 1; pointer-events: auto; }
+        .option-card { background: white; border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; cursor: pointer; transition: all 0.2s; }
+        .option-card:hover { border-color: var(--color-neutral-400); }
+        .option-card.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+        .option-title { font-size: 0.95rem; font-weight: 700; color: var(--color-neutral-800); margin-bottom: 0.25rem; }
+        .option-value { font-size: 1.5rem; font-weight: 700; color: var(--color-accent); margin-bottom: 0.5rem; }
+        .option-desc { font-size: 0.8rem; color: var(--color-neutral-600); margin-bottom: 0.75rem; }
+
+        /* Pros/Cons */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .pros-list, .cons-list { font-size: 0.75rem; }
+        .pros-list { color: var(--color-accent); }
+        .cons-list { color: var(--color-neutral-500); }
+        .pros-list li, .cons-list li { margin-bottom: 0.25rem; padding-left: 1rem; position: relative; list-style: none; }
+        .pros-list li::before { content: "+"; position: absolute; left: 0; font-weight: 700; }
+        .cons-list li::before { content: "-"; position: absolute; left: 0; font-weight: 700; }
+
+        /* Analysis box */
+        .analysis-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; opacity: 0; transition: opacity 0.3s; }
+        .analysis-box.visible { opacity: 1; }
+        .analysis-title { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .analysis-text { font-size: 0.85rem; color: var(--color-neutral-600); line-height: 1.6; }
+        .analysis-text strong { color: var(--color-neutral-800); }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: flex-end; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; background: var(--color-neutral-200); color: var(--color-neutral-700); transition: background 0.2s; }
+        .btn:hover { background: var(--color-neutral-300); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .bidders-grid { grid-template-columns: 1fr; }
+            .options-grid { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; gap: 0.75rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <h1 class="widget-title">NHL Rights Bidding Simulator</h1>
+            <p class="widget-subtitle">Key insight: Split packages generate more total revenue than exclusive deals</p>
+
+            <div class="scenario-box">
+                <div class="scenario-label">Your Role: NHL Commissioner</div>
+                <p class="scenario-text">Canada's NHL rights are expiring. Three companies want them. Do you take the highest exclusive bid, or split rights among multiple partners?</p>
+            </div>
+
+            <div class="bidders-grid" role="list">
+                <div class="bidder-card" role="listitem">
+                    <div class="bidder-name">Rogers</div>
+                    <div class="bidder-amount">$450M/yr</div>
+                    <div class="bidder-rationale">Regional rights only. Cautious after 2014 deal losses.</div>
+                </div>
+                <div class="bidder-card" role="listitem">
+                    <div class="bidder-name">DAZN</div>
+                    <div class="bidder-amount">$550M/yr</div>
+                    <div class="bidder-rationale">Aggressive growth. Needs NHL as anchor content.</div>
+                </div>
+                <div class="bidder-card" role="listitem">
+                    <div class="bidder-name">Apple TV+</div>
+                    <div class="bidder-amount">$700M/yr</div>
+                    <div class="bidder-rationale">Strategic acquisition. Global ambitions, deep pockets.</div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" id="reveal-btn">Reveal All Bids</button>
+
+            <div class="options-grid" id="options-grid" role="radiogroup" aria-label="Choose deal structure">
+                <div class="option-card" tabindex="0" role="radio" aria-checked="false" data-option="exclusive">
+                    <div class="option-title">Option 1: Exclusive Deal</div>
+                    <div class="option-value">$700M/yr</div>
+                    <div class="option-desc">Apple TV+ gets all rights (national, regional, streaming, international)</div>
+                    <div class="pros-cons">
+                        <ul class="pros-list">
+                            <li>Simple, single partner</li>
+                            <li>Apple's global reach</li>
+                        </ul>
+                        <ul class="cons-list">
+                            <li>Fans need Apple TV+</li>
+                            <li>Lower total revenue</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="option-card" tabindex="0" role="radio" aria-checked="false" data-option="split">
+                    <div class="option-title">Option 2: Split Package</div>
+                    <div class="option-value">$1.15B/yr</div>
+                    <div class="option-desc">Rogers $450M (regional) + DAZN $400M (national) + Apple $300M (streaming)</div>
+                    <div class="pros-cons">
+                        <ul class="pros-list">
+                            <li>64% more revenue</li>
+                            <li>Better fan access</li>
+                        </ul>
+                        <ul class="cons-list">
+                            <li>Complex (3 partners)</li>
+                            <li>Coordination needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-box" id="analysis-box">
+                <div class="analysis-title">Strategic Analysis</div>
+                <div class="analysis-text" id="analysis-text"></div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn" id="reset-btn">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const revealBtn = document.getElementById('reveal-btn');
+        const optionsGrid = document.getElementById('options-grid');
+        const analysisBox = document.getElementById('analysis-box');
+        const analysisText = document.getElementById('analysis-text');
+        const bidderCards = document.querySelectorAll('.bidder-card');
+        const optionCards = document.querySelectorAll('.option-card');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let bidsRevealed = false;
+
+        const analyses = {
+            exclusive: `<strong>You chose the exclusive Apple TV+ deal ($700M/year).</strong><br><br>This mirrors the <strong>Rogers 2014 strategy</strong>—betting on a single partner. While $700M is significant, you're leaving <strong>$450M/year on the table</strong> by not splitting rights.<br><br><strong>The NFL model:</strong> Split packages (CBS, FOX, NBC, ESPN, Amazon) create multiple bidding wars. Each partner pays a premium for THEIR slice, totaling more than any single exclusive bid.`,
+            split: `<strong>You chose the split package deal ($1.15B/year).</strong><br><br>Smart! By splitting rights, you've generated <strong>64% more revenue</strong> ($1.15B vs. $700M) while maintaining better fan accessibility.<br><br><strong>This is the NFL model</strong>—split packages maximize total revenue by creating competition at multiple levels. The extra $450M/year more than pays for the coordination complexity.`
+        };
+
+        revealBtn.addEventListener('click', () => {
+            bidderCards.forEach((card, i) => {
+                setTimeout(() => card.classList.add('revealed'), i * 150);
+            });
+            bidsRevealed = true;
+            revealBtn.disabled = true;
+            setTimeout(() => optionsGrid.classList.add('visible'), 500);
+        });
+
+        optionCards.forEach(card => {
+            const handler = () => {
+                if (!bidsRevealed) return;
+                optionCards.forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-checked', 'false'); });
+                card.classList.add('selected');
+                card.setAttribute('aria-checked', 'true');
+                analysisText.innerHTML = analyses[card.dataset.option];
+                analysisBox.classList.add('visible');
+            };
+            card.addEventListener('click', handler);
+            card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            bidsRevealed = false;
+            revealBtn.disabled = false;
+            bidderCards.forEach(c => c.classList.remove('revealed'));
+            optionCards.forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-checked', 'false'); });
+            optionsGrid.classList.remove('visible');
+            analysisBox.classList.remove('visible');
+        });
+    </script>
+</body>
+</html>

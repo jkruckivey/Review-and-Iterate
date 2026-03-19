@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFL Expansion City Selector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-focus: #3182ce;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            color: var(--color-neutral-800);
+            line-height: 1.6;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .project-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        /* City Cards Grid */
+        .cities-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: var(--color-neutral-200);
+        }
+
+        .view-btn.active {
+            background: var(--color-neutral-800);
+            color: white;
+            border-color: var(--color-neutral-800);
+        }
+
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .city-card {
+            background: white;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--color-neutral-200);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .city-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .city-card.selected {
+            border-color: var(--color-success);
+            background: var(--color-success-light);
+        }
+
+        .city-card-header {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--color-neutral-800), var(--color-neutral-900));
+            color: white;
+            position: relative;
+        }
+
+        .city-card.selected .city-card-header {
+            background: linear-gradient(135deg, var(--color-success), var(--color-success-dark));
+        }
+
+        .city-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .city-province {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .viability-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .viability-high {
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
+        }
+
+        .viability-medium {
+            background: var(--color-warning-light);
+            color: var(--color-warning-dark);
+        }
+
+        .viability-emerging {
+            background: var(--color-info-light);
+            color: var(--color-info-dark);
+        }
+
+        .city-card-body {
+            padding: 1.25rem;
+        }
+
+        .city-description {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .city-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            background: var(--color-neutral-50);
+            padding: 0.75rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+        }
+
+        .city-factors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .factor-tag {
+            padding: 0.25rem 0.6rem;
+            background: var(--color-neutral-100);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+        }
+
+        .factor-tag.positive {
+            background: var(--color-correct-bg);
+            color: var(--color-success-dark);
+            border: 1px solid var(--color-correct);
+        }
+
+        .factor-tag.challenge {
+            background: var(--color-incorrect-bg);
+            color: var(--color-warning-dark);
+            border: 1px solid var(--color-incorrect);
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .select-btn:hover {
+            background: var(--color-mlo);
+            filter: brightness(0.9);
+        }
+
+        .city-card.selected .select-btn {
+            background: var(--color-success);
+        }
+
+        /* Comparison Table View */
+        .comparison-table {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .comparison-table.visible {
+            display: block;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .comparison-table th {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .comparison-table tr.selected {
+            background: var(--color-success-light);
+        }
+
+        .table-city-name {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .table-select-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .table-select-btn:hover {
+            filter: brightness(0.9);
+        }
+
+        tr.selected .table-select-btn {
+            background: var(--color-success);
+        }
+
+        /* Selection Panel */
+        .selection-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .selection-panel.visible {
+            display: block;
+        }
+
+        .selection-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .selected-city-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--color-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .selected-city-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .selected-city-info p {
+            color: var(--color-neutral-500);
+        }
+
+        .change-selection-btn {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .change-selection-btn:hover {
+            background: var(--color-neutral-200);
+        }
+
+        /* City Details Section */
+        .city-details-section {
+            margin-bottom: 2rem;
+        }
+
+        .city-details-section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-800);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            background: var(--color-neutral-50);
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .detail-item .detail-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-item .detail-value {
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-item .detail-extra {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .strengths-challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .detail-box {
+            padding: 1.25rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .detail-box h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .strengths-box {
+            background: var(--color-correct-bg);
+            border: 1px solid var(--color-correct);
+        }
+
+        .strengths-box h5 {
+            color: var(--color-success-dark);
+        }
+
+        .challenges-box {
+            background: var(--color-incorrect-bg);
+            border: 1px solid var(--color-incorrect);
+        }
+
+        .challenges-box h5 {
+            color: var(--color-warning-dark);
+        }
+
+        .detail-box ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .strengths-box ul {
+            color: var(--color-success-dark);
+        }
+
+        .challenges-box ul {
+            color: var(--color-warning-dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .step {
+                border-radius: 0;
+            }
+
+            .step:first-child {
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+            }
+
+            .step:last-child {
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+            }
+
+            .cities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .selection-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .change-selection-btn {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+        <!-- Header -->
+        <header class="header">
+            <div class="project-badge">CFL EXPANSION PROJECT</div>
+            <h1>Choose Your Expansion City</h1>
+            <p>Select a Canadian market for your CFL expansion franchise. Your choice will shape your entire project - analyze each city's potential carefully.</p>
+        </header>
+
+        
+        <!-- Cities Section -->
+        <section class="cities-section" aria-label="Expansion city options">
+            <div class="section-header">
+                <h2>Expansion City Profiles</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="setView('cards')" aria-pressed="true">Cards</button>
+                    <button class="view-btn" onclick="setView('table')" aria-pressed="false">Compare</button>
+                </div>
+            </div>
+
+            <div class="cities-grid" id="cities-grid">
+                <!-- Generated by JS -->
+            </div>
+
+            <div class="comparison-table" id="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Population</th>
+                            <th>Stadium</th>
+                            <th>Competition</th>
+                            <th>Corporate Base</th>
+                            <th>Viability</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparison-tbody">
+                        <!-- Generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Selection Panel -->
+        <section class="selection-panel" id="selection-panel" aria-label="Your city selection">
+            <div class="selection-header">
+                <div class="selected-city-icon" aria-hidden="true">
+                    <span id="selected-icon">HFX</span>
+                </div>
+                <div class="selected-city-info">
+                    <h3 id="selected-city-name">Halifax</h3>
+                    <p id="selected-city-province">Nova Scotia</p>
+                </div>
+                <button class="change-selection-btn" onclick="clearSelection()">Change Selection</button>
+            </div>
+
+            <!-- Full City Details for Reference -->
+            <div class="city-details-section" id="city-details-section">
+                <h4>Complete Market Profile</h4>
+
+                <div class="details-grid" id="details-grid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="strengths-challenges-grid">
+                    <div class="detail-box strengths-box">
+                        <h5>Key Strengths</h5>
+                        <ul id="strengths-list"></ul>
+                    </div>
+                    <div class="detail-box challenges-box">
+                        <h5>Key Challenges</h5>
+                        <ul id="challenges-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+    </div>
+
+    <script>
+        // City Data
+        const cities = [
+            {
+                id: 'halifax',
+                name: 'Halifax',
+                province: 'Nova Scotia',
+                abbrev: 'HFX',
+                population: '465,000',
+                metro: '480,000',
+                viability: 'high',
+                description: 'Atlantic Canada\'s largest city with strong university football culture, no major pro sports competition, and growing tech sector. Long-discussed as top CFL expansion candidate.',
+                stadiumStatus: 'New build required',
+                stadiumDetails: 'Shannon Park site identified; estimated $200M multi-use facility',
+                competition: 'Low',
+                competitionDetails: 'AHL Mooseheads only; no MLB, NBA, NHL, MLS',
+                corporateBase: 'Growing',
+                corporateDetails: 'Tech sector boom, regional HQs, strong local business community',
+                footballCulture: 'Strong - SMU Huskies, St. FX, Acadia university rivalries',
+                positives: ['No pro sports competition', 'Regional monopoly', 'University football culture', 'Government support'],
+                challenges: ['Stadium funding', 'Smaller corporate base', 'Travel costs for teams']
+            },
+            {
+                id: 'quebec-city',
+                name: 'Quebec City',
+                province: 'Quebec',
+                abbrev: 'QC',
+                population: '550,000',
+                metro: '830,000',
+                viability: 'high',
+                description: 'Historic French-Canadian market with passionate sports fans, existing arena infrastructure, and proven ability to support pro sports. Previously hosted Nordiques (NHL).',
+                stadiumStatus: 'Outdoor needed',
+                stadiumDetails: 'Videotron Centre (indoor) exists; outdoor stadium required for CFL',
+                competition: 'Medium',
+                competitionDetails: 'QMJHL Remparts; no current major pro league',
+                corporateBase: 'Strong',
+                corporateDetails: 'Provincial capital, insurance/finance sector, tourism industry',
+                footballCulture: 'Moderate - Rouge et Or (Laval) dominant university program',
+                positives: ['Passionate fanbase', 'French market differentiation', 'Provincial capital', 'Proven sports market'],
+                challenges: ['Outdoor stadium needed', 'French-language operations', 'Weather concerns']
+            },
+            {
+                id: 'saskatoon',
+                name: 'Saskatoon',
+                province: 'Saskatchewan',
+                abbrev: 'SKN',
+                population: '320,000',
+                metro: '350,000',
+                viability: 'emerging',
+                description: 'Saskatchewan\'s largest city in Canada\'s most football-passionate province. Would compete with beloved Roughriders but tap into proven market demand.',
+                stadiumStatus: 'University facility',
+                stadiumDetails: 'Griffiths Stadium (5,000) exists; major expansion or new build needed',
+                competition: 'High (internal)',
+                competitionDetails: 'Roughriders dominate province; WHL Blades',
+                corporateBase: 'Moderate',
+                corporateDetails: 'Potash/mining sector, agriculture, growing tech presence',
+                footballCulture: 'Exceptional - Province bleeds green; Huskies program strong',
+                positives: ['Football-obsessed province', 'Second Saskatchewan team model', 'Lower operating costs', 'Passionate fans'],
+                challenges: ['Roughriders competition', 'Small market', 'Stadium investment needed']
+            },
+            {
+                id: 'london',
+                name: 'London',
+                province: 'Ontario',
+                abbrev: 'LDN',
+                population: '420,000',
+                metro: '540,000',
+                viability: 'medium',
+                description: 'Mid-sized Ontario city with Western University\'s storied football program. Strategic location between Toronto and Detroit markets.',
+                stadiumStatus: 'Expansion possible',
+                stadiumDetails: 'TD Stadium (8,000) at Western; would need significant expansion',
+                competition: 'Low-Medium',
+                competitionDetails: 'OHL Knights; proximity to Toronto/Hamilton CFL teams',
+                corporateBase: 'Strong',
+                corporateDetails: 'Insurance capital of Canada; major hospital/university employers',
+                footballCulture: 'Strong - Western Mustangs are perennial powerhouse',
+                positives: ['University football tradition', 'Strong corporate base', 'Ontario market growth', 'Lower costs than Toronto'],
+                challenges: ['Proximity to Argos/Ti-Cats', 'Stadium limitations', 'Regional identity questions']
+            },
+            {
+                id: 'moncton',
+                name: 'Moncton',
+                province: 'New Brunswick',
+                abbrev: 'MON',
+                population: '85,000',
+                metro: '175,000',
+                viability: 'emerging',
+                description: 'Bilingual Maritime hub that has successfully hosted CFL exhibition games. Smaller market but central Atlantic location and proven football interest.',
+                stadiumStatus: 'Exists',
+                stadiumDetails: 'Moncton Stadium (10,000+) hosted Touchdown Atlantic games',
+                competition: 'Very Low',
+                competitionDetails: 'QMJHL Wildcats only; minimal pro sports presence',
+                corporateBase: 'Limited',
+                corporateDetails: 'Regional service hub; bilingual call centers; smaller business community',
+                footballCulture: 'Developing - Touchdown Atlantic success; Mount Allison nearby',
+                positives: ['Stadium ready', 'Touchdown Atlantic proof', 'Bilingual market', 'Atlantic hub location'],
+                challenges: ['Smallest market', 'Limited corporate base', 'Long-term sustainability questions']
+            },
+            {
+                id: 'victoria',
+                name: 'Victoria',
+                province: 'British Columbia',
+                abbrev: 'VIC',
+                population: '395,000',
+                metro: '420,000',
+                viability: 'medium',
+                description: 'BC\'s capital with affluent demographics, growing tech sector, and year-round mild climate. Would create BC rivalry with Lions.',
+                stadiumStatus: 'New build likely',
+                stadiumDetails: 'No suitable facility; new stadium required',
+                competition: 'Low',
+                competitionDetails: 'WHL Royals; CEBL Surge (new); no major pro leagues',
+                corporateBase: 'Growing',
+                corporateDetails: 'Government, tech sector, tourism, retiree wealth',
+                footballCulture: 'Moderate - U Vic program exists; BC Lions somewhat distant',
+                positives: ['Mild climate', 'Affluent market', 'Tech sector growth', 'BC rivalry potential'],
+                challenges: ['Ferry logistics for teams', 'Stadium development', 'Island isolation']
+            },
+            {
+                id: 'kitchener-waterloo',
+                name: 'Kitchener-Waterloo',
+                province: 'Ontario',
+                abbrev: 'KW',
+                population: '575,000',
+                metro: '590,000',
+                viability: 'medium',
+                description: 'Canada\'s tech capital with two major universities, strong German heritage, and growing population. Largest Canadian metro without a major pro sports team.',
+                stadiumStatus: 'University facility',
+                stadiumDetails: 'University Stadium at Waterloo (5,000); expansion or new build needed',
+                competition: 'Low-Medium',
+                competitionDetails: 'OHL Rangers; proximity to Toronto/Hamilton CFL teams',
+                corporateBase: 'Strong',
+                corporateDetails: 'Tech hub (Google, Shopify, startups), insurance sector, manufacturing legacy',
+                footballCulture: 'Strong - Laurier Golden Hawks (Vanier Cup winners), Waterloo Warriors; OUA rivalries',
+                positives: ['Tech sector wealth', 'Two university programs', 'Large underserved market', 'Young demographics'],
+                challenges: ['Proximity to Argos/Ti-Cats', 'Stadium investment needed', 'No existing pro sports identity']
+            }
+        ];
+
+        let selectedCity = null;
+        let currentView = 'cards';
+
+        // Initialize
+        function init() {
+            renderCityCards();
+            renderComparisonTable();
+        }
+
+        // Render city cards
+        function renderCityCards() {
+            const grid = document.getElementById('cities-grid');
+            grid.innerHTML = '';
+
+            cities.forEach(city => {
+                const card = document.createElement('div');
+                card.className = `city-card${selectedCity?.id === city.id ? ' selected' : ''}`;
+                card.id = `card-${city.id}`;
+
+                const viabilityClass = {
+                    'high': 'viability-high',
+                    'medium': 'viability-medium',
+                    'emerging': 'viability-emerging'
+                }[city.viability];
+
+                const viabilityLabel = {
+                    'high': 'High Viability',
+                    'medium': 'Medium Viability',
+                    'emerging': 'Emerging Market'
+                }[city.viability];
+
+                card.innerHTML = `
+                    <div class="city-card-header">
+                        <div class="city-name">${city.name}</div>
+                        <div class="city-province">${city.province}</div>
+                        <span class="viability-badge ${viabilityClass}">${viabilityLabel}</span>
+                    </div>
+                    <div class="city-card-body">
+                        <p class="city-description">${city.description}</p>
+                        <div class="city-stats">
+                            <div class="stat">
+                                <div class="stat-label">Metro Population</div>
+                                <div class="stat-value">${city.metro}</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Stadium Status</div>
+                                <div class="stat-value">${city.stadiumStatus}</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Competition</div>
+                                <div class="stat-value">${city.competition}</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Corporate Base</div>
+                                <div class="stat-value">${city.corporateBase}</div>
+                            </div>
+                        </div>
+                        <div class="city-factors">
+                            ${city.positives.slice(0, 2).map(p => `<span class="factor-tag positive">${p}</span>`).join('')}
+                            ${city.challenges.slice(0, 1).map(c => `<span class="factor-tag challenge">${c}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button class="select-btn" onclick="selectCity('${city.id}')">
+                        ${selectedCity?.id === city.id ? 'Selected' : 'Select This City'}
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Render comparison table
+        function renderComparisonTable() {
+            const tbody = document.getElementById('comparison-tbody');
+            tbody.innerHTML = '';
+
+            cities.forEach(city => {
+                const row = document.createElement('tr');
+                row.className = selectedCity?.id === city.id ? 'selected' : '';
+
+                row.innerHTML = `
+                    <td>
+                        <span class="table-city-name">${city.name}</span><br>
+                        <small style="color: var(--color-neutral-500)">${city.province}</small>
+                    </td>
+                    <td>${city.metro}</td>
+                    <td>${city.stadiumStatus}</td>
+                    <td>${city.competition}</td>
+                    <td>${city.corporateBase}</td>
+                    <td>${city.viability.charAt(0).toUpperCase() + city.viability.slice(1)}</td>
+                    <td>
+                        <button class="table-select-btn" onclick="selectCity('${city.id}')">
+                            ${selectedCity?.id === city.id ? 'Selected' : 'Select'}
+                        </button>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Select city
+        function selectCity(cityId) {
+            selectedCity = cities.find(c => c.id === cityId);
+
+            // Update UI
+            renderCityCards();
+            renderComparisonTable();
+            showSelectionPanel();
+
+            // Scroll to selection panel
+            document.getElementById('selection-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Show selection panel
+        function showSelectionPanel() {
+            const panel = document.getElementById('selection-panel');
+            panel.classList.add('visible');
+
+            document.getElementById('selected-icon').textContent = selectedCity.abbrev;
+            document.getElementById('selected-city-name').textContent = selectedCity.name;
+            document.getElementById('selected-city-province').textContent = selectedCity.province;
+
+            // Populate detailed city info
+            populateCityDetails();
+        }
+
+        // Populate city details
+        function populateCityDetails() {
+            const detailsGrid = document.getElementById('details-grid');
+            detailsGrid.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Metro Population</div>
+                    <div class="detail-value">${selectedCity.metro}</div>
+                    <div class="detail-extra">City proper: ${selectedCity.population}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Market Viability</div>
+                    <div class="detail-value">${selectedCity.viability.charAt(0).toUpperCase() + selectedCity.viability.slice(1)}</div>
+                    <div class="detail-extra">${selectedCity.description.split('.')[0]}.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Stadium Status</div>
+                    <div class="detail-value">${selectedCity.stadiumStatus}</div>
+                    <div class="detail-extra">${selectedCity.stadiumDetails}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Competitive Landscape</div>
+                    <div class="detail-value">${selectedCity.competition}</div>
+                    <div class="detail-extra">${selectedCity.competitionDetails}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Corporate Base</div>
+                    <div class="detail-value">${selectedCity.corporateBase}</div>
+                    <div class="detail-extra">${selectedCity.corporateDetails}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Football Culture</div>
+                    <div class="detail-value">${selectedCity.footballCulture.split(' - ')[0]}</div>
+                    <div class="detail-extra">${selectedCity.footballCulture.includes(' - ') ? selectedCity.footballCulture.split(' - ')[1] : ''}</div>
+                </div>
+            `;
+
+            // Populate strengths
+            const strengthsList = document.getElementById('strengths-list');
+            strengthsList.innerHTML = selectedCity.positives.map(p => `<li>${p}</li>`).join('');
+
+            // Populate challenges
+            const challengesList = document.getElementById('challenges-list');
+            challengesList.innerHTML = selectedCity.challenges.map(c => `<li>${c}</li>`).join('');
+        }
+
+        
+        // Clear selection
+        function clearSelection() {
+            selectedCity = null;
+            document.getElementById('selection-panel').classList.remove('visible');
+            renderCityCards();
+            renderComparisonTable();
+        }
+
+        
+        // View toggle
+        function setView(view) {
+            currentView = view;
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            event.target.classList.add('active');
+            event.target.setAttribute('aria-pressed', 'true');
+
+            const grid = document.getElementById('cities-grid');
+            const table = document.getElementById('comparison-table');
+
+            if (view === 'cards') {
+                grid.style.display = 'grid';
+                table.classList.remove('visible');
+            } else {
+                grid.style.display = 'none';
+                table.classList.add('visible');
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

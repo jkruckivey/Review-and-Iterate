@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsorship Valuation Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-purple);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-sand);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="range"]:focus::-webkit-slider-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="range"]:focus::-moz-range-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.625rem;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-neutral-900);
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+            border-color: var(--color-neutral-400);
+        }
+
+        .value-display {
+            min-width: 120px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: right;
+        }
+
+        .results {
+            background: var(--color-green);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .results h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .grade-excellent {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-800);
+        }
+
+        .grade-good {
+            background: var(--color-neutral-300);
+            color: var(--color-neutral-900);
+        }
+
+        .grade-fair {
+            background: var(--color-neutral-400);
+            color: white;
+        }
+
+        .grade-poor {
+            background: var(--color-neutral-600);
+            color: white;
+        }
+
+        .chart-container {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+            }
+
+            .input-with-value {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .value-display {
+                text-align: center;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Screen reader only class */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sponsorship Valuation Calculator</h1>
+        <p class="subtitle">Calculate CPM, total impressions, and exposure value for sponsorship deals using industry-standard formulas.</p>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('inputs')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('inputs');}" tabindex="0" role="button" aria-expanded="true" aria-controls="inputs-content">
+                <h2>Valuation Inputs</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="inputs-content">
+                <div class="section-inner input-section">
+                    <div class="presets" role="group" aria-label="Preset sponsorship deals">
+                        <button class="preset-btn" onclick="loadPreset('nfl')" aria-label="Load NFL Jersey Sponsor preset">NFL Jersey Sponsor ($25M)</button>
+                        <button class="preset-btn" onclick="loadPreset('epl')" aria-label="Load EPL Shirt Sponsor preset">EPL Shirt Sponsor (£50M)</button>
+                        <button class="preset-btn" onclick="loadPreset('mls')" aria-label="Load MLS Jersey Sponsor preset">MLS Jersey ($5M)</button>
+                        <button class="preset-btn" onclick="loadPreset('nba')" aria-label="Load NBA Court Ad preset">NBA Court Ad ($3M)</button>
+                        <button class="preset-btn" onclick="loadPreset('mlb')" aria-label="Load MLB Dugout Suite preset">MLB Dugout Suite ($1M)</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="rightsFee">Rights Fee ($ Millions)</label>
+                        <div class="input-with-value">
+                            <input type="range" id="rightsFee" min="1" max="100" value="20" step="1"
+                                   oninput="updateCalculations()" aria-describedby="rightsFeeValue">
+                            <span class="value-display" id="rightsFeeValue" aria-live="polite">$20M</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="broadcastReach">Broadcast Reach (Avg Viewers Per Game)</label>
+                        <input type="number" id="broadcastReach" value="1500000" step="100000"
+                               oninput="updateCalculations()" aria-describedby="broadcastReachHelp">
+                        <span id="broadcastReachHelp" class="sr-only">Enter average number of viewers per broadcast game</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="gamesPerSeason">Games Per Season</label>
+                        <select id="gamesPerSeason" onchange="updateCalculations()" aria-describedby="gamesHelp">
+                            <option value="38">38 (EPL/La Liga)</option>
+                            <option value="41">41 (NBA home games)</option>
+                            <option value="82" selected>82 (NBA/NHL full season)</option>
+                            <option value="162">162 (MLB full season)</option>
+                        </select>
+                        <span id="gamesHelp" class="sr-only">Select number of games in season</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="attendance">In-Stadium Attendance (Avg Per Game)</label>
+                        <input type="number" id="attendance" value="18000" step="1000"
+                               oninput="updateCalculations()" aria-describedby="attendanceHelp">
+                        <span id="attendanceHelp" class="sr-only">Enter average in-stadium attendance per game</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="digitalImpressions">Digital Impressions (Millions/Year)</label>
+                        <div class="input-with-value">
+                            <input type="range" id="digitalImpressions" min="10" max="500" value="50" step="10"
+                                   oninput="updateCalculations()" aria-describedby="digitalImpressionsValue">
+                            <span class="value-display" id="digitalImpressionsValue" aria-live="polite">50M</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="logoExposure">Logo Exposure Time (% of Broadcast)</label>
+                        <div class="input-with-value">
+                            <input type="range" id="logoExposure" min="5" max="50" value="15" step="1"
+                                   oninput="updateCalculations()" aria-describedby="logoExposureValue">
+                            <span class="value-display" id="logoExposureValue" aria-live="polite">15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('results')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('results');}" tabindex="0" role="button" aria-expanded="true" aria-controls="results-content">
+                <h2>Valuation Results</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="results-content">
+                <div class="section-inner">
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-label">Total Impressions</div>
+                            <div class="metric-value" id="totalImpressions" aria-live="polite">0M</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Cost Per Thousand (CPM)</div>
+                            <div class="metric-value" id="cpmValue" aria-live="polite">$0</div>
+                            <div id="gradeBadge" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="benchmarkChart" role="img" aria-label="CPM benchmark comparison chart"></canvas>
+                    </div>
+
+                    <div class="insight-box" role="complementary" aria-label="Valuation insights">
+                        <p id="insightText" aria-live="polite"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportData()" aria-label="Export calculations as CSV">
+                Export Data (CSV)
+            </button>
+            <button class="btn btn-secondary" onclick="resetCalculator()" aria-label="Reset calculator to default values">
+                Reset Calculator
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let benchmarkChart = null;
+
+        // Preset configurations
+        const presets = {
+            nfl: {
+                rightsFee: 25,
+                broadcastReach: 15000000,
+                gamesPerSeason: 82,
+                attendance: 65000,
+                digitalImpressions: 200,
+                logoExposure: 25
+            },
+            epl: {
+                rightsFee: 50,
+                broadcastReach: 1500000,
+                gamesPerSeason: 38,
+                attendance: 60000,
+                digitalImpressions: 150,
+                logoExposure: 30
+            },
+            mls: {
+                rightsFee: 5,
+                broadcastReach: 300000,
+                gamesPerSeason: 38,
+                attendance: 21000,
+                digitalImpressions: 30,
+                logoExposure: 20
+            },
+            nba: {
+                rightsFee: 3,
+                broadcastReach: 1200000,
+                gamesPerSeason: 82,
+                attendance: 18000,
+                digitalImpressions: 75,
+                logoExposure: 10
+            },
+            mlb: {
+                rightsFee: 1,
+                broadcastReach: 800000,
+                gamesPerSeason: 162,
+                attendance: 30000,
+                digitalImpressions: 40,
+                logoExposure: 8
+            }
+        };
+
+        function loadPreset(type) {
+            const preset = presets[type];
+            document.getElementById('rightsFee').value = preset.rightsFee;
+            document.getElementById('broadcastReach').value = preset.broadcastReach;
+            document.getElementById('gamesPerSeason').value = preset.gamesPerSeason;
+            document.getElementById('attendance').value = preset.attendance;
+            document.getElementById('digitalImpressions').value = preset.digitalImpressions;
+            document.getElementById('logoExposure').value = preset.logoExposure;
+
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            // Get input values
+            const rightsFee = parseFloat(document.getElementById('rightsFee').value);
+            const broadcastReach = parseFloat(document.getElementById('broadcastReach').value);
+            const gamesPerSeason = parseInt(document.getElementById('gamesPerSeason').value);
+            const attendance = parseFloat(document.getElementById('attendance').value);
+            const digitalImpressions = parseFloat(document.getElementById('digitalImpressions').value) * 1000000;
+            const logoExposure = parseFloat(document.getElementById('logoExposure').value) / 100;
+
+            // Update value displays
+            document.getElementById('rightsFeeValue').textContent = `$${rightsFee}M`;
+            document.getElementById('digitalImpressionsValue').textContent = `${document.getElementById('digitalImpressions').value}M`;
+            document.getElementById('logoExposureValue').textContent = `${document.getElementById('logoExposure').value}%`;
+
+            // Calculate total impressions
+            const broadcastImpressions = broadcastReach * gamesPerSeason * logoExposure;
+            const attendanceImpressions = attendance * gamesPerSeason;
+            const totalImpressions = broadcastImpressions + attendanceImpressions + digitalImpressions;
+
+            // Calculate CPM
+            const cpm = (rightsFee * 1000000 / totalImpressions) * 1000;
+
+            // Update results
+            document.getElementById('totalImpressions').textContent = `${(totalImpressions / 1000000).toFixed(1)}M`;
+            document.getElementById('cpmValue').textContent = `$${cpm.toFixed(0)}`;
+
+            // Determine grade
+            let grade, gradeClass, gradeText;
+            if (cpm < 500) {
+                grade = 'Excellent';
+                gradeClass = 'grade-excellent';
+                gradeText = 'Outstanding value - well below typical sponsorship benchmarks.';
+            } else if (cpm < 1500) {
+                grade = 'Good';
+                gradeClass = 'grade-good';
+                gradeText = 'Good value - within typical premium sponsorship range of $500-1,500 CPM.';
+            } else if (cpm < 3000) {
+                grade = 'Fair';
+                gradeClass = 'grade-fair';
+                gradeText = 'Fair value - approaching upper limits of acceptable sponsorship CPM.';
+            } else {
+                grade = 'Poor';
+                gradeClass = 'grade-poor';
+                gradeText = 'Poor value - significantly above typical sponsorship benchmarks. Consider renegotiating.';
+            }
+
+            document.getElementById('gradeBadge').innerHTML = `<span class="grade-badge ${gradeClass}">${grade}</span>`;
+            document.getElementById('insightText').textContent = `Your CPM of $${cpm.toFixed(0)} is rated ${grade}. ${gradeText}`;
+
+            // Update benchmark chart
+            updateBenchmarkChart(cpm);
+        }
+
+        function updateBenchmarkChart(sponsorshipCPM) {
+            const ctx = document.getElementById('benchmarkChart').getContext('2d');
+
+            if (benchmarkChart) {
+                benchmarkChart.destroy();
+            }
+
+            benchmarkChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Your Sponsorship', 'Super Bowl Ad (30s)', 'Social Media'],
+                    datasets: [{
+                        label: 'CPM ($)',
+                        data: [sponsorshipCPM, 60, 8],  // Super Bowl: ~$7M/123M viewers = $57 CPM; Social: $5-10 CPM
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-300') + 'cc'
+                        ],
+                        borderColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-300')
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'CPM Benchmark Comparison',
+                            font: {
+                                family: 'Geist',
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-900')
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cost Per Thousand Impressions ($)',
+                                font: {
+                                    family: 'Geist',
+                                    size: 12
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-600')
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-200')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportData() {
+            // Build CSV content
+            const csvRows = [
+                ['Sponsorship Valuation Calculator - Export'],
+                ['Timestamp', new Date().toISOString()],
+                [],
+                ['INPUTS'],
+                ['Rights Fee', `$${document.getElementById('rightsFee').value}M`],
+                ['Broadcast Reach', document.getElementById('broadcastReach').value],
+                ['Games Per Season', document.getElementById('gamesPerSeason').value],
+                ['Attendance', document.getElementById('attendance').value],
+                ['Digital Impressions', `${document.getElementById('digitalImpressions').value}M`],
+                ['Logo Exposure', `${document.getElementById('logoExposure').value}%`],
+                [],
+                ['RESULTS'],
+                ['Total Impressions', document.getElementById('totalImpressions').textContent],
+                ['CPM', document.getElementById('cpmValue').textContent],
+                ['Grade', document.getElementById('gradeBadge').textContent.trim()],
+                ['Insight', document.getElementById('insightText').textContent]
+            ];
+
+            const csvContent = csvRows.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sponsorship-valuation.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetCalculator() {
+            document.getElementById('rightsFee').value = 20;
+            document.getElementById('broadcastReach').value = 1500000;
+            document.getElementById('gamesPerSeason').value = 82;
+            document.getElementById('attendance').value = 18000;
+            document.getElementById('digitalImpressions').value = 50;
+            document.getElementById('logoExposure').value = 15;
+
+            updateCalculations();
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateCalculations();
+        });
+    </script>
+</body>
+</html>

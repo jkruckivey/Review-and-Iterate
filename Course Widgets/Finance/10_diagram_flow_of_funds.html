@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow of Funds: The Financial System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; }
+        .header-label { display: inline-block; background-color: var(--turquoise); color: var(--text-primary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 14px; border-radius: 4px; margin-bottom: 16px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        .instruction { background-color: var(--white); border-left: 3px solid var(--purple-dark); padding: 16px 20px; margin-bottom: 28px; border-radius: 0 8px 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .instruction p { color: var(--text-secondary); font-size: 0.9rem; }
+        .diagram-container { background-color: var(--white); border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px; }
+        .flow-diagram { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+        .flow-row { display: flex; align-items: center; justify-content: center; gap: 24px; width: 100%; flex-wrap: wrap; }
+        .entity-box { background-color: var(--text-primary); color: var(--white); padding: 24px 28px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; min-width: 180px; }
+        .entity-box:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(45, 55, 72, 0.2); }
+        .entity-box.active { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(45, 55, 72, 0.3); outline: 3px solid var(--turquoise-dark); }
+        .entity-box.savers { background-color: #4a5d6a; }
+        .entity-box.system { background-color: #4a6b5d; }
+        .entity-box.users { background-color: #5d4a6b; }
+        .entity-box .card-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 8px; }
+        .entity-box h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+        .entity-box p { font-size: 0.8rem; opacity: 0.85; }
+        .arrow-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .arrow { font-size: 1.5rem; color: var(--text-muted); }
+        .arrow-label { font-size: 0.7rem; color: var(--text-muted); text-align: center; max-width: 80px; }
+        .return-flow { margin-top: 20px; padding: 16px 24px; background-color: var(--green); border-radius: 8px; text-align: center; }
+        .return-flow p { font-size: 0.85rem; color: var(--text-primary); }
+        .return-flow span { font-weight: 600; }
+        .info-panel { background-color: var(--grey-bg); border-radius: 12px; padding: 24px; margin-top: 24px; min-height: 160px; border: 2px solid var(--grey-light); }
+        .info-panel h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+        .info-panel p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+        .info-panel ul { margin-left: 20px; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.8; }
+        .info-panel .tag { display: inline-block; background-color: var(--turquoise); color: var(--text-primary); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; margin-right: 8px; margin-top: 12px; }
+        .key-insight { background-color: var(--white); border-radius: 12px; padding: 24px; margin-top: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .key-insight h3 { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+        .key-insight p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
+        .key-insight strong { color: var(--text-primary); }
+        @media (max-width: 700px) {
+            .flow-row { flex-direction: column; gap: 16px; }
+            .arrow { transform: rotate(90deg); }
+            .entity-box { min-width: 90%; }
+            body { padding: 24px 16px; }
+            .header h1 { font-size: 1.5rem; }
+            .diagram-container { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 1.3</div>
+            <h1>Flow of Funds: The Financial System</h1>
+            <p>Understand how capital moves through the economy</p>
+        </div>
+        <div class="instruction">
+            <p><strong>Click on each component</strong> to learn more about its role in the financial system.</p>
+        </div>
+        <div class="diagram-container">
+            <div class="flow-diagram">
+                <div class="flow-row">
+                    <div class="entity-box savers" onclick="showInfo('savers')" id="savers">
+                        <div class="card-label">Source</div>
+                        <h3>Savers</h3>
+                        <p>Households & Institutions</p>
+                    </div>
+                    <div class="arrow-container">
+                        <div class="arrow">→</div>
+                        <div class="arrow-label">Surplus Funds</div>
+                    </div>
+                    <div class="entity-box system" onclick="showInfo('system')" id="system">
+                        <div class="card-label">Intermediary</div>
+                        <h3>Financial System</h3>
+                        <p>Markets & Intermediaries</p>
+                    </div>
+                    <div class="arrow-container">
+                        <div class="arrow">→</div>
+                        <div class="arrow-label">Capital</div>
+                    </div>
+                    <div class="entity-box users" onclick="showInfo('users')" id="users">
+                        <div class="card-label">Destination</div>
+                        <h3>Users of Capital</h3>
+                        <p>Firms & Governments</p>
+                    </div>
+                </div>
+                <div class="return-flow">
+                    <p><span>← Returns flow back:</span> Interest, Dividends, and Capital Gains</p>
+                </div>
+            </div>
+            <div class="info-panel" id="info-panel">
+                <h3>Click a component to explore</h3>
+                <p>The financial system serves as a bridge between those who have surplus funds and those who need capital. Click on any of the three components above to learn more about their role.</p>
+                <p>This flow is essential for economic growth — it allows savings to be channeled into productive investments that create jobs, innovation, and value.</p>
+            </div>
+        </div>
+        <div class="key-insight">
+            <h3>Key Insight: Finance as a System and a Signal</h3>
+            <p><strong>System:</strong> Finance channels capital across the economy — from savers to firms — supporting investment, operations, and growth.</p>
+            <p><strong>Signal:</strong> Interest rates, market prices, and risk premiums reflect collective expectations about the future. Financial managers must read these signals to time decisions and manage risk effectively.</p>
+        </div>
+    </div>
+    <script>
+        const infoContent = {
+            savers: {
+                title: "Savers: The Source of Capital",
+                content: `
+                    <p>Savers are individuals, households, and institutions with <strong>surplus funds</strong> — money they don't need immediately and want to put to work.</p>
+                    <p>They provide capital to the financial system in exchange for returns:</p>
+                    <ul>
+                        <li><strong>Households:</strong> Save through bank deposits, retirement accounts, investments</li>
+                        <li><strong>Pension Funds:</strong> Pool employee contributions for long-term investment</li>
+                        <li><strong>Insurance Companies:</strong> Invest premiums until claims are paid</li>
+                        <li><strong>Sovereign Wealth Funds:</strong> Invest national surplus revenues</li>
+                    </ul>
+                    <span class="tag">Provides: Capital</span><span class="tag">Seeks: Returns</span>
+                `
+            },
+            system: {
+                title: "Financial System: Markets & Intermediaries",
+                content: `
+                    <p>The financial system <strong>connects savers with users of capital</strong> through two main channels:</p>
+                    <p><strong>Financial Markets:</strong></p>
+                    <ul>
+                        <li>Stock markets (TSX, NYSE) — where equity is bought and sold</li>
+                        <li>Bond markets — where debt securities trade</li>
+                        <li>Money markets — for short-term borrowing and lending</li>
+                    </ul>
+                    <p><strong>Financial Intermediaries:</strong></p>
+                    <ul>
+                        <li>Banks — transform deposits into loans</li>
+                        <li>Mutual funds — pool investor money for diversification</li>
+                        <li>Investment banks — help firms raise capital</li>
+                    </ul>
+                    <span class="tag">Function: Connect & Transform</span><span class="tag">Enables: Price Discovery</span>
+                `
+            },
+            users: {
+                title: "Users of Capital: Firms & Governments",
+                content: `
+                    <p>Users of capital need funds to <strong>invest, operate, and grow</strong>. They access the financial system to raise money.</p>
+                    <p><strong>Firms use capital for:</strong></p>
+                    <ul>
+                        <li>Investment decisions — new projects, equipment, acquisitions</li>
+                        <li>Operating needs — working capital, inventory, receivables</li>
+                        <li>Growth initiatives — expansion, R&D, market entry</li>
+                    </ul>
+                    <p><strong>Governments use capital for:</strong></p>
+                    <ul>
+                        <li>Infrastructure — roads, schools, hospitals</li>
+                        <li>Public services — defense, healthcare, education</li>
+                        <li>Economic stimulus — during downturns</li>
+                    </ul>
+                    <span class="tag">Needs: Capital</span><span class="tag">Returns: Interest, Dividends, Growth</span>
+                `
+            }
+        };
+        function showInfo(id) {
+            document.querySelectorAll('.entity-box').forEach(box => box.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            const info = infoContent[id];
+            document.getElementById('info-panel').innerHTML = `<h3>${info.title}</h3>${info.content}`;
+        }
+    </script>
+</body>
+</html>

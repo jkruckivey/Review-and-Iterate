@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection: Finance for Growth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--green); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        .intro-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .intro-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .intro-card p:last-child { margin-bottom: 0; }
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+        .question-number { background-color: var(--green); color: var(--text-primary); min-width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .question-text { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); flex: 1; padding-top: 3px; }
+        .response-area { width: 100%; min-height: 120px; padding: 14px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-primary); resize: vertical; transition: border-color 0.2s ease; }
+        .response-area:focus { outline: none; border-color: var(--green-dark); }
+        .response-area::placeholder { color: var(--text-muted); }
+        .char-count { text-align: right; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+        .save-btn { display: block; width: 100%; max-width: 280px; margin: 28px auto 0; background-color: var(--text-primary); color: var(--white); border: none; padding: 14px 28px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .save-btn:hover { background-color: var(--text-secondary); }
+        .save-btn:disabled { background-color: var(--grey-light); color: var(--text-muted); cursor: not-allowed; }
+        .success-message { display: none; text-align: center; padding: 16px; background-color: var(--green); border-radius: 8px; margin-top: 16px; font-size: 0.9rem; color: var(--text-primary); }
+        .success-message.show { display: block; }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header h1 { font-size: 1.5rem; } .question-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Module 3 Reflection</div>
+            <h1>Finance for Growth: Applying What You've Learned</h1>
+            <p>Take time to reflect on how these concepts apply to your organization</p>
+        </div>
+        <div class="intro-card">
+            <p>Congratulations on completing Module 3! You've learned powerful tools for forecasting financial needs and planning sustainable growth.</p>
+            <p>Before moving on, take a few minutes to reflect on how these concepts apply to your own professional context. There are no right or wrong answers—this is about connecting theory to practice.</p>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">1</div>
+                <div class="question-text">How would you apply the Sustainable Growth Rate concept in your organization? Consider your company's ROE, dividend policy, and growth targets.</div>
+            </div>
+            <textarea class="response-area" id="response1" placeholder="Share your thoughts..." oninput="updateCharCount(1)"></textarea>
+            <div class="char-count"><span id="count1">0</span> characters</div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">2</div>
+                <div class="question-text">Think about a recent growth initiative at your company. What assumptions were made about financing needs? How were they tested? What would you do differently with the tools you've learned?</div>
+            </div>
+            <textarea class="response-area" id="response2" placeholder="Share your thoughts..." oninput="updateCharCount(2)"></textarea>
+            <div class="char-count"><span id="count2">0</span> characters</div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">3</div>
+                <div class="question-text">Which lever is most practical for your organization to adjust: profit margins, asset efficiency, retention ratio, or growth rate? Why?</div>
+            </div>
+            <textarea class="response-area" id="response3" placeholder="Share your thoughts..." oninput="updateCharCount(3)"></textarea>
+            <div class="char-count"><span id="count3">0</span> characters</div>
+        </div>
+        <button class="save-btn" id="saveBtn" onclick="saveResponses()">Save My Reflections</button>
+        <div class="success-message" id="successMessage">✓ Your reflections have been saved successfully!</div>
+    </div>
+    <script>
+        function updateCharCount(num) {
+            const textarea = document.getElementById(`response${num}`);
+            document.getElementById(`count${num}`).textContent = textarea.value.length;
+        }
+        function saveResponses() {
+            const responses = {
+                q1: document.getElementById('response1').value,
+                q2: document.getElementById('response2').value,
+                q3: document.getElementById('response3').value,
+                savedAt: new Date().toISOString()
+            };
+            try {
+                localStorage.setItem('module3_reflection', JSON.stringify(responses));
+                document.getElementById('successMessage').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('successMessage').classList.remove('show');
+                }, 3000);
+            } catch (e) {
+                alert('Unable to save. Please copy your responses manually.');
+            }
+        }
+        function loadResponses() {
+            try {
+                const saved = localStorage.getItem('module3_reflection');
+                if (saved) {
+                    const responses = JSON.parse(saved);
+                    if (responses.q1) { document.getElementById('response1').value = responses.q1; updateCharCount(1); }
+                    if (responses.q2) { document.getElementById('response2').value = responses.q2; updateCharCount(2); }
+                    if (responses.q3) { document.getElementById('response3').value = responses.q3; updateCharCount(3); }
+                }
+            } catch (e) {}
+        }
+        loadResponses();
+    </script>
+</body>
+</html>

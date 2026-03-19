@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Market Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-purple);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-sand);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="range"]:focus::-webkit-slider-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="range"]:focus::-moz-range-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .value-display {
+            min-width: 100px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: right;
+        }
+
+        .results {
+            margin-top: 0;
+        }
+
+        .chart-container {
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-subtext {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        .funnel-table {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .funnel-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--color-neutral-300);
+        }
+
+        .funnel-table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+            }
+
+            .input-with-value {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .value-display {
+                text-align: center;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Betting Market Simulator</h1>
+        <p class="subtitle">Model state sports betting market size, operator revenue, and tax revenue using real parameters from legalized markets.</p>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('parameters')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('parameters');}" tabindex="0" role="button" aria-expanded="true" aria-controls="parameters-content">
+                <h2>Market Parameters</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="parameters-content">
+                <div class="section-inner">
+                    <div class="presets" role="group" aria-label="State market presets">
+                        <button class="preset-btn" onclick="loadPreset('nj')">New Jersey (Mature)</button>
+                        <button class="preset-btn" onclick="loadPreset('ny')">New York (Highest Handle)</button>
+                        <button class="preset-btn" onclick="loadPreset('pa')">Pennsylvania</button>
+                        <button class="preset-btn" onclick="loadPreset('mi')">Michigan</button>
+                        <button class="preset-btn" onclick="loadPreset('oh')">Ohio (New Market)</button>
+                    </div>
+
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="population">State Population (Millions)</label>
+                            <div class="input-with-value">
+                                <input type="range" id="population" min="1" max="20" value="10" step="0.5"
+                                       oninput="updateCalculations()" aria-describedby="populationValue">
+                                <span class="value-display" id="populationValue" aria-live="polite">10.0M</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="participation">Betting Participation Rate (% of Adults)</label>
+                            <div class="input-with-value">
+                                <input type="range" id="participation" min="5" max="20" value="10" step="1"
+                                       oninput="updateCalculations()" aria-describedby="participationValue">
+                                <span class="value-display" id="participationValue" aria-live="polite">10%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="avgWager">Average Wager per Bettor per Year</label>
+                            <div class="input-with-value">
+                                <input type="range" id="avgWager" min="500" max="5000" value="2400" step="100"
+                                       oninput="updateCalculations()" aria-describedby="wagerValue">
+                                <span class="value-display" id="wagerValue" aria-live="polite">$2,400</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="operatorMargin">Operator Margin / House Edge (%)</label>
+                            <div class="input-with-value">
+                                <input type="range" id="operatorMargin" min="5" max="10" value="7" step="0.5"
+                                       oninput="updateCalculations()" aria-describedby="marginValue">
+                                <span class="value-display" id="marginValue" aria-live="polite">7.0%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="taxRate">State Tax Rate on GGR (%)</label>
+                            <div class="input-with-value">
+                                <input type="range" id="taxRate" min="10" max="51" value="20" step="1"
+                                       oninput="updateCalculations()" aria-describedby="taxValue">
+                                <span class="value-display" id="taxValue" aria-live="polite">20%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('economics')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('economics');}" tabindex="0" role="button" aria-expanded="true" aria-controls="economics-content">
+                <h2>Market Economics</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="economics-content">
+                <div class="section-inner results" role="region" aria-label="Market simulation results">
+
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label">Total Handle</div>
+                    <div class="metric-value" id="totalHandle" aria-live="polite">$0B</div>
+                    <div class="metric-subtext">Annual wagers placed</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Gross Gaming Revenue (GGR)</div>
+                    <div class="metric-value" id="ggr" aria-live="polite">$0M</div>
+                    <div class="metric-subtext">Handle × Operator margin</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Operator Net Revenue</div>
+                    <div class="metric-value" id="operatorNet" aria-live="polite">$0M</div>
+                    <div class="metric-subtext">After 35% marketing costs</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">State Tax Revenue</div>
+                    <div class="metric-value" id="stateTax" aria-live="polite">$0M</div>
+                    <div class="metric-subtext">GGR × Tax rate</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="funnelChart" role="img" aria-label="Revenue funnel visualization"></canvas>
+            </div>
+
+            <table class="funnel-table" role="table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody id="funnelTableBody">
+                </tbody>
+            </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('analysis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('analysis');}" tabindex="0" role="button" aria-expanded="true" aria-controls="analysis-content">
+                <h2>Market Analysis</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="analysis-content">
+                <div class="section-inner">
+                    <div class="insight-box" role="complementary" aria-label="Market insights">
+                        <h3>Market Analysis</h3>
+                        <p id="profitabilityText"></p>
+                        <p id="stateBenefitText"></p>
+                        <p id="benchmarkText"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportData()">Export Market Model</button>
+            <button class="btn btn-secondary" onclick="resetSimulator()">Reset Simulator</button>
+        </div>
+    </div>
+
+    <script>
+        let funnelChart = null;
+
+        const presets = {
+            nj: {
+                population: 9.3,
+                participation: 12,
+                avgWager: 2400,
+                operatorMargin: 7,
+                taxRate: 17.5
+            },
+            ny: {
+                population: 19.8,
+                participation: 8,
+                avgWager: 2800,
+                operatorMargin: 6.5,
+                taxRate: 51
+            },
+            pa: {
+                population: 13.0,
+                participation: 10,
+                avgWager: 2300,
+                operatorMargin: 7,
+                taxRate: 36
+            },
+            mi: {
+                population: 10.0,
+                participation: 11,
+                avgWager: 2500,
+                operatorMargin: 7.5,
+                taxRate: 20
+            },
+            oh: {
+                population: 11.8,
+                participation: 9,
+                avgWager: 2200,
+                operatorMargin: 7,
+                taxRate: 20
+            }
+        };
+
+        function loadPreset(state) {
+            const preset = presets[state];
+            document.getElementById('population').value = preset.population;
+            document.getElementById('participation').value = preset.participation;
+            document.getElementById('avgWager').value = preset.avgWager;
+            document.getElementById('operatorMargin').value = preset.operatorMargin;
+            document.getElementById('taxRate').value = preset.taxRate;
+
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            // Get input values
+            const population = parseFloat(document.getElementById('population').value) * 1000000;
+            const participation = parseFloat(document.getElementById('participation').value) / 100;
+            const avgWager = parseFloat(document.getElementById('avgWager').value);
+            const operatorMargin = parseFloat(document.getElementById('operatorMargin').value) / 100;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+
+            // Update value displays
+            document.getElementById('populationValue').textContent = `${(population / 1000000).toFixed(1)}M`;
+            document.getElementById('participationValue').textContent = `${(participation * 100).toFixed(0)}%`;
+            document.getElementById('wagerValue').textContent = `$${avgWager.toLocaleString()}`;
+            document.getElementById('marginValue').textContent = `${(operatorMargin * 100).toFixed(1)}%`;
+            document.getElementById('taxValue').textContent = `${(taxRate * 100).toFixed(0)}%`;
+
+            // Calculate market metrics
+            const adults = population * 0.75; // 75% of population is 18+
+            const bettors = adults * participation;
+            const totalHandle = bettors * avgWager;
+            const ggr = totalHandle * operatorMargin;
+            const operatorNet = ggr * 0.65; // After 35% marketing costs
+            const stateTaxRevenue = ggr * taxRate;
+
+            // Update results
+            document.getElementById('totalHandle').textContent = `$${(totalHandle / 1000000000).toFixed(2)}B`;
+            document.getElementById('ggr').textContent = `$${(ggr / 1000000).toFixed(1)}M`;
+            document.getElementById('operatorNet').textContent = `$${(operatorNet / 1000000).toFixed(1)}M`;
+            document.getElementById('stateTax').textContent = `$${(stateTaxRevenue / 1000000).toFixed(1)}M`;
+
+            // Update insights
+            updateInsights(operatorNet, totalHandle, stateTaxRevenue, ggr);
+
+            // Update visualizations
+            updateFunnelChart(totalHandle, ggr, operatorNet, stateTaxRevenue);
+            updateFunnelTable(totalHandle, ggr, operatorNet, stateTaxRevenue);
+        }
+
+        function updateInsights(operatorNet, totalHandle, stateTax, ggr) {
+            const profitMargin = ((operatorNet / totalHandle) * 100).toFixed(1);
+            document.getElementById('profitabilityText').textContent =
+                `Operators earn $${(operatorNet / 1000000).toFixed(1)}M net profit (${profitMargin}% margin on handle after marketing costs).`;
+
+            const teacherSalaries = Math.floor(stateTax / 65000);
+            const roadMiles = Math.floor(stateTax / 1000000);
+            document.getElementById('stateBenefitText').textContent =
+                `State collects $${(stateTax / 1000000).toFixed(1)}M in annual tax revenue—equivalent to funding ${teacherSalaries.toLocaleString()} teacher salaries or ${roadMiles} miles of road construction.`;
+
+            let benchmark = '';
+            if (ggr / 1000000 > 200) {
+                benchmark = 'This is a major betting market comparable to New York or New Jersey.';
+            } else if (ggr / 1000000 > 100) {
+                benchmark = 'This is a strong mid-tier market comparable to Pennsylvania or Michigan.';
+            } else if (ggr / 1000000 > 50) {
+                benchmark = 'This is a developing market with growth potential.';
+            } else {
+                benchmark = 'This is a small or emerging market with limited scale.';
+            }
+            document.getElementById('benchmarkText').textContent = benchmark;
+        }
+
+        function updateFunnelChart(handle, ggr, operatorNet, stateTax) {
+            const ctx = document.getElementById('funnelChart').getContext('2d');
+
+            if (funnelChart) {
+                funnelChart.destroy();
+            }
+
+            funnelChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Handle', 'Gross Gaming Revenue', 'Operator Net', 'State Tax'],
+                    datasets: [{
+                        label: 'Revenue Flow ($)',
+                        data: [handle, ggr, operatorNet, stateTax],
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-300') + 'cc'
+                        ],
+                        borderColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400'),
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-300')
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Betting Market Revenue Funnel',
+                            font: {
+                                family: 'Geist',
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-900')
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000000) {
+                                        return '$' + (value / 1000000000).toFixed(1) + 'B';
+                                    } else if (value >= 1000000) {
+                                        return '$' + (value / 1000000).toFixed(0) + 'M';
+                                    }
+                                    return '$' + value.toFixed(0);
+                                },
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-200')
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateFunnelTable(handle, ggr, operatorNet, stateTax) {
+            const tbody = document.getElementById('funnelTableBody');
+            tbody.innerHTML = '';
+
+            const stages = [
+                { name: 'Total Handle', amount: `$${(handle / 1000000000).toFixed(2)}B`, desc: 'All wagers placed by bettors' },
+                { name: 'Gross Gaming Revenue (GGR)', amount: `$${(ggr / 1000000).toFixed(1)}M`, desc: 'Operator margin (house edge)' },
+                { name: 'Operator Net Revenue', amount: `$${(operatorNet / 1000000).toFixed(1)}M`, desc: 'After marketing costs (35%)' },
+                { name: 'State Tax Revenue', amount: `$${(stateTax / 1000000).toFixed(1)}M`, desc: 'State tax on GGR' }
+            ];
+
+            stages.forEach(stage => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><strong>${stage.name}</strong></td>
+                    <td>${stage.amount}</td>
+                    <td>${stage.desc}</td>
+                `;
+            });
+        }
+
+        function exportData() {
+            const population = parseFloat(document.getElementById('population').value);
+            const participation = parseFloat(document.getElementById('participation').value);
+            const avgWager = parseFloat(document.getElementById('avgWager').value);
+            const operatorMargin = parseFloat(document.getElementById('operatorMargin').value);
+            const taxRate = parseFloat(document.getElementById('taxRate').value);
+
+            const data = {
+                inputs: {
+                    population: `${population}M`,
+                    participationRate: `${participation}%`,
+                    avgWagerPerBettor: `$${avgWager.toLocaleString()}`,
+                    operatorMargin: `${operatorMargin}%`,
+                    stateTaxRate: `${taxRate}%`
+                },
+                results: {
+                    totalHandle: document.getElementById('totalHandle').textContent,
+                    grossGamingRevenue: document.getElementById('ggr').textContent,
+                    operatorNetRevenue: document.getElementById('operatorNet').textContent,
+                    stateTaxRevenue: document.getElementById('stateTax').textContent
+                },
+                insights: {
+                    profitability: document.getElementById('profitabilityText').textContent,
+                    stateBenefit: document.getElementById('stateBenefitText').textContent,
+                    benchmark: document.getElementById('benchmarkText').textContent
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'betting-market-simulation.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetSimulator() {
+            document.getElementById('population').value = 10;
+            document.getElementById('participation').value = 10;
+            document.getElementById('avgWager').value = 2400;
+            document.getElementById('operatorMargin').value = 7;
+            document.getElementById('taxRate').value = 20;
+
+            updateCalculations();
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateCalculations();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection: Apply to Your Industry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--green-dark); padding: 32px 24px; border-radius: 12px; color: var(--text-primary); }
+        .header-label { display: inline-block; background-color: rgba(255,255,255,0.4); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 14px; border-radius: 4px; margin-bottom: 16px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; opacity: 0.9; }
+        .intro-box { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .intro-box h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .intro-box p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+        .question-number { background-color: var(--green); color: var(--text-primary); min-width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1rem; flex-shrink: 0; }
+        .question-content h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .question-content p { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+        .text-area { width: 100%; min-height: 120px; padding: 16px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; resize: vertical; transition: border-color 0.2s; color: var(--text-primary); }
+        .text-area:focus { outline: none; border-color: var(--green-dark); }
+        .text-area::placeholder { color: var(--text-muted); }
+        .char-count { text-align: right; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+        .helper-box { background-color: var(--turquoise); border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .helper-box h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+        .helper-box ul { margin-left: 18px; color: var(--text-secondary); font-size: 0.8rem; line-height: 1.8; }
+        .helper-box li { margin-bottom: 4px; }
+        .save-section { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); text-align: center; }
+        .save-btn { background-color: var(--text-primary); color: var(--white); border: none; padding: 14px 40px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .save-btn:hover { background-color: var(--text-secondary); }
+        .save-message { margin-top: 16px; padding: 14px; border-radius: 8px; display: none; background-color: var(--green); color: var(--text-primary); font-size: 0.9rem; }
+        .save-message.show { display: block; }
+        .note-box { background-color: var(--white); border-left: 3px solid var(--purple-dark); padding: 16px 20px; border-radius: 0 8px 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .note-box p { font-size: 0.85rem; color: var(--text-secondary); }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header { padding: 24px 20px; } .header h1 { font-size: 1.5rem; } .question-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 1.4</div>
+            <h1>Reflection: Apply to Your Industry</h1>
+            <p>Connect the concepts to your professional experience</p>
+        </div>
+        <div class="intro-box">
+            <h3>Why This Matters</h3>
+            <p>The frameworks you've learned — business cycles, industry life cycles, and Porter's Five Forces — aren't just academic concepts. They're tools that financial managers use every day to understand their environment and make better decisions. Take a few minutes to apply these ideas to an industry you know well.</p>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">1</div>
+                <div class="question-content">
+                    <h3>What stage of the industry life cycle is your industry in?</h3>
+                    <p>Think about: Is it introducing new products? Growing rapidly? Mature and stable? Or in decline?</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q1" placeholder="Describe the stage and what evidence supports your assessment..."></textarea>
+            <div class="char-count"><span id="count1">0</span> characters</div>
+            <div class="helper-box">
+                <h4>Consider these indicators:</h4>
+                <ul>
+                    <li><strong>Introduction:</strong> High uncertainty, few competitors, negative cash flows</li>
+                    <li><strong>Growth:</strong> Rapid sales growth, new entrants, improving margins</li>
+                    <li><strong>Maturity:</strong> Stable growth, intense competition, focus on efficiency</li>
+                    <li><strong>Decline:</strong> Shrinking demand, consolidation, cost-cutting</li>
+                </ul>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">2</div>
+                <div class="question-content">
+                    <h3>Which of the Five Forces is strongest in your industry?</h3>
+                    <p>Which competitive force has the biggest impact on profitability?</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q2" placeholder="Identify the strongest force and explain why it shapes industry profitability..."></textarea>
+            <div class="char-count"><span id="count2">0</span> characters</div>
+            <div class="helper-box">
+                <h4>The Five Forces:</h4>
+                <ul>
+                    <li><strong>Threat of New Entrants:</strong> How easy is it to start competing?</li>
+                    <li><strong>Supplier Power:</strong> Can suppliers dictate terms?</li>
+                    <li><strong>Buyer Power:</strong> Can customers negotiate hard?</li>
+                    <li><strong>Threat of Substitutes:</strong> Are there alternative products?</li>
+                    <li><strong>Competitive Rivalry:</strong> How intense is competition?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">3</div>
+                <div class="question-content">
+                    <h3>How might these factors affect financial decisions in your organization?</h3>
+                    <p>Connect the industry analysis to investment, financing, or operating decisions.</p>
+                </div>
+            </div>
+            <textarea class="text-area" id="q3" placeholder="Describe how understanding your industry's dynamics could inform specific financial decisions..."></textarea>
+            <div class="char-count"><span id="count3">0</span> characters</div>
+            <div class="helper-box">
+                <h4>Example connections:</h4>
+                <ul>
+                    <li><strong>Investment:</strong> Should we expand capacity given industry trends?</li>
+                    <li><strong>Financing:</strong> How does competitive intensity affect our risk and capital structure?</li>
+                    <li><strong>Operating:</strong> How should working capital policies adapt to buyer/supplier power?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="save-section">
+            <button class="save-btn" onclick="saveReflection()">Save My Reflection</button>
+            <div class="save-message" id="save-message">Your reflection has been saved. You can return to review your thoughts later.</div>
+        </div>
+        <div class="note-box">
+            <p><strong>Note:</strong> This is a personal reflection activity — there are no right or wrong answers. The goal is to connect these frameworks to your own experience and deepen your understanding.</p>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.text-area').forEach((textarea, index) => {
+            textarea.addEventListener('input', () => {
+                document.getElementById(`count${index + 1}`).textContent = textarea.value.length;
+            });
+        });
+        function saveReflection() {
+            const reflection = { q1: document.getElementById('q1').value, q2: document.getElementById('q2').value, q3: document.getElementById('q3').value, timestamp: new Date().toISOString() };
+            localStorage.setItem('module1_reflection_industry', JSON.stringify(reflection));
+            document.getElementById('save-message').classList.add('show');
+        }
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('module1_reflection_industry');
+            if (saved) {
+                const reflection = JSON.parse(saved);
+                document.getElementById('q1').value = reflection.q1 || '';
+                document.getElementById('q2').value = reflection.q2 || '';
+                document.getElementById('q3').value = reflection.q3 || '';
+                document.querySelectorAll('.text-area').forEach((textarea, index) => {
+                    document.getElementById(`count${index + 1}`).textContent = textarea.value.length;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

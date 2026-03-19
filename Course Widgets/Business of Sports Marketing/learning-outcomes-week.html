@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 5 Learning Outcomes</title>
+    <title>Week 1 Learning Outcomes</title>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -69,8 +69,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <span class="week-badge">WEEK 5</span>
-            <h2>Legacy, Culture & Future</h2>
+            <span class="week-badge">WEEK 1</span>
+            <h2>The Business of Sport: Where the Money Flows</h2>
         </div>
 
         <div class="outcomes-section">
@@ -90,13 +90,13 @@
 
     <script>
         const weekData = {
-            week: 5,
-            focus: "Legacy, Culture & Future",
+            week: 1,
+            focus: "Revenue Streams",
             outcomes: [
-                { code: 'WLO 5.1', text: 'Evaluate heritage properties as revenue assets', clos: ['CLO 5'] },
-                { code: 'WLO 5.2', text: 'Design strategies balancing tradition preservation with innovation', clos: ['CLO 5'] },
-                { code: 'WLO 5.3', text: 'Assess future trends in sports business (AI, VR/AR, new demographics)', clos: ['CLO 5'] },
-                { code: 'WLO 5.4', text: 'Create 5-year strategic vision integrating Week 1-5 frameworks', clos: ['CLO 1', 'CLO 2', 'CLO 3', 'CLO 4', 'CLO 5'] }
+                { code: 'WLO 1.1', text: 'Map the major revenue streams in professional sport', clos: ['CLO 1'] },
+                { code: 'WLO 1.2', text: "Explain sport's unique business model characteristics", clos: ['CLO 1'] },
+                { code: 'WLO 1.3', text: 'Evaluate the vulnerabilities and growth potential of each revenue stream', clos: ['CLO 1'] },
+                { code: 'WLO 1.4', text: 'Analyze different revenue sharing models across leagues', clos: ['CLO 1'] }
             ]
         };
 
@@ -111,6 +111,7 @@
         const mloList = document.getElementById('mlo-list');
         const cloList = document.getElementById('clo-list');
 
+        // Render WLOs
         weekData.outcomes.forEach(mlo => {
             const div = document.createElement('div');
             div.className = 'outcome-card';
@@ -129,6 +130,7 @@
             mloList.appendChild(div);
         });
 
+        // Render CLOs
         courseOutcomes.forEach(clo => {
             const div = document.createElement('div');
             div.className = 'clo-item';

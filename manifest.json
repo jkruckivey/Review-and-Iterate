@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-19T17:02:40.124513+00:00",
-  "totalCount": 99,
+  "generated": "2026-03-19T17:56:23.484819+00:00",
+  "totalCount": 122,
   "courses": {
     "Acounting": [
       {
@@ -175,8 +175,177 @@
     ],
     "Business of Sports Marketing": [
       {
+        "path": "Course Widgets/Business of Sports Marketing/activation-budget-builder.html",
+        "filename": "activation-budget-builder.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/athlete-brand-calculator.html",
+        "filename": "athlete-brand-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/athlete-decision-tree.html",
+        "filename": "athlete-decision-tree.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/audience-size-calculator.html",
+        "filename": "audience-size-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/betting-market-simulator.html",
+        "filename": "betting-market-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/brand-package-creator.html",
+        "filename": "brand-package-creator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/cfl-city-selector.html",
+        "filename": "cfl-city-selector.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
         "path": "Course Widgets/Business of Sports Marketing/cfl-project-tie-in.html",
         "filename": "cfl-project-tie-in.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/dynamic-pricing-simulator.html",
+        "filename": "dynamic-pricing-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/ecosystem-cascade-simulator.html",
+        "filename": "ecosystem-cascade-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/emerging-sports-investment-tool.html",
+        "filename": "emerging-sports-investment-tool.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/engagement-multiplier-calculator.html",
+        "filename": "engagement-multiplier-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/ethical-sponsorship-decision-tool.html",
+        "filename": "ethical-sponsorship-decision-tool.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/exclusivity-bidding-simulator.html",
+        "filename": "exclusivity-bidding-simulator.html",
         "traits": {
           "font": "Geist",
           "color": "Pastel Tints",
@@ -196,19 +365,6 @@
           "depth": "Flat (No shadows)",
           "mobile": "Mobile Ready (@media)",
           "a11y": "A11y Partial (Keyboard only)",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Business of Sports Marketing"
-      },
-      {
-        "path": "Course Widgets/Business of Sports Marketing/heritage-strategy-pre-assessment.html",
-        "filename": "heritage-strategy-pre-assessment.html",
-        "traits": {
-          "font": "Geist",
-          "color": "Pastel Tints",
-          "depth": "Flat (No shadows)",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
           "tech": "Vanilla HTML/JS"
         },
         "course": "Business of Sports Marketing"
@@ -253,23 +409,140 @@
         "course": "Business of Sports Marketing"
       },
       {
-        "path": "Course Widgets/Business of Sports Marketing/week5-concept-map.html",
-        "filename": "week5-concept-map.html",
+        "path": "Course Widgets/Business of Sports Marketing/media-rights-explorer.html",
+        "filename": "media-rights-explorer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/partnership-valuation-tool.html",
+        "filename": "partnership-valuation-tool.html",
         "traits": {
           "font": "Geist",
           "color": "Pastel Tints",
           "depth": "Flat (No shadows)",
           "mobile": "Mobile Ready (@media)",
           "a11y": "A11y Partial (Keyboard only)",
-          "tech": "D3.js Visualization"
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/platform-economics-visualizer.html",
+        "filename": "platform-economics-visualizer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/post-career-wealth-simulator.html",
+        "filename": "post-career-wealth-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/revenue-streams-explorer.html",
+        "filename": "revenue-streams-explorer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/serena-brand-portfolio-analyzer.html",
+        "filename": "serena-brand-portfolio-analyzer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/sponsorship-valuation-calculator.html",
+        "filename": "sponsorship-valuation-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/stadium-revenue-optimizer.html",
+        "filename": "stadium-revenue-optimizer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/streaming-wars-game.html",
+        "filename": "streaming-wars-game.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/streaming-wars-strategy.html",
+        "filename": "streaming-wars-strategy.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
         },
         "course": "Business of Sports Marketing"
       }
     ],
     "Finance": [
       {
-        "path": "Course Widgets/Finance/11_quiz_financial_statements.html",
-        "filename": "11_quiz_financial_statements.html",
+        "path": "Course Widgets/Finance/05_quiz_finance_in_context.html",
+        "filename": "05_quiz_finance_in_context.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -281,8 +554,8 @@
         "course": "Finance"
       },
       {
-        "path": "Course Widgets/Finance/12_quiz_financial_ratios.html",
-        "filename": "12_quiz_financial_ratios.html",
+        "path": "Course Widgets/Finance/08updated_reflection_industry_analysis.html",
+        "filename": "08updated_reflection_industry_analysis.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -294,8 +567,8 @@
         "course": "Finance"
       },
       {
-        "path": "Course Widgets/Finance/13_quiz_roe_decomposition.html",
-        "filename": "13_quiz_roe_decomposition.html",
+        "path": "Course Widgets/Finance/09_reflection_connect_to_role.html",
+        "filename": "09_reflection_connect_to_role.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -307,8 +580,21 @@
         "course": "Finance"
       },
       {
-        "path": "Course Widgets/Finance/14_quiz_working_capital.html",
-        "filename": "14_quiz_working_capital.html",
+        "path": "Course Widgets/Finance/10_diagram_flow_of_funds.html",
+        "filename": "10_diagram_flow_of_funds.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/25_reflection_module3.html",
+        "filename": "25_reflection_module3.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -320,73 +606,8 @@
         "course": "Finance"
       },
       {
-        "path": "Course Widgets/Finance/20_quiz_tvm_basics.html",
-        "filename": "20_quiz_tvm_basics.html",
-        "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
-          "depth": "Light Drop Shadows",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Finance"
-      },
-      {
-        "path": "Course Widgets/Finance/21_quiz_capital_budgeting.html",
-        "filename": "21_quiz_capital_budgeting.html",
-        "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
-          "depth": "Light Drop Shadows",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Finance"
-      },
-      {
-        "path": "Course Widgets/Finance/22_quiz_profitability_index.html",
-        "filename": "22_quiz_profitability_index.html",
-        "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
-          "depth": "Light Drop Shadows",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Finance"
-      },
-      {
-        "path": "Course Widgets/Finance/23_quiz_valuing_securities.html",
-        "filename": "23_quiz_valuing_securities.html",
-        "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
-          "depth": "Light Drop Shadows",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Finance"
-      },
-      {
-        "path": "Course Widgets/Finance/24_quiz_module4_final.html",
-        "filename": "24_quiz_module4_final.html",
-        "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
-          "depth": "Light Drop Shadows",
-          "mobile": "Mobile Ready (@media)",
-          "a11y": "A11y Warning",
-          "tech": "Vanilla HTML/JS"
-        },
-        "course": "Finance"
-      },
-      {
-        "path": "Course Widgets/Finance/28_quiz_timeline_approach.html",
-        "filename": "28_quiz_timeline_approach.html",
+        "path": "Course Widgets/Finance/27_exercise_sgr_calculation.html",
+        "filename": "27_exercise_sgr_calculation.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -400,6 +621,19 @@
       {
         "path": "Course Widgets/Finance/30_exercise_draw_and_solve.html",
         "filename": "30_exercise_draw_and_solve.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/31update_exercise_evergreen_proforma.html",
+        "filename": "31update_exercise_evergreen_proforma.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",
@@ -426,6 +660,71 @@
       {
         "path": "Course Widgets/Finance/34_reflection_module4.html",
         "filename": "34_reflection_module4.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-1 1.html",
+        "filename": "learning-outcomes-module-1 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-2 1.html",
+        "filename": "learning-outcomes-module-2 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-3 1.html",
+        "filename": "learning-outcomes-module-3 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-4 1.html",
+        "filename": "learning-outcomes-module-4 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/m2_06_reflection_apply_to_role.html",
+        "filename": "m2_06_reflection_apply_to_role.html",
         "traits": {
           "font": "Inter",
           "color": "Neutral / Minimal",

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Wars Decision Game - NHL Rights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+            --color-espn: #cc0000;
+            --color-apple: #555555;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        body { font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: white; color: var(--color-neutral-800); padding: 1.5rem; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .widget-box { background: var(--color-neutral-50); border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.5rem; }
+        .widget-title { font-size: 1.25rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .widget-subtitle { font-size: 0.85rem; color: var(--color-neutral-600); margin-bottom: 1rem; }
+
+        /* Scenario box */
+        .scenario-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .scenario-label { font-size: 0.7rem; font-weight: 600; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .scenario-text { font-size: 0.85rem; color: var(--color-neutral-700); }
+
+        /* Offers grid */
+        .offers-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+        .offer-card { background: white; border: 2px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; cursor: pointer; transition: all 0.2s; position: relative; }
+        .offer-card:hover { border-color: var(--color-neutral-400); }
+        .offer-card.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+        .offer-card.espn { border-top: 3px solid var(--color-espn); }
+        .offer-card.apple { border-top: 3px solid var(--color-apple); }
+        .offer-card.hybrid { border-top: 3px solid var(--color-accent); }
+        .offer-logo { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .offer-card.espn .offer-logo { color: var(--color-espn); }
+        .offer-card.apple .offer-logo { color: var(--color-apple); }
+        .offer-card.hybrid .offer-logo { color: var(--color-accent); }
+        .offer-value { font-size: 1.5rem; font-weight: 700; color: var(--color-neutral-900); margin-bottom: 0.25rem; }
+        .offer-term { font-size: 0.8rem; color: var(--color-neutral-500); margin-bottom: 0.5rem; }
+        .offer-details { font-size: 0.75rem; color: var(--color-neutral-600); }
+        .offer-badge { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--color-neutral-800); color: white; padding: 0.125rem 0.375rem; border-radius: 8px; font-size: 0.6rem; font-weight: 600; text-transform: uppercase; }
+
+        /* Confirm button */
+        .confirm-btn { display: block; width: 100%; background: var(--color-neutral-800); color: white; border: none; padding: 0.75rem; font-size: 0.875rem; font-weight: 600; border-radius: var(--border-radius-sm); cursor: pointer; font-family: inherit; transition: background 0.2s; margin-bottom: 1rem; }
+        .confirm-btn:hover:not(:disabled) { background: var(--color-neutral-700); }
+        .confirm-btn:disabled { background: var(--color-neutral-400); cursor: not-allowed; }
+
+        /* Results section */
+        .results-section { display: none; }
+        .results-section.visible { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Scenario tabs */
+        .scenario-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .scenario-tab { background: white; border: 1px solid var(--color-neutral-300); border-radius: var(--border-radius-sm); padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .scenario-tab:hover { border-color: var(--color-neutral-500); }
+        .scenario-tab.active { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+
+        /* Chart */
+        .chart-container { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 1rem; margin-bottom: 1rem; }
+        .chart-wrapper { height: 200px; }
+
+        /* Metrics row */
+        .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+        .metric-card { background: white; border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius-sm); padding: 0.75rem; text-align: center; }
+        .metric-label { font-size: 0.65rem; font-weight: 600; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+        .metric-value { font-size: 1.1rem; font-weight: 700; color: var(--color-neutral-900); }
+        .metric-value.positive { color: #059669; }
+        .metric-value.negative { color: #dc2626; }
+        .metric-value.neutral { color: var(--color-neutral-600); }
+
+        /* Analysis box */
+        .analysis-box { background: white; border: 1px solid var(--color-neutral-200); border-left: 3px solid var(--color-accent); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1rem; }
+        .analysis-title { font-size: 0.85rem; font-weight: 600; color: var(--color-neutral-800); margin-bottom: 0.5rem; }
+        .analysis-text { font-size: 0.8rem; color: var(--color-neutral-600); line-height: 1.6; }
+        .analysis-text strong { color: var(--color-neutral-800); }
+
+        /* Action row */
+        .action-row { display: flex; justify-content: space-between; gap: 0.5rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: var(--border-radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-secondary { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+        .btn-secondary:hover { background: var(--color-neutral-300); }
+        .btn-primary { background: var(--color-neutral-800); color: white; }
+        .btn-primary:hover { background: var(--color-neutral-700); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1rem; }
+            .offers-grid { grid-template-columns: 1fr; }
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <h1 class="widget-title">NHL Rights Decision Game</h1>
+            <p class="widget-subtitle">Traditional TV vs. Streaming: Which deal shapes your league's future?</p>
+
+            <div class="scenario-box">
+                <div class="scenario-label">Your Role: NHL Commissioner</div>
+                <p class="scenario-text">Your media rights expire in 2025. Two companies have submitted final offers. ESPN offers traditional TV stability. Apple TV+ offers streaming's global reach. Or split the package between both. Your decision shapes the next decade.</p>
+            </div>
+
+            <div id="selection-phase">
+                <div class="offers-grid" role="radiogroup" aria-label="Choose your media rights deal">
+                    <div class="offer-card espn" tabindex="0" role="radio" aria-checked="false" data-offer="espn">
+                        <span class="offer-badge">Guaranteed</span>
+                        <div class="offer-logo">ESPN Traditional</div>
+                        <div class="offer-value">$8B</div>
+                        <div class="offer-term">10 years ($800M/yr)</div>
+                        <div class="offer-details">
+                            Ad-based revenue model<br>
+                            Guaranteed payments<br>
+                            US/Canada only<br>
+                            Declining linear audience
+                        </div>
+                    </div>
+                    <div class="offer-card apple" tabindex="0" role="radio" aria-checked="false" data-offer="apple">
+                        <span class="offer-badge">High Upside</span>
+                        <div class="offer-logo">Apple TV+ Streaming</div>
+                        <div class="offer-value">$10B</div>
+                        <div class="offer-term">10 years ($1B/yr target)</div>
+                        <div class="offer-details">
+                            Subscriber-based model<br>
+                            Performance bonuses<br>
+                            Global 190+ countries<br>
+                            Growth dependent
+                        </div>
+                    </div>
+                    <div class="offer-card hybrid" tabindex="0" role="radio" aria-checked="false" data-offer="hybrid">
+                        <span class="offer-badge">Balanced</span>
+                        <div class="offer-logo">Hybrid Split</div>
+                        <div class="offer-value">$9B</div>
+                        <div class="offer-term">10 years ($900M/yr)</div>
+                        <div class="offer-details">
+                            ESPN: National games<br>
+                            Apple: Streaming rights<br>
+                            Best of both worlds<br>
+                            Industry standard
+                        </div>
+                    </div>
+                </div>
+
+                <button class="confirm-btn" id="confirm-btn" disabled>Select a Deal to See Projections</button>
+            </div>
+
+            <div class="results-section" id="results-section">
+                <div class="scenario-tabs" role="tablist" aria-label="Market scenarios">
+                    <button class="scenario-tab active" role="tab" data-scenario="base">Base Case</button>
+                    <button class="scenario-tab" role="tab" data-scenario="optimistic">Streaming Booms</button>
+                    <button class="scenario-tab" role="tab" data-scenario="pessimistic">Cord-Cutting Accelerates</button>
+                </div>
+
+                <div class="metrics-row" id="metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-label">10-Year Total</div>
+                        <div class="metric-value" id="metric-total">$0B</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Year 5 Revenue</div>
+                        <div class="metric-value" id="metric-y5">$0M</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Risk Level</div>
+                        <div class="metric-value" id="metric-risk">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Global Reach</div>
+                        <div class="metric-value" id="metric-reach">-</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-wrapper">
+                        <canvas id="projection-chart" role="img" aria-label="10-year revenue projection chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-box" id="analysis-box">
+                    <div class="analysis-title">Strategic Analysis</div>
+                    <div class="analysis-text" id="analysis-text"></div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="change-btn">Change Selection</button>
+                    <button class="btn btn-primary" id="export-btn">Export Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const offerCards = document.querySelectorAll('.offer-card');
+        const confirmBtn = document.getElementById('confirm-btn');
+        const selectionPhase = document.getElementById('selection-phase');
+        const resultsSection = document.getElementById('results-section');
+        const scenarioTabs = document.querySelectorAll('.scenario-tab');
+        const changeBtn = document.getElementById('change-btn');
+        const exportBtn = document.getElementById('export-btn');
+
+        let selectedOffer = null;
+        let currentScenario = 'base';
+        let chart = null;
+
+        // Deal configurations
+        const deals = {
+            espn: {
+                name: 'ESPN Traditional',
+                baseAnnual: 800, // millions
+                scenarios: {
+                    base: { growth: -0.02, multiplier: 1.0 },
+                    optimistic: { growth: 0.01, multiplier: 1.0 },
+                    pessimistic: { growth: -0.05, multiplier: 1.0 }
+                },
+                risk: 'Low',
+                reach: 'US/Canada',
+                analysis: {
+                    base: `<strong>ESPN Traditional ($8B/10 years)</strong> delivers predictable revenue with minimal risk. In the base case, you receive $800M/year guaranteed regardless of viewership trends. However, linear TV audiences decline 2-3% annually due to cord-cutting.<br><br><strong>Trade-off:</strong> You're locking in 2025 economics for 10 years. If streaming accelerates faster than expected, you've left significant money on the table. This is the "safe" choice—but safe doesn't always mean optimal.`,
+                    optimistic: `<strong>ESPN Traditional in a streaming boom</strong> still delivers only $800M/year while competitors capture the upside. If streaming takes off, ESPN's traditional package looks increasingly outdated. You're protected from downside but excluded from upside.<br><br><strong>Insight:</strong> Guaranteed deals protect against bad outcomes but sacrifice participation in good outcomes.`,
+                    pessimistic: `<strong>ESPN Traditional shines when cord-cutting accelerates.</strong> Your guaranteed $800M/year looks brilliant as streaming platforms struggle with subscriber churn. ESPN absorbs the audience decline risk—you don't.<br><br><strong>This is why guaranteed deals exist:</strong> Risk transfer has value. ESPN pays a premium for exclusive content; you accept a lower ceiling for a higher floor.`
+                }
+            },
+            apple: {
+                name: 'Apple TV+ Streaming',
+                baseAnnual: 850, // starts lower, grows
+                scenarios: {
+                    base: { growth: 0.08, multiplier: 1.0 },
+                    optimistic: { growth: 0.15, multiplier: 1.2 },
+                    pessimistic: { growth: 0.02, multiplier: 0.8 }
+                },
+                risk: 'High',
+                reach: 'Global (190+)',
+                analysis: {
+                    base: `<strong>Apple TV+ ($10B/10 years target)</strong> offers higher total value but introduces subscriber-dependent uncertainty. Base payments of $850M/year can grow to $1B+ with performance bonuses tied to subscriber growth.<br><br><strong>The global opportunity:</strong> Apple reaches 190+ countries versus ESPN's North America focus. International hockey fans—previously unreachable—become revenue contributors. But this upside requires Apple executing on subscriber acquisition.`,
+                    optimistic: `<strong>Apple TV+ in a streaming boom</strong> delivers massive outperformance. Performance bonuses kick in as subscriber targets are exceeded. Your 10-year total could reach $12B+, far exceeding ESPN's guaranteed $8B.<br><br><strong>Why this scenario favors streaming:</strong> Apple's global infrastructure and deep pockets mean they can invest aggressively in subscriber growth when the market is favorable.`,
+                    pessimistic: `<strong>Apple TV+ struggles when cord-cutting slows.</strong> If streaming growth stalls, subscriber targets aren't met, and performance bonuses don't materialize. Your $1B/year target becomes $700-800M actual.<br><br><strong>The risk you accepted:</strong> Subscriber-dependent revenue is volatile. Apple might still deliver value, but you're sharing their platform risk.`
+                }
+            },
+            hybrid: {
+                name: 'Hybrid Split',
+                baseAnnual: 900, // combined
+                scenarios: {
+                    base: { growth: 0.03, multiplier: 1.0 },
+                    optimistic: { growth: 0.08, multiplier: 1.1 },
+                    pessimistic: { growth: -0.01, multiplier: 0.95 }
+                },
+                risk: 'Medium',
+                reach: 'Global + US/Canada',
+                analysis: {
+                    base: `<strong>Hybrid Split ($9B/10 years)</strong> captures value from both worlds. ESPN pays $500M/year guaranteed for national TV games. Apple pays $400M/year base + bonuses for streaming rights. Total floor: $9B. Potential ceiling: $10B+.<br><br><strong>This is the NFL model:</strong> Split packages (CBS, FOX, NBC, ESPN, Amazon) create competition that maximizes total value. You're not betting on one platform's success—you're diversifying.`,
+                    optimistic: `<strong>Hybrid excels when streaming booms</strong> because you participate in Apple's upside while ESPN's guarantee protects your floor. Best-case: Apple bonuses add $100M+/year while ESPN delivers stable base revenue.<br><br><strong>Why leagues choose this:</strong> You capture streaming growth without abandoning traditional revenue. It's not the highest ceiling, but it's the most robust strategy.`,
+                    pessimistic: `<strong>Hybrid provides resilience when markets decline.</strong> ESPN's guaranteed portion ($500M/year) is locked in regardless of cord-cutting. Apple's streaming portion may underperform, but your total ($8-8.5B) still exceeds a pessimistic ESPN-only deal.<br><br><strong>The power of diversification:</strong> No single platform failure devastates your economics. This is why hybrid deals became the industry standard.`
+                }
+            }
+        };
+
+        // Calculate 10-year projection
+        function calculateProjection(dealKey, scenarioKey) {
+            const deal = deals[dealKey];
+            const scenario = deal.scenarios[scenarioKey];
+            const years = [];
+            let annual = deal.baseAnnual * scenario.multiplier;
+            let total = 0;
+
+            for (let y = 1; y <= 10; y++) {
+                years.push(Math.round(annual));
+                total += annual;
+                annual *= (1 + scenario.growth);
+            }
+
+            return { years, total: Math.round(total), y5: years[4] };
+        }
+
+        // Select offer
+        offerCards.forEach(card => {
+            const handler = () => {
+                offerCards.forEach(c => {
+                    c.classList.remove('selected');
+                    c.setAttribute('aria-checked', 'false');
+                });
+                card.classList.add('selected');
+                card.setAttribute('aria-checked', 'true');
+                selectedOffer = card.dataset.offer;
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = `Confirm ${deals[selectedOffer].name}`;
+            };
+            card.addEventListener('click', handler);
+            card.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handler();
+                }
+            });
+        });
+
+        // Confirm selection
+        confirmBtn.addEventListener('click', () => {
+            if (!selectedOffer) return;
+            selectionPhase.style.display = 'none';
+            resultsSection.classList.add('visible');
+            updateResults();
+        });
+
+        // Scenario tabs
+        scenarioTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                scenarioTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentScenario = tab.dataset.scenario;
+                updateResults();
+            });
+        });
+
+        // Change selection
+        changeBtn.addEventListener('click', () => {
+            resultsSection.classList.remove('visible');
+            selectionPhase.style.display = 'block';
+        });
+
+        // Update results
+        function updateResults() {
+            const deal = deals[selectedOffer];
+            const projection = calculateProjection(selectedOffer, currentScenario);
+
+            // Update metrics
+            document.getElementById('metric-total').textContent = `$${(projection.total / 1000).toFixed(1)}B`;
+            document.getElementById('metric-y5').textContent = `$${projection.y5}M`;
+
+            const riskEl = document.getElementById('metric-risk');
+            riskEl.textContent = deal.risk;
+            riskEl.className = 'metric-value ' + (deal.risk === 'Low' ? 'positive' : deal.risk === 'High' ? 'negative' : 'neutral');
+
+            document.getElementById('metric-reach').textContent = deal.reach;
+            document.getElementById('analysis-text').innerHTML = deal.analysis[currentScenario];
+
+            // Update chart
+            updateChart(projection.years);
+        }
+
+        // Chart
+        function updateChart(data) {
+            const ctx = document.getElementById('projection-chart').getContext('2d');
+            if (chart) chart.destroy();
+
+            const colors = {
+                espn: { bg: 'rgba(204, 0, 0, 0.2)', border: '#cc0000' },
+                apple: { bg: 'rgba(85, 85, 85, 0.2)', border: '#555555' },
+                hybrid: { bg: 'rgba(107, 144, 133, 0.2)', border: '#6b9085' }
+            };
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Y1', 'Y2', 'Y3', 'Y4', 'Y5', 'Y6', 'Y7', 'Y8', 'Y9', 'Y10'],
+                    datasets: [{
+                        label: 'Annual Revenue ($M)',
+                        data: data,
+                        backgroundColor: colors[selectedOffer].bg,
+                        borderColor: colors[selectedOffer].border,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 500,
+                            max: 1500,
+                            ticks: {
+                                callback: v => '$' + v + 'M'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export
+        exportBtn.addEventListener('click', () => {
+            const deal = deals[selectedOffer];
+            const projection = calculateProjection(selectedOffer, currentScenario);
+
+            let content = `NHL RIGHTS DECISION GAME - RESULTS
+${'='.repeat(40)}
+
+SELECTED DEAL: ${deal.name}
+SCENARIO: ${currentScenario.charAt(0).toUpperCase() + currentScenario.slice(1)} Case
+
+10-YEAR PROJECTION
+${'─'.repeat(20)}
+Total Value: $${(projection.total / 1000).toFixed(1)}B
+Year 5 Revenue: $${projection.y5}M
+Risk Level: ${deal.risk}
+Geographic Reach: ${deal.reach}
+
+YEAR-BY-YEAR REVENUE
+${'─'.repeat(20)}
+`;
+            projection.years.forEach((val, i) => {
+                content += `Year ${i + 1}: $${val}M\n`;
+            });
+
+            content += `
+STRATEGIC ANALYSIS
+${'─'.repeat(20)}
+${deal.analysis[currentScenario].replace(/<br><br>/g, '\n\n').replace(/<\/?strong>/g, '')}
+
+Generated: ${new Date().toLocaleString()}
+Business of Sports Marketing - Week 1
+`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'nhl-rights-decision.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+    </script>
+</body>
+</html>

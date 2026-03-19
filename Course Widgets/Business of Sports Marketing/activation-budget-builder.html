@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation Budget Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-sand);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 3000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .config-section {
+            margin-bottom: 0;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.625rem;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-neutral-900);
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+        }
+
+        select:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+            border-color: var(--color-neutral-400);
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="range"]:focus::-webkit-slider-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="range"]:focus::-moz-range-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .value-display {
+            min-width: 80px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: right;
+        }
+
+        .budget-display {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .budget-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .budget-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .sliders-section {
+            margin: 0;
+        }
+
+        .allocation-slider {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+        }
+
+        .slider-amounts {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--color-neutral-600);
+        }
+
+        .total-display {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .total-valid {
+            color: var(--color-neutral-700);
+        }
+
+        .total-invalid {
+            color: var(--color-neutral-900);
+            border-color: var(--color-neutral-600);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 0;
+        }
+
+        .chart-container {
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .spend-table {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .spend-table h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-neutral-300);
+        }
+
+        td {
+            padding: 0.75rem 0;
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 2rem 0;
+        }
+
+        .insight-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-800);
+            margin-top: 0.5rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Activation Budget Builder</h1>
+        <p class="subtitle">Design activation mix across channels within your total budget constraint. Remember: activation costs typically run 2-3x rights fees.</p>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('configuration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('configuration');}" tabindex="0" role="button" aria-expanded="true" aria-controls="configuration-content">
+                <h2>Configuration</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="configuration-content">
+                <div class="section-inner config-section">
+            <div class="config-grid">
+                <div class="input-group">
+                    <label for="rightsFee">Rights Fee</label>
+                    <select id="rightsFee" onchange="updateBudget()">
+                        <option value="1">$1M</option>
+                        <option value="5" selected>$5M</option>
+                        <option value="10">$10M</option>
+                        <option value="25">$25M</option>
+                        <option value="50">$50M</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="activationMultiplier">Activation Multiplier</label>
+                    <div class="input-with-value">
+                        <input type="range" id="activationMultiplier" min="2.0" max="3.5" value="2.5" step="0.1"
+                               oninput="updateBudget()" aria-describedby="multiplierValue">
+                        <span class="value-display" id="multiplierValue" aria-live="polite">2.5x</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="categoryFocus">Category Focus</label>
+                    <select id="categoryFocus" onchange="updateInsights()">
+                        <option value="mass">Mass Market</option>
+                        <option value="premium">Premium</option>
+                        <option value="digital">Digital-First</option>
+                    </select>
+                </div>
+
+                <div class="budget-display">
+                    <div class="budget-label">Total Activation Budget</div>
+                    <div class="budget-value" id="totalBudget" aria-live="polite">$12.5M</div>
+                </div>
+            </div>
+
+            <div class="presets" role="group" aria-label="Category presets">
+                <button class="preset-btn" onclick="loadPreset('cocacola')">Coca-Cola World Cup (Mass Market)</button>
+                <button class="preset-btn" onclick="loadPreset('amex')">American Express PGA (Premium)</button>
+                <button class="preset-btn" onclick="loadPreset('redbull')">Red Bull F1 (Digital-First)</button>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('allocation')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('allocation');}" tabindex="0" role="button" aria-expanded="true" aria-controls="allocation-content">
+                <h2>Channel Allocation</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="allocation-content">
+                <div class="section-inner sliders-section">
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Advertising</span>
+                    <div class="slider-amounts">
+                        <span id="advertisingPercent">30%</span>
+                        <span id="advertisingAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="advertising" min="0" max="100" value="30" step="1"
+                       oninput="updateAllocation('advertising')" aria-label="Advertising allocation percentage">
+            </div>
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Hospitality</span>
+                    <div class="slider-amounts">
+                        <span id="hospitalityPercent">15%</span>
+                        <span id="hospitalityAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="hospitality" min="0" max="100" value="15" step="1"
+                       oninput="updateAllocation('hospitality')" aria-label="Hospitality allocation percentage">
+            </div>
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Retail</span>
+                    <div class="slider-amounts">
+                        <span id="retailPercent">20%</span>
+                        <span id="retailAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="retail" min="0" max="100" value="20" step="1"
+                       oninput="updateAllocation('retail')" aria-label="Retail allocation percentage">
+            </div>
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Digital/Social</span>
+                    <div class="slider-amounts">
+                        <span id="digitalPercent">20%</span>
+                        <span id="digitalAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="digital" min="0" max="100" value="20" step="1"
+                       oninput="updateAllocation('digital')" aria-label="Digital allocation percentage">
+            </div>
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Events</span>
+                    <div class="slider-amounts">
+                        <span id="eventsPercent">10%</span>
+                        <span id="eventsAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="events" min="0" max="100" value="10" step="1"
+                       oninput="updateAllocation('events')" aria-label="Events allocation percentage">
+            </div>
+
+            <div class="allocation-slider">
+                <div class="slider-header">
+                    <span class="slider-label">Measurement</span>
+                    <div class="slider-amounts">
+                        <span id="measurementPercent">5%</span>
+                        <span id="measurementAmount">$0.00M</span>
+                    </div>
+                </div>
+                <input type="range" id="measurement" min="0" max="100" value="5" step="1"
+                       oninput="updateAllocation('measurement')" aria-label="Measurement allocation percentage">
+            </div>
+
+            <div class="total-display total-valid" id="allocationTotal" aria-live="assertive">
+                Total Allocation: 100%
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('breakdown')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('breakdown');}" tabindex="0" role="button" aria-expanded="true" aria-controls="breakdown-content">
+                <h2>Budget Breakdown</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="breakdown-content">
+                <div class="section-inner">
+                    <div class="results-grid">
+            <div class="chart-container">
+                <h3>Budget Allocation</h3>
+                <canvas id="allocationChart" role="img" aria-label="Budget allocation pie chart"></canvas>
+            </div>
+
+            <div class="spend-table">
+                <h3>Channel Spending</h3>
+                <table role="table">
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Allocation</th>
+                            <th>Spend</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spendTableBody">
+                    </tbody>
+                </table>
+            </div>
+                    </div>
+
+                    <div class="insight-box" role="complementary" aria-label="Strategic insights">
+                        <h3>Strategic Fit Analysis</h3>
+                        <p id="insightText"></p>
+                        <span class="score-badge" id="fitScore">Strategic Fit: 85/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportData()">Export Budget Plan</button>
+            <button class="btn btn-secondary" onclick="resetBuilder()">Reset Builder</button>
+        </div>
+    </div>
+
+    <script>
+        let allocationChart = null;
+        const channels = ['advertising', 'hospitality', 'retail', 'digital', 'events', 'measurement'];
+
+        const presets = {
+            cocacola: {
+                advertising: 40,
+                hospitality: 5,
+                retail: 30,
+                digital: 10,
+                events: 12,
+                measurement: 3
+            },
+            amex: {
+                advertising: 25,
+                hospitality: 50,
+                retail: 5,
+                digital: 12,
+                events: 5,
+                measurement: 3
+            },
+            redbull: {
+                advertising: 15,
+                hospitality: 8,
+                retail: 10,
+                digital: 35,
+                events: 28,
+                measurement: 4
+            }
+        };
+
+        const benchmarks = {
+            mass: { advertising: 40, hospitality: 10, retail: 25, digital: 15, events: 7, measurement: 3 },
+            premium: { advertising: 25, hospitality: 45, retail: 8, digital: 12, events: 7, measurement: 3 },
+            digital: { advertising: 18, hospitality: 10, retail: 10, digital: 30, events: 28, measurement: 4 }
+        };
+
+        function loadPreset(type) {
+            const preset = presets[type];
+            channels.forEach(channel => {
+                document.getElementById(channel).value = preset[channel];
+            });
+
+            if (type === 'cocacola') {
+                document.getElementById('categoryFocus').value = 'mass';
+            } else if (type === 'amex') {
+                document.getElementById('categoryFocus').value = 'premium';
+            } else if (type === 'redbull') {
+                document.getElementById('categoryFocus').value = 'digital';
+            }
+
+            updateBudget();
+        }
+
+        function updateBudget() {
+            const rightsFee = parseFloat(document.getElementById('rightsFee').value);
+            const multiplier = parseFloat(document.getElementById('activationMultiplier').value);
+            const totalBudget = rightsFee * multiplier;
+
+            document.getElementById('multiplierValue').textContent = `${multiplier.toFixed(1)}x`;
+            document.getElementById('totalBudget').textContent = `$${totalBudget.toFixed(1)}M`;
+
+            updateAllocation(null);
+        }
+
+        function updateAllocation(changedChannel) {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+
+            // Get current values
+            const values = {};
+            let total = 0;
+            channels.forEach(channel => {
+                values[channel] = parseInt(document.getElementById(channel).value);
+                total += values[channel];
+            });
+
+            // Update displays
+            channels.forEach(channel => {
+                const percent = values[channel];
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                document.getElementById(`${channel}Percent`).textContent = `${percent}%`;
+                document.getElementById(`${channel}Amount`).textContent = `$${amount}M`;
+            });
+
+            // Update total display
+            const totalDisplay = document.getElementById('allocationTotal');
+            totalDisplay.textContent = `Total Allocation: ${total}%`;
+            totalDisplay.className = total === 100 ? 'total-display total-valid' : 'total-display total-invalid';
+
+            // Update visualizations
+            updateChart();
+            updateTable();
+            updateInsights();
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+
+            const data = channels.map(channel => parseInt(document.getElementById(channel).value));
+
+            if (allocationChart) {
+                allocationChart.destroy();
+            }
+
+            allocationChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-300') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-200') + 'cc',
+                            getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-100') + 'cc'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-600'),
+                                padding: 12,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    return `${label}: ${value}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTable() {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+            const tbody = document.getElementById('spendTableBody');
+            const channelNames = ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'];
+
+            tbody.innerHTML = '';
+            channels.forEach((channel, index) => {
+                const percent = parseInt(document.getElementById(channel).value);
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${channelNames[index]}</td>
+                    <td>${percent}%</td>
+                    <td>$${amount}M</td>
+                `;
+            });
+        }
+
+        function updateInsights() {
+            const category = document.getElementById('categoryFocus').value;
+            const benchmark = benchmarks[category];
+            const categoryName = category === 'mass' ? 'Mass Market' : category === 'premium' ? 'Premium' : 'Digital-First';
+
+            let totalDiff = 0;
+            let insights = [];
+
+            channels.forEach(channel => {
+                const current = parseInt(document.getElementById(channel).value);
+                const expected = benchmark[channel];
+                const diff = Math.abs(current - expected);
+                totalDiff += diff;
+
+                if (diff > 10) {
+                    const direction = current < expected ? 'increase' : 'decrease';
+                    const channelName = channel.charAt(0).toUpperCase() + channel.slice(1);
+                    insights.push(`${channelName}: ${direction} by ${diff}% to match ${categoryName} benchmarks`);
+                }
+            });
+
+            const fitScore = Math.max(0, 100 - totalDiff);
+            document.getElementById('fitScore').textContent = `Strategic Fit: ${fitScore}/100`;
+
+            let insightText = `Your allocation `;
+            if (fitScore >= 85) {
+                insightText += `aligns well with ${categoryName} best practices. `;
+            } else if (fitScore >= 70) {
+                insightText += `is reasonably aligned with ${categoryName} standards, but could be optimized. `;
+            } else {
+                insightText += `differs significantly from ${categoryName} industry benchmarks. `;
+            }
+
+            if (insights.length > 0) {
+                insightText += `Consider: ${insights.slice(0, 2).join('; ')}.`;
+            } else {
+                insightText += `Your mix matches industry leaders in this category.`;
+            }
+
+            document.getElementById('insightText').textContent = insightText;
+        }
+
+        function exportData() {
+            const totalBudget = parseFloat(document.getElementById('totalBudget').textContent.replace(/[$M]/g, ''));
+            const channelNames = ['Advertising', 'Hospitality', 'Retail', 'Digital/Social', 'Events', 'Measurement'];
+
+            const data = {
+                configuration: {
+                    rightsFee: document.getElementById('rightsFee').value + 'M',
+                    activationMultiplier: document.getElementById('multiplierValue').textContent,
+                    totalBudget: document.getElementById('totalBudget').textContent,
+                    categoryFocus: document.getElementById('categoryFocus').selectedOptions[0].text
+                },
+                allocation: {},
+                strategicFit: document.getElementById('fitScore').textContent,
+                insights: document.getElementById('insightText').textContent,
+                timestamp: new Date().toISOString()
+            };
+
+            channels.forEach((channel, index) => {
+                const percent = parseInt(document.getElementById(channel).value);
+                const amount = (totalBudget * percent / 100).toFixed(2);
+                data.allocation[channelNames[index]] = {
+                    percentage: `${percent}%`,
+                    amount: `$${amount}M`
+                };
+            });
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'activation-budget-plan.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetBuilder() {
+            document.getElementById('rightsFee').value = 5;
+            document.getElementById('activationMultiplier').value = 2.5;
+            document.getElementById('categoryFocus').value = 'mass';
+
+            document.getElementById('advertising').value = 30;
+            document.getElementById('hospitality').value = 15;
+            document.getElementById('retail').value = 20;
+            document.getElementById('digital').value = 20;
+            document.getElementById('events').value = 10;
+            document.getElementById('measurement').value = 5;
+
+            updateBudget();
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateBudget();
+        });
+    </script>
+</body>
+</html>

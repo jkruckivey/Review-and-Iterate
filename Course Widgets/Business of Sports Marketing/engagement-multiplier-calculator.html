@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engagement Multiplier Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Neutral Palette */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Accent Colors */
+            --color-accent: #6b9085;
+            --color-accent-light: #c0d1cd;
+
+            /* Course Color Palette */
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-turquoise: #bfe5e7;
+            --color-green: #c0d1cd;
+
+            /* Layout */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-purple);
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            background: var(--color-sand);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .input-section {
+            margin-bottom: 0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-with-value {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        input[type="range"]:focus::-webkit-slider-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        input[type="range"]:focus::-moz-range-thumb {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.625rem;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.875rem;
+            color: var(--color-neutral-900);
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+        }
+
+        select:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+            border-color: var(--color-neutral-400);
+        }
+
+        .value-display {
+            min-width: 100px;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            text-align: right;
+        }
+
+        .results {
+            margin: 0;
+        }
+
+        .chart-container {
+            background: var(--color-turquoise);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .comparison-subtext {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-box p {
+            font-size: 0.875rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .presets {
+                flex-direction: column;
+            }
+
+            .preset-btn {
+                width: 100%;
+            }
+
+            .input-with-value {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .value-display {
+                text-align: center;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Engagement Multiplier Calculator</h1>
+        <p class="subtitle">Compare bettor vs. non-bettor behavior to quantify betting's engagement impact on viewership and revenue.</p>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('inputs')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('inputs');}" tabindex="0" role="button" aria-expanded="true" aria-controls="inputs-content">
+                <h2>Inputs</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="inputs-content">
+                <div class="section-inner input-section">
+                    <div class="presets" role="group" aria-label="League engagement presets">
+                        <button class="preset-btn" onclick="loadPreset('nfl')">NFL (15% bettors, 40% multiplier)</button>
+                        <button class="preset-btn" onclick="loadPreset('nba')">NBA (12% bettors, 50% multiplier)</button>
+                        <button class="preset-btn" onclick="loadPreset('nhl')">NHL (10% bettors, 35% multiplier)</button>
+                    </div>
+            <div class="input-group">
+                <label for="avgViewers">Average Viewers Per Game</label>
+                <div class="input-with-value">
+                    <input type="range" id="avgViewers" min="1" max="20" value="10" step="0.5"
+                           oninput="updateCalculations()" aria-describedby="viewersValue">
+                    <span class="value-display" id="viewersValue" aria-live="polite">10.0M</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="percentBettors">Percentage Who Bet</label>
+                <div class="input-with-value">
+                    <input type="range" id="percentBettors" min="5" max="25" value="12" step="1"
+                           oninput="updateCalculations()" aria-describedby="bettorsValue">
+                    <span class="value-display" id="bettorsValue" aria-live="polite">12%</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="gamesPerSeason">Games Per Season</label>
+                <select id="gamesPerSeason" onchange="updateCalculations()">
+                    <option value="16">16 (NFL)</option>
+                    <option value="82" selected>82 (NBA/NHL)</option>
+                    <option value="162">162 (MLB)</option>
+                    <option value="272">272 (NFL Total)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="engagementMultiplier">Engagement Multiplier (% More Games Watched)</label>
+                <div class="input-with-value">
+                    <input type="range" id="engagementMultiplier" min="20" max="60" value="40" step="5"
+                           oninput="updateCalculations()" aria-describedby="multiplierValue">
+                    <span class="value-display" id="multiplierValue" aria-live="polite">40%</span>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('viewership')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('viewership');}" tabindex="0" role="button" aria-expanded="true" aria-controls="viewership-content">
+                <h2>Viewership Analysis</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="viewership-content">
+                <div class="section-inner results" role="region" aria-label="Engagement analysis results">
+
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <div class="comparison-label">Non-Bettors</div>
+                    <div class="comparison-value" id="nonBettorGames" aria-live="polite">82 games</div>
+                    <div class="comparison-subtext">Average games watched</div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-label">Bettors</div>
+                    <div class="comparison-value" id="bettorGames" aria-live="polite">115 games</div>
+                    <div class="comparison-subtext">Average games watched</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="viewershipChart" role="img" aria-label="Viewership contribution comparison"></canvas>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric">
+                    <div class="metric-label">Non-Bettor Views</div>
+                    <div class="metric-value" id="nonBettorViews" aria-live="polite">0M</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Bettor Views</div>
+                    <div class="metric-value" id="bettorViews" aria-live="polite">0M</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Bettor Contribution</div>
+                    <div class="metric-value" id="bettorContribution" aria-live="polite">0%</div>
+                </div>
+            </div>
+
+            <div class="insight-box" role="complementary" aria-label="Revenue implications">
+                <h3>Revenue Implications</h3>
+                <p id="revenueInsight"></p>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="exportData()">Export Analysis</button>
+            <button class="btn btn-secondary" onclick="resetCalculator()">Reset Calculator</button>
+        </div>
+    </div>
+
+    <script>
+        let viewershipChart = null;
+
+        const presets = {
+            nfl: {
+                avgViewers: 17,
+                percentBettors: 15,
+                gamesPerSeason: 16,
+                engagementMultiplier: 40
+            },
+            nba: {
+                avgViewers: 1.6,
+                percentBettors: 12,
+                gamesPerSeason: 82,
+                engagementMultiplier: 50
+            },
+            nhl: {
+                avgViewers: 1.3,
+                percentBettors: 10,
+                gamesPerSeason: 82,
+                engagementMultiplier: 35
+            }
+        };
+
+        function loadPreset(league) {
+            const preset = presets[league];
+            document.getElementById('avgViewers').value = preset.avgViewers;
+            document.getElementById('percentBettors').value = preset.percentBettors;
+            document.getElementById('gamesPerSeason').value = preset.gamesPerSeason;
+            document.getElementById('engagementMultiplier').value = preset.engagementMultiplier;
+
+            updateCalculations();
+        }
+
+        function updateCalculations() {
+            // Get input values
+            const avgViewers = parseFloat(document.getElementById('avgViewers').value) * 1000000;
+            const percentBettors = parseFloat(document.getElementById('percentBettors').value) / 100;
+            const gamesPerSeason = parseInt(document.getElementById('gamesPerSeason').value);
+            const engagementMultiplier = parseFloat(document.getElementById('engagementMultiplier').value) / 100;
+
+            // Update value displays
+            document.getElementById('viewersValue').textContent = `${(avgViewers / 1000000).toFixed(1)}M`;
+            document.getElementById('bettorsValue').textContent = `${(percentBettors * 100).toFixed(0)}%`;
+            document.getElementById('multiplierValue').textContent = `${(engagementMultiplier * 100).toFixed(0)}%`;
+
+            // Calculate viewer segments
+            const nonBettorViewers = avgViewers * (1 - percentBettors);
+            const bettorViewers = avgViewers * percentBettors;
+
+            // Calculate games watched (non-bettors watch full season, bettors watch more)
+            const nonBettorGamesWatched = gamesPerSeason;
+            const bettorGamesWatched = Math.round(gamesPerSeason * (1 + engagementMultiplier));
+
+            // Calculate total views
+            const nonBettorTotalViews = nonBettorViewers * nonBettorGamesWatched;
+            const bettorTotalViews = bettorViewers * bettorGamesWatched;
+            const totalViews = nonBettorTotalViews + bettorTotalViews;
+
+            // Calculate bettor contribution
+            const bettorContributionPercent = (bettorTotalViews / totalViews) * 100;
+
+            // Update results
+            document.getElementById('nonBettorGames').textContent = `${nonBettorGamesWatched} games`;
+            document.getElementById('bettorGames').textContent = `${bettorGamesWatched} games`;
+            document.getElementById('nonBettorViews').textContent = `${(nonBettorTotalViews / 1000000).toFixed(0)}M`;
+            document.getElementById('bettorViews').textContent = `${(bettorTotalViews / 1000000).toFixed(0)}M`;
+            document.getElementById('bettorContribution').textContent = `${bettorContributionPercent.toFixed(1)}%`;
+
+            // Update insight
+            const premium = (bettorContributionPercent - (percentBettors * 100)).toFixed(1);
+            document.getElementById('revenueInsight').textContent =
+                `Bettors are ${(percentBettors * 100).toFixed(0)}% of viewers but contribute ${bettorContributionPercent.toFixed(1)}% of total viewership—a ${premium} percentage point premium. Media rights holders value bettor-heavy markets at 20-30% premium rates, which is why betting partnerships command such high valuations.`;
+
+            // Update chart
+            updateViewershipChart(nonBettorTotalViews, bettorTotalViews, percentBettors, bettorContributionPercent);
+        }
+
+        function updateViewershipChart(nonBettorViews, bettorViews, percentBettors, bettorContribution) {
+            const ctx = document.getElementById('viewershipChart').getContext('2d');
+
+            if (viewershipChart) {
+                viewershipChart.destroy();
+            }
+
+            viewershipChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fan Composition', 'Viewership Contribution'],
+                    datasets: [
+                        {
+                            label: 'Non-Bettors',
+                            data: [(1 - percentBettors) * 100, ((nonBettorViews / (nonBettorViews + bettorViews)) * 100)],
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400') + 'cc',
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-400'),
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Bettors',
+                            data: [percentBettors * 100, bettorContribution],
+                            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700') + 'cc',
+                            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700'),
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 12
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-600'),
+                                padding: 12
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Bettor Engagement Premium',
+                            font: {
+                                family: 'Geist',
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-900')
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                },
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-200')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Geist',
+                                    size: 11
+                                },
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-500')
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportData() {
+            const avgViewers = parseFloat(document.getElementById('avgViewers').value);
+            const percentBettors = parseFloat(document.getElementById('percentBettors').value);
+            const gamesPerSeason = parseInt(document.getElementById('gamesPerSeason').value);
+            const engagementMultiplier = parseFloat(document.getElementById('engagementMultiplier').value);
+
+            const data = {
+                inputs: {
+                    avgViewersPerGame: `${avgViewers}M`,
+                    percentBettors: `${percentBettors}%`,
+                    gamesPerSeason: gamesPerSeason,
+                    engagementMultiplier: `${engagementMultiplier}%`
+                },
+                results: {
+                    nonBettorGamesWatched: document.getElementById('nonBettorGames').textContent,
+                    bettorGamesWatched: document.getElementById('bettorGames').textContent,
+                    nonBettorTotalViews: document.getElementById('nonBettorViews').textContent,
+                    bettorTotalViews: document.getElementById('bettorViews').textContent,
+                    bettorContribution: document.getElementById('bettorContribution').textContent
+                },
+                insights: {
+                    revenueImplication: document.getElementById('revenueInsight').textContent
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'engagement-multiplier-analysis.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetCalculator() {
+            document.getElementById('avgViewers').value = 10;
+            document.getElementById('percentBettors').value = 12;
+            document.getElementById('gamesPerSeason').value = 82;
+            document.getElementById('engagementMultiplier').value = 40;
+
+            updateCalculations();
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateCalculations();
+        });
+    </script>
+</body>
+</html>
