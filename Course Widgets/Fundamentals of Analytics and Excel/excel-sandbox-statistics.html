@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Statistics Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-warning: #f59e0b;
+            --color-primary: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --spacing-1: 8px;
+            --spacing-2: 16px;
+            --spacing-3: 24px;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            padding: var(--spacing-3);
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+            color: var(--color-neutral-900);
+        }
+
+        .container { max-width: 900px; margin: auto; }
+
+        /* Challenge instructions */
+        .challenge-list {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-2);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .challenge-list h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .challenge-list ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            color: var(--color-neutral-600);
+        }
+
+        .challenge-list li { padding: 2px 0; }
+
+        .challenge-list li code {
+            background: var(--color-neutral-200);
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .rounding-note {
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            margin-top: var(--spacing-1);
+        }
+
+        /* Grid */
+        .excel-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .excel-grid th, .excel-grid td {
+            border: 1px solid var(--color-neutral-300);
+            padding: var(--spacing-1);
+            font-size: 14px;
+        }
+
+        .excel-grid thead th {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .excel-grid tbody th {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            width: 36px;
+        }
+
+        .excel-grid input {
+            width: 100%;
+            border: none;
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            background: transparent;
+        }
+
+        .excel-grid input:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .excel-grid input::placeholder {
+            color: var(--color-neutral-400);
+            font-size: 13px;
+        }
+
+        .cell-result {
+            font-size: 11px;
+            color: var(--color-neutral-500);
+            font-style: italic;
+            padding-left: var(--spacing-1);
+        }
+
+        /* Button */
+        .check-btn {
+            margin-top: var(--spacing-1);
+            padding: 12px 16px;
+            width: 100%;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .check-btn:hover { background: var(--color-neutral-700); }
+        .check-btn:focus { outline: 2px solid var(--color-neutral-900); outline-offset: 2px; }
+
+        /* Feedback */
+        .feedback-area {
+            margin-top: var(--spacing-2);
+        }
+
+        .result-line {
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .result-line.correct {
+            background: var(--color-success-light);
+            border: 1px solid var(--color-success);
+        }
+
+        .result-line.incorrect {
+            background: var(--color-error-light);
+            border: 1px solid var(--color-error);
+        }
+
+        .result-line.empty {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            color: var(--color-neutral-500);
+        }
+
+        .feedback-summary {
+            padding: var(--spacing-2);
+            border-radius: var(--border-radius);
+            margin-top: var(--spacing-1);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .feedback-summary.all-correct {
+            background: var(--color-success-light);
+            border: 1px solid var(--color-success);
+        }
+
+        .feedback-summary.partial {
+            background: var(--color-error-light);
+            border: 1px solid var(--color-error);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h2>Excel Statistics Practice</h2>
+
+            <div class="challenge-list">
+                <h3>Challenges</h3>
+                <ol>
+                    <li><strong>C12</strong> &mdash; Calculate the average sales using <code>=AVERAGE()</code></li>
+                    <li><strong>C13</strong> &mdash; Find the median sales using <code>=MEDIAN()</code></li>
+                    <li><strong>C14</strong> &mdash; Calculate sample standard deviation using <code>=STDEV.S()</code></li>
+                    <li><strong>C15</strong> &mdash; Calculate sample variance using <code>=VAR.S()</code></li>
+                    <li><strong>C2</strong> &mdash; Write an IF formula: "Above" if sales &gt; average, else "Below"</li>
+                </ol>
+                <div class="rounding-note">Values shown rounded to 1 decimal place.</div>
+            </div>
+
+            <table class="excel-grid" role="table" aria-label="Excel spreadsheet with employee sales data">
+                <thead>
+                    <tr>
+                        <th></th><th>A</th><th>B</th><th>C</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><th>1</th><td>Employee</td><td>Sales</td><td>Performance</td></tr>
+                    <tr><th>2</th><td>Alice</td><td>120</td><td><input id="C2" placeholder="=IF( sales > avg, &quot;Above&quot;, &quot;Below&quot; )" aria-label="IF formula for Alice's performance"></td></tr>
+                    <tr><th>3</th><td>Bob</td><td>145</td><td id="C3-cell"></td></tr>
+                    <tr><th>4</th><td>Carol</td><td>98</td><td id="C4-cell"></td></tr>
+                    <tr><th>5</th><td>David</td><td>156</td><td id="C5-cell"></td></tr>
+                    <tr><th>6</th><td>Eve</td><td>134</td><td id="C6-cell"></td></tr>
+                    <tr><th>7</th><td>Frank</td><td>110</td><td id="C7-cell"></td></tr>
+                    <tr><th>8</th><td>Grace</td><td>142</td><td id="C8-cell"></td></tr>
+                    <tr><th>9</th><td>Heidi</td><td>128</td><td id="C9-cell"></td></tr>
+                    <tr><th>10</th><td>Ivan</td><td>151</td><td id="C10-cell"></td></tr>
+                    <tr><th>11</th><td>Judy</td><td>105</td><td id="C11-cell"></td></tr>
+                    <tr><th>12</th><td></td><td>Average:</td><td><input id="C12" placeholder="Challenge 1: =AVERAGE(...)" aria-label="Formula to calculate average sales"></td></tr>
+                    <tr><th>13</th><td></td><td>Median:</td><td><input id="C13" placeholder="Challenge 2: =MEDIAN(...)" aria-label="Formula to calculate median sales"></td></tr>
+                    <tr><th>14</th><td></td><td>Std Dev:</td><td><input id="C14" placeholder="Challenge 3: =STDEV.S(...)" aria-label="Formula to calculate standard deviation"></td></tr>
+                    <tr><th>15</th><td></td><td>Variance:</td><td><input id="C15" placeholder="Challenge 4: =VAR.S(...)" aria-label="Formula to calculate variance"></td></tr>
+                </tbody>
+            </table>
+
+            <button class="check-btn" id="check-btn">Check All Answers</button>
+            <div class="feedback-area" id="feedback-area" role="status" aria-live="polite" aria-atomic="true"></div>
+        </div>
+    </main>
+
+    <script>
+        // Sales data: B2:B11
+        const sales = [120, 145, 98, 156, 134, 110, 142, 128, 151, 105];
+        const avg = sales.reduce((s,v) => s+v, 0) / sales.length; // 128.9
+
+        // Correct results (verified against Excel)
+        // Mean: 128.9, Median: 131.0, StDev.S: 20.1, Var.S: 404.8
+        const challenges = {
+            C12: {
+                num: 1,
+                label: 'Average',
+                instruction: 'Calculate the average of sales (B2:B11)',
+                patterns: [/^=AVERAGE\(\$?B\$?2:\$?B\$?11\)$/i],
+                result: 128.9
+            },
+            C13: {
+                num: 2,
+                label: 'Median',
+                instruction: 'Find the median of sales (B2:B11)',
+                patterns: [/^=MEDIAN\(\$?B\$?2:\$?B\$?11\)$/i],
+                result: 131.0
+            },
+            C14: {
+                num: 3,
+                label: 'Std Dev',
+                instruction: 'Calculate the sample standard deviation (B2:B11)',
+                patterns: [/^=STDEV\.S\(\$?B\$?2:\$?B\$?11\)$/i],
+                result: 20.1
+            },
+            C15: {
+                num: 4,
+                label: 'Variance',
+                instruction: 'Calculate the sample variance (B2:B11)',
+                patterns: [/^=VAR\.S\(\$?B\$?2:\$?B\$?11\)$/i],
+                result: 404.8
+            },
+            C2: {
+                num: 5,
+                label: 'IF formula',
+                instruction: 'IF formula: "Above" if B2 > average in C12, else "Below"',
+                patterns: [
+                    /^=IF\(\$?B\$?2>\$?C\$?12,\s*"ABOVE",\s*"BELOW"\)$/i,
+                    /^=IF\(\$?B\$?2>=\$?C\$?12,\s*"ABOVE",\s*"BELOW"\)$/i
+                ],
+                result: sales[0] > avg ? 'Above' : 'Below'
+            }
+        };
+
+        // Deterministic fill-down for C3:C11 based on actual sales vs average
+        const performanceResults = sales.map(v => v > avg ? 'Above' : 'Below');
+        // Index 0=Alice(120→Below), 1=Bob(145→Above), 2=Carol(98→Below),
+        // 3=David(156→Above), 4=Eve(134→Above), 5=Frank(110→Below),
+        // 6=Grace(142→Above), 7=Heidi(128→Below), 8=Ivan(151→Above), 9=Judy(105→Below)
+
+        const challengeOrder = ['C12', 'C13', 'C14', 'C15', 'C2'];
+        const feedbackArea = document.getElementById('feedback-area');
+
+        // Enter key support
+        challengeOrder.forEach(cellId => {
+            const input = document.getElementById(cellId);
+            if (input) {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        checkAll();
+                    }
+                });
+            }
+        });
+
+        document.getElementById('check-btn').addEventListener('click', checkAll);
+
+        function normalize(formula) {
+            return formula.replace(/\s/g, '').toUpperCase();
+        }
+
+        function checkFormula(cellId) {
+            const input = document.getElementById(cellId);
+            if (!input) return null;
+
+            const raw = input.value.trim();
+            if (!raw) return null;
+
+            const normalized = normalize(raw);
+            const challenge = challenges[cellId];
+            const isCorrect = challenge.patterns.some(p => p.test(normalized));
+
+            // Style the cell but keep the formula
+            input.style.backgroundColor = isCorrect ? '#dcfce7' : '#fee2e2';
+
+            return { cellId, isCorrect, challenge };
+        }
+
+        // Fill C3:C11 when both C12 and C2 are correct; clear if not
+        function updateFillDown(results) {
+            const c12ok = results.find(r => r && r.cellId === 'C12' && r.isCorrect);
+            const c2ok = results.find(r => r && r.cellId === 'C2' && r.isCorrect);
+
+            for (let i = 1; i <= 9; i++) {
+                const cell = document.getElementById(`C${i + 2}-cell`);
+                if (cell) cell.textContent = (c12ok && c2ok) ? performanceResults[i] : '';
+            }
+        }
+
+        function checkAll() {
+            const results = challengeOrder.map(cellId => checkFormula(cellId));
+            updateFillDown(results);
+
+            let html = '';
+            let correct = 0;
+            let attempted = 0;
+
+            results.forEach(r => {
+                if (r === null) return;
+                attempted++;
+                if (r.isCorrect) {
+                    correct++;
+                    const resultText = r.challenge.result !== null
+                        ? ` &mdash; Result: ${r.challenge.result}`
+                        : '';
+                    html += `<div class="result-line correct">${r.cellId} correct${resultText}</div>`;
+                } else {
+                    html += `<div class="result-line incorrect">${r.cellId} incorrect &mdash; Hint: ${r.challenge.instruction}</div>`;
+                }
+            });
+
+            // Show skipped cells
+            challengeOrder.forEach((cellId, i) => {
+                if (results[i] === null) {
+                    html += `<div class="result-line empty">${cellId} &mdash; not attempted</div>`;
+                }
+            });
+
+            if (attempted === 0) {
+                html = '<div class="result-line empty">Enter at least one formula to check.</div>';
+            } else if (correct === attempted && attempted === challengeOrder.length) {
+                html += `<div class="feedback-summary all-correct">All ${correct} formulas correct!</div>`;
+            } else if (attempted > 0) {
+                html += `<div class="feedback-summary partial">${correct} of ${attempted} correct.</div>`;
+            }
+
+            feedbackArea.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

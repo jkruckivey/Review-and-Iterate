@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Positioning Integrator - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .step-section {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            background: var(--color-neutral-700);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .industry-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .industry-card {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .industry-card:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .industry-card.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .industry-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .industry-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            line-height: 1.4;
+        }
+
+        .forces-summary {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .forces-summary h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .force-item {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .position-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .position-card {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .position-card:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .position-card.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .position-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .position-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .position-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            line-height: 1.4;
+        }
+
+        .customer-selector {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .customer-option {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .customer-option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .customer-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .customer-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+        }
+
+        .customer-content {
+            flex: 1;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .customer-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            line-height: 1.4;
+        }
+
+        .results-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-panel h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .strategy-summary {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1.25rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }
+
+        .feedback-section {
+            background: var(--color-neutral-50);
+            border-radius: 4px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-text {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .example-company {
+            font-style: italic;
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--color-neutral-300);
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            border: 1px solid var(--color-neutral-700);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-300);
+            border-color: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-400);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .position-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .industry-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Strategic Positioning Integrator</h1>
+            <p class="subtitle">Connect industry forces, strategic position, and customer selection</p>
+        </header>
+
+        <!-- Step 1: Choose Industry -->
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Choose Your Industry</div>
+            </div>
+
+            <div class="industry-selector" id="industry-selector">
+                <!-- Industries will be inserted here -->
+            </div>
+
+            <div id="forces-summary" style="display: none;"></div>
+        </div>
+
+        <!-- Step 2: Select Position -->
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Select Strategic Position</div>
+            </div>
+
+            <p style="color: var(--color-neutral-600); margin-bottom: 1.5rem; font-size: 0.95rem;">Based on the industry forces, choose where you want to compete:</p>
+
+            <div class="position-selector">
+                <div class="position-card disabled" data-position="high-end" onclick="selectPosition('high-end')">
+                    <div class="position-title">High-End</div>
+                    <div class="position-description">Premium performance, differentiation, selective customers</div>
+                </div>
+
+                <div class="position-card disabled" data-position="mid-market" onclick="selectPosition('mid-market')">
+                    <div class="position-title">Mid-Market</div>
+                    <div class="position-description">Balanced value, mainstream appeal, broad market</div>
+                </div>
+
+                <div class="position-card disabled" data-position="price-sensitive" onclick="selectPosition('price-sensitive')">
+                    <div class="position-title">Price-Sensitive</div>
+                    <div class="position-description">Low cost, operational efficiency, value seekers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Select Customers -->
+        <div class="step-section">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">Select Target Customers</div>
+            </div>
+
+            <p style="color: var(--color-neutral-600); margin-bottom: 1.5rem; font-size: 0.95rem;">Choose which customer segments align with your strategic position (select all that apply):</p>
+
+            <div class="customer-selector" id="customer-selector">
+                <!-- Customers will be inserted here -->
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn" id="analyze-btn" onclick="analyzeStrategy()" disabled>Analyze My Strategy</button>
+            <button class="btn btn-secondary" onclick="resetWidget()">Start Over</button>
+        </div>
+
+        <div class="results-panel" id="results-panel">
+            <!-- Results will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const industries = [
+            {
+                id: 'restaurants',
+                name: 'Restaurants',
+                description: 'Casual and fine dining establishments',
+                forces: [
+                    'High rivalry - many competitors, low switching costs',
+                    'Low barriers to entry - easy to open a restaurant',
+                    'Moderate buyer power - customers have many choices',
+                    'Moderate supplier power - food suppliers vary by cuisine',
+                    'High substitutes - home cooking, delivery apps, fast food'
+                ],
+                attractiveness: 'Moderately Unattractive',
+                customers: {
+                    'high-end': ['fine-dining-enthusiasts', 'special-occasion-diners', 'business-diners'],
+                    'mid-market': ['families', 'casual-diners', 'date-night-couples'],
+                    'price-sensitive': ['students', 'budget-conscious-diners', 'quick-lunch-seekers']
+                },
+                examples: {
+                    'high-end': 'Nobu, French Laundry, Alinea',
+                    'mid-market': 'Olive Garden, Cheesecake Factory, Applebee\'s',
+                    'price-sensitive': 'Subway, Chipotle, Panera Bread'
+                }
+            },
+            {
+                id: 'hotels',
+                name: 'Hotels',
+                description: 'Lodging and hospitality services',
+                forces: [
+                    'High rivalry - brands compete intensely for guests',
+                    'Moderate barriers to entry - capital intensive but franchises available',
+                    'High buyer power - price comparison websites empower customers',
+                    'Low supplier power - many vendors for hotel supplies',
+                    'High substitutes - Airbnb, vacation rentals, hostels'
+                ],
+                attractiveness: 'Moderately Unattractive',
+                customers: {
+                    'high-end': ['luxury-travelers', 'business-executives', 'honeymoon-couples'],
+                    'mid-market': ['family-vacationers', 'conference-attendees', 'leisure-travelers'],
+                    'price-sensitive': ['budget-travelers', 'road-trippers', 'backpackers']
+                },
+                examples: {
+                    'high-end': 'Four Seasons, Ritz-Carlton, St. Regis',
+                    'mid-market': 'Marriott, Hilton, Hyatt',
+                    'price-sensitive': 'Motel 6, Days Inn, Super 8'
+                }
+            },
+            {
+                id: 'automobiles',
+                name: 'Automobiles',
+                description: 'Personal vehicle manufacturing',
+                forces: [
+                    'Intense rivalry - global brands compete on multiple dimensions',
+                    'Very high barriers to entry - massive capital, R&D, and regulatory requirements',
+                    'High buyer power - extensive research, financing options, many choices',
+                    'Moderate supplier power - parts suppliers somewhat concentrated',
+                    'Moderate substitutes - public transit, ride-sharing, bicycles'
+                ],
+                attractiveness: 'Moderately Attractive (high barriers protect incumbents)',
+                customers: {
+                    'high-end': ['luxury-car-buyers', 'performance-enthusiasts', 'status-seekers'],
+                    'mid-market': ['family-car-buyers', 'commuters', 'first-time-buyers'],
+                    'price-sensitive': ['value-seekers', 'basic-transportation-needs', 'fleet-buyers']
+                },
+                examples: {
+                    'high-end': 'Mercedes-Benz, BMW, Tesla Model S',
+                    'mid-market': 'Toyota Camry, Honda Accord, Ford F-150',
+                    'price-sensitive': 'Kia Rio, Nissan Versa, Mitsubishi Mirage'
+                }
+            }
+        ];
+
+        const customerSegments = {
+            // Restaurants
+            'fine-dining-enthusiasts': {
+                name: 'Fine Dining Enthusiasts',
+                description: 'Seek exceptional culinary experiences, willing to pay premium prices for quality and ambiance',
+                alignsWith: ['high-end']
+            },
+            'special-occasion-diners': {
+                name: 'Special Occasion Diners',
+                description: 'Celebrate birthdays, anniversaries, and milestones with upscale dining',
+                alignsWith: ['high-end']
+            },
+            'business-diners': {
+                name: 'Business Diners',
+                description: 'Entertain clients or conduct business over meals, expense account',
+                alignsWith: ['high-end']
+            },
+            'families': {
+                name: 'Families',
+                description: 'Parents with kids seeking good value, kid-friendly menus, comfortable atmosphere',
+                alignsWith: ['mid-market']
+            },
+            'casual-diners': {
+                name: 'Casual Diners',
+                description: 'Regular diners seeking consistent quality at moderate prices',
+                alignsWith: ['mid-market']
+            },
+            'date-night-couples': {
+                name: 'Date Night Couples',
+                description: 'Young couples seeking nice but affordable dining experiences',
+                alignsWith: ['mid-market']
+            },
+            'students': {
+                name: 'Students',
+                description: 'Budget-constrained, seeking filling meals at lowest prices',
+                alignsWith: ['price-sensitive']
+            },
+            'budget-conscious-diners': {
+                name: 'Budget-Conscious Diners',
+                description: 'Prioritize value and low prices over ambiance or premium ingredients',
+                alignsWith: ['price-sensitive']
+            },
+            'quick-lunch-seekers': {
+                name: 'Quick Lunch Seekers',
+                description: 'Need fast, affordable meals during work breaks',
+                alignsWith: ['price-sensitive']
+            },
+
+            // Hotels
+            'luxury-travelers': {
+                name: 'Luxury Travelers',
+                description: 'Expect exceptional service, premium amenities, and unique experiences',
+                alignsWith: ['high-end']
+            },
+            'business-executives': {
+                name: 'Business Executives',
+                description: 'Need reliable service, business facilities, convenient locations',
+                alignsWith: ['high-end']
+            },
+            'honeymoon-couples': {
+                name: 'Honeymoon Couples',
+                description: 'Seeking romantic, memorable stays for special occasions',
+                alignsWith: ['high-end']
+            },
+            'family-vacationers': {
+                name: 'Family Vacationers',
+                description: 'Need spacious rooms, pools, and good value for family trips',
+                alignsWith: ['mid-market']
+            },
+            'conference-attendees': {
+                name: 'Conference Attendees',
+                description: 'Attending business events, seeking convenient and comfortable lodging',
+                alignsWith: ['mid-market']
+            },
+            'leisure-travelers': {
+                name: 'Leisure Travelers',
+                description: 'Vacationing individuals seeking comfort at moderate prices',
+                alignsWith: ['mid-market']
+            },
+            'budget-travelers': {
+                name: 'Budget Travelers',
+                description: 'Prioritize low cost, willing to sacrifice amenities for savings',
+                alignsWith: ['price-sensitive']
+            },
+            'road-trippers': {
+                name: 'Road Trippers',
+                description: 'Need basic, clean accommodations for overnight stops during road trips',
+                alignsWith: ['price-sensitive']
+            },
+            'backpackers': {
+                name: 'Backpackers',
+                description: 'Young travelers on tight budgets seeking cheapest lodging options',
+                alignsWith: ['price-sensitive']
+            },
+
+            // Automobiles
+            'luxury-car-buyers': {
+                name: 'Luxury Car Buyers',
+                description: 'Value brand prestige, advanced technology, and superior craftsmanship',
+                alignsWith: ['high-end']
+            },
+            'performance-enthusiasts': {
+                name: 'Performance Enthusiasts',
+                description: 'Seek high performance, cutting-edge technology, and driving experience',
+                alignsWith: ['high-end']
+            },
+            'status-seekers': {
+                name: 'Status Seekers',
+                description: 'Use vehicles to signal success and social standing',
+                alignsWith: ['high-end']
+            },
+            'family-car-buyers': {
+                name: 'Family Car Buyers',
+                description: 'Need reliability, safety, and space at moderate prices',
+                alignsWith: ['mid-market']
+            },
+            'commuters': {
+                name: 'Commuters',
+                description: 'Daily drivers seeking reliability, fuel efficiency, and comfort',
+                alignsWith: ['mid-market']
+            },
+            'first-time-buyers': {
+                name: 'First-Time Buyers',
+                description: 'Young buyers seeking quality and features at accessible prices',
+                alignsWith: ['mid-market']
+            },
+            'value-seekers': {
+                name: 'Value Seekers',
+                description: 'Prioritize low purchase price and operating costs',
+                alignsWith: ['price-sensitive']
+            },
+            'basic-transportation-needs': {
+                name: 'Basic Transportation Needs',
+                description: 'Need simple, reliable transportation with minimal features',
+                alignsWith: ['price-sensitive']
+            },
+            'fleet-buyers': {
+                name: 'Fleet Buyers',
+                description: 'Companies purchasing vehicles in bulk for lowest total cost',
+                alignsWith: ['price-sensitive']
+            }
+        };
+
+        let selectedIndustry = null;
+        let selectedPosition = null;
+        let selectedCustomers = [];
+
+        function initializeWidget() {
+            const industrySelector = document.getElementById('industry-selector');
+
+            industries.forEach(industry => {
+                const card = document.createElement('div');
+                card.className = 'industry-card';
+                card.onclick = () => selectIndustry(industry.id);
+
+                card.innerHTML = `
+                    <div class="industry-name">${industry.name}</div>
+                    <div class="industry-description">${industry.description}</div>
+                `;
+
+                industrySelector.appendChild(card);
+            });
+        }
+
+        function selectIndustry(industryId) {
+            selectedIndustry = industries.find(i => i.id === industryId);
+
+            // Update UI
+            document.querySelectorAll('.industry-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.industry-card').classList.add('selected');
+
+            // Show industry forces
+            const forcesSummary = document.getElementById('forces-summary');
+            forcesSummary.style.display = 'block';
+            forcesSummary.innerHTML = `
+                <div class="forces-summary">
+                    <h4>Industry Characteristics:</h4>
+                    ${selectedIndustry.forces.map(force => `<div class="force-item">• ${force}</div>`).join('')}
+                    <div style="margin-top: 0.75rem; font-weight: 600; color: var(--color-neutral-800);">
+                        Overall Attractiveness: ${selectedIndustry.attractiveness}
+                    </div>
+                </div>
+            `;
+
+            // Enable position selection
+            document.querySelectorAll('.position-card').forEach(card => {
+                card.classList.remove('disabled');
+            });
+
+            // Reset downstream selections
+            selectedPosition = null;
+            selectedCustomers = [];
+            document.querySelectorAll('.position-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('customer-selector').innerHTML = '';
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('results-panel').classList.remove('show');
+        }
+
+        function selectPosition(position) {
+            if (!selectedIndustry) {
+                alert('Please select an industry first!');
+                return;
+            }
+
+            selectedPosition = position;
+
+            // Update UI
+            document.querySelectorAll('.position-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.position-card').classList.add('selected');
+
+            // Load relevant customers
+            loadCustomers();
+
+            // Reset customer selections
+            selectedCustomers = [];
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('results-panel').classList.remove('show');
+        }
+
+        function loadCustomers() {
+            const customerSelector = document.getElementById('customer-selector');
+            customerSelector.innerHTML = '';
+
+            const relevantCustomerIds = selectedIndustry.customers[selectedPosition];
+
+            relevantCustomerIds.forEach(customerId => {
+                const customer = customerSegments[customerId];
+
+                const option = document.createElement('div');
+                option.className = 'customer-option';
+                option.onclick = () => toggleCustomer(customerId);
+
+                option.innerHTML = `
+                    <input type="checkbox" class="customer-checkbox" id="cb-${customerId}">
+                    <div class="customer-content">
+                        <div class="customer-name">${customer.name}</div>
+                        <div class="customer-description">${customer.description}</div>
+                    </div>
+                `;
+
+                customerSelector.appendChild(option);
+            });
+        }
+
+        function toggleCustomer(customerId) {
+            const checkbox = document.getElementById(`cb-${customerId}`);
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                if (!selectedCustomers.includes(customerId)) {
+                    selectedCustomers.push(customerId);
+                }
+            } else {
+                selectedCustomers = selectedCustomers.filter(id => id !== customerId);
+            }
+
+            // Enable analyze button if at least one customer selected
+            document.getElementById('analyze-btn').disabled = selectedCustomers.length === 0;
+        }
+
+        function analyzeStrategy() {
+            const resultsPanel = document.getElementById('results-panel');
+
+            const industryName = selectedIndustry.name;
+            const positionName = selectedPosition.split('-').map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join('-');
+
+            const customerNames = selectedCustomers.map(id => customerSegments[id].name).join(', ');
+
+            // Check alignment
+            const correctCustomers = selectedIndustry.customers[selectedPosition];
+            const allCorrect = selectedCustomers.every(id => correctCustomers.includes(id));
+            const correctCount = selectedCustomers.filter(id => correctCustomers.includes(id)).length;
+
+            let feedbackHTML = `
+                <div class="strategy-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">Industry:</div>
+                        <div class="summary-value">${industryName}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Strategic Position:</div>
+                        <div class="summary-value">${positionName}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Target Customers:</div>
+                        <div class="summary-value">${customerNames}</div>
+                    </div>
+                </div>
+            `;
+
+            if (allCorrect && selectedCustomers.length === correctCustomers.length) {
+                feedbackHTML += `
+                    <div class="feedback-section">
+                        <div class="feedback-title">✓ Excellent Strategic Alignment!</div>
+                        <div class="feedback-text">
+                            You've created a coherent strategy that connects industry analysis to positioning to customer targeting.
+                            Your ${positionName} position in the ${industryName} industry aligns perfectly with your chosen customer segments.
+                        </div>
+                        <div class="feedback-text">
+                            <strong>Why this works:</strong> The customers you selected value what a ${positionName} position delivers.
+                            Companies like ${selectedIndustry.examples[selectedPosition]} successfully serve these same customer segments.
+                        </div>
+                        <div class="example-company">
+                            Real-world examples: ${selectedIndustry.examples[selectedPosition]}
+                        </div>
+                    </div>
+                `;
+            } else if (correctCount >= selectedCustomers.length * 0.5) {
+                feedbackHTML += `
+                    <div class="feedback-section">
+                        <div class="feedback-title">Good Start - Refine Customer Selection</div>
+                        <div class="feedback-text">
+                            You've selected ${correctCount} out of ${selectedCustomers.length} customers that align well with a ${positionName} position.
+                            However, some of your customer choices may be better served by a different strategic position.
+                        </div>
+                        <div class="feedback-text">
+                            <strong>Consider:</strong> Does each customer segment value what your ${positionName} position offers?
+                            ${positionName === 'high-end' ? 'High-end customers prioritize premium quality and are willing to pay for it.' : ''}
+                            ${positionName === 'mid-market' ? 'Mid-market customers seek balanced value - good quality at moderate prices.' : ''}
+                            ${positionName === 'price-sensitive' ? 'Price-sensitive customers prioritize low cost above other factors.' : ''}
+                        </div>
+                        <div class="example-company">
+                            Companies like ${selectedIndustry.examples[selectedPosition]} focus on different customer segments in this industry
+                        </div>
+                    </div>
+                `;
+            } else {
+                feedbackHTML += `
+                    <div class="feedback-section">
+                        <div class="feedback-title">Strategic Misalignment Detected</div>
+                        <div class="feedback-text">
+                            Your customer selections don't align well with a ${positionName} strategic position in the ${industryName} industry.
+                            This mismatch could lead to customer dissatisfaction and competitive vulnerability.
+                        </div>
+                        <div class="feedback-text">
+                            <strong>The issue:</strong> A ${positionName} position delivers specific value propositions that may not match what your selected customers prioritize.
+                            Consider whether you should: (1) change your target customers to match your position, or (2) change your position to serve different customers.
+                        </div>
+                        <div class="example-company">
+                            ${positionName} companies like ${selectedIndustry.examples[selectedPosition]} typically serve different customer segments
+                        </div>
+                    </div>
+                `;
+            }
+
+            resultsPanel.innerHTML = `<h3>Strategy Analysis</h3>` + feedbackHTML;
+            resultsPanel.classList.add('show');
+        }
+
+        function resetWidget() {
+            selectedIndustry = null;
+            selectedPosition = null;
+            selectedCustomers = [];
+
+            document.querySelectorAll('.industry-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            document.querySelectorAll('.position-card').forEach(card => {
+                card.classList.remove('selected');
+                card.classList.add('disabled');
+            });
+
+            document.getElementById('forces-summary').style.display = 'none';
+            document.getElementById('customer-selector').innerHTML = '';
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('results-panel').classList.remove('show');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeWidget);
+    </script>
+</body>
+</html>

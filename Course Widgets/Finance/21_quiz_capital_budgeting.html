@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Capital Budgeting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff; --correct: #48825d; --incorrect: #c45a5a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--purple); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        .quiz-meta { display: flex; justify-content: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+        .meta-item { background-color: var(--white); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .meta-item span { font-weight: 600; color: var(--text-primary); }
+        .progress-container { background-color: var(--white); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .progress-label { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); }
+        .progress-count { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+        .progress-bar { height: 8px; background-color: var(--grey-light); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background-color: var(--purple-dark); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+        .question-number { background-color: var(--purple); color: var(--text-primary); min-width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .question-text { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); flex: 1; padding-top: 3px; }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid var(--grey-light); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; background-color: var(--white); }
+        .option:hover:not(.disabled) { border-color: var(--purple-dark); background-color: var(--grey-bg); }
+        .option.selected { border-color: var(--purple-dark); background-color: var(--purple); }
+        .option.correct { border-color: var(--correct); background-color: var(--green); }
+        .option.incorrect { border-color: var(--incorrect); background-color: #f8e8e8; }
+        .option.disabled { cursor: default; }
+        .option-letter { width: 26px; height: 26px; border-radius: 6px; background-color: var(--grey-light); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: var(--text-secondary); margin-right: 12px; flex-shrink: 0; }
+        .option.selected .option-letter { background-color: var(--purple-dark); color: var(--text-primary); }
+        .option.correct .option-letter { background-color: var(--correct); color: var(--white); }
+        .option.incorrect .option-letter { background-color: var(--incorrect); color: var(--white); }
+        .option-text { flex: 1; font-size: 0.85rem; color: var(--text-primary); }
+        .option-icon { font-size: 0.9rem; margin-left: 10px; flex-shrink: 0; }
+        .feedback { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; display: none; }
+        .feedback.correct { background-color: var(--green); border-left: 3px solid var(--correct); color: var(--text-primary); display: block; }
+        .feedback.incorrect { background-color: #f8e8e8; border-left: 3px solid var(--incorrect); color: var(--text-primary); display: block; }
+        .results-card { background-color: var(--white); border-radius: 12px; padding: 40px 28px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: none; }
+        .results-card.show { display: block; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; background-color: var(--green); }
+        .score-circle.needs-work { background-color: var(--purple); }
+        .score-number { font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+        .score-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; }
+        .results-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .results-message { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px; }
+        .retry-btn { display: inline-block; background-color: var(--white); color: var(--text-primary); border: 2px solid var(--text-primary); padding: 12px 32px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .retry-btn:hover { background-color: var(--text-primary); color: var(--white); }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header h1 { font-size: 1.5rem; } .quiz-meta { flex-direction: column; gap: 8px; align-items: center; } .question-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 4.4</div>
+            <h1>Knowledge Check: Capital Budgeting</h1>
+            <p>Test your understanding of Payback, NPV, and IRR</p>
+        </div>
+        <div class="quiz-meta">
+            <div class="meta-item"><span>3</span> questions</div>
+            <div class="meta-item"><span>~2</span> minutes</div>
+            <div class="meta-item">Instant feedback</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-label">Progress</span>
+                <span class="progress-count"><span id="answered-count">0</span> of 3 answered</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div id="quiz-container"></div>
+        <div class="results-card" id="results-card">
+            <div class="score-circle" id="score-circle"><span class="score-number" id="score-number">0/3</span><span class="score-label">Correct</span></div>
+            <h2 class="results-title" id="results-title"></h2>
+            <p class="results-message" id="results-message"></p>
+            <button class="retry-btn" onclick="resetQuiz()">Try Again</button>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            { text: "A project's NPV is positive. What should the firm do?", options: ["Reject the project", "Accept the project - it creates value", "Wait for more information", "Calculate IRR first"], correct: 1, feedback: { correct: "Correct! A positive NPV means the project's returns exceed the required rate of return. It adds value to the firm and should be accepted.", incorrect: "Not quite. A positive NPV indicates the project creates value by earning more than the required return. The firm should accept it." } },
+            { text: "If a project's IRR is less than the required return, what is its NPV likely to be?", options: ["Positive", "Zero", "Negative", "Cannot be determined"], correct: 2, feedback: { correct: "Correct! IRR is the discount rate where NPV = 0. If IRR < required return, using the higher required return to discount cash flows yields a negative NPV.", incorrect: "Not quite. When IRR < required return, the project earns less than needed. Discounting at the required return produces a negative NPV." } },
+            { text: "Which capital budgeting method ignores the time value of money?", options: ["Net Present Value (NPV)", "Internal Rate of Return (IRR)", "Payback Period", "Profitability Index"], correct: 2, feedback: { correct: "Correct! Payback simply counts years until the investment is recovered, ignoring when cash flows occur and their present value. NPV, IRR, and PI all account for time value.", incorrect: "Not quite. The Payback Period ignores time value of money - it just measures how quickly cash is recovered, without discounting future flows." } }
+        ];
+        let selectedAnswers = [], submitted = false;
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            selectedAnswers = new Array(questions.length).fill(-1);
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="q${i}">
+                    <div class="question-header"><div class="question-number">${i+1}</div><div class="question-text">${q.text}</div></div>
+                    <div class="options">${q.options.map((o, j) => `<div class="option" onclick="selectOption(${i},${j})"><span class="option-letter">${String.fromCharCode(65+j)}</span><span class="option-text">${o}</span><span class="option-icon"></span></div>`).join('')}</div>
+                    <div class="feedback" id="feedback-${i}"></div>
+                </div>
+            `).join('');
+        }
+        function selectOption(q, o) {
+            if (submitted) return;
+            document.querySelectorAll(`#q${q} .option`).forEach((el, i) => el.classList.toggle('selected', i === o));
+            selectedAnswers[q] = o;
+            updateProgress();
+            checkCompletion();
+        }
+        function updateProgress() {
+            const answered = selectedAnswers.filter(a => a !== -1).length;
+            document.getElementById('answered-count').textContent = answered;
+            document.getElementById('progress-fill').style.width = (answered / questions.length * 100) + '%';
+        }
+        function checkCompletion() {
+            if (selectedAnswers.every(a => a !== -1) && !submitted) {
+                showResults();
+            }
+        }
+        function showResults() {
+            submitted = true;
+            let score = 0;
+            questions.forEach((q, i) => {
+                const card = document.getElementById(`q${i}`), opts = card.querySelectorAll('.option'), fb = document.getElementById(`feedback-${i}`);
+                opts.forEach(o => o.classList.add('disabled'));
+                if (selectedAnswers[i] === q.correct) {
+                    score++; opts[selectedAnswers[i]].classList.add('correct'); opts[selectedAnswers[i]].querySelector('.option-icon').textContent = '✓';
+                    fb.className = 'feedback correct'; fb.textContent = q.feedback.correct;
+                } else {
+                    opts[selectedAnswers[i]].classList.add('incorrect'); opts[selectedAnswers[i]].querySelector('.option-icon').textContent = '✗';
+                    opts[q.correct].classList.add('correct'); opts[q.correct].querySelector('.option-icon').textContent = '✓';
+                    fb.className = 'feedback incorrect'; fb.textContent = q.feedback.incorrect;
+                }
+            });
+            document.getElementById('score-number').textContent = `${score}/${questions.length}`;
+            document.getElementById('score-circle').className = score >= 2 ? 'score-circle' : 'score-circle needs-work';
+            document.getElementById('results-title').textContent = score === 3 ? 'Excellent!' : score >= 2 ? 'Great job!' : 'Keep learning!';
+            document.getElementById('results-message').textContent = score >= 2 ? "You understand capital budgeting methods. Continue to Profitability Index!" : "Review the material and try again.";
+            document.getElementById('results-card').classList.add('show');
+            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth' });
+        }
+        function resetQuiz() { submitted = false; document.getElementById('results-card').classList.remove('show'); initQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        initQuiz();
+    </script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substitutes Framework: Regulation × Technology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Widget-specific colors */
+            --color-enabled: #d4edda;
+            --color-blocked: #f8d7da;
+            --color-gray-zone: #fff3cd;
+            --color-limited: #e2e3e5;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .matrix-container {
+            position: relative;
+            margin: 2rem auto;
+            max-width: 700px;
+        }
+
+        .y-axis-label {
+            position: absolute;
+            left: -90px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            white-space: nowrap;
+        }
+
+        .x-axis-label {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 4px;
+            background: var(--color-neutral-300);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-left: 40px;
+            position: relative;
+        }
+
+        .quadrant {
+            padding: 1.5rem;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quadrant:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        .quadrant h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .quadrant p {
+            font-size: 0.8rem;
+            color: var(--color-neutral-700);
+            flex-grow: 1;
+        }
+
+        .quadrant .status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .example-tag {
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Top-left: Permissive + Worse Tech = Limited Impact */
+        .q-tl {
+            background: var(--color-limited);
+        }
+        .q-tl .status {
+            background: var(--color-neutral-500);
+            color: white;
+        }
+
+        /* Top-right: Permissive + Better Tech = ENABLED */
+        .q-tr {
+            background: var(--color-enabled);
+        }
+        .q-tr .status {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Bottom-left: Restrictive + Worse Tech = Non-Threat */
+        .q-bl {
+            background: var(--color-limited);
+        }
+        .q-bl .status {
+            background: var(--color-neutral-500);
+            color: white;
+        }
+
+        /* Bottom-right: Restrictive + Better Tech = WALLED */
+        .q-br {
+            background: var(--color-blocked);
+        }
+        .q-br .status {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Gray zone diagonal overlay */
+        .gray-zone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            background: var(--color-gray-zone);
+            padding: 0.75rem 3rem;
+            border-radius: 8px;
+            border: 2px dashed #ffc107;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .gray-zone h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .gray-zone p {
+            font-size: 0.7rem;
+            color: var(--color-neutral-600);
+        }
+
+        .axis-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 40px;
+            padding: 0.5rem 1rem;
+        }
+
+        .axis-markers span {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        .y-markers {
+            position: absolute;
+            right: calc(100% - 35px);
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .y-markers span {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .example-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .example-card.enabled {
+            border-left: 4px solid #28a745;
+        }
+
+        .example-card.walled {
+            border-left: 4px solid #dc3545;
+        }
+
+        .example-card.gray {
+            border-left: 4px solid #ffc107;
+        }
+
+        .example-card h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .example-card p {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+        }
+
+        .example-card .arrow {
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+            color: var(--color-neutral-500);
+        }
+
+        .caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .y-axis-label {
+                position: static;
+                transform: none;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .matrix {
+                margin-left: 0;
+            }
+
+            .y-markers {
+                display: none;
+            }
+
+            .gray-zone {
+                transform: translate(-50%, -50%);
+                padding: 0.5rem 1rem;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quadrant {
+                min-height: 150px;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Substitutes Framework</h1>
+            <p>When do substitutes threaten an industry? It depends on technology AND regulation.</p>
+        </div>
+
+        <div class="matrix-container">
+            <div class="y-axis-label">Regulatory Environment</div>
+
+            <div class="y-markers">
+                <span>Permissive</span>
+                <span>Restrictive</span>
+            </div>
+
+            <div class="matrix">
+                <!-- Top-left: Permissive + Worse Tech -->
+                <div class="quadrant q-tl" tabindex="0" role="region" aria-label="Limited impact: Permissive regulation but worse technology">
+                    <h3>Permissive + Worse Tech</h3>
+                    <p>Regulation allows it, but technology isn't competitive. Substitute remains niche.</p>
+                    <span class="status">Limited Impact</span>
+                </div>
+
+                <!-- Top-right: Permissive + Better Tech = ENABLED -->
+                <div class="quadrant q-tr" tabindex="0" role="region" aria-label="Enabled substitutes: Permissive regulation and better technology">
+                    <h3>Permissive + Better Tech</h3>
+                    <p>Both conditions met. Substitute disrupts incumbent. Rapid market shift occurs.</p>
+                    <span class="status">Enabled</span>
+                    <span class="example-tag">Mobile phones, Mass timber</span>
+                </div>
+
+                <!-- Bottom-left: Restrictive + Worse Tech -->
+                <div class="quadrant q-bl" tabindex="0" role="region" aria-label="Non-threat: Restrictive regulation and worse technology">
+                    <h3>Restrictive + Worse Tech</h3>
+                    <p>Neither condition met. Substitute poses no meaningful threat to incumbents.</p>
+                    <span class="status">Non-Threat</span>
+                </div>
+
+                <!-- Bottom-right: Restrictive + Better Tech = WALLED -->
+                <div class="quadrant q-br" tabindex="0" role="region" aria-label="Walled off: Better technology blocked by restrictive regulation">
+                    <h3>Restrictive + Better Tech</h3>
+                    <p>Technology is ready, but regulation blocks adoption. Frustrated potential.</p>
+                    <span class="status">Walled Off</span>
+                    <span class="example-tag">Zero-carbon cement</span>
+                </div>
+
+                <!-- Gray Zone overlay -->
+                <div class="gray-zone" role="region" aria-label="Gray zone: Regulatory ambiguity">
+                    <h4>Gray Zone</h4>
+                    <p>Uber & Lyft</p>
+                </div>
+            </div>
+
+            <div class="axis-markers">
+                <span>Worse than Incumbent</span>
+                <span>Better than Incumbent</span>
+            </div>
+            <div class="x-axis-label">Technology Performance</div>
+        </div>
+
+        <div class="examples-grid">
+            <div class="example-card enabled">
+                <h4>Mobile Phones</h4>
+                <p><strong>Landlines</strong></p>
+                <div class="arrow">↓ disrupted by ↓</div>
+                <p><strong>Mobile phones</strong></p>
+                <p style="margin-top: 0.5rem; font-size: 0.75rem;">Better tech + permissive regulation = rapid displacement</p>
+            </div>
+
+            <div class="example-card gray">
+                <h4>Uber & Lyft</h4>
+                <p><strong>Taxis</strong></p>
+                <div class="arrow">↓ disrupted by ↓</div>
+                <p><strong>Ride-sharing apps</strong></p>
+                <p style="margin-top: 0.5rem; font-size: 0.75rem;">Exploited regulatory ambiguity between "taxi" and "technology platform"</p>
+            </div>
+
+            <div class="example-card walled">
+                <h4>Zero-Carbon Cement</h4>
+                <p><strong>Traditional cement</strong></p>
+                <div class="arrow">↓ blocked from ↓</div>
+                <p><strong>Green alternatives</strong></p>
+                <p style="margin-top: 0.5rem; font-size: 0.75rem;">Building codes require traditional materials despite better environmental tech</p>
+            </div>
+        </div>
+
+        <div class="caption">
+            <strong>Key Insight:</strong> Technology alone doesn't determine substitute success. Regulatory environment can enable rapid disruption OR wall off superior alternatives indefinitely.
+        </div>
+    </div>
+</body>
+</html>

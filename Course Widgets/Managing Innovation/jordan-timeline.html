@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Jordan Controversy</title>
+<style>
+  :root {
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --ivey-green: #034638;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .infographic {
+    background: var(--cream);
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    max-width: 960px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 20px 32px;
+    text-align: center;
+  }
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.45em;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .inf-header .subtitle {
+    color: var(--pale-sage);
+    font-size: 0.88em;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* HINT */
+  .hint {
+    text-align: center;
+    font-size: 0.8em;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 14px 32px 0;
+  }
+
+  /* HORIZONTAL TIMELINE */
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr 40px 1fr;
+    align-items: start;
+    padding: 24px 32px 32px;
+    gap: 0;
+  }
+
+  .arrow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 52px;
+  }
+
+  /* EVENT */
+  .event {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .tag {
+    font-size: 0.68em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--ivey-green);
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .tag.one   { background: var(--pale-blue); }
+  .tag.two   { background: var(--pale-sage); }
+  .tag.three { background: var(--pale-purple); }
+  .tag.four  { background: var(--pale-blue); }
+  .tag.five  { background: var(--pale-purple); }
+
+  .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid var(--ivey-green);
+    background: var(--cream);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .event.open .dot { background: var(--ivey-green); }
+
+  .event-title {
+    font-size: 0.82em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 14px 16px;
+    width: 100%;
+    border-top: 4px solid var(--pale-sage);
+    display: none;
+    margin-top: 4px;
+  }
+  .card.one   { border-top-color: var(--pale-blue); }
+  .card.two   { border-top-color: var(--pale-sage); }
+  .card.three { border-top-color: var(--pale-purple); }
+  .card.four  { border-top-color: var(--pale-blue); }
+  .card.five  { border-top-color: var(--ivey-green); }
+  .card.visible { display: block; }
+
+  .card-label {
+    font-size: 0.67em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ivey-green);
+    margin-bottom: 6px;
+  }
+
+  .card-text {
+    font-size: 0.83em;
+    color: var(--text-mid);
+    line-height: 1.65;
+  }
+
+  /* CLOSING BAR */
+  .closing-bar {
+    background: var(--pale-purple);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .closing-bar .icon { font-size: 1.2em; }
+  .closing-bar .text {
+    font-size: 0.88em;
+    color: var(--ivey-green);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="infographic">
+
+  <div class="inf-header">
+    <h1>The Jordan Controversy</h1>
+    <div class="subtitle">Select each step to read what happened</div>
+  </div>
+
+  <p class="hint">Click any step to expand</p>
+
+  <div class="timeline">
+
+    <!-- EVENT 1 -->
+    <div class="event" id="e1" onclick="toggle(1)">
+      <div class="tag one">The Brief</div>
+      <div class="dot"></div>
+      <div class="event-title">Jordan comes to e-Types</div>
+      <div class="card one" id="c1">
+        <div class="card-label">The Brief</div>
+        <div class="card-text">Jordan, a Norwegian dental products company, approached e-Types for branding work. The market was loud and cluttered. e-Types proposed doing the opposite: whispering.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+        <line x1="0" y1="9" x2="24" y2="9" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="18,4 26,9 18,14" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- EVENT 2 -->
+    <div class="event" id="e2" onclick="toggle(2)">
+      <div class="tag two">The Design</div>
+      <div class="dot"></div>
+      <div class="event-title">Black, white, and minimal</div>
+      <div class="card two" id="c2">
+        <div class="card-label">The Design</div>
+        <div class="card-text">Stark, minimal, almost no graphics. The product presented with the quiet authority of a pharmaceutical. It tested brilliantly: customers were more likely to buy and willing to pay more.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+        <line x1="0" y1="9" x2="24" y2="9" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="18,4 26,9 18,14" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- EVENT 3 -->
+    <div class="event" id="e3" onclick="toggle(3)">
+      <div class="tag three">The Problem</div>
+      <div class="dot"></div>
+      <div class="event-title">Not everyone was pleased</div>
+      <div class="card three" id="c3">
+        <div class="card-label">The Problem</div>
+        <div class="card-text">Jordan's marketing team, whose previous approach the design replaced, compiled a list of tweaks. They secured the new CEO's agreement, then brought the list to e-Types.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+        <line x1="0" y1="9" x2="24" y2="9" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="18,4 26,9 18,14" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- EVENT 4 -->
+    <div class="event" id="e4" onclick="toggle(4)">
+      <div class="tag four">The Response</div>
+      <div class="dot"></div>
+      <div class="event-title">e-Types fires their biggest client</div>
+      <div class="card four" id="c4">
+        <div class="card-label">The Response</div>
+        <div class="card-text">"We do not tweak our designs." Citing Team Danmark, e-Types refused. Jordan insisted. e-Types fired them: their biggest client, on principle, in August 2008.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+        <line x1="0" y1="9" x2="24" y2="9" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="18,4 26,9 18,14" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- EVENT 5 -->
+    <div class="event" id="e5" onclick="toggle(5)">
+      <div class="tag five">The Twist</div>
+      <div class="dot"></div>
+      <div class="event-title">One month later</div>
+      <div class="card five" id="c5">
+        <div class="card-label">The Twist</div>
+        <div class="card-text">They felt good about the decision. The only problem was that this was August 2008. One month later, Lehman Brothers filed for bankruptcy and the financial crisis began.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="closing-bar">
+    <span class="icon">💡</span>
+    <span class="text">Principled decisions do not always come with good timing. The question is what you do next.</span>
+  </div>
+
+</div>
+
+<script>
+  function toggle(n) {
+    const event = document.getElementById('e' + n);
+    const card = document.getElementById('c' + n);
+    const isOpen = card.classList.contains('visible');
+    card.classList.toggle('visible', !isOpen);
+    event.classList.toggle('open', !isOpen);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Often Do Users Innovate?</title>
+<style>
+  :root {
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --ivey-green: #034638;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .infographic {
+    width: 820px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(3,70,56,0.08);
+  }
+
+  /* HEADER */
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 22px 32px;
+    text-align: center;
+  }
+
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .inf-header .source {
+    color: var(--pale-sage);
+    font-size: 0.9em;
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  /* BODY */
+  .inf-body {
+    padding: 24px 32px 28px;
+  }
+
+  /* LEGEND + CAPTION */
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.9em;
+    color: var(--text-mid);
+    font-weight: 600;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .dot-user { background: var(--ivey-green); }
+  .dot-manufacturer { background: var(--pale-purple); border: 1px solid #c0b0d8; }
+
+  .caption {
+    font-size: 0.8em;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  /* COLUMN LABEL */
+  .col-label {
+    text-align: right;
+    font-size: 0.82em;
+    color: var(--text-light);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 14px;
+    padding-right: 4px;
+  }
+
+  /* CHART ROWS */
+  .chart-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .chart-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chart-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .row-label {
+    font-size: 0.95em;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: right;
+    padding-right: 4px;
+  }
+
+  .bar-track {
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    background: var(--cream);
+    border: 1px solid var(--border);
+  }
+
+  .bar-user {
+    background: var(--ivey-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cream);
+    font-size: 1em;
+    font-weight: 700;
+    transition: width 0.3s;
+    min-width: 0;
+  }
+
+  .bar-manufacturer {
+    background: var(--pale-purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ivey-green);
+    font-size: 1em;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  /* Zero-width segments hide label */
+  .bar-user.zero { display: none; }
+  .bar-manufacturer.zero { display: none; }
+
+  /* INSIGHT BAR */
+  .insight-bar {
+    background: var(--pale-sage);
+    border-top: 1px solid #b0c4c0;
+    padding: 13px 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .insight-label {
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+  }
+
+  .insight-divider {
+    width: 1px;
+    height: 26px;
+    background: #a0b8b4;
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .insight-content {
+    font-size: 0.9em;
+    color: var(--ivey-green);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="infographic">
+
+  <!-- HEADER -->
+  <div class="inf-header">
+    <h1>How Often Do Users Innovate?</h1>
+    <div class="source">From von Hippel's "The Sources of Innovation"</div>
+  </div>
+
+  <!-- BODY -->
+  <div class="inf-body">
+
+    <div class="meta-row">
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot dot-user"></div>
+          User
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot dot-manufacturer"></div>
+          Manufacturer
+        </div>
+      </div>
+      <div class="caption">Eric von Hippel, 1998, <em>The Sources of Innovation</em></div>
+    </div>
+
+    <div class="col-label">First device in field developed and built by:</div>
+
+    <div class="chart-rows">
+
+      <!-- Scientific Instruments: User 77%, Manufacturer 23% -->
+      <div class="chart-row">
+        <div class="row-label">Scientific Instruments</div>
+        <div class="bar-track">
+          <div class="bar-user" style="width: 77%;">77%</div>
+          <div class="bar-manufacturer" style="width: 23%;">23%</div>
+        </div>
+      </div>
+
+      <!-- Process Machinery: User 67%, Manufacturer 33% -->
+      <div class="chart-row">
+        <div class="row-label">Process Machinery</div>
+        <div class="bar-track">
+          <div class="bar-user" style="width: 67%;">67%</div>
+          <div class="bar-manufacturer" style="width: 33%;">33%</div>
+        </div>
+      </div>
+
+      <!-- Tractor Shovels: User 6%, Manufacturer 94% -->
+      <div class="chart-row">
+        <div class="row-label">Tractor Shovels</div>
+        <div class="bar-track">
+          <div class="bar-user" style="width: 6%; font-size: 0.82em;">6%</div>
+          <div class="bar-manufacturer" style="width: 94%;">94%</div>
+        </div>
+      </div>
+
+      <!-- Plastics: User 0%, Manufacturer 100% -->
+      <div class="chart-row">
+        <div class="row-label">Plastics</div>
+        <div class="bar-track">
+          <div class="bar-manufacturer" style="width: 100%;">100%</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INSIGHT BAR -->
+  <div class="insight-bar">
+    <div class="insight-label">Key Insight</div>
+    <div class="insight-divider"></div>
+    <div class="insight-content">In knowledge-intensive fields, users are often the first innovators. The closer a product is to specialized expertise, the more likely it is that users, not manufacturers, build it first.</div>
+  </div>
+
+</div>
+
+</body>
+</html>

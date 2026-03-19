@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caribbean Internet Cafe - Interactive CVP Quiz Challenge</title>
+    <style>
+        :root {
+            /* Ivey Brand Colors */
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --text-dark: #2C2C2C;
+
+            /* Functional Colors */
+            --success-color: #A4B544;
+            --error-color: #5B2C6F;
+            --warning-color: #0093A9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .progress-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--light-gray);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--bright-green) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: var(--ivey-green);
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--bright-green);
+        }
+
+        /* Calculator Section */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .calc-inputs {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--ivey-green);
+            box-shadow: 0 0 0 3px rgba(0, 89, 81, 0.1);
+        }
+
+        .calc-results {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.05) 0%, rgba(0, 147, 169, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .result-row.highlight {
+            background: var(--white);
+            padding: 12px 15px;
+            margin: 5px -15px;
+            border-radius: 6px;
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--ivey-green);
+        }
+
+        .result-label {
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: var(--ivey-green);
+        }
+
+        /* Quiz Questions */
+        .quiz-question {
+            background: var(--white);
+            border: 3px solid var(--medium-gray);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-question.answered-correct {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.05) 0%, var(--white) 100%);
+        }
+
+        .quiz-question.answered-incorrect {
+            border-color: var(--error-color);
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, var(--white) 100%);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: var(--purple);
+            color: var(--white);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .question-number.correct {
+            background: var(--success-color);
+        }
+
+        .question-number.incorrect {
+            background: var(--error-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            flex: 1;
+        }
+
+        .question-instruction {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.1) 0%, rgba(0, 147, 169, 0.05) 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--turquoise);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .answer-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-option {
+            background: var(--light-gray);
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .answer-option:hover:not(.disabled) {
+            border-color: var(--turquoise);
+            background: rgba(0, 147, 169, 0.05);
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            border-color: var(--ivey-green);
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.1) 0%, var(--white) 100%);
+        }
+
+        .answer-option.correct {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.15) 0%, var(--white) 100%);
+        }
+
+        .answer-option.incorrect {
+            border-color: var(--error-color);
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.15) 0%, var(--white) 100%);
+        }
+
+        .answer-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .answer-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .answer-option.selected .answer-radio {
+            border-color: var(--ivey-green);
+        }
+
+        .answer-option.selected .answer-radio::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--ivey-green);
+            border-radius: 50%;
+        }
+
+        .answer-option.correct .answer-radio {
+            border-color: var(--success-color);
+        }
+
+        .answer-option.correct .answer-radio::after {
+            content: '✓';
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .answer-option.incorrect .answer-radio {
+            border-color: var(--error-color);
+        }
+
+        .answer-option.incorrect .answer-radio::after {
+            content: '✗';
+            color: var(--error-color);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .answer-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            flex: 1;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.15) 0%, rgba(164, 181, 68, 0.05) 100%);
+            border: 2px solid var(--success-color);
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.15) 0%, rgba(91, 44, 111, 0.05) 100%);
+            border: 2px solid var(--error-color);
+        }
+
+        .feedback-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feedback.correct .feedback-title {
+            color: var(--success-color);
+        }
+
+        .feedback.incorrect .feedback-title {
+            color: var(--error-color);
+        }
+
+        .feedback-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--dark-gray);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:disabled {
+            background: var(--medium-gray);
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .btn-submit {
+            background: var(--ivey-green);
+            color: var(--white);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-next {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: var(--bright-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .btn-reset:hover {
+            background: var(--dark-gray);
+            color: var(--white);
+        }
+
+        /* Final Results */
+        .final-results {
+            display: none;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .final-results.show {
+            display: block;
+        }
+
+        .final-results.excellent {
+            border: 4px solid var(--success-color);
+        }
+
+        .final-results.good {
+            border: 4px solid var(--turquoise);
+        }
+
+        .final-results.needs-work {
+            border: 4px solid var(--error-color);
+        }
+
+        .final-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+            margin: 20px 0;
+        }
+
+        .final-message {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .score-item {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .score-item-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+        }
+
+        .score-item-label {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-number {
+                margin-bottom: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        *:focus-visible {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" role="banner">
+            <h1>Caribbean Internet Cafe - CVP Analysis Challenge</h1>
+            <p>Interactive Quiz: Use the calculator to analyze scenarios, then answer strategic questions</p>
+        </header>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Progress</span>
+                <span id="progressText">0 of 6 Questions Answered</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <!-- Calculator -->
+        <div class="card">
+            <h2>CVP Calculator - Use This to Solve Each Question</h2>
+            <div class="calculator-grid">
+                <div class="calc-inputs">
+                    <h3 style="margin-bottom: 15px; color: var(--purple);">Input Values</h3>
+
+                    <div class="input-group">
+                        <label for="coffeeUnits">Coffee/Beverage Units</label>
+                        <input type="number" id="coffeeUnits" value="1000" min="0" step="10" oninput="calculate()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="foodUnits">Food Item Units</label>
+                        <input type="number" id="foodUnits" value="500" min="0" step="10" oninput="calculate()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="internetUnits">Internet Access Hours</label>
+                        <input type="number" id="internetUnits" value="800" min="0" step="10" oninput="calculate()">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="fixedCosts">Monthly Fixed Costs ($)</label>
+                        <input type="number" id="fixedCosts" value="8000" min="0" step="100" oninput="calculate()">
+                    </div>
+
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                        <strong>Product Info:</strong><br>
+                        Coffee: $5 price, $1.50 VC (CM: $3.50, 70%)<br>
+                        Food: $8 price, $3.20 VC (CM: $4.80, 60%)<br>
+                        Internet: $4 price, $0.50 VC (CM: $3.50, 87.5%)
+                    </p>
+                </div>
+
+                <div class="calc-results">
+                    <h3 style="margin-bottom: 15px; color: var(--purple);">Calculated Results</h3>
+
+                    <div class="result-row">
+                        <span class="result-label">Total Revenue:</span>
+                        <span class="result-value" id="totalRevenue">$0.00</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Total Variable Costs:</span>
+                        <span class="result-value" id="totalVC">$0.00</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Contribution Margin:</span>
+                        <span class="result-value" id="totalCM">$0.00</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Fixed Costs:</span>
+                        <span class="result-value" id="fixedCostsDisplay">$0.00</span>
+                    </div>
+
+                    <div class="result-row highlight">
+                        <span class="result-label">Net Profit (Loss):</span>
+                        <span class="result-value" id="netProfit">$0.00</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">CM Ratio:</span>
+                        <span class="result-value" id="cmRatio">0.0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Questions -->
+        <div id="quizContainer">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Final Results -->
+        <div class="final-results" id="finalResults" role="alert" aria-live="polite">
+            <h2>Quiz Complete!</h2>
+            <div class="final-score" id="finalScore">0/6</div>
+            <div class="final-message" id="finalMessage"></div>
+
+            <div class="score-breakdown">
+                <div class="score-item">
+                    <div class="score-item-value" id="correctCount">0</div>
+                    <div class="score-item-label">Correct</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-item-value" id="incorrectCount">0</div>
+                    <div class="score-item-label">Incorrect</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-item-value" id="percentageScore">0%</div>
+                    <div class="score-item-label">Score</div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 30px;">
+                <button class="btn btn-submit" onclick="resetQuiz()">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product configuration
+        const products = {
+            coffee: { price: 5.00, vc: 1.50 },
+            food: { price: 8.00, vc: 3.20 },
+            internet: { price: 4.00, vc: 0.50 }
+        };
+
+        // Quiz questions
+        const questions = [
+            {
+                id: 1,
+                question: "Break-Even Analysis",
+                instruction: "Use the calculator to find a combination where Net Profit = $0 (break-even point). Which statement is TRUE about break-even?",
+                options: [
+                    { text: "At break-even, contribution margin equals variable costs", correct: false },
+                    { text: "At break-even, contribution margin equals fixed costs", correct: true },
+                    { text: "At break-even, revenue equals variable costs only", correct: false },
+                    { text: "At break-even, the business is losing money", correct: false }
+                ],
+                feedback: {
+                    correct: "Correct! At break-even, Total Contribution Margin = Fixed Costs, meaning Revenue - Variable Costs = Fixed Costs. The business covers all costs but makes no profit.",
+                    incorrect: "Not quite. At break-even, contribution margin must equal fixed costs. Try setting volumes to achieve $0 profit and observe: Total CM = $8,000 (Fixed Costs)."
+                }
+            },
+            {
+                id: 2,
+                question: "Target Profit Achievement",
+                instruction: "Adjust the calculator to achieve a Net Profit of exactly $3,000. How much total contribution margin is needed?",
+                options: [
+                    { text: "$8,000 (same as fixed costs)", correct: false },
+                    { text: "$10,000 ($8,000 fixed costs + $2,000 buffer)", correct: false },
+                    { text: "$11,000 ($8,000 fixed costs + $3,000 profit)", correct: true },
+                    { text: "$3,000 (same as target profit)", correct: false }
+                ],
+                feedback: {
+                    correct: "Excellent! Total CM = Fixed Costs + Target Profit. So $11,000 CM - $8,000 FC = $3,000 Profit. This is the fundamental CVP equation!",
+                    incorrect: "Remember: Net Profit = Total CM - Fixed Costs. To get $3,000 profit, you need CM = $8,000 (FC) + $3,000 (target) = $11,000 total."
+                }
+            },
+            {
+                id: 3,
+                question: "Product Mix Strategy",
+                instruction: "Compare the contribution margin ratios shown above. Which product should James emphasize to maximize profitability per sales dollar?",
+                options: [
+                    { text: "Coffee (70% CM ratio)", correct: false },
+                    { text: "Food (60% CM ratio)", correct: false },
+                    { text: "Internet Access (87.5% CM ratio)", correct: true },
+                    { text: "All products contribute equally", correct: false }
+                ],
+                feedback: {
+                    correct: "Perfect! Internet has the highest CM ratio (87.5%), meaning 87.5 cents of every dollar goes toward covering fixed costs and profit. It's the most efficient product.",
+                    incorrect: "Look at the CM ratios: Coffee 70%, Food 60%, Internet 87.5%. The highest ratio means the most contribution per sales dollar. Internet access is most efficient!"
+                }
+            },
+            {
+                id: 4,
+                question: "Price Increase Impact",
+                instruction: "Currently at 1000 coffee units, profit is $1,180. If coffee price increases from $5.00 to $5.50 (keeping same volume), what happens to profit?",
+                options: [
+                    { text: "Profit decreases because customers will buy less", correct: false },
+                    { text: "Profit increases by $500 (1000 units × $0.50)", correct: true },
+                    { text: "Profit stays the same because costs don't change", correct: false },
+                    { text: "Profit increases by $1,680", correct: false }
+                ],
+                feedback: {
+                    correct: "Correct! Each $0.50 price increase on 1000 units = $500 additional contribution margin, which flows directly to profit (since fixed costs stay the same). New profit: $1,680.",
+                    incorrect: "Price increase affects contribution margin directly. With 1000 coffee units, each $0.50 increase adds $500 to CM and profit: $1,180 + $500 = $1,680."
+                }
+            },
+            {
+                id: 5,
+                question: "Cost Reduction Analysis",
+                instruction: "If James negotiates rent down from $2,500 to $2,000 (reducing total fixed costs from $8,000 to $7,500), how does this affect profit?",
+                options: [
+                    { text: "Profit increases by exactly $500", correct: true },
+                    { text: "Profit increases by more than $500", correct: false },
+                    { text: "Profit increases by less than $500", correct: false },
+                    { text: "No impact on profit, only cash flow", correct: false }
+                ],
+                feedback: {
+                    correct: "Perfect! Fixed cost reduction flows directly to profit dollar-for-dollar. Reducing FC by $500 increases profit by exactly $500 (from $1,180 to $1,680).",
+                    incorrect: "Fixed cost reductions impact profit directly and proportionally. A $500 reduction in fixed costs increases profit by exactly $500, since revenue and variable costs don't change."
+                }
+            },
+            {
+                id: 6,
+                question: "Strategic Decision Making",
+                instruction: "Food has the highest absolute CM ($4.80), but internet has the highest CM ratio (87.5%). Which should James emphasize and why?",
+                options: [
+                    { text: "Focus only on food because it generates the most profit per unit", correct: false },
+                    { text: "Focus only on internet because it has the highest efficiency", correct: false },
+                    { text: "A balanced mix is best - each product serves different strategic purposes", correct: true },
+                    { text: "Drop coffee entirely and focus on food and internet", correct: false }
+                ],
+                feedback: {
+                    correct: "Excellent strategic thinking! A balanced mix leverages: coffee for traffic/volume, food for highest dollar margins, and internet for efficiency with minimal VC. Diversification reduces risk.",
+                    incorrect: "While food has highest absolute CM and internet has highest CM ratio, a balanced approach is optimal. Coffee drives traffic, food maximizes margins, internet adds efficient revenue."
+                }
+            }
+        ];
+
+        // State
+        let currentAnswers = {};
+        let questionsAnswered = 0;
+
+        // Initialize
+        function init() {
+            calculate();
+            renderQuestions();
+        }
+
+        // Calculate CVP
+        function calculate() {
+            const coffeeUnits = parseFloat(document.getElementById('coffeeUnits').value) || 0;
+            const foodUnits = parseFloat(document.getElementById('foodUnits').value) || 0;
+            const internetUnits = parseFloat(document.getElementById('internetUnits').value) || 0;
+            const fixedCosts = parseFloat(document.getElementById('fixedCosts').value) || 0;
+
+            const coffeeRev = coffeeUnits * products.coffee.price;
+            const foodRev = foodUnits * products.food.price;
+            const internetRev = internetUnits * products.internet.price;
+            const totalRevenue = coffeeRev + foodRev + internetRev;
+
+            const coffeeVC = coffeeUnits * products.coffee.vc;
+            const foodVC = foodUnits * products.food.vc;
+            const internetVC = internetUnits * products.internet.vc;
+            const totalVC = coffeeVC + foodVC + internetVC;
+
+            const totalCM = totalRevenue - totalVC;
+            const netProfit = totalCM - fixedCosts;
+            const cmRatio = totalRevenue > 0 ? (totalCM / totalRevenue) * 100 : 0;
+
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('totalVC').textContent = formatCurrency(totalVC);
+            document.getElementById('totalCM').textContent = formatCurrency(totalCM);
+            document.getElementById('fixedCostsDisplay').textContent = formatCurrency(fixedCosts);
+            document.getElementById('netProfit').textContent = formatCurrency(netProfit);
+            document.getElementById('cmRatio').textContent = cmRatio.toFixed(1) + '%';
+
+            // Color code profit
+            const profitElement = document.getElementById('netProfit');
+            if (netProfit > 0) {
+                profitElement.style.color = 'var(--success-color)';
+            } else if (netProfit < 0) {
+                profitElement.style.color = 'var(--error-color)';
+            } else {
+                profitElement.style.color = 'var(--turquoise)';
+            }
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '$' + amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Render questions
+        function renderQuestions() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = questions.map(q => `
+                <div class="quiz-question" id="question-${q.id}">
+                    <div class="question-header">
+                        <div class="question-number" id="number-${q.id}">${q.id}</div>
+                        <div class="question-text">Question ${q.id}: ${q.question}</div>
+                    </div>
+
+                    <div class="question-instruction">${q.instruction}</div>
+
+                    <div class="answer-options" id="options-${q.id}">
+                        ${q.options.map((opt, index) => `
+                            <div class="answer-option"
+                                 data-question="${q.id}"
+                                 data-index="${index}"
+                                 data-correct="${opt.correct}"
+                                 onclick="selectAnswer(${q.id}, ${index})"
+                                 onkeydown="handleKeyDown(event, ${q.id}, ${index})"
+                                 role="radio"
+                                 aria-checked="false"
+                                 tabindex="0">
+                                <div class="answer-radio"></div>
+                                <div class="answer-text">${opt.text}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-submit"
+                                id="submit-${q.id}"
+                                onclick="submitAnswer(${q.id})"
+                                disabled>
+                            Submit Answer
+                        </button>
+                    </div>
+
+                    <div class="feedback" id="feedback-${q.id}"></div>
+                </div>
+            `).join('');
+        }
+
+        // Select answer
+        function selectAnswer(questionId, optionIndex) {
+            const optionsContainer = document.getElementById(`options-${questionId}`);
+            const options = optionsContainer.querySelectorAll('.answer-option');
+
+            // Clear previous selection
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
+            });
+
+            // Select new option
+            options[optionIndex].classList.add('selected');
+            options[optionIndex].setAttribute('aria-checked', 'true');
+
+            // Store selection
+            currentAnswers[questionId] = optionIndex;
+
+            // Enable submit button
+            document.getElementById(`submit-${questionId}`).disabled = false;
+        }
+
+        // Handle keyboard
+        function handleKeyDown(event, questionId, optionIndex) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                selectAnswer(questionId, optionIndex);
+            }
+        }
+
+        // Submit answer
+        function submitAnswer(questionId) {
+            const question = questions.find(q => q.id === questionId);
+            const selectedIndex = currentAnswers[questionId];
+            const selectedOption = question.options[selectedIndex];
+
+            const optionsContainer = document.getElementById(`options-${questionId}`);
+            const options = optionsContainer.querySelectorAll('.answer-option');
+            const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+            const questionCard = document.getElementById(`question-${questionId}`);
+            const numberBadge = document.getElementById(`number-${questionId}`);
+
+            // Disable all options
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.style.pointerEvents = 'none';
+            });
+
+            // Show correct/incorrect
+            options.forEach((opt, index) => {
+                const isCorrect = question.options[index].correct;
+                if (isCorrect) {
+                    opt.classList.add('correct');
+                }
+                if (index === selectedIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            const isCorrect = selectedOption.correct;
+            feedbackDiv.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackDiv.innerHTML = `
+                <div class="feedback-title">${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</div>
+                <div class="feedback-text">${isCorrect ? question.feedback.correct : question.feedback.incorrect}</div>
+            `;
+
+            // Update question styling
+            questionCard.classList.add(isCorrect ? 'answered-correct' : 'answered-incorrect');
+            numberBadge.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            // Disable submit button
+            document.getElementById(`submit-${questionId}`).disabled = true;
+
+            // Update progress
+            questionsAnswered++;
+            updateProgress();
+
+            // Check if all answered
+            if (questionsAnswered === questions.length) {
+                setTimeout(showFinalResults, 1000);
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const percentage = (questionsAnswered / questions.length) * 100;
+            document.getElementById('progressText').textContent = `${questionsAnswered} of ${questions.length} Questions Answered`;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = Math.round(percentage) + '%';
+            document.getElementById('progressFill').parentElement.setAttribute('aria-valuenow', percentage);
+        }
+
+        // Show final results
+        function showFinalResults() {
+            let correctCount = 0;
+            questions.forEach(q => {
+                const selectedIndex = currentAnswers[q.id];
+                if (q.options[selectedIndex].correct) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = (correctCount / questions.length) * 100;
+            const resultsDiv = document.getElementById('finalResults');
+
+            document.getElementById('finalScore').textContent = `${correctCount}/${questions.length}`;
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('incorrectCount').textContent = questions.length - correctCount;
+            document.getElementById('percentageScore').textContent = Math.round(percentage) + '%';
+
+            let className = 'needs-work';
+            let message = '';
+
+            if (percentage === 100) {
+                className = 'excellent';
+                message = '🎉 Perfect Score! You have mastered CVP analysis concepts. Excellent work understanding break-even, target profit, product mix, and strategic decision-making!';
+            } else if (percentage >= 70) {
+                className = 'good';
+                message = '✓ Great Job! You have a solid understanding of CVP analysis. Review the questions you missed to strengthen your knowledge further.';
+            } else {
+                className = 'needs-work';
+                message = '📚 Keep Learning! CVP analysis takes practice. Review the feedback for each question and try the quiz again to improve your understanding.';
+            }
+
+            resultsDiv.className = `final-results show ${className}`;
+            document.getElementById('finalMessage').textContent = message;
+
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            currentAnswers = {};
+            questionsAnswered = 0;
+            document.getElementById('finalResults').classList.remove('show');
+            document.getElementById('coffeeUnits').value = 1000;
+            document.getElementById('foodUnits').value = 500;
+            document.getElementById('internetUnits').value = 800;
+            document.getElementById('fixedCosts').value = 8000;
+            calculate();
+            renderQuestions();
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

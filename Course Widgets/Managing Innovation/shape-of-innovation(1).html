@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shape of Innovation</title>
+<style>
+  :root {
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --ivey-green: #034638;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .infographic {
+    width: 960px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(3,70,56,0.08);
+  }
+
+  /* HEADER */
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 20px 32px;
+    text-align: center;
+  }
+
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.5em;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  /* TWO COLUMN BODY */
+  .inf-body {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0;
+    padding: 32px 28px;
+    align-items: start;
+  }
+
+  .divider-line {
+    background: var(--border);
+    align-self: stretch;
+    margin: 0 4px;
+  }
+
+  /* COLUMN HEADERS */
+  .col-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .col-title {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    margin-bottom: 4px;
+  }
+
+  .col-subtitle {
+    font-size: 0.88em;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+  }
+
+  /* ===================== LEFT: ITERATIVE CYCLE ===================== */
+  .cycle-area {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 24px auto 16px;
+  }
+
+  /* The circular arrow path drawn with SVG */
+  .cycle-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* Node circles */
+  .cycle-node {
+    position: absolute;
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.76em;
+    font-weight: 600;
+    color: var(--ivey-green);
+    line-height: 1.3;
+    border: 2px solid transparent;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+  }
+
+  .node-top {
+    background: var(--pale-blue);
+    border-color: #9dd4d6;
+    top: 14%;
+    left: 50%;
+  }
+
+  .node-right {
+    background: var(--cream);
+    border-color: var(--border);
+    top: 50%;
+    left: 84%;
+  }
+
+  .node-bottom {
+    background: var(--pale-sage);
+    border-color: #a8c0bb;
+    top: 84%;
+    left: 50%;
+  }
+
+  .node-left {
+    background: var(--pale-purple);
+    border-color: #c0b0d8;
+    top: 50%;
+    left: 16%;
+  }
+
+  .source-label {
+    text-align: center;
+    font-size: 0.82em;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  /* ===================== RIGHT: SEQUENTIAL FLOW ===================== */
+  .seq-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 24px auto 16px;
+    width: fit-content;
+  }
+
+  .seq-node {
+    width: 220px;
+    padding: 11px 16px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--ivey-green);
+    border: 1.5px solid transparent;
+  }
+
+  .seq-node-1 { background: var(--pale-purple); border-color: #c0b0d8; }
+  .seq-node-2 { background: var(--cream); border-color: var(--border); }
+  .seq-node-3 { background: var(--pale-sage); border-color: #a8c0bb; }
+  .seq-node-4 { background: var(--pale-blue); border-color: #9dd4d6; }
+  .seq-node-5 { background: var(--pale-sage); border-color: #a8c0bb; opacity: 0.75; }
+
+  .seq-node-final {
+    width: 140px;
+    padding: 11px 16px;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 0.95em;
+    font-weight: 700;
+    background: var(--ivey-green);
+    color: var(--cream);
+    margin-top: 0;
+  }
+
+  .seq-arrow {
+    font-size: 1.1em;
+    color: var(--ivey-green);
+    opacity: 0.35;
+    line-height: 1;
+    padding: 3px 0;
+  }
+
+  /* INSIGHT TAGS */
+  .insight-tag {
+    display: inline-block;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85em;
+    color: var(--text-mid);
+    text-align: center;
+    margin: 8px auto 0;
+    display: block;
+    width: fit-content;
+  }
+
+  /* BOTTOM INSIGHT BAR */
+  .insight-bar {
+    background: var(--pale-purple);
+    border-top: 1px solid #c8bdd8;
+    padding: 14px 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .insight-label {
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #3a2a5a;
+    white-space: nowrap;
+  }
+
+  .insight-divider {
+    width: 1px;
+    height: 28px;
+    background: #b8add0;
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .insight-content {
+    font-size: 0.92em;
+    color: #2a1a4a;
+    line-height: 1.5;
+  }
+
+  .col-panel {
+    padding: 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="infographic">
+
+  <!-- HEADER -->
+  <div class="inf-header">
+    <h1>The "Shape" of Innovation</h1>
+  </div>
+
+  <!-- BODY -->
+  <div class="inf-body">
+
+    <!-- LEFT: ITERATIVE -->
+    <div class="col-panel">
+      <div class="col-header">
+        <div class="col-title">Iterative</div>
+        <div class="col-subtitle">Continuous cycles of learning</div>
+      </div>
+
+      <div class="cycle-area">
+        <!-- Circular arrow SVG -->
+        <svg class="cycle-svg" viewBox="0 0 280 280">
+          <!-- Circle path for arrows -->
+          <path d="M 140 40 A 100 100 0 0 1 240 140" fill="none" stroke="#c0d1cd" stroke-width="2.5" marker-end="url(#arrowSage)"/>
+          <path d="M 240 140 A 100 100 0 0 1 140 240" fill="none" stroke="#c0d1cd" stroke-width="2.5" marker-end="url(#arrowSage)"/>
+          <path d="M 140 240 A 100 100 0 0 1 40 140" fill="none" stroke="#c0d1cd" stroke-width="2.5" marker-end="url(#arrowSage)"/>
+          <path d="M 40 140 A 100 100 0 0 1 140 40" fill="none" stroke="#c0d1cd" stroke-width="2.5" marker-end="url(#arrowSage)"/>
+
+          <defs>
+            <marker id="arrowSage" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#c0d1cd"/>
+            </marker>
+          </defs>
+        </svg>
+
+        <div class="cycle-node node-top">Generate<br>Product</div>
+        <div class="cycle-node node-right">Expose<br>Customer<br>to Product</div>
+        <div class="cycle-node node-bottom">Conversation<br>with Customer<br>about Product</div>
+        <div class="cycle-node node-left">Repeat<br>&amp; Refine</div>
+      </div>
+
+      <p class="source-label">Software Development at Trilogy</p>
+      <span class="insight-tag">Each cycle deepens understanding</span>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider-line"></div>
+
+    <!-- RIGHT: SEQUENTIAL -->
+    <div class="col-panel">
+      <div class="col-header">
+        <div class="col-title">Not Sequential</div>
+        <div class="col-subtitle">Linear handoffs, no return</div>
+      </div>
+
+      <div class="seq-flow">
+        <div class="seq-node seq-node-1">Concept Generation</div>
+        <div class="seq-arrow">↓</div>
+        <div class="seq-node seq-node-2">Product Planning</div>
+        <div class="seq-arrow">↓</div>
+        <div class="seq-node seq-node-3">Product Engineering</div>
+        <div class="seq-arrow">↓</div>
+        <div class="seq-node seq-node-4">Process Engineering</div>
+        <div class="seq-arrow">↓</div>
+        <div class="seq-node seq-node-5">Production Process</div>
+        <div class="seq-arrow">↓</div>
+        <div class="seq-node-final">Product</div>
+      </div>
+
+      <p class="source-label" style="margin-top:14px;">Clark and Fujimoto's Description of the Automaking Process</p>
+      <span class="insight-tag">Each stage hands off, never returns</span>
+    </div>
+
+  </div>
+
+  <!-- INSIGHT BAR -->
+  <div class="insight-bar">
+    <div class="insight-label">Key Insight</div>
+    <div class="insight-divider"></div>
+    <div class="insight-content">Innovation is iterative by nature: each cycle with customers reveals what the next version should become. Sequential models move forward but never learn backward.</div>
+  </div>
+
+</div>
+
+</body>
+</html>

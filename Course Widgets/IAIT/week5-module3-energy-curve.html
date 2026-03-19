@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformation Energy Curve</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ─── Base ──────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #374151;
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .container {
+      width: 760px;
+      padding: 12px 16px;
+    }
+
+    /* ─── Two-Column Layout ────────────────────────────── */
+    .layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .chart-col {
+      flex: 0 0 54%;
+      min-width: 0;
+    }
+
+    .detail-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ─── SVG Chart ────────────────────────────────────── */
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .chart-wrapper svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .axis-label {
+      font-size: 10px;
+      font-weight: 600;
+      fill: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .curve-path {
+      fill: none;
+      stroke: #1a1a1a;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .curve-fill {
+      fill: url(#curveGradient);
+      opacity: 0.12;
+    }
+
+    .grid-line {
+      stroke: #e5e7eb;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    /* Phase dots */
+    .phase-dot {
+      cursor: pointer;
+      transition: r 0.15s ease;
+    }
+
+    .phase-dot circle {
+      fill: #ffffff;
+      stroke: #1a1a1a;
+      stroke-width: 2;
+      transition: all 0.15s ease;
+    }
+
+    .phase-dot:hover circle,
+    .phase-dot.active circle {
+      r: 8;
+    }
+
+    .phase-dot.active circle {
+      fill: #1a1a1a;
+    }
+
+    .phase-dot:focus { outline: none; }
+    .phase-dot:focus circle { stroke: #2563eb; stroke-width: 3; }
+
+    /* Phase labels on chart */
+    .phase-label-group { cursor: pointer; }
+    .phase-label-group text { font-family: 'Inter', sans-serif; }
+
+    .phase-label-num {
+      font-size: 9px;
+      font-weight: 700;
+      fill: #9ca3af;
+      letter-spacing: 0.6px;
+    }
+
+    .phase-label-name {
+      font-size: 11px;
+      font-weight: 600;
+      fill: #6b7280;
+    }
+
+    .phase-label-name.active {
+      fill: #1a1a1a;
+      text-decoration: underline;
+    }
+
+    /* Instruction */
+    .instruction {
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* ─── Detail Panel ─────────────────────────────────── */
+    .phase-panel {
+      display: none;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      animation: panelFadeIn 0.2s ease;
+    }
+
+    .phase-panel.visible {
+      display: block;
+    }
+
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      padding: 12px 16px 10px;
+      background: #1a1a1a;
+    }
+
+    .panel-header-meta {
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+
+    .panel-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1px;
+    }
+
+    .panel-header .panel-tagline {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.65);
+    }
+
+    /* Panel sections (stacked vertically in narrow column) */
+    .panel-section {
+      padding: 10px 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .panel-section:last-child {
+      border-bottom: none;
+    }
+
+    .panel-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .panel-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .panel-section ul li {
+      font-size: 11.5px;
+      color: #374151;
+      line-height: 1.5;
+      padding: 2px 0 2px 12px;
+      position: relative;
+    }
+
+    .panel-section ul li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 5px;
+      height: 2px;
+      background: #9ca3af;
+      border-radius: 1px;
+    }
+
+    /* Risk callout */
+    .panel-risk {
+      font-size: 11.5px;
+      font-weight: 400;
+      color: #374151;
+      line-height: 1.5;
+      padding: 8px 10px;
+      background: #f9fafb;
+      border-left: 3px solid #e5e7eb;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .panel-risk strong {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #6b7280;
+      margin-bottom: 3px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 280px;
+      border: 1px dashed #e5e7eb;
+      border-radius: 8px;
+      color: #9ca3af;
+      font-size: 12px;
+      text-align: center;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    /* ─── Screen reader only ───────────────────────────── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* ─── Responsive ───────────────────────────────────── */
+    @media (max-width: 700px) {
+      .layout { flex-direction: column; }
+      .chart-col { flex: none; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div aria-live="polite" aria-atomic="true" class="sr-only" id="sr-announcement"></div>
+
+    <div class="layout">
+
+      <!-- ── Left: Chart ─────────────────────────────────── -->
+      <div class="chart-col">
+        <div class="chart-wrapper" role="img" aria-label="Transformation Energy Curve: four phases from Launch through Reality Sets In and The Messy Middle to Traction">
+          <svg viewBox="0 0 380 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1a1a1a" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#1a1a1a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Axes -->
+            <line x1="42" y1="218" x2="42" y2="12" stroke="#e5e7eb" stroke-width="1.2"/>
+            <polygon points="42,7 39,15 45,15" fill="#e5e7eb"/>
+            <line x1="42" y1="218" x2="365" y2="218" stroke="#e5e7eb" stroke-width="1.2"/>
+            <polygon points="370,218 362,215 362,221" fill="#e5e7eb"/>
+
+            <!-- Axis labels -->
+            <text transform="rotate(-90,14,115)" x="14" y="115" text-anchor="middle" class="axis-label">Energy</text>
+            <text x="365" y="236" text-anchor="end" class="axis-label">Time</text>
+
+            <!-- Grid lines -->
+            <line x1="42" y1="70" x2="365" y2="70" class="grid-line"/>
+            <line x1="42" y1="144" x2="365" y2="144" class="grid-line"/>
+
+            <!-- Scale labels -->
+            <text x="34" y="74" text-anchor="end" font-family="Inter,sans-serif" font-size="9" fill="#d1d5db">High</text>
+            <text x="34" y="148" text-anchor="end" font-family="Inter,sans-serif" font-size="9" fill="#d1d5db">Low</text>
+
+            <!-- Area fill -->
+            <path class="curve-fill"
+              d="M 84,49
+                 C 122,49 145,94 171,140
+                 C 202,190 228,204 259,204
+                 C 293,204 319,129 346,60
+                 L 346,218
+                 L 84,218 Z"/>
+
+            <!-- Curve -->
+            <path class="curve-path"
+              d="M 84,49
+                 C 122,49 145,94 171,140
+                 C 202,190 228,204 259,204
+                 C 293,204 319,129 346,60"/>
+
+            <!-- Phase 1: Launch (above dot) -->
+            <g class="phase-label-group" id="label-1"
+               onclick="selectPhase(1)" onkeydown="handleKey(event,1)"
+               tabindex="0" role="button" aria-pressed="false"
+               aria-label="Phase 1: Launch">
+              <text x="84" y="30" text-anchor="middle" class="phase-label-num">PHASE 1</text>
+              <text x="84" y="42" text-anchor="middle" class="phase-label-name" id="pname-1">Launch</text>
+            </g>
+
+            <!-- Phase 2: Reality Sets In (below-left of dot) -->
+            <g class="phase-label-group" id="label-2"
+               onclick="selectPhase(2)" onkeydown="handleKey(event,2)"
+               tabindex="0" role="button" aria-pressed="false"
+               aria-label="Phase 2: Reality Sets In">
+              <text x="158" y="160" text-anchor="end" class="phase-label-num">PHASE 2</text>
+              <text x="158" y="172" text-anchor="end" class="phase-label-name" id="pname-2">Reality Sets In</text>
+            </g>
+
+            <!-- Phase 3: The Messy Middle (below axis) -->
+            <g class="phase-label-group" id="label-3"
+               onclick="selectPhase(3)" onkeydown="handleKey(event,3)"
+               tabindex="0" role="button" aria-pressed="false"
+               aria-label="Phase 3: The Messy Middle">
+              <text x="259" y="234" text-anchor="middle" class="phase-label-num">PHASE 3</text>
+              <text x="259" y="246" text-anchor="middle" class="phase-label-name" id="pname-3">The Messy Middle</text>
+            </g>
+
+            <!-- Phase 4: Traction (above dot) -->
+            <g class="phase-label-group" id="label-4"
+               onclick="selectPhase(4)" onkeydown="handleKey(event,4)"
+               tabindex="0" role="button" aria-pressed="false"
+               aria-label="Phase 4: Traction">
+              <text x="346" y="42" text-anchor="middle" class="phase-label-num">PHASE 4</text>
+              <text x="346" y="54" text-anchor="middle" class="phase-label-name" id="pname-4">Traction</text>
+            </g>
+
+            <!-- Phase dots -->
+            <g class="phase-dot" id="dot-1" onclick="selectPhase(1)" tabindex="-1" role="presentation" aria-hidden="true">
+              <circle cx="84" cy="49" r="6"/>
+            </g>
+            <g class="phase-dot" id="dot-2" onclick="selectPhase(2)" tabindex="-1" role="presentation" aria-hidden="true">
+              <circle cx="171" cy="140" r="6"/>
+            </g>
+            <g class="phase-dot" id="dot-3" onclick="selectPhase(3)" tabindex="-1" role="presentation" aria-hidden="true">
+              <circle cx="259" cy="204" r="6"/>
+            </g>
+            <g class="phase-dot" id="dot-4" onclick="selectPhase(4)" tabindex="-1" role="presentation" aria-hidden="true">
+              <circle cx="346" cy="60" r="6"/>
+            </g>
+
+          </svg>
+        </div>
+        <p class="instruction" id="chart-instruction">Select a phase to see details.</p>
+      </div>
+
+      <!-- ── Right: Detail Panel ─────────────────────────── -->
+      <div class="detail-col">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          Click a phase marker on the curve to explore characteristics, risks, and leadership actions.
+        </div>
+
+        <!-- Phase 1: Launch -->
+        <div class="phase-panel" id="panel-1" role="region" aria-label="Phase 1: Launch details">
+          <div class="panel-header">
+            <div class="panel-header-meta">Phase 1</div>
+            <h2>Launch</h2>
+            <p class="panel-tagline">High enthusiasm — momentum feels unstoppable</p>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Characteristics</div>
+            <ul>
+              <li>People energized by the vision</li>
+              <li>Investment committed, teams assembled</li>
+              <li>Strong senior sponsorship visible</li>
+            </ul>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Risk</div>
+            <div class="panel-risk">
+              <strong>Unrealistic expectations</strong>
+              The gap between expectation and reality fuels later disillusionment.
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Leadership Actions</div>
+            <ul>
+              <li>Set honest expectations about the messy middle ahead</li>
+              <li>Establish early win milestones to anchor momentum</li>
+              <li>Build governance structures before you need them</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 2: Reality Sets In -->
+        <div class="phase-panel" id="panel-2" role="region" aria-label="Phase 2: Reality Sets In details">
+          <div class="panel-header">
+            <div class="panel-header-meta">Phase 2</div>
+            <h2>Reality Sets In</h2>
+            <p class="panel-tagline">First obstacles emerge — progress stalls</p>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Characteristics</div>
+            <ul>
+              <li>Integration problems surface</li>
+              <li>Capability gaps become visible</li>
+              <li>Political resistance emerges</li>
+              <li>Timeline slippage begins</li>
+            </ul>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Risk</div>
+            <div class="panel-risk">
+              <strong>Eroding enthusiasm</strong>
+              Quick wins prove elusive and early supporters grow frustrated.
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Leadership Actions</div>
+            <ul>
+              <li>Communicate obstacles transparently</li>
+              <li>Celebrate any wins, however small</li>
+              <li>Reaffirm commitment publicly and visibly</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 3: The Messy Middle -->
+        <div class="phase-panel" id="panel-3" role="region" aria-label="Phase 3: The Messy Middle details">
+          <div class="panel-header">
+            <div class="panel-header-meta">Phase 3</div>
+            <h2>The Messy Middle</h2>
+            <p class="panel-tagline">Energy lowest, doubt peaks — most fail here</p>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Three Forces Converge</div>
+            <ul>
+              <li>Initial optimism fades as reality proves slower and messier</li>
+              <li>Hidden obstacles surface during execution</li>
+              <li>Competing priorities pull attention away</li>
+            </ul>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Risk</div>
+            <div class="panel-risk">
+              <strong>Transformation abandoned</strong>
+              Not because the vision was wrong, but because leadership didn't sustain momentum.
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Leadership Actions</div>
+            <ul>
+              <li>Protect transformation resources fiercely</li>
+              <li>Refresh the "why" — reconnect people to purpose</li>
+              <li>Model resilience; your tone sets organizational tone</li>
+              <li>Address obstacles transparently, not defensively</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 4: Traction -->
+        <div class="phase-panel" id="panel-4" role="region" aria-label="Phase 4: Traction details">
+          <div class="panel-header">
+            <div class="panel-header-meta">Phase 4</div>
+            <h2>Traction</h2>
+            <p class="panel-tagline">Results visible, skeptics convert</p>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Characteristics</div>
+            <ul>
+              <li>Early adopters succeed and share stories</li>
+              <li>Evidence accumulates; skeptics convert</li>
+              <li>Momentum rebuilds and accelerates</li>
+              <li>Transformation becomes self-sustaining</li>
+            </ul>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Note</div>
+            <div class="panel-risk">
+              <strong>Reached only by navigating the valley</strong>
+              Organizations that panic in Phase 3 never reach this stage.
+            </div>
+          </div>
+          <div class="panel-section">
+            <div class="panel-section-label">Leadership Actions</div>
+            <ul>
+              <li>Document and share success stories broadly</li>
+              <li>Codify what worked into organizational practices</li>
+              <li>Shift from active pushing to shaping and steering</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /.detail-col -->
+    </div><!-- /.layout -->
+  </div><!-- /.container -->
+
+  <script>
+    var activePhase = null;
+
+    var phaseNames = {
+      1: 'Launch',
+      2: 'Reality Sets In',
+      3: 'The Messy Middle',
+      4: 'Traction'
+    };
+
+    function selectPhase(n) {
+      if (activePhase === n) {
+        deselect();
+        return;
+      }
+
+      activePhase = n;
+
+      // Update dots and labels
+      for (var i = 1; i <= 4; i++) {
+        var dot = document.getElementById('dot-' + i);
+        var label = document.getElementById('label-' + i);
+        var pname = document.getElementById('pname-' + i);
+
+        if (i === n) {
+          dot.classList.add('active');
+          label.setAttribute('aria-pressed', 'true');
+          pname.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+          label.setAttribute('aria-pressed', 'false');
+          pname.classList.remove('active');
+        }
+      }
+
+      // Show correct panel
+      document.getElementById('empty-state').style.display = 'none';
+      for (var j = 1; j <= 4; j++) {
+        var panel = document.getElementById('panel-' + j);
+        if (j === n) {
+          panel.classList.add('visible');
+        } else {
+          panel.classList.remove('visible');
+        }
+      }
+
+      document.getElementById('chart-instruction').textContent =
+        'Phase ' + n + ': ' + phaseNames[n] + '. Click again to collapse.';
+
+      announce('Phase ' + n + ' selected: ' + phaseNames[n]);
+    }
+
+    function deselect() {
+      activePhase = null;
+
+      for (var i = 1; i <= 4; i++) {
+        document.getElementById('dot-' + i).classList.remove('active');
+        document.getElementById('label-' + i).setAttribute('aria-pressed', 'false');
+        document.getElementById('pname-' + i).classList.remove('active');
+        document.getElementById('panel-' + i).classList.remove('visible');
+      }
+
+      document.getElementById('empty-state').style.display = 'flex';
+      document.getElementById('chart-instruction').textContent =
+        'Select a phase to see details.';
+
+      announce('Phase deselected.');
+    }
+
+    function handleKey(event, n) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectPhase(n);
+      }
+    }
+
+    function announce(message) {
+      var el = document.getElementById('sr-announcement');
+      el.textContent = '';
+      setTimeout(function() { el.textContent = message; }, 50);
+    }
+  </script>
+</body>
+</html>

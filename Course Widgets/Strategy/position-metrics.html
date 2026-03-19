@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Position Metrics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Widget-specific colors */
+            --color-high-end: #6b9085;
+            --color-mid-market: #d4a574;
+            --color-price-sensitive: #7a9cc6;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .position-card {
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .position-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .position-header {
+            padding: 1.25rem;
+            color: white;
+            text-align: center;
+        }
+
+        .position-header.high-end {
+            background: var(--color-high-end);
+        }
+
+        .position-header.mid-market {
+            background: var(--color-mid-market);
+        }
+
+        .position-header.price-sensitive {
+            background: var(--color-price-sensitive);
+        }
+
+        .position-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .position-header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .metrics {
+            padding: 1.25rem;
+        }
+
+        .metric {
+            margin-bottom: 1.25rem;
+        }
+
+        .metric:last-child {
+            margin-bottom: 0;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label span {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .metric-label strong {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-bar {
+            height: 8px;
+            background: var(--color-neutral-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .metric-fill.high-end {
+            background: var(--color-high-end);
+        }
+
+        .metric-fill.mid-market {
+            background: var(--color-mid-market);
+        }
+
+        .metric-fill.price-sensitive {
+            background: var(--color-price-sensitive);
+        }
+
+        .risk-tag {
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+        }
+
+        .risk-tag strong {
+            color: var(--color-neutral-900);
+        }
+
+        .comparison-table {
+            margin-top: 2rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: var(--color-neutral-50);
+            padding: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .comparison-table th:first-child {
+            width: 30%;
+        }
+
+        .comparison-table td {
+            padding: 0.875rem 1rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--color-neutral-100);
+            vertical-align: top;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table .highlight-high {
+            background: rgba(107, 144, 133, 0.1);
+            font-weight: 600;
+        }
+
+        .comparison-table .highlight-warning {
+            background: rgba(212, 165, 116, 0.15);
+            font-weight: 600;
+        }
+
+        .caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .positions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-table {
+                overflow-x: auto;
+            }
+
+            .comparison-table table {
+                min-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Strategic Position Metrics</h1>
+            <p>Each position has distinct frequency, margins, and risk profiles</p>
+        </div>
+
+        <div class="positions-grid">
+            <!-- High-End -->
+            <div class="position-card" tabindex="0" role="region" aria-label="High-End Position Metrics">
+                <div class="position-header high-end">
+                    <h2>High-End</h2>
+                    <p>Premium performance, premium price</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Market Frequency</span>
+                            <strong>20-25%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill high-end" style="width: 22%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Gross Margins</span>
+                            <strong>25-40%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill high-end" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Exit Rate</span>
+                            <strong>8-12%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill high-end" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div class="risk-tag">
+                        <strong>Primary Risk:</strong> Commodification
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mid-Market -->
+            <div class="position-card" tabindex="0" role="region" aria-label="Mid-Market Position Metrics">
+                <div class="position-header mid-market">
+                    <h2>Mid-Market</h2>
+                    <p>Balanced performance and cost</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Market Frequency</span>
+                            <strong>50-60%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill mid-market" style="width: 55%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Gross Margins</span>
+                            <strong>15-25%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill mid-market" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Exit Rate</span>
+                            <strong>15-20%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill mid-market" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="risk-tag">
+                        <strong>Primary Risk:</strong> Strategic Drift
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price-Sensitive -->
+            <div class="position-card" tabindex="0" role="region" aria-label="Price-Sensitive Position Metrics">
+                <div class="position-header price-sensitive">
+                    <h2>Price-Sensitive</h2>
+                    <p>Maximum efficiency, lowest cost</p>
+                </div>
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Market Frequency</span>
+                            <strong>15-20%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill price-sensitive" style="width: 18%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Gross Margins</span>
+                            <strong>8-15%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill price-sensitive" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">
+                            <span>Exit Rate</span>
+                            <strong>10-15%</strong>
+                        </div>
+                        <div class="metric-bar">
+                            <div class="metric-fill price-sensitive" style="width: 32%"></div>
+                        </div>
+                    </div>
+                    <div class="risk-tag">
+                        <strong>Primary Risk:</strong> Nowhere to Hide
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>High-End</th>
+                        <th>Mid-Market</th>
+                        <th>Price-Sensitive</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Market Frequency</td>
+                        <td>20-25%</td>
+                        <td class="highlight-warning">50-60% (most crowded)</td>
+                        <td>15-20%</td>
+                    </tr>
+                    <tr>
+                        <td>Gross Margins</td>
+                        <td class="highlight-high">25-40% (highest)</td>
+                        <td>15-25%</td>
+                        <td>8-15%</td>
+                    </tr>
+                    <tr>
+                        <td>Exit Rate</td>
+                        <td>8-12%</td>
+                        <td class="highlight-warning">15-20% (highest risk)</td>
+                        <td>10-15%</td>
+                    </tr>
+                    <tr>
+                        <td>Primary Risk</td>
+                        <td>Commodification</td>
+                        <td>Strategic Drift</td>
+                        <td>Loss of Cost Leadership</td>
+                    </tr>
+                    <tr>
+                        <td>Competes On</td>
+                        <td>Innovation, Design, Brand</td>
+                        <td>Balance, Convenience</td>
+                        <td>Operational Efficiency</td>
+                    </tr>
+                    <tr>
+                        <td>Example Companies</td>
+                        <td>Apple, Four Seasons, Rolex</td>
+                        <td>Holiday Inn, Toyota, Olive Garden</td>
+                        <td>Walmart, Motel 6, Southwest</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="caption">
+            <strong>Key Insight:</strong> Mid-market is most crowded (50-60%) AND most dangerous (15-20% exit rate). High-end and price-sensitive positions are harder to occupy but more defensible.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision Case Comparison: Microsoft vs. GE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #374151;
+      display: flex;
+      justify-content: center;
+      padding: 40px 0;
+    }
+
+    .container {
+      width: 760px;
+      padding: 40px;
+    }
+
+    /* Screen reader only utility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* ── Title block ── */
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* ── Column header strip ── */
+    .col-headers {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .col-label-spacer {
+      width: 148px;
+      flex-shrink: 0;
+    }
+
+    .col-label {
+      flex: 1;
+      border-radius: 8px 8px 0 0;
+      padding: 16px 20px 14px;
+    }
+
+    .col-label.microsoft {
+      background: linear-gradient(135deg, #6b9085 0%, #5a7f74 100%);
+    }
+
+    .col-label.ge {
+      background: linear-gradient(135deg, #1a1a1a 0%, #374151 100%);
+    }
+
+    .col-label h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 3px;
+    }
+
+    .col-label .col-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+    }
+
+    .col-label.microsoft .col-tag {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* ── Dimension rows ── */
+    .dimension-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .dimension-row:last-of-type {
+      margin-bottom: 0;
+    }
+
+    /* Dimension label cell */
+    .dim-label {
+      width: 148px;
+      flex-shrink: 0;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 14px 14px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .dim-label:hover {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+
+    .dim-label:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    .dim-label.open {
+      background: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    .dim-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .dim-contrast {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.35;
+    }
+
+    .dim-toggle {
+      font-size: 10px;
+      font-weight: 500;
+      color: #9ca3af;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .toggle-arrow {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 9px;
+    }
+
+    .dim-label.open .toggle-arrow {
+      transform: rotate(90deg);
+    }
+
+    /* Microsoft cell */
+    .cell-microsoft {
+      flex: 1;
+      border: 1px solid #a3c4b8;
+      border-top: 2px solid #6b9085;
+      border-radius: 6px;
+      padding: 14px 18px;
+      background: #f0f5f3;
+      transition: border-color 0.2s ease;
+    }
+
+    .cell-microsoft:focus-within {
+      border-color: #5a7f74;
+    }
+
+    /* GE cell */
+    .cell-ge {
+      flex: 1;
+      border: 1px solid #e5e7eb;
+      border-top: 2px solid #374151;
+      border-radius: 6px;
+      padding: 14px 18px;
+      background: #f9fafb;
+      transition: border-color 0.2s ease;
+    }
+
+    .cell-ge:focus-within {
+      border-color: #374151;
+    }
+
+    /* Summary line (always visible) */
+    .cell-summary {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.45;
+    }
+
+    /* Expanded detail (hidden by default) */
+    .cell-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.25s ease;
+      opacity: 0;
+    }
+
+    .cell-detail.open {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    .cell-detail-inner {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .cell-microsoft .cell-detail-inner {
+      border-top-color: #a3c4b8;
+    }
+
+    .cell-ge .cell-detail-inner {
+      border-top-color: #e5e7eb;
+    }
+
+    .cell-detail p {
+      font-size: 12.5px;
+      color: #374151;
+      line-height: 1.6;
+    }
+
+    /* Accent bullet lists inside cells */
+    .cell-bullets {
+      list-style: none;
+      margin-top: 6px;
+    }
+
+    .cell-microsoft .cell-bullets li {
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.5;
+      padding: 3px 0 3px 14px;
+      position: relative;
+    }
+
+    .cell-microsoft .cell-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 7px;
+      height: 2px;
+      background: #6b9085;
+      border-radius: 1px;
+    }
+
+    .cell-ge .cell-bullets li {
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.5;
+      padding: 3px 0 3px 14px;
+      position: relative;
+    }
+
+    .cell-ge .cell-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 7px;
+      width: 5px;
+      height: 5px;
+      background: #1a1a1a;
+      border-radius: 1px;
+      transform: rotate(45deg);
+    }
+
+    /* ── Outcome strip ── */
+    .outcome-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .outcome-spacer {
+      width: 148px;
+      flex-shrink: 0;
+    }
+
+    .outcome-cell {
+      flex: 1;
+      border-radius: 0 0 8px 8px;
+      padding: 14px 18px;
+    }
+
+    .outcome-cell.microsoft {
+      background: #5a7f74;
+    }
+
+    .outcome-cell.ge {
+      background: #374151;
+    }
+
+    .outcome-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      margin-bottom: 4px;
+    }
+
+    .outcome-cell.microsoft .outcome-label {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .outcome-cell.ge .outcome-label {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .outcome-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.45;
+    }
+
+    /* ── Synthesis bar ── */
+    .synthesis {
+      margin-top: 24px;
+      padding: 16px 22px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 3px solid #374151;
+    }
+
+    .synthesis p {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.65;
+      color: #1a1a1a;
+    }
+
+    .synthesis strong {
+      color: #1a1a1a;
+    }
+
+    /* ── Hint text ── */
+    .hint {
+      text-align: center;
+      font-size: 11.5px;
+      color: #9ca3af;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 0;
+      }
+      .container {
+        width: 100%;
+        padding: 20px;
+      }
+      .col-label-spacer,
+      .outcome-spacer,
+      .dim-label {
+        display: none;
+      }
+      .col-headers,
+      .dimension-row,
+      .outcome-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .col-label,
+      .cell-microsoft,
+      .cell-ge,
+      .outcome-cell {
+        border-radius: 8px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>Vision Case Comparison</h1>
+    <p class="subtitle">Microsoft's successful transformation vs. GE's failed vision &mdash; four dimensions</p>
+
+    <p class="hint">Click any dimension label to expand the full explanation</p>
+
+    <!-- Column headers -->
+    <div class="col-headers" aria-hidden="true">
+      <div class="col-label-spacer"></div>
+      <div class="col-label microsoft">
+        <h2>Microsoft</h2>
+        <span class="col-tag">Successful vision</span>
+      </div>
+      <div class="col-label ge">
+        <h2>General Electric</h2>
+        <span class="col-tag">Failed vision</span>
+      </div>
+    </div>
+
+    <!-- ── ROW 1: Clarity vs. Identity Confusion ── -->
+    <div class="dimension-row" id="row-1">
+
+      <button
+        class="dim-label"
+        id="dim-1"
+        aria-expanded="false"
+        aria-controls="detail-1-ms detail-1-ge"
+        onclick="toggleRow(1)"
+        onkeydown="handleKey(event, 1)"
+      >
+        <span class="dim-name">Dimension 1</span>
+        <span class="dim-contrast">Clarity vs. Identity Confusion</span>
+        <span class="dim-toggle">
+          <span class="toggle-arrow" aria-hidden="true">&#9658;</span>
+          <span>Details</span>
+        </span>
+      </button>
+
+      <div class="cell-microsoft" role="region" aria-label="Microsoft: Dimension 1 - Clarity">
+        <div class="cell-summary">
+          "Mobile-first, cloud-first" immediately signaled strategic priorities &mdash; every team knew what to optimize for.
+        </div>
+        <div class="cell-detail" id="detail-1-ms">
+          <div class="cell-detail-inner">
+            <p>Nadella's language was unambiguous. "Empower every person and every organization on the planet to achieve more" replaced internal "dominate" language with external focus on customers. Teams could make local decisions without waiting for central direction because the priorities were clear.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Replaced competitive "dominate" language with collaborative "empower"</li>
+              <li>External focus on customers, not on Microsoft's market position</li>
+              <li>Every division could align without constant re-clarification</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell-ge" role="region" aria-label="GE: Dimension 1 - Identity Confusion">
+        <div class="cell-summary">
+          Engineers who built physical products were suddenly told to become software developers &mdash; a fundamental identity mismatch.
+        </div>
+        <div class="cell-detail" id="detail-1-ge">
+          <div class="cell-detail-inner">
+            <p>GE employees identified as engineers designing and building physical machines. The "digital industrial revolution" vision required them to see themselves as software creators overnight. The vision felt inauthentic because it asked people to abandon the professional identity they had spent careers building.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Workforce identity built around physical engineering, not software</li>
+              <li>Vision felt imposed rather than grown from organizational strengths</li>
+              <li>Frontline employees never saw themselves in the new direction</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ROW 2: Cultural Shift vs. Capability Mismatch ── -->
+    <div class="dimension-row" id="row-2">
+
+      <button
+        class="dim-label"
+        id="dim-2"
+        aria-expanded="false"
+        aria-controls="detail-2-ms detail-2-ge"
+        onclick="toggleRow(2)"
+        onkeydown="handleKey(event, 2)"
+      >
+        <span class="dim-name">Dimension 2</span>
+        <span class="dim-contrast">Cultural Shift vs. Capability Mismatch</span>
+        <span class="dim-toggle">
+          <span class="toggle-arrow" aria-hidden="true">&#9658;</span>
+          <span>Details</span>
+        </span>
+      </button>
+
+      <div class="cell-microsoft" role="region" aria-label="Microsoft: Dimension 2 - Cultural Shift">
+        <div class="cell-summary">
+          Nadella modeled the shift: he carried an iPhone on stage, partnered with competitors, and rewarded cross-platform collaboration.
+        </div>
+        <div class="cell-detail" id="detail-2-ms">
+          <div class="cell-detail-inner">
+            <p>Microsoft's internal culture was fiercely competitive, with divisions fighting one another. The vision demanded collaboration instead. Nadella made that shift credible by acting against established Microsoft taboos publicly and consistently &mdash; actions reinforced words at every turn.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Used an iPhone on stage (previously forbidden in Microsoft culture)</li>
+              <li>Actively partnered with former rivals including Salesforce and Red Hat</li>
+              <li>Performance reviews began rewarding cross-team and cross-platform work</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell-ge" role="region" aria-label="GE: Dimension 2 - Capability Mismatch">
+        <div class="cell-summary">
+          A $4 billion investment could not substitute for software development culture, talent pipelines, and processes that GE lacked entirely.
+        </div>
+        <div class="cell-detail" id="detail-2-ge">
+          <div class="cell-detail-inner">
+            <p>GE committed billions to GE Digital but lacked the foundational software culture needed to absorb that investment effectively. Hiring software talent into a hardware culture created friction. Processes optimized for physical manufacturing were misaligned with iterative software development cycles.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>$4B invested without software engineering culture to deploy it</li>
+              <li>Insufficient software talent pipeline and recruitment infrastructure</li>
+              <li>Manufacturing processes incompatible with iterative software delivery</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ROW 3: External Focus vs. Market Misread ── -->
+    <div class="dimension-row" id="row-3">
+
+      <button
+        class="dim-label"
+        id="dim-3"
+        aria-expanded="false"
+        aria-controls="detail-3-ms detail-3-ge"
+        onclick="toggleRow(3)"
+        onkeydown="handleKey(event, 3)"
+      >
+        <span class="dim-name">Dimension 3</span>
+        <span class="dim-contrast">External Focus vs. Market Misread</span>
+        <span class="dim-toggle">
+          <span class="toggle-arrow" aria-hidden="true">&#9658;</span>
+          <span>Details</span>
+        </span>
+      </button>
+
+      <div class="cell-microsoft" role="region" aria-label="Microsoft: Dimension 3 - External Focus">
+        <div class="cell-summary">
+          The vision centred on what customers could achieve &mdash; not on Microsoft's market position or revenue targets.
+        </div>
+        <div class="cell-detail" id="detail-3-ms">
+          <div class="cell-detail-inner">
+            <p>"Empower every person and every organization on the planet to achieve more" is a customer promise, not a corporate aspiration. This framing aligned product decisions with real demand: cloud tools, mobile compatibility, and cross-platform services that customers were already seeking.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Vision language anchored in customer outcomes, not Microsoft's dominance</li>
+              <li>Cloud and mobile priorities matched where enterprise demand was heading</li>
+              <li>Measurable progress tracked through cloud revenue and partnership growth</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell-ge" role="region" aria-label="GE: Dimension 3 - Market Misread">
+        <div class="cell-summary">
+          GE's industrial customers wanted better physical machines &mdash; not software analytics platforms they would have to integrate themselves.
+        </div>
+        <div class="cell-detail" id="detail-3-ge">
+          <div class="cell-detail-inner">
+            <p>GE built Predix, an industrial analytics platform, assuming customers wanted to manage their own machine data. The actual market demand was for reliable, high-performance industrial equipment with incremental intelligence embedded &mdash; not a separate platform layer with its own integration burden.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Customers sought improved physical products, not standalone software platforms</li>
+              <li>Vision driven by internal ambition to "become a top 10 software company"</li>
+              <li>Market demand signals were available but not incorporated into vision design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ROW 4: Reinforced Communication vs. Communication Disconnect ── -->
+    <div class="dimension-row" id="row-4">
+
+      <button
+        class="dim-label"
+        id="dim-4"
+        aria-expanded="false"
+        aria-controls="detail-4-ms detail-4-ge"
+        onclick="toggleRow(4)"
+        onkeydown="handleKey(event, 4)"
+      >
+        <span class="dim-name">Dimension 4</span>
+        <span class="dim-contrast">Reinforced Communication vs. Communication Disconnect</span>
+        <span class="dim-toggle">
+          <span class="toggle-arrow" aria-hidden="true">&#9658;</span>
+          <span>Details</span>
+        </span>
+      </button>
+
+      <div class="cell-microsoft" role="region" aria-label="Microsoft: Dimension 4 - Reinforced Communication">
+        <div class="cell-summary">
+          Nadella repeated the vision through his own behaviour, not just announcements &mdash; actions became the most credible channel.
+        </div>
+        <div class="cell-detail" id="detail-4-ms">
+          <div class="cell-detail-inner">
+            <p>Vision communication was multi-channel and sustained. Each leadership action &mdash; a partnership, a product launch, a public interview &mdash; reaffirmed the direction. Employees encountered the vision through work itself, not only through all-hands presentations. This is the Rule of Seven in practice: repetition through varied channels until alignment becomes automatic.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Consistent reinforcement through public actions, not only internal messages</li>
+              <li>Progress visible through product launches and revenue reporting</li>
+              <li>Vision embedded in hiring, performance, and partnership decisions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell-ge" role="region" aria-label="GE: Dimension 4 - Communication Disconnect">
+        <div class="cell-summary">
+          Leadership described the vision in technology buzzwords that frontline workers could not understand, connect with, or believe.
+        </div>
+        <div class="cell-detail" id="detail-4-ge">
+          <div class="cell-detail-inner">
+            <p>"Lead the digital industrial revolution" landed as abstract jargon to employees who assembled turbines and maintained jet engines. No translation was provided for what this meant in their daily work. Without that local connection, the vision remained a leadership document rather than a shared direction.</p>
+            <ul class="cell-bullets" aria-label="Key points">
+              <li>Tech buzzwords alienated workers whose expertise was physical, not digital</li>
+              <li>No manager-level translation of vision into team-level meaning</li>
+              <li>Frontline employees could not see themselves in the future being described</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Outcome strip ── -->
+    <div class="outcome-row" aria-label="Outcomes">
+      <div class="outcome-spacer" aria-hidden="true"></div>
+      <div class="outcome-cell microsoft">
+        <div class="outcome-label">Outcome</div>
+        <div class="outcome-text">Market cap grew from $300B to over $2T</div>
+      </div>
+      <div class="outcome-cell ge">
+        <div class="outcome-label">Outcome</div>
+        <div class="outcome-text">Billions lost, thousands laid off, divisions sold, credibility damaged</div>
+      </div>
+    </div>
+
+    <!-- ── Synthesis ── -->
+    <div class="synthesis" role="note">
+      <p><strong>The pattern:</strong> Vision must be grounded in organizational identity and capability. You can stretch an organization, but you cannot fabricate a completely different company overnight. What leaders do to reinforce vision matters more than the words they use to announce it.</p>
+    </div>
+
+  </div>
+
+  <script>
+    const openRows = new Set();
+
+    function toggleRow(n) {
+      const btn = document.getElementById('dim-' + n);
+      const detailIds = btn.getAttribute('aria-controls').split(' ');
+      const isOpen = openRows.has(n);
+
+      if (isOpen) {
+        openRows.delete(n);
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.remove('open');
+        detailIds.forEach(function(id) {
+          document.getElementById(id).classList.remove('open');
+        });
+        announceState(n, false);
+      } else {
+        openRows.add(n);
+        btn.setAttribute('aria-expanded', 'true');
+        btn.classList.add('open');
+        detailIds.forEach(function(id) {
+          document.getElementById(id).classList.add('open');
+        });
+        announceState(n, true);
+      }
+    }
+
+    function handleKey(event, n) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleRow(n);
+      }
+    }
+
+    function announceState(n, isOpen) {
+      var live = document.createElement('div');
+      live.setAttribute('role', 'status');
+      live.setAttribute('aria-live', 'polite');
+      live.className = 'sr-only';
+      live.textContent = 'Dimension ' + n + ' details ' + (isOpen ? 'expanded' : 'collapsed');
+      document.body.appendChild(live);
+      setTimeout(function() { live.remove(); }, 1000);
+    }
+  </script>
+</body>
+</html>

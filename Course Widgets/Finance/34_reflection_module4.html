@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4 Reflection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 820px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--purple); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+
+        .intro-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .intro-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-number { display: inline-block; background-color: var(--purple); color: var(--text-primary); padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin-bottom: 12px; }
+        .question-text { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; line-height: 1.5; }
+        .reflection-textarea { width: 100%; min-height: 140px; padding: 14px; border: 2px solid var(--grey-light); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; transition: all 0.2s ease; }
+        .reflection-textarea:focus { outline: none; border-color: var(--purple-dark); }
+        .char-count { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; text-align: right; }
+        
+        .save-btn { background-color: var(--purple-dark); color: var(--text-primary); border: none; padding: 12px 28px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; width: 100%; }
+        .save-btn:hover { background-color: var(--purple); transform: translateY(-1px); }
+        .save-btn:disabled { background-color: var(--grey-light); color: var(--text-muted); cursor: not-allowed; transform: none; }
+        .save-btn.saved { background-color: #48825d; }
+
+        .completion-card { background-color: var(--purple); border-radius: 12px; padding: 32px; text-align: center; display: none; margin-top: 24px; }
+        .completion-card.show { display: block; }
+        .completion-icon { font-size: 3rem; margin-bottom: 12px; }
+        .completion-title { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .completion-message { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header h1 { font-size: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Module 4 Reflection</div>
+            <h1>Apply Your Learning</h1>
+            <p>Connect time value of money and investment concepts to your professional context</p>
+        </div>
+
+        <div class="intro-card">
+            <p class="intro-text">
+                Take a moment to reflect on what you've learned in Module 4. These questions will help you connect the concepts of time value of money, securities valuation, and capital budgeting to your own professional experience. There are no right or wrong answers—the goal is to deepen your understanding by applying these tools to situations you know well.
+            </p>
+        </div>
+
+        <div class="question-card">
+            <span class="question-number">Question 1</span>
+            <div class="question-text">
+                Think of a recent capital investment decision in your organization (new equipment, facility expansion, technology implementation, etc.). How was it evaluated? Was NPV analysis used? If not, what method was used and why do you think that approach was chosen?
+            </div>
+            <textarea id="q1" class="reflection-textarea" placeholder="Share your thoughts..." onkeyup="updateCharCount(1)"></textarea>
+            <div class="char-count" id="count-1">0 characters</div>
+        </div>
+
+        <div class="question-card">
+            <span class="question-number">Question 2</span>
+            <div class="question-text">
+                The Payback Period is a simple but flawed method because it ignores time value of money and cash flows beyond the payback point. Yet many firms still use it. Why do you think organizations continue to rely on payback? In what situations might it actually be useful as a complement to NPV?
+            </div>
+            <textarea id="q2" class="reflection-textarea" placeholder="Share your thoughts..." onkeyup="updateCharCount(2)"></textarea>
+            <div class="char-count" id="count-2">0 characters</div>
+        </div>
+
+        <div class="question-card">
+            <span class="question-number">Question 3</span>
+            <div class="question-text">
+                The discount rate (required rate of return) is critical in NPV analysis—it reflects the opportunity cost and risk of an investment. How does your firm determine its hurdle rate for evaluating projects? What factors should influence this rate (industry, project risk, company leverage, etc.)?
+            </div>
+            <textarea id="q3" class="reflection-textarea" placeholder="Share your thoughts..." onkeyup="updateCharCount(3)"></textarea>
+            <div class="char-count" id="count-3">0 characters</div>
+        </div>
+
+        <div class="question-card">
+            <span class="question-number">Question 4</span>
+            <div class="question-text">
+                Consider a long-term investment typical in your industry (5-10 years). How would you structure the cash flow analysis? What key cash inflows and outflows would you need to forecast? What risks would most significantly impact the NPV, and how might you account for them in your analysis?
+            </div>
+            <textarea id="q4" class="reflection-textarea" placeholder="Share your thoughts..." onkeyup="updateCharCount(4)"></textarea>
+            <div class="char-count" id="count-4">0 characters</div>
+        </div>
+
+        <button class="save-btn" onclick="saveReflections()" id="save-btn" disabled>Save All Reflections</button>
+
+        <div class="completion-card" id="completion-card">
+            <div class="completion-icon">✅</div>
+            <div class="completion-title">Reflections Saved!</div>
+            <div class="completion-message">
+                Your thoughtful responses have been saved. These reflections will help you connect financial analysis concepts to your professional practice. You're now ready for the Module 4 final quiz!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCharCount(questionNum) {
+            const textarea = document.getElementById(`q${questionNum}`);
+            const count = document.getElementById(`count-${questionNum}`);
+            count.textContent = `${textarea.value.length} characters`;
+            checkCompletion();
+        }
+
+        function checkCompletion() {
+            const q1 = document.getElementById('q1').value.trim();
+            const q2 = document.getElementById('q2').value.trim();
+            const q3 = document.getElementById('q3').value.trim();
+            const q4 = document.getElementById('q4').value.trim();
+            
+            const allAnswered = q1.length >= 50 && q2.length >= 50 && q3.length >= 50 && q4.length >= 50;
+            document.getElementById('save-btn').disabled = !allAnswered;
+        }
+
+        function saveReflections() {
+            const reflections = {
+                q1: document.getElementById('q1').value,
+                q2: document.getElementById('q2').value,
+                q3: document.getElementById('q3').value,
+                q4: document.getElementById('q4').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('module4_reflections', JSON.stringify(reflections));
+            
+            const btn = document.getElementById('save-btn');
+            btn.textContent = '✓ Reflections Saved';
+            btn.classList.add('saved');
+            btn.disabled = true;
+            
+            document.getElementById('completion-card').classList.add('show');
+            document.getElementById('completion-card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load saved reflections on page load
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('module4_reflections');
+            if (saved) {
+                const reflections = JSON.parse(saved);
+                document.getElementById('q1').value = reflections.q1 || '';
+                document.getElementById('q2').value = reflections.q2 || '';
+                document.getElementById('q3').value = reflections.q3 || '';
+                document.getElementById('q4').value = reflections.q4 || '';
+                
+                updateCharCount(1);
+                updateCharCount(2);
+                updateCharCount(3);
+                updateCharCount(4);
+                
+                const btn = document.getElementById('save-btn');
+                btn.textContent = '✓ Reflections Saved';
+                btn.classList.add('saved');
+                btn.disabled = true;
+                
+                document.getElementById('completion-card').classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>

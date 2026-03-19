@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Forces Industry Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #c0d1cd;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Accent Colors (Subtle Palette) */
+            --color-turquoise: #bfe5e7;
+            --color-sage: #c0d1cd;
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+
+            /* Border radius */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-800);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .context-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-neutral-800);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .context-box strong {
+            color: var(--color-neutral-900);
+        }
+
+        .industry-selector {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .industry-selector label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .industry-selector select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Geist', sans-serif;
+            font-size: 0.95rem;
+            background: white;
+            color: var(--color-neutral-900);
+        }
+
+        .force-section {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .force-section:hover {
+            border-color: var(--color-neutral-400);
+        }
+
+        .force-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .slider-container {
+            margin-bottom: 0.75rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .slider-label span:first-child {
+            font-weight: 500;
+            color: var(--color-neutral-700);
+        }
+
+        .slider-label span:last-child {
+            color: var(--color-neutral-600);
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--color-neutral-700);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.25rem;
+        }
+
+        .help-toggle {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            color: var(--color-neutral-700);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Geist', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .help-toggle:hover {
+            background: var(--color-neutral-200);
+            border-color: var(--color-neutral-300);
+        }
+
+        .diagnostic-questions {
+            margin-top: 0.75rem;
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-sage);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .diagnostic-questions.hidden {
+            display: none;
+        }
+
+        .diagnostic-questions h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-800);
+        }
+
+        .diagnostic-questions ul {
+            list-style-position: inside;
+            color: var(--color-neutral-600);
+        }
+
+        .diagnostic-questions li {
+            margin-bottom: 0.375rem;
+            font-size: 0.85rem;
+        }
+
+        .dashboard {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .dashboard h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-800);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .force-comparison {
+            margin-top: 1rem;
+        }
+
+        .force-comparison h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-800);
+        }
+
+        .force-bar {
+            margin-bottom: 0.75rem;
+        }
+
+        .force-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .force-bar-label span:first-child {
+            color: var(--color-neutral-700);
+        }
+
+        .force-bar-label span:last-child {
+            color: var(--color-neutral-500);
+            font-weight: 600;
+        }
+
+        .force-bar-track {
+            height: 20px;
+            background: var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+
+        .force-bar-fill {
+            height: 100%;
+            background: var(--color-neutral-600);
+            transition: width 0.3s ease;
+        }
+
+        .insight-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-turquoise);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            margin-top: 1.5rem;
+        }
+
+        .insight-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-text {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .insight-text strong {
+            color: var(--color-neutral-900);
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .score-value {
+                font-size: 2rem;
+            }
+
+            .force-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Five Forces Industry Analyzer</h1>
+            <p class="subtitle">Evaluate industry attractiveness using Porter's Five Forces framework</p>
+        </header>
+
+        <div class="context-box">
+            <p><strong>How to use:</strong> Rate each competitive force from 1-5 based on its strength in your chosen industry. Higher force strength means more competitive pressure and lower industry profitability. Use the diagnostic questions to guide your assessment.</p>
+        </div>
+
+        <main role="application" aria-label="Five Forces Industry Analyzer">
+            <!-- Industry Selection -->
+            <section class="industry-selector" role="region" aria-label="Industry selection">
+                <label for="industry-dropdown">Select an Industry Preset or Analyze Your Own</label>
+                <select id="industry-dropdown">
+                    <option value="custom">Custom Analysis</option>
+                    <option value="airlines">Commercial Airlines</option>
+                    <option value="pharma">Pharmaceutical</option>
+                    <option value="medical-devices">Medical Devices (Orthopedic Implants)</option>
+                </select>
+            </section>
+
+            <!-- Forces Container -->
+            <div class="forces-container" role="region" aria-label="Five competitive forces">
+
+                <!-- Force 1: Threat of New Entry -->
+                <div class="force-section" data-force="new-entry">
+                    <h3>1. Threat of New Entry</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Rate this force:</span>
+                            <span id="new-entry-value">Medium (3)</span>
+                        </div>
+                        <input type="range"
+                               id="new-entry-slider"
+                               min="1"
+                               max="5"
+                               value="3"
+                               aria-label="Threat of new entry"
+                               aria-valuetext="Medium threat">
+                        <div class="scale-labels">
+                            <span>Low Threat</span>
+                            <span>High Threat</span>
+                        </div>
+                    </div>
+                    <button class="help-toggle"
+                            aria-expanded="false"
+                            aria-controls="new-entry-questions"
+                            onclick="toggleQuestions('new-entry')">
+                        Show Diagnostic Questions
+                    </button>
+                    <div id="new-entry-questions" class="diagnostic-questions hidden">
+                        <h4>Consider these factors:</h4>
+                        <ul>
+                            <li>Are there high capital requirements to enter this industry?</li>
+                            <li>Do incumbent firms have strong brand loyalty?</li>
+                            <li>Are there significant economies of scale?</li>
+                            <li>How difficult is regulatory approval?</li>
+                            <li>Do incumbents control critical resources or distribution channels?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Force 2: Supplier Power -->
+                <div class="force-section" data-force="supplier-power">
+                    <h3>2. Supplier Bargaining Power</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Rate this force:</span>
+                            <span id="supplier-power-value">Medium (3)</span>
+                        </div>
+                        <input type="range"
+                               id="supplier-power-slider"
+                               min="1"
+                               max="5"
+                               value="3"
+                               aria-label="Supplier bargaining power"
+                               aria-valuetext="Medium power">
+                        <div class="scale-labels">
+                            <span>Low Power</span>
+                            <span>High Power</span>
+                        </div>
+                    </div>
+                    <button class="help-toggle"
+                            aria-expanded="false"
+                            aria-controls="supplier-power-questions"
+                            onclick="toggleQuestions('supplier-power')">
+                        Show Diagnostic Questions
+                    </button>
+                    <div id="supplier-power-questions" class="diagnostic-questions hidden">
+                        <h4>Consider these factors:</h4>
+                        <ul>
+                            <li>How many suppliers exist in the market?</li>
+                            <li>Can suppliers easily forward integrate into your industry?</li>
+                            <li>How critical are their inputs to your product quality?</li>
+                            <li>Are there switching costs between suppliers?</li>
+                            <li>Do suppliers serve multiple industries or just yours?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Force 3: Buyer Power -->
+                <div class="force-section" data-force="buyer-power">
+                    <h3>3. Buyer Bargaining Power</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Rate this force:</span>
+                            <span id="buyer-power-value">Medium (3)</span>
+                        </div>
+                        <input type="range"
+                               id="buyer-power-slider"
+                               min="1"
+                               max="5"
+                               value="3"
+                               aria-label="Buyer bargaining power"
+                               aria-valuetext="Medium power">
+                        <div class="scale-labels">
+                            <span>Low Power</span>
+                            <span>High Power</span>
+                        </div>
+                    </div>
+                    <button class="help-toggle"
+                            aria-expanded="false"
+                            aria-controls="buyer-power-questions"
+                            onclick="toggleQuestions('buyer-power')">
+                        Show Diagnostic Questions
+                    </button>
+                    <div id="buyer-power-questions" class="diagnostic-questions hidden">
+                        <h4>Consider these factors:</h4>
+                        <ul>
+                            <li>How concentrated are buyers compared to sellers?</li>
+                            <li>Can buyers easily backward integrate?</li>
+                            <li>How price-sensitive are buyers?</li>
+                            <li>Do buyers purchase in large volumes?</li>
+                            <li>Is product differentiation low (commodity-like)?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Force 4: Threat of Substitutes -->
+                <div class="force-section" data-force="substitutes">
+                    <h3>4. Threat of Substitutes</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Rate this force:</span>
+                            <span id="substitutes-value">Medium (3)</span>
+                        </div>
+                        <input type="range"
+                               id="substitutes-slider"
+                               min="1"
+                               max="5"
+                               value="3"
+                               aria-label="Threat of substitutes"
+                               aria-valuetext="Medium threat">
+                        <div class="scale-labels">
+                            <span>Low Threat</span>
+                            <span>High Threat</span>
+                        </div>
+                    </div>
+                    <button class="help-toggle"
+                            aria-expanded="false"
+                            aria-controls="substitutes-questions"
+                            onclick="toggleQuestions('substitutes')">
+                        Show Diagnostic Questions
+                    </button>
+                    <div id="substitutes-questions" class="diagnostic-questions hidden">
+                        <h4>Consider these factors:</h4>
+                        <ul>
+                            <li>Are there alternative solutions to customer needs?</li>
+                            <li>What's the price-performance of substitute products?</li>
+                            <li>How easy is it for customers to switch to substitutes?</li>
+                            <li>Are substitutes from different industries or technologies?</li>
+                            <li>Is the substitute trend growing or declining?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Force 5: Rivalry -->
+                <div class="force-section" data-force="rivalry">
+                    <h3>5. Rivalry Among Existing Competitors</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Rate this force:</span>
+                            <span id="rivalry-value">Medium (3)</span>
+                        </div>
+                        <input type="range"
+                               id="rivalry-slider"
+                               min="1"
+                               max="5"
+                               value="3"
+                               aria-label="Rivalry among competitors"
+                               aria-valuetext="Medium rivalry">
+                        <div class="scale-labels">
+                            <span>Low Rivalry</span>
+                            <span>High Rivalry</span>
+                        </div>
+                    </div>
+                    <button class="help-toggle"
+                            aria-expanded="false"
+                            aria-controls="rivalry-questions"
+                            onclick="toggleQuestions('rivalry')">
+                        Show Diagnostic Questions
+                    </button>
+                    <div id="rivalry-questions" class="diagnostic-questions hidden">
+                        <h4>Consider these factors:</h4>
+                        <ul>
+                            <li>How many competitors exist in the industry?</li>
+                            <li>Is industry growth high or low/declining?</li>
+                            <li>Are fixed costs high (creating pressure to maintain volume)?</li>
+                            <li>Is product differentiation low (leading to price competition)?</li>
+                            <li>Are exit barriers high (keeping firms in despite losses)?</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Attractiveness Dashboard -->
+            <section class="dashboard" role="region" aria-label="Industry attractiveness summary">
+                <h2>Average Competitive Pressure (1–5)</h2>
+                <div class="score-display" aria-live="polite">
+                    <div class="score-value" id="overall-score">3.0</div>
+                    <div class="score-label" id="score-interpretation">Moderate Attractiveness</div>
+                </div>
+
+                <div class="force-comparison">
+                    <h3>Force Strength Comparison</h3>
+
+                    <div class="force-bar">
+                        <div class="force-bar-label">
+                            <span>Threat of New Entry</span>
+                            <span id="bar-new-entry">3/5</span>
+                        </div>
+                        <div class="force-bar-track">
+                            <div class="force-bar-fill" id="fill-new-entry" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="force-bar">
+                        <div class="force-bar-label">
+                            <span>Supplier Power</span>
+                            <span id="bar-supplier-power">3/5</span>
+                        </div>
+                        <div class="force-bar-track">
+                            <div class="force-bar-fill" id="fill-supplier-power" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="force-bar">
+                        <div class="force-bar-label">
+                            <span>Buyer Power</span>
+                            <span id="bar-buyer-power">3/5</span>
+                        </div>
+                        <div class="force-bar-track">
+                            <div class="force-bar-fill" id="fill-buyer-power" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="force-bar">
+                        <div class="force-bar-label">
+                            <span>Threat of Substitutes</span>
+                            <span id="bar-substitutes">3/5</span>
+                        </div>
+                        <div class="force-bar-track">
+                            <div class="force-bar-fill" id="fill-substitutes" style="width: 60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="force-bar">
+                        <div class="force-bar-label">
+                            <span>Rivalry</span>
+                            <span id="bar-rivalry">3/5</span>
+                        </div>
+                        <div class="force-bar-track">
+                            <div class="force-bar-fill" id="fill-rivalry" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Panel -->
+            <section class="insight-box" role="region" aria-live="polite">
+                <div class="insight-label">Key Insights</div>
+                <p class="insight-text" id="insight-content">
+                    Adjust the sliders above to analyze industry competitive forces.
+                    The overall score and insights will update automatically.
+                </p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Industry presets
+        const industryData = {
+            'custom': null,
+            'airlines': {
+                newEntry: 1,
+                supplierPower: 4,
+                buyerPower: 4,
+                substitutes: 3,
+                rivalry: 5,
+                note: "Commercial airlines face intense rivalry and high supplier/buyer power, making this a challenging industry."
+            },
+            'pharma': {
+                newEntry: 1,
+                supplierPower: 2,
+                buyerPower: 2,
+                substitutes: 2,
+                rivalry: 2,
+                note: "Pharmaceutical industry shows high attractiveness due to patent protection, though buyer power is increasing."
+            },
+            'medical-devices': {
+                newEntry: 2,
+                supplierPower: 4,
+                buyerPower: 4,
+                substitutes: 3,
+                rivalry: 4,
+                note: "Medical device industry (orthopedic implants) faces moderate threats overall, with significant supplier and buyer power. This is Canary Medical's competitive environment."
+            }
+        };
+
+        // Force labels for text display
+        const forceLabels = {
+            1: 'Very Low',
+            2: 'Low',
+            3: 'Medium',
+            4: 'High',
+            5: 'Very High'
+        };
+
+        // Initialize sliders
+        const forces = ['new-entry', 'supplier-power', 'buyer-power', 'substitutes', 'rivalry'];
+
+        forces.forEach(force => {
+            const slider = document.getElementById(`${force}-slider`);
+            slider.addEventListener('input', (e) => {
+                updateForceValue(force, e.target.value);
+                updateDashboard();
+            });
+        });
+
+        // Industry selector
+        document.getElementById('industry-dropdown').addEventListener('change', (e) => {
+            loadIndustry(e.target.value);
+        });
+
+        function updateForceValue(force, value) {
+            const label = forceLabels[value];
+            document.getElementById(`${force}-value`).textContent = `${label} (${value})`;
+        }
+
+        function toggleQuestions(force) {
+            const questionsDiv = document.getElementById(`${force}-questions`);
+            const button = questionsDiv.previousElementSibling;
+            const isHidden = questionsDiv.classList.contains('hidden');
+
+            questionsDiv.classList.toggle('hidden');
+            button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+            button.textContent = isHidden ? 'Hide Diagnostic Questions' : 'Show Diagnostic Questions';
+        }
+
+        function loadIndustry(industryId) {
+            const data = industryData[industryId];
+
+            if (!data) {
+                // Custom - reset to defaults
+                forces.forEach(force => {
+                    document.getElementById(`${force}-slider`).value = 3;
+                    updateForceValue(force, 3);
+                });
+            } else {
+                // Load preset
+                document.getElementById('new-entry-slider').value = data.newEntry;
+                updateForceValue('new-entry', data.newEntry);
+
+                document.getElementById('supplier-power-slider').value = data.supplierPower;
+                updateForceValue('supplier-power', data.supplierPower);
+
+                document.getElementById('buyer-power-slider').value = data.buyerPower;
+                updateForceValue('buyer-power', data.buyerPower);
+
+                document.getElementById('substitutes-slider').value = data.substitutes;
+                updateForceValue('substitutes', data.substitutes);
+
+                document.getElementById('rivalry-slider').value = data.rivalry;
+                updateForceValue('rivalry', data.rivalry);
+            }
+
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            // Get current values
+            const values = forces.map(force =>
+                parseInt(document.getElementById(`${force}-slider`).value)
+            );
+
+            // Calculate average (inverted for attractiveness - higher forces = lower attractiveness)
+            const avgForceStrength = values.reduce((a, b) => a + b, 0) / values.length;
+            const attractiveness = 6 - avgForceStrength; // Invert: 5 becomes 1, 1 becomes 5
+
+            // Update overall score
+            document.getElementById('overall-score').textContent = avgForceStrength.toFixed(1);
+
+            // Update interpretation
+            let interpretation = '';
+            if (avgForceStrength <= 2.0) {
+                interpretation = 'High Attractiveness (Low Competitive Pressure)';
+            } else if (avgForceStrength <= 3.5) {
+                interpretation = 'Moderate Attractiveness';
+            } else {
+                interpretation = 'Low Attractiveness (High Competitive Pressure)';
+            }
+            document.getElementById('score-interpretation').textContent = interpretation;
+
+            // Update force bars
+            forces.forEach((force, index) => {
+                const value = values[index];
+                document.getElementById(`bar-${force}`).textContent = `${value}/5`;
+                document.getElementById(`fill-${force}`).style.width = `${value * 20}%`;
+            });
+
+            // Generate insights
+            generateInsights(values);
+        }
+
+        function generateInsights(values) {
+            const forceNames = [
+                'Threat of New Entry',
+                'Supplier Bargaining Power',
+                'Buyer Bargaining Power',
+                'Threat of Substitutes',
+                'Rivalry Among Competitors'
+            ];
+
+            // Find highest force
+            const maxValue = Math.max(...values);
+            const maxIndex = values.indexOf(maxValue);
+            const highestForce = forceNames[maxIndex];
+
+            // Find lowest force
+            const minValue = Math.min(...values);
+            const minIndex = values.indexOf(minValue);
+            const lowestForce = forceNames[minIndex];
+
+            // Generate insight text
+            const avgForceStrength = values.reduce((a, b) => a + b, 0) / values.length;
+
+            let insight = '';
+
+            if (avgForceStrength <= 2.0) {
+                insight = `This industry shows <strong>high attractiveness</strong> with generally weak competitive forces. `;
+            } else if (avgForceStrength <= 3.5) {
+                insight = `This industry shows <strong>moderate attractiveness</strong> with mixed competitive pressures. `;
+            } else {
+                insight = `This industry shows <strong>low attractiveness</strong> with strong competitive forces limiting profitability. `;
+            }
+
+            if (maxValue >= 4) {
+                insight += `The strongest pressure comes from <strong>${highestForce}</strong> (rated ${maxValue}/5), which significantly constrains industry profitability. `;
+            }
+
+            if (minValue <= 2) {
+                insight += `<strong>${lowestForce}</strong> poses minimal threat (rated ${minValue}/5), providing some breathing room for firms. `;
+            }
+
+            // Industry-specific insights
+            const industry = document.getElementById('industry-dropdown').value;
+            if (industry === 'medical-devices') {
+                insight += `<br><br><em>For Canary Medical</em>: Consider how smart implant technology might reduce buyer power (differentiation) or supplier power (alternative components).`;
+            }
+
+            document.getElementById('insight-content').innerHTML = insight;
+        }
+
+        // Initialize on load
+        updateDashboard();
+    </script>
+</body>
+</html>

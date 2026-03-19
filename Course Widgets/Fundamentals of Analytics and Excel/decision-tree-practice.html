@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Practice - Investment Decision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            --spacing-1: 8px;
+            --spacing-2: 16px;
+            --spacing-3: 24px;
+            --spacing-4: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .scenario-box {
+            background: var(--color-neutral-100);
+            border-left: 4px solid var(--color-neutral-900);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .scenario-box h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-box p {
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-700);
+        }
+
+        .scenario-box ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            color: var(--color-neutral-700);
+        }
+
+        .scenario-box li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Step Progress */
+        .step-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-progress::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-neutral-200);
+            z-index: 0;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--color-neutral-900);
+            font-weight: 600;
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-container {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-container h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .step-container p {
+            margin-bottom: 1rem;
+            color: var(--color-neutral-700);
+        }
+
+        /* Tree Builder */
+        .tree-builder {
+            background: white;
+            border: 2px dashed var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            min-height: 300px;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .node-palette {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .node-option {
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .node-option:hover {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .node-option:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .node-option.selected {
+            background: var(--color-neutral-900);
+            color: white;
+            border-color: var(--color-neutral-900);
+        }
+
+        .node-shape {
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
+        }
+
+        .node-shape.square {
+            border-radius: 2px;
+        }
+
+        .node-shape.circle {
+            border-radius: 50%;
+        }
+
+        /* Input Groups */
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--color-neutral-900);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Probability Inputs */
+        .probability-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .prob-branch {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .prob-branch h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .prob-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .validation-message {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .validation-message.show {
+            display: block;
+        }
+
+        .validation-message.error {
+            background: #fef2f2;
+            color: var(--color-error);
+            border-left: 3px solid var(--color-error);
+        }
+
+        .validation-message.success {
+            background: #f0fdf4;
+            color: var(--color-success);
+            border-left: 3px solid var(--color-success);
+        }
+
+        /* Calculations Display */
+        .calculation-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .calculation-box h4 {
+            font-family: var(--font-family-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .calculation-line {
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-700);
+            font-size: 0.9rem;
+        }
+
+        .calculation-result {
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 2px solid var(--color-neutral-200);
+        }
+
+        /* Decision Options */
+        .decision-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .decision-card {
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .decision-card:hover {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .decision-card:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .decision-card.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-100);
+        }
+
+        .decision-card.correct {
+            border-color: var(--color-success);
+            background: #f0fdf4;
+        }
+
+        .decision-card.incorrect {
+            border-color: var(--color-error);
+            background: #fef2f2;
+        }
+
+        .decision-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .decision-card p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-900);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-container h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .results-summary {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .results-summary h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .results-summary p {
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-700);
+        }
+
+        .results-summary .highlight {
+            background: var(--color-neutral-200);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .step-progress { flex-wrap: wrap; }
+            .step { flex-basis: 33%; margin-bottom: 1rem; }
+            .input-row { grid-template-columns: 1fr; }
+            .prob-inputs { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            .button-group .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Decision Tree Practice: Investment Decision</h1>
+        <p class="subtitle">Build and solve a complete decision tree for a venture capital scenario</p>
+
+        <div class="info-box">
+            <strong>Estimated time:</strong> 10 minutes | <strong>Practice activity:</strong> Not graded
+        </div>
+
+        <div class="scenario-box">
+            <h2>Scenario: Venture Capital Investment</h2>
+            <p>You're a venture capitalist evaluating a startup investment opportunity:</p>
+            <ul>
+                <li><strong>Initial Decision:</strong> Invest $50,000 or decline (no investment)</li>
+                <li><strong>If investing, choose strategy:</strong></li>
+                <ul>
+                    <li><strong>Strategy A (Aggressive):</strong> High risk, high reward
+                        <ul>
+                            <li>Success (40% probability): $200,000 return</li>
+                            <li>Moderate (30% probability): $80,000 return</li>
+                            <li>Failure (30% probability): -$20,000 (loss)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Strategy B (Steady):</strong> Lower risk, moderate reward
+                        <ul>
+                            <li>Success (60% probability): $100,000 return</li>
+                            <li>Moderate (30% probability): $50,000 return</li>
+                            <li>Failure (10% probability): $10,000 return</li>
+                        </ul>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+
+        <!-- Step Progress Indicator -->
+        <div class="step-progress" role="navigation" aria-label="Progress through activity steps">
+            <div class="step active" id="step-indicator-1">
+                <div class="step-number">1</div>
+                <div class="step-label">Structure</div>
+            </div>
+            <div class="step" id="step-indicator-2">
+                <div class="step-number">2</div>
+                <div class="step-label">Probabilities</div>
+            </div>
+            <div class="step" id="step-indicator-3">
+                <div class="step-number">3</div>
+                <div class="step-label">Outcomes</div>
+            </div>
+            <div class="step" id="step-indicator-4">
+                <div class="step-number">4</div>
+                <div class="step-label">Calculate</div>
+            </div>
+            <div class="step" id="step-indicator-5">
+                <div class="step-number">5</div>
+                <div class="step-label">Decide</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Map Structure -->
+        <div class="step-content active" id="step-1">
+            <div class="step-container">
+                <h3>Step 1: Map the Decision Structure</h3>
+                <p>Let's identify the structure of this decision tree. Remember:</p>
+                <ul style="margin-left: 1.5rem; margin-bottom: 1rem; color: var(--color-neutral-700);">
+                    <li><strong>Decision nodes (squares):</strong> Points where YOU make a choice</li>
+                    <li><strong>Chance nodes (circles):</strong> Points where outcomes are probabilistic</li>
+                </ul>
+                <p>How many decision nodes and chance nodes are in this scenario?</p>
+
+                <div class="input-row" style="margin-top: 1.5rem;">
+                    <div class="input-group">
+                        <label for="decision-nodes">Number of Decision Nodes:</label>
+                        <input type="number" id="decision-nodes" min="0" max="10" aria-required="true">
+                    </div>
+                    <div class="input-group">
+                        <label for="chance-nodes">Number of Chance Nodes:</label>
+                        <input type="number" id="chance-nodes" min="0" max="10" aria-required="true">
+                    </div>
+                </div>
+
+                <div class="validation-message" id="structure-validation" role="alert"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" onclick="checkStructure()" id="check-structure-btn">Check Structure</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Add Probabilities -->
+        <div class="step-content" id="step-2">
+            <div class="step-container">
+                <h3>Step 2: Add Probabilities to Chance Nodes</h3>
+                <p>Enter the probabilities for each strategy's outcomes. Remember: probabilities from a single chance node must sum to 1.0 (100%).</p>
+
+                <div class="probability-inputs">
+                    <div class="prob-branch">
+                        <h4>Strategy A (Aggressive) - Probabilities</h4>
+                        <div class="prob-inputs">
+                            <div class="input-group">
+                                <label for="prob-a-success">Success:</label>
+                                <input type="number" id="prob-a-success" step="0.01" min="0" max="1" placeholder="0.40" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="prob-a-moderate">Moderate:</label>
+                                <input type="number" id="prob-a-moderate" step="0.01" min="0" max="1" placeholder="0.30" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="prob-a-failure">Failure:</label>
+                                <input type="number" id="prob-a-failure" step="0.01" min="0" max="1" placeholder="0.30" aria-required="true">
+                            </div>
+                            <div style="padding: 0.75rem; background: var(--color-neutral-100); border-radius: var(--border-radius-sm);">
+                                <strong>Sum:</strong> <span id="sum-a">0.00</span>
+                            </div>
+                        </div>
+                        <div class="validation-message" id="validation-a" role="alert"></div>
+                    </div>
+
+                    <div class="prob-branch">
+                        <h4>Strategy B (Steady) - Probabilities</h4>
+                        <div class="prob-inputs">
+                            <div class="input-group">
+                                <label for="prob-b-success">Success:</label>
+                                <input type="number" id="prob-b-success" step="0.01" min="0" max="1" placeholder="0.60" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="prob-b-moderate">Moderate:</label>
+                                <input type="number" id="prob-b-moderate" step="0.01" min="0" max="1" placeholder="0.30" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="prob-b-failure">Failure:</label>
+                                <input type="number" id="prob-b-failure" step="0.01" min="0" max="1" placeholder="0.10" aria-required="true">
+                            </div>
+                            <div style="padding: 0.75rem; background: var(--color-neutral-100); border-radius: var(--border-radius-sm);">
+                                <strong>Sum:</strong> <span id="sum-b">0.00</span>
+                            </div>
+                        </div>
+                        <div class="validation-message" id="validation-b" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary btn" onclick="goToStep(1)">Back</button>
+                <button class="btn" onclick="checkProbabilities()" id="check-prob-btn">Check Probabilities</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Add Outcomes -->
+        <div class="step-content" id="step-3">
+            <div class="step-container">
+                <h3>Step 3: Add Outcome Values</h3>
+                <p>Enter the financial outcomes (in dollars) for each strategy's possible results.</p>
+
+                <div class="probability-inputs">
+                    <div class="prob-branch">
+                        <h4>Strategy A (Aggressive) - Outcomes</h4>
+                        <div class="prob-inputs">
+                            <div class="input-group">
+                                <label for="outcome-a-success">Success ($):</label>
+                                <input type="number" id="outcome-a-success" step="1000" placeholder="200000" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="outcome-a-moderate">Moderate ($):</label>
+                                <input type="number" id="outcome-a-moderate" step="1000" placeholder="80000" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="outcome-a-failure">Failure ($):</label>
+                                <input type="number" id="outcome-a-failure" step="1000" placeholder="-20000" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="validation-message" id="validation-outcome-a" role="alert"></div>
+                    </div>
+
+                    <div class="prob-branch">
+                        <h4>Strategy B (Steady) - Outcomes</h4>
+                        <div class="prob-inputs">
+                            <div class="input-group">
+                                <label for="outcome-b-success">Success ($):</label>
+                                <input type="number" id="outcome-b-success" step="1000" placeholder="100000" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="outcome-b-moderate">Moderate ($):</label>
+                                <input type="number" id="outcome-b-moderate" step="1000" placeholder="50000" aria-required="true">
+                            </div>
+                            <div class="input-group">
+                                <label for="outcome-b-failure">Failure ($):</label>
+                                <input type="number" id="outcome-b-failure" step="1000" placeholder="10000" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="validation-message" id="validation-outcome-b" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary btn" onclick="goToStep(2)">Back</button>
+                <button class="btn" onclick="checkOutcomes()" id="check-outcomes-btn">Check Outcomes</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Calculate Expected Values -->
+        <div class="step-content" id="step-4">
+            <div class="step-container">
+                <h3>Step 4: Calculate Expected Values</h3>
+                <p>Using backward induction, let's calculate the expected value for each strategy.</p>
+
+                <div class="calculation-box">
+                    <h4>Strategy A Expected Value</h4>
+                    <div class="calculation-line">EV(A) = (0.40 × $200,000) + (0.30 × $80,000) + (0.30 × -$20,000)</div>
+                    <div class="calculation-line">EV(A) = $80,000 + $24,000 - $6,000</div>
+                    <div class="calculation-result">EV(A) = $98,000</div>
+                </div>
+
+                <div class="calculation-box">
+                    <h4>Strategy B Expected Value</h4>
+                    <div class="calculation-line">EV(B) = (0.60 × $100,000) + (0.30 × $50,000) + (0.10 × $10,000)</div>
+                    <div class="calculation-line">EV(B) = $60,000 + $15,000 + $1,000</div>
+                    <div class="calculation-result">EV(B) = $76,000</div>
+                </div>
+
+                <div class="calculation-box">
+                    <h4>Net Expected Values (after $50,000 investment)</h4>
+                    <div class="calculation-line">Net EV(A) = $98,000 - $50,000 = $48,000</div>
+                    <div class="calculation-line">Net EV(B) = $76,000 - $50,000 = $26,000</div>
+                    <div class="calculation-line">Net EV(No Investment) = $0 - $0 = $0</div>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <strong>Understanding the calculations:</strong> We multiply each outcome by its probability, then sum those weighted values to get the expected value. This represents the average outcome if we could repeat this decision many times.
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary btn" onclick="goToStep(3)">Back</button>
+                <button class="btn" onclick="goToStep(5)">Continue to Decision</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Identify Optimal Decision -->
+        <div class="step-content" id="step-5">
+            <div class="step-container">
+                <h3>Step 5: Identify the Optimal Decision Path</h3>
+                <p>Based on the expected value calculations, which decision maximizes expected value?</p>
+
+                <div class="decision-options">
+                    <div class="decision-card" tabindex="0" role="button"
+                         onclick="selectDecision('no-invest')"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDecision('no-invest');}">
+                        <h4>Do Not Invest</h4>
+                        <p>Decline the investment opportunity. Net EV = $0</p>
+                    </div>
+
+                    <div class="decision-card" tabindex="0" role="button"
+                         onclick="selectDecision('strategy-a')"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDecision('strategy-a');}">
+                        <h4>Invest with Strategy A (Aggressive)</h4>
+                        <p>Invest $50,000 using aggressive strategy. Net EV = $48,000</p>
+                    </div>
+
+                    <div class="decision-card" tabindex="0" role="button"
+                         onclick="selectDecision('strategy-b')"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDecision('strategy-b');}">
+                        <h4>Invest with Strategy B (Steady)</h4>
+                        <p>Invest $50,000 using steady strategy. Net EV = $26,000</p>
+                    </div>
+                </div>
+
+                <div class="validation-message" id="decision-validation" role="alert"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary btn" onclick="goToStep(4)">Back</button>
+                <button class="btn" onclick="checkDecision()" id="check-decision-btn" disabled>Check Decision</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="step-content" id="step-results">
+            <div class="results-container">
+                <div class="results-icon">✓</div>
+                <h2>Decision Tree Complete!</h2>
+
+                <div class="results-summary">
+                    <h3>Your Analysis Summary</h3>
+                    <p><strong>Tree Structure:</strong> 2 decision nodes (Invest/Not, Strategy A/B), 2 chance nodes (one per strategy)</p>
+                    <p><strong>Probability Validation:</strong> All probabilities sum to 1.0 (MECE principle satisfied)</p>
+                    <p><strong>Expected Value Calculations:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Strategy A EV: $98,000 (Net: $48,000 after investment)</li>
+                        <li>Strategy B EV: $76,000 (Net: $26,000 after investment)</li>
+                    </ul>
+                    <p><strong>Optimal Decision:</strong> <span class="highlight">Invest with Strategy A (Aggressive)</span></p>
+                    <p style="margin-top: 1rem; color: var(--color-neutral-700);">
+                        This decision maximizes expected value at $48,000. While Strategy A has higher risk
+                        (30% chance of loss), its expected value analysis shows it provides the best
+                        long-term average outcome. However, in real-world decisions, you might also consider
+                        risk tolerance, capital constraints, and worst-case scenarios.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <strong>Key Takeaway:</strong> Decision trees help structure complex decisions by breaking them into smaller components, calculating expected values through backward induction, and identifying the optimal path based on quantitative analysis.
+                </div>
+
+                <div class="button-group" style="justify-content: center;">
+                    <button class="btn" onclick="resetWidget()">Start Over</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentStep = 1;
+        let selectedDecision = null;
+
+        // Step navigation
+        function goToStep(stepNum) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show current step
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            document.getElementById(`step-indicator-${stepNum}`).classList.add('active');
+
+            // Mark previous steps as completed
+            for (let i = 1; i < stepNum; i++) {
+                document.getElementById(`step-indicator-${i}`).classList.add('completed');
+            }
+
+            currentStep = stepNum;
+            window.scrollTo(0, 0);
+            announceToScreenReader(`Step ${stepNum} of 5`);
+        }
+
+        // Step 1: Check structure
+        function checkStructure() {
+            const decisionNodes = parseInt(document.getElementById('decision-nodes').value);
+            const chanceNodes = parseInt(document.getElementById('chance-nodes').value);
+            const validation = document.getElementById('structure-validation');
+
+            if (decisionNodes === 2 && chanceNodes === 2) {
+                validation.textContent = 'Correct! The tree has 2 decision nodes (initial invest/not, then strategy choice) and 2 chance nodes (one for each strategy\'s outcomes).';
+                validation.className = 'validation-message success show';
+                announceToScreenReader('Structure correct!');
+                setTimeout(() => goToStep(2), 1500);
+            } else {
+                validation.textContent = 'Not quite. Hint: Count the initial investment decision, the strategy choice, and the chance outcomes for each strategy.';
+                validation.className = 'validation-message error show';
+                announceToScreenReader('Structure incorrect, try again');
+            }
+        }
+
+        // Step 2: Check probabilities with real-time sum updates
+        function updateSum(strategy) {
+            const success = parseFloat(document.getElementById(`prob-${strategy}-success`).value) || 0;
+            const moderate = parseFloat(document.getElementById(`prob-${strategy}-moderate`).value) || 0;
+            const failure = parseFloat(document.getElementById(`prob-${strategy}-failure`).value) || 0;
+            const sum = success + moderate + failure;
+            document.getElementById(`sum-${strategy}`).textContent = sum.toFixed(2);
+        }
+
+        // Add event listeners for real-time sum updates
+        ['a', 'b'].forEach(strategy => {
+            ['success', 'moderate', 'failure'].forEach(outcome => {
+                document.getElementById(`prob-${strategy}-${outcome}`).addEventListener('input', () => updateSum(strategy));
+            });
+        });
+
+        function checkProbabilities() {
+            const probsA = {
+                success: parseFloat(document.getElementById('prob-a-success').value),
+                moderate: parseFloat(document.getElementById('prob-a-moderate').value),
+                failure: parseFloat(document.getElementById('prob-a-failure').value)
+            };
+
+            const probsB = {
+                success: parseFloat(document.getElementById('prob-b-success').value),
+                moderate: parseFloat(document.getElementById('prob-b-moderate').value),
+                failure: parseFloat(document.getElementById('prob-b-failure').value)
+            };
+
+            const sumA = probsA.success + probsA.moderate + probsA.failure;
+            const sumB = probsB.success + probsB.moderate + probsB.failure;
+
+            const validationA = document.getElementById('validation-a');
+            const validationB = document.getElementById('validation-b');
+
+            let validA = false, validB = false;
+
+            // Check Strategy A
+            if (Math.abs(sumA - 1.0) < 0.01 && probsA.success === 0.4 && probsA.moderate === 0.3 && probsA.failure === 0.3) {
+                validationA.textContent = 'Correct! Strategy A probabilities sum to 1.0';
+                validationA.className = 'validation-message success show';
+                validA = true;
+            } else if (Math.abs(sumA - 1.0) < 0.01) {
+                validationA.textContent = 'Sum is 1.0, but check the individual probabilities against the scenario.';
+                validationA.className = 'validation-message error show';
+            } else {
+                validationA.textContent = `Sum is ${sumA.toFixed(2)}. Probabilities must sum to exactly 1.0 (MECE principle).`;
+                validationA.className = 'validation-message error show';
+            }
+
+            // Check Strategy B
+            if (Math.abs(sumB - 1.0) < 0.01 && probsB.success === 0.6 && probsB.moderate === 0.3 && probsB.failure === 0.1) {
+                validationB.textContent = 'Correct! Strategy B probabilities sum to 1.0';
+                validationB.className = 'validation-message success show';
+                validB = true;
+            } else if (Math.abs(sumB - 1.0) < 0.01) {
+                validationB.textContent = 'Sum is 1.0, but check the individual probabilities against the scenario.';
+                validationB.className = 'validation-message error show';
+            } else {
+                validationB.textContent = `Sum is ${sumB.toFixed(2)}. Probabilities must sum to exactly 1.0 (MECE principle).`;
+                validationB.className = 'validation-message error show';
+            }
+
+            if (validA && validB) {
+                announceToScreenReader('All probabilities correct!');
+                setTimeout(() => goToStep(3), 1500);
+            } else {
+                announceToScreenReader('Some probabilities are incorrect');
+            }
+        }
+
+        // Step 3: Check outcomes
+        function checkOutcomes() {
+            const outcomesA = {
+                success: parseFloat(document.getElementById('outcome-a-success').value),
+                moderate: parseFloat(document.getElementById('outcome-a-moderate').value),
+                failure: parseFloat(document.getElementById('outcome-a-failure').value)
+            };
+
+            const outcomesB = {
+                success: parseFloat(document.getElementById('outcome-b-success').value),
+                moderate: parseFloat(document.getElementById('outcome-b-moderate').value),
+                failure: parseFloat(document.getElementById('outcome-b-failure').value)
+            };
+
+            const validationA = document.getElementById('validation-outcome-a');
+            const validationB = document.getElementById('validation-outcome-b');
+
+            let validA = false, validB = false;
+
+            // Check Strategy A outcomes
+            if (outcomesA.success === 200000 && outcomesA.moderate === 80000 && outcomesA.failure === -20000) {
+                validationA.textContent = 'Correct! Strategy A outcomes match the scenario.';
+                validationA.className = 'validation-message success show';
+                validA = true;
+            } else {
+                validationA.textContent = 'Check the outcomes against the scenario. Remember: Success = $200,000, Moderate = $80,000, Failure = -$20,000';
+                validationA.className = 'validation-message error show';
+            }
+
+            // Check Strategy B outcomes
+            if (outcomesB.success === 100000 && outcomesB.moderate === 50000 && outcomesB.failure === 10000) {
+                validationB.textContent = 'Correct! Strategy B outcomes match the scenario.';
+                validationB.className = 'validation-message success show';
+                validB = true;
+            } else {
+                validationB.textContent = 'Check the outcomes against the scenario. Remember: Success = $100,000, Moderate = $50,000, Failure = $10,000';
+                validationB.className = 'validation-message error show';
+            }
+
+            if (validA && validB) {
+                announceToScreenReader('All outcomes correct!');
+                setTimeout(() => goToStep(4), 1500);
+            } else {
+                announceToScreenReader('Some outcomes are incorrect');
+            }
+        }
+
+        // Step 5: Select decision
+        function selectDecision(decision) {
+            // Clear previous selections
+            document.querySelectorAll('.decision-card').forEach(card => {
+                card.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // Select current
+            event.currentTarget.classList.add('selected');
+            selectedDecision = decision;
+
+            // Enable check button
+            document.getElementById('check-decision-btn').disabled = false;
+
+            // Clear validation
+            document.getElementById('decision-validation').classList.remove('show');
+        }
+
+        // Step 5: Check decision
+        function checkDecision() {
+            const validation = document.getElementById('decision-validation');
+            const cards = document.querySelectorAll('.decision-card');
+
+            if (selectedDecision === 'strategy-a') {
+                cards[1].classList.add('correct');
+                validation.textContent = 'Correct! Strategy A maximizes expected value with a net EV of $48,000, despite having higher risk.';
+                validation.className = 'validation-message success show';
+                announceToScreenReader('Correct decision!');
+                setTimeout(() => goToStep('results'), 2000);
+            } else {
+                event.currentTarget.parentElement.previousElementSibling.querySelector(`[onclick*="${selectedDecision}"]`).classList.add('incorrect');
+                cards[1].classList.add('correct');
+                validation.textContent = 'Not quite. The optimal decision maximizes expected value. Strategy A has the highest net EV of $48,000.';
+                validation.className = 'validation-message error show';
+                announceToScreenReader('Incorrect decision, try again');
+            }
+        }
+
+        // Reset widget
+        function resetWidget() {
+            currentStep = 1;
+            selectedDecision = null;
+
+            // Reset all inputs
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.validation-message').forEach(msg => msg.classList.remove('show'));
+            document.querySelectorAll('.decision-card').forEach(card => card.classList.remove('selected', 'correct', 'incorrect'));
+            document.getElementById('check-decision-btn').disabled = true;
+            document.getElementById('sum-a').textContent = '0.00';
+            document.getElementById('sum-b').textContent = '0.00';
+
+            // Go to step 1
+            goToStep(1);
+        }
+
+        // Accessibility announcement
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Keyboard support for Enter key on inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const currentStepEl = document.querySelector('.step-content.active');
+                        const checkBtn = currentStepEl.querySelector('.btn:not(.btn-secondary)');
+                        if (checkBtn && !checkBtn.disabled) {
+                            checkBtn.click();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

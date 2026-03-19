@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Paths to Profitability</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-wrigley: #2d8a4e;
+            --color-wrigley-light: #d4edda;
+            --color-weis: #c9302c;
+            --color-weis-light: #f8d7da;
+            --color-accent: #5a9ea1;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+
+            --panel-border: 3px solid var(--color-neutral-900);
+            --bubble-shadow: 2px 2px 0 var(--color-neutral-900);
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Comic Title */
+        .comic-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--color-neutral-900);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .comic-title h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .comic-title p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-align: center;
+            margin-top: 0.25rem;
+        }
+
+        /* Comic Panel */
+        .comic-panel {
+            background: white;
+            border: var(--panel-border);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 350px;
+            display: none;
+            animation: panelReveal 0.3s ease;
+        }
+
+        .comic-panel.active {
+            display: block;
+        }
+
+        @keyframes panelReveal {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Panel Header */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px dashed var(--color-neutral-200);
+        }
+
+        .panel-location {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            color: var(--color-neutral-600);
+            letter-spacing: 0.05em;
+        }
+
+        .panel-year {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Scene */
+        .scene {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .scene-visual {
+            flex: 0 0 140px;
+            text-align: center;
+        }
+
+        .company-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 0.75rem;
+            border: 3px solid var(--color-neutral-900);
+        }
+
+        .company-icon.wrigley {
+            background: var(--color-wrigley-light);
+        }
+
+        .company-icon.weis {
+            background: var(--color-weis-light);
+        }
+
+        .company-icon.split {
+            background: linear-gradient(135deg, var(--color-wrigley-light) 50%, var(--color-weis-light) 50%);
+        }
+
+        .company-icon.walmart {
+            background: #0071ce;
+            color: white;
+        }
+
+        .company-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .scene-content {
+            flex: 1;
+        }
+
+        /* Speech Bubbles */
+        .speech-bubble {
+            background: white;
+            border: 2px solid var(--color-neutral-900);
+            border-radius: 12px;
+            padding: 1rem;
+            position: relative;
+            margin-bottom: 1rem;
+            box-shadow: var(--bubble-shadow);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right-color: var(--color-neutral-900);
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 22px;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: white;
+        }
+
+        .thought-bubble {
+            background: var(--color-neutral-50);
+            border: 2px dashed var(--color-neutral-400);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: var(--color-neutral-600);
+        }
+
+        .thought-bubble::before {
+            content: '💭';
+            position: absolute;
+            left: -8px;
+            top: -8px;
+            font-size: 1.25rem;
+        }
+
+        .narrator-box {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Data Cards */
+        .data-card {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .data-card h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--color-neutral-200);
+            font-size: 0.9rem;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+        }
+
+        .data-value {
+            font-weight: 700;
+        }
+
+        .data-value.positive {
+            color: var(--color-wrigley);
+        }
+
+        .data-value.negative {
+            color: var(--color-weis);
+        }
+
+        /* Dramatic Reveals */
+        .dramatic-text {
+            font-family: 'Bangers', cursive;
+            font-size: 1.75rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .dramatic-text.doom {
+            color: var(--color-weis);
+            background: var(--color-weis-light);
+            border-radius: 8px;
+        }
+
+        .dramatic-text.victory {
+            color: var(--color-wrigley);
+            background: var(--color-wrigley-light);
+            border-radius: 8px;
+        }
+
+        /* VS Panel */
+        .vs-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .vs-company {
+            text-align: center;
+            flex: 1;
+        }
+
+        .vs-badge {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--color-neutral-400);
+        }
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, var(--color-accent) 0%, #7ab5b8 100%);
+            color: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px solid var(--color-neutral-900);
+        }
+
+        .insight-box h4 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.95rem;
+        }
+
+        /* Timeline Visual */
+        .timeline-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .timeline-visual::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: var(--color-neutral-300);
+            z-index: 0;
+        }
+
+        .timeline-point {
+            background: white;
+            border: 3px solid var(--color-neutral-900);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
+
+        .timeline-arrow {
+            font-size: 1.5rem;
+            color: var(--color-neutral-400);
+            z-index: 1;
+        }
+
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nav-btn {
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .nav-btn:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .nav-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .panel-indicator {
+            font-size: 0.9rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table th {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--color-neutral-50);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .scene {
+                flex-direction: column;
+            }
+
+            .scene-visual {
+                flex: none;
+                margin-bottom: 1rem;
+            }
+
+            .vs-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .comic-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .dramatic-text {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <div class="comic-title">
+            <h1>Two Paths to Profitability</h1>
+            <p>A tale of strategic choices and their consequences</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 8.33%"></div>
+            </div>
+            <div class="progress-text" id="progressText">Panel 1 of 12</div>
+        </div>
+
+        <!-- Panel 1: Opening -->
+        <div class="comic-panel active" data-panel="1">
+            <div class="panel-header">
+                <span class="panel-location">The Business World</span>
+                <span class="panel-year">1966-1974</span>
+            </div>
+            <div class="narrator-box">
+                Two companies. Two strategies. Two very different endings.
+            </div>
+            <div class="vs-container">
+                <div class="vs-company">
+                    <div class="company-icon wrigley">🍬</div>
+                    <div class="company-name">Wrigley</div>
+                    <div style="font-size: 0.8rem; color: var(--color-neutral-500);">Chewing Gum Empire</div>
+                </div>
+                <div class="vs-badge">VS</div>
+                <div class="vs-company">
+                    <div class="company-icon weis">🛒</div>
+                    <div class="company-name">Weis Markets</div>
+                    <div style="font-size: 0.8rem; color: var(--color-neutral-500);">Regional Grocery Chain</div>
+                </div>
+            </div>
+            <div class="insight-box">
+                <h4>The Question</h4>
+                <p>Both companies beat their competition. But HOW you win determines whether you KEEP winning.</p>
+            </div>
+        </div>
+
+        <!-- Panel 2: Meet Wrigley -->
+        <div class="comic-panel" data-panel="2">
+            <div class="panel-header">
+                <span class="panel-location">Chicago, Illinois</span>
+                <span class="panel-year">1966</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="company-icon wrigley">🍬</div>
+                    <div class="company-name">Wrigley</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble">
+                        "Our Doublemint and Juicy Fruit are everywhere. Every checkout counter. Every gas station. We're the default choice."
+                    </div>
+                    <div class="data-card">
+                        <h4>Wrigley's Advantage (1966-1985)</h4>
+                        <div class="data-row">
+                            <span>Return on Sales</span>
+                            <span class="data-value positive">+3.4pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Asset Turnover</span>
+                            <span class="data-value negative">-1.2pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Overall ROA</span>
+                            <span class="data-value positive">+2.1pp advantage</span>
+                        </div>
+                    </div>
+                    <div class="thought-bubble" style="position: relative;">
+                        Their secret? Fat margins from brand power. They charged more because customers chose them.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Meet Weis -->
+        <div class="comic-panel" data-panel="3">
+            <div class="panel-header">
+                <span class="panel-location">Sunbury, Pennsylvania</span>
+                <span class="panel-year">1974</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="company-icon weis">🛒</div>
+                    <div class="company-name">Weis Markets</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble">
+                        "We keep it simple. Low-cost locations. Efficient operations. Regional focus. Nobody runs leaner than us."
+                    </div>
+                    <div class="data-card">
+                        <h4>Weis's Advantage (1974-1995)</h4>
+                        <div class="data-row">
+                            <span>Return on Sales</span>
+                            <span class="data-value positive">+8.2pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Asset Turnover</span>
+                            <span class="data-value negative">-4.5pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Overall ROA</span>
+                            <span class="data-value positive">+3.7pp advantage</span>
+                        </div>
+                    </div>
+                    <div class="thought-bubble" style="position: relative;">
+                        Their secret? Cost efficiency. They made money by spending less, not charging more.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 4: Both Winning -->
+        <div class="comic-panel" data-panel="4">
+            <div class="panel-header">
+                <span class="panel-location">The Scoreboard</span>
+                <span class="panel-year">Early Period</span>
+            </div>
+            <div class="narrator-box">
+                For years, both strategies worked beautifully.
+            </div>
+            <table class="comparison-table">
+                <tr>
+                    <th>Metric</th>
+                    <th>Wrigley</th>
+                    <th>Weis</th>
+                </tr>
+                <tr>
+                    <td>Primary Advantage</td>
+                    <td><strong style="color: var(--color-wrigley);">Margins (+3.4pp)</strong></td>
+                    <td><strong style="color: var(--color-wrigley);">Margins (+8.2pp)</strong></td>
+                </tr>
+                <tr>
+                    <td>How They Got There</td>
+                    <td>Brand power → Pricing</td>
+                    <td>Cost efficiency</td>
+                </tr>
+                <tr>
+                    <td>ROA Advantage</td>
+                    <td>+2.1pp</td>
+                    <td>+3.7pp</td>
+                </tr>
+                <tr>
+                    <td>Verdict</td>
+                    <td>✓ Winning</td>
+                    <td>✓ Winning</td>
+                </tr>
+            </table>
+            <div class="thought-bubble" style="position: relative;">
+                But the source of advantage matters. What happens when the competitive environment changes?
+            </div>
+        </div>
+
+        <!-- Panel 5: Time Passes -->
+        <div class="comic-panel" data-panel="5">
+            <div class="panel-header">
+                <span class="panel-location">The Flow of Time</span>
+                <span class="panel-year">20 Years Later...</span>
+            </div>
+            <div class="dramatic-text" style="background: var(--color-neutral-200); color: var(--color-neutral-700);">
+                ⏰ FAST FORWARD ⏰
+            </div>
+            <div class="timeline-visual">
+                <div class="timeline-point">1966</div>
+                <span class="timeline-arrow">→</span>
+                <div class="timeline-point">1985</div>
+                <span class="timeline-arrow">→</span>
+                <div class="timeline-point">2007</div>
+            </div>
+            <div class="narrator-box">
+                Markets evolved. Competitors emerged. Only one of these companies would keep winning.
+            </div>
+            <div style="text-align: center; padding: 1rem;">
+                <span style="font-size: 2rem;">🍬</span>
+                <span style="font-size: 1.5rem; margin: 0 1rem;">?</span>
+                <span style="font-size: 2rem;">🛒</span>
+            </div>
+        </div>
+
+        <!-- Panel 6: Wrigley Pivots -->
+        <div class="comic-panel" data-panel="6">
+            <div class="panel-header">
+                <span class="panel-location">Wrigley HQ</span>
+                <span class="panel-year">1986-2007</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="company-icon wrigley">🍬</div>
+                    <div class="company-name">Wrigley</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble">
+                        "Competition is squeezing our margins. But look at our ASSET model—we're incredibly efficient."
+                    </div>
+                    <div class="data-card">
+                        <h4>Wrigley's NEW Advantage (1986-2007)</h4>
+                        <div class="data-row">
+                            <span>Return on Sales</span>
+                            <span class="data-value negative">-1.5pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Asset Turnover</span>
+                            <span class="data-value positive">+7.9pp vs. industry!</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Overall ROA</span>
+                            <span class="data-value positive">+6.4pp advantage</span>
+                        </div>
+                    </div>
+                    <div class="narrator-box">
+                        Lower margins, but MASSIVE asset efficiency. Long shelf life. Existing retail channels. Simple manufacturing. Strong brand driving volume.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 7: Walmart Arrives -->
+        <div class="comic-panel" data-panel="7">
+            <div class="panel-header">
+                <span class="panel-location">Pennsylvania</span>
+                <span class="panel-year">1990s</span>
+            </div>
+            <div class="narrator-box">
+                Meanwhile, a storm was brewing for Weis Markets...
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="company-icon walmart">W</div>
+                    <div class="company-name">Walmart</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble">
+                        "Nice regional grocery chain you've got there. We're moving in. And our costs? Lower than yours could EVER be."
+                    </div>
+                    <div class="thought-bubble" style="position: relative;">
+                        Walmart's scale meant genuine cost advantages that regional players couldn't match. Ever.
+                    </div>
+                </div>
+            </div>
+            <div class="dramatic-text doom">
+                THE CHALLENGER ARRIVES
+            </div>
+        </div>
+
+        <!-- Panel 8: Weis Falls -->
+        <div class="comic-panel" data-panel="8">
+            <div class="panel-header">
+                <span class="panel-location">Weis Markets</span>
+                <span class="panel-year">1996-2010</span>
+            </div>
+            <div class="scene">
+                <div class="scene-visual">
+                    <div class="company-icon weis">🛒</div>
+                    <div class="company-name">Weis Markets</div>
+                </div>
+                <div class="scene-content">
+                    <div class="speech-bubble" style="border-color: var(--color-weis);">
+                        "Our cost advantage is... gone. We can't compete with their scale. And customers don't care about us—they go wherever it's cheapest."
+                    </div>
+                    <div class="data-card" style="border-color: var(--color-weis);">
+                        <h4>Weis's Collapse (1996-2010)</h4>
+                        <div class="data-row">
+                            <span>Return on Sales</span>
+                            <span class="data-value negative">-3.2pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Asset Turnover</span>
+                            <span class="data-value negative">-2.1pp vs. industry</span>
+                        </div>
+                        <div class="data-row">
+                            <span>Overall ROA</span>
+                            <span class="data-value negative">-5.4pp BELOW average</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dramatic-text doom">
+                FROM +3.7pp TO -5.4pp
+            </div>
+        </div>
+
+        <!-- Panel 9: The Contrast -->
+        <div class="comic-panel" data-panel="9">
+            <div class="panel-header">
+                <span class="panel-location">The Final Score</span>
+                <span class="panel-year">End of Story</span>
+            </div>
+            <div class="vs-container">
+                <div class="vs-company">
+                    <div class="company-icon wrigley">🍬</div>
+                    <div class="company-name">Wrigley</div>
+                    <div class="dramatic-text victory" style="margin-top: 0.5rem; font-size: 1.25rem;">
+                        +6.4pp ROA
+                    </div>
+                    <div style="font-size: 0.85rem; margin-top: 0.5rem;">Adapted. Thrived.</div>
+                </div>
+                <div class="vs-badge" style="font-size: 1.5rem;">→</div>
+                <div class="vs-company">
+                    <div class="company-icon weis">🛒</div>
+                    <div class="company-name">Weis</div>
+                    <div class="dramatic-text doom" style="margin-top: 0.5rem; font-size: 1.25rem;">
+                        -5.4pp ROA
+                    </div>
+                    <div style="font-size: 0.85rem; margin-top: 0.5rem;">Competed away.</div>
+                </div>
+            </div>
+            <div class="narrator-box">
+                A 12-point swing in ROA. Same starting position. Very different outcomes.
+            </div>
+        </div>
+
+        <!-- Panel 10: Why? -->
+        <div class="comic-panel" data-panel="10">
+            <div class="panel-header">
+                <span class="panel-location">The Analysis</span>
+                <span class="panel-year">WHY?</span>
+            </div>
+            <div class="narrator-box">
+                Both companies started with margin advantages. But the SOURCE of those margins made all the difference.
+            </div>
+            <table class="comparison-table">
+                <tr>
+                    <th>Factor</th>
+                    <th>Wrigley (Revenue)</th>
+                    <th>Weis (Cost)</th>
+                </tr>
+                <tr>
+                    <td>Source of Advantage</td>
+                    <td>Brand → Pricing power</td>
+                    <td>Efficiency → Low costs</td>
+                </tr>
+                <tr>
+                    <td>Customer Loyalty</td>
+                    <td>High (chose Wrigley)</td>
+                    <td>Low (chose cheapest)</td>
+                </tr>
+                <tr>
+                    <td>Defensibility</td>
+                    <td>Hard to replicate brand</td>
+                    <td>Easy to undercut costs</td>
+                </tr>
+                <tr>
+                    <td>When Challenged</td>
+                    <td>Pivoted to asset efficiency</td>
+                    <td>Advantage competed away</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Panel 11: The Lesson -->
+        <div class="comic-panel" data-panel="11">
+            <div class="panel-header">
+                <span class="panel-location">The Moral</span>
+                <span class="panel-year">Revenue Before Cost</span>
+            </div>
+            <div class="dramatic-text" style="background: var(--color-neutral-900); color: white;">
+                THE SECOND RULE
+            </div>
+            <div class="insight-box">
+                <h4>Revenue Before Cost</h4>
+                <p>Cost-based advantages are particularly vulnerable because:</p>
+            </div>
+            <div style="padding: 1rem 0;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                    <span style="font-size: 1.5rem;">👁️</span>
+                    <span>Costs are <strong>easier to see</strong> and replicate than differentiation</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                    <span style="font-size: 1.5rem;">📈</span>
+                    <span><strong>Scale benefits</strong> larger players disproportionately</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 1.5rem;">🏃</span>
+                    <span>There's <strong>no loyalty</strong> to "cheapest"—customers switch instantly</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 12: Takeaway -->
+        <div class="comic-panel" data-panel="12">
+            <div class="panel-header">
+                <span class="panel-location">Your Turn</span>
+                <span class="panel-year">The Takeaway</span>
+            </div>
+            <div class="narrator-box">
+                This story doesn't say cost-driven strategies CAN'T work.
+            </div>
+            <div class="insight-box" style="background: var(--color-neutral-900);">
+                <h4>The Real Lesson</h4>
+                <p>"On average, across thousands of companies over decades, <strong>revenue-driven strategies are more likely to produce exceptional, sustained results.</strong>"</p>
+            </div>
+            <div style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 0.9rem; color: var(--color-neutral-600); margin-bottom: 1rem;">
+                    When analyzing any company, ask:
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 600;">
+                    "Is their advantage based on what customers <em>pay</em>... or what the company <em>spends</em>?"
+                </div>
+            </div>
+            <div class="dramatic-text victory">
+                THE END
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-container">
+            <button class="nav-btn" id="prevBtn" disabled>
+                <span>←</span> Previous
+            </button>
+            <span class="panel-indicator" id="panelIndicator">Panel 1 of 12</span>
+            <button class="nav-btn" id="nextBtn">
+                Next <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const totalPanels = 12;
+        let currentPanel = 1;
+
+        const panels = document.querySelectorAll('.comic-panel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const panelIndicator = document.getElementById('panelIndicator');
+
+        function updatePanel() {
+            // Update panels
+            panels.forEach(panel => {
+                panel.classList.remove('active');
+                if (parseInt(panel.dataset.panel) === currentPanel) {
+                    panel.classList.add('active');
+                }
+            });
+
+            // Update buttons
+            prevBtn.disabled = currentPanel === 1;
+            nextBtn.disabled = currentPanel === totalPanels;
+            nextBtn.innerHTML = currentPanel === totalPanels ? 'Finish' : 'Next <span>→</span>';
+
+            // Update progress
+            const progress = (currentPanel / totalPanels) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `Panel ${currentPanel} of ${totalPanels}`;
+            panelIndicator.textContent = `Panel ${currentPanel} of ${totalPanels}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPanel > 1) {
+                currentPanel--;
+                updatePanel();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPanel < totalPanels) {
+                currentPanel++;
+                updatePanel();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentPanel < totalPanels) {
+                currentPanel++;
+                updatePanel();
+            } else if (e.key === 'ArrowLeft' && currentPanel > 1) {
+                currentPanel--;
+                updatePanel();
+            }
+        });
+
+        // Initialize
+        updatePanel();
+    </script>
+</body>
+</html>

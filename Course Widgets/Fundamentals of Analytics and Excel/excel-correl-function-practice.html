@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel CORREL Function Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-primary: #171717;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --spacing-1: 8px;
+            --spacing-2: 16px;
+            --spacing-3: 24px;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            padding: var(--spacing-3);
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--color-neutral-600);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .container { max-width: 900px; margin: auto; }
+
+        .challenge-list {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-2);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .challenge-list h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .challenge-list ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 13px;
+            color: var(--color-neutral-600);
+        }
+
+        .challenge-list li { padding: 2px 0; }
+
+        .challenge-list li code {
+            background: var(--color-neutral-200);
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .rounding-note {
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            margin-top: var(--spacing-1);
+        }
+
+        .excel-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .excel-grid th, .excel-grid td {
+            border: 1px solid var(--color-neutral-300);
+            padding: 5px var(--spacing-1);
+            font-size: 13px;
+        }
+
+        .excel-grid thead th {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .excel-grid tbody th {
+            background: var(--color-neutral-50);
+            font-weight: 600;
+            font-size: 12px;
+            text-align: center;
+            width: 36px;
+        }
+
+        .excel-grid input {
+            width: 100%;
+            border: none;
+            font-family: var(--font-family-primary);
+            font-size: 13px;
+            background: transparent;
+        }
+
+        .excel-grid input:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .excel-grid input::placeholder {
+            color: var(--color-neutral-400);
+            font-size: 12px;
+        }
+
+        /* MC question */
+        .mc-question {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-2);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .mc-question legend {
+            font-weight: 600;
+            font-size: 14px;
+            padding: 0 4px;
+        }
+
+        .mc-option {
+            display: block;
+            padding: var(--spacing-1) var(--spacing-2);
+            margin: 4px 0;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+
+        .mc-option:hover { background: var(--color-neutral-50); }
+
+        .mc-option input[type="radio"] { margin-right: var(--spacing-1); }
+
+        .check-btn {
+            margin-top: var(--spacing-1);
+            padding: 12px 16px;
+            width: 100%;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .check-btn:hover { background: var(--color-neutral-700); }
+        .check-btn:focus { outline: 2px solid var(--color-neutral-900); outline-offset: 2px; }
+
+        .feedback-area { margin-top: var(--spacing-2); }
+
+        .result-line {
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .result-line.correct {
+            background: var(--color-success-light);
+            border: 1px solid var(--color-success);
+        }
+
+        .result-line.incorrect {
+            background: var(--color-error-light);
+            border: 1px solid var(--color-error);
+        }
+
+        .result-line.empty {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            color: var(--color-neutral-500);
+        }
+
+        .feedback-summary {
+            padding: var(--spacing-2);
+            border-radius: var(--border-radius);
+            margin-top: var(--spacing-1);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .feedback-summary.all-correct {
+            background: var(--color-success-light);
+            border: 1px solid var(--color-success);
+        }
+
+        .feedback-summary.partial {
+            background: var(--color-error-light);
+            border: 1px solid var(--color-error);
+        }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h2>Excel CORREL Function Practice</h2>
+            <p class="subtitle">Calculate and compare correlation coefficients to find which factor better predicts revenue.</p>
+
+            <table class="excel-grid" role="table" aria-label="Monthly business data">
+                <thead>
+                    <tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+                </thead>
+                <tbody id="data-body">
+                    <tr><th>1</th><td>Month</td><td>Marketing ($)</td><td>Revenue ($)</td><td>Employees</td></tr>
+                </tbody>
+            </table>
+
+            <div class="challenge-list">
+                <h3>Challenges</h3>
+                <ol>
+                    <li>Correlation between <strong>Marketing Spend</strong> and <strong>Revenue</strong> using <code>=CORREL()</code></li>
+                    <li>Correlation between <strong>Employee Count</strong> and <strong>Revenue</strong> using <code>=CORREL()</code></li>
+                    <li>Which variable is the <strong>stronger predictor</strong> of Revenue?</li>
+                </ol>
+                <div class="rounding-note">Column B = Marketing Spend, Column C = Revenue, Column D = Employee Count (rows 2&ndash;11). Results rounded to 2 decimal places.</div>
+            </div>
+
+            <table class="excel-grid" role="table" aria-label="Formula challenges">
+                <thead>
+                    <tr><th>#</th><th>Metric</th><th>Your Formula</th></tr>
+                </thead>
+                <tbody>
+                    <tr><th>1</th><td>Marketing vs Revenue</td><td><input id="f1" placeholder="=CORREL(...)" aria-label="CORREL formula for Marketing Spend and Revenue"></td></tr>
+                    <tr><th>2</th><td>Employees vs Revenue</td><td><input id="f2" placeholder="=CORREL(...)" aria-label="CORREL formula for Employee Count and Revenue"></td></tr>
+                </tbody>
+            </table>
+
+            <fieldset class="mc-question">
+                <legend>3. Which variable is the stronger predictor of Revenue?</legend>
+                <label class="mc-option" id="mc-a"><input type="radio" name="predictor" value="A"><span>Marketing Spend</span></label>
+                <label class="mc-option" id="mc-b"><input type="radio" name="predictor" value="B"><span>Employee Count</span></label>
+                <label class="mc-option" id="mc-c"><input type="radio" name="predictor" value="C"><span>Both are equally strong</span></label>
+            </fieldset>
+
+            <button class="check-btn" id="check-btn">Check All Answers</button>
+            <div class="feedback-area" id="feedback-area" role="status" aria-live="polite" aria-atomic="true"></div>
+        </div>
+    </main>
+
+    <script>
+        // 10 months of business data
+        const data = [
+            { month: 'Jan', marketing: 5000,  revenue: 45000, employees: 10 },
+            { month: 'Feb', marketing: 8000,  revenue: 62000, employees: 12 },
+            { month: 'Mar', marketing: 4000,  revenue: 35000, employees: 8  },
+            { month: 'Apr', marketing: 12000, revenue: 72000, employees: 11 },
+            { month: 'May', marketing: 6000,  revenue: 58000, employees: 14 },
+            { month: 'Jun', marketing: 10000, revenue: 55000, employees: 9  },
+            { month: 'Jul', marketing: 15000, revenue: 98000, employees: 13 },
+            { month: 'Aug', marketing: 7000,  revenue: 50000, employees: 7  },
+            { month: 'Sep', marketing: 11000, revenue: 70000, employees: 15 },
+            { month: 'Oct', marketing: 14000, revenue: 88000, employees: 10 }
+        ];
+
+        // Render data table
+        const dataBody = document.getElementById('data-body');
+        data.forEach((d, i) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<th>${i + 2}</th><td>${d.month}</td><td>$${d.marketing.toLocaleString()}</td><td>$${d.revenue.toLocaleString()}</td><td>${d.employees}</td>`;
+            dataBody.appendChild(tr);
+        });
+
+        // Compute correlations from data
+        const lastRow = data.length + 1; // 11
+        function correl(a, b) {
+            const n = a.length;
+            const mA = a.reduce((s, v) => s + v, 0) / n;
+            const mB = b.reduce((s, v) => s + v, 0) / n;
+            let sp = 0, ssA = 0, ssB = 0;
+            for (let i = 0; i < n; i++) {
+                const dA = a[i] - mA, dB = b[i] - mB;
+                sp += dA * dB;
+                ssA += dA * dA;
+                ssB += dB * dB;
+            }
+            return sp / Math.sqrt(ssA * ssB);
+        }
+
+        const marketing = data.map(d => d.marketing);
+        const revenue   = data.map(d => d.revenue);
+        const employees = data.map(d => d.employees);
+        const r1 = Math.round(correl(marketing, revenue) * 100) / 100;
+        const r2 = Math.round(correl(employees, revenue) * 100) / 100;
+        const strongerPredictor = Math.abs(r1) > Math.abs(r2) ? 'A' : Math.abs(r2) > Math.abs(r1) ? 'B' : 'C';
+
+        // Regex: accept full-column or range refs, with optional $, either argument order
+        function col(L) {
+            return `\\$?${L}(?:\\$?:\\$?${L}|\\$?2:\\$?${L}\\$?${lastRow})`;
+        }
+        const B = col('B'), C = col('C'), D = col('D');
+
+        const challenges = {
+            f1: {
+                hint: '=CORREL(B2:B11,C2:C11)',
+                patterns: [
+                    new RegExp(`^=CORREL\\(${B},${C}\\)$`),
+                    new RegExp(`^=CORREL\\(${C},${B}\\)$`)
+                ],
+                result: r1
+            },
+            f2: {
+                hint: '=CORREL(D2:D11,C2:C11)',
+                patterns: [
+                    new RegExp(`^=CORREL\\(${D},${C}\\)$`),
+                    new RegExp(`^=CORREL\\(${C},${D}\\)$`)
+                ],
+                result: r2
+            }
+        };
+
+        const formulaIds = ['f1', 'f2'];
+        const feedbackArea = document.getElementById('feedback-area');
+
+        // Enter key → check all
+        formulaIds.forEach(id => {
+            document.getElementById(id).addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); checkAll(); }
+            });
+        });
+        document.getElementById('check-btn').addEventListener('click', checkAll);
+
+        function normalize(formula) {
+            return formula.replace(/\s/g, '').replace(/[\u201C\u201D\u2018\u2019]/g, '"').toUpperCase();
+        }
+
+        function checkFormula(id) {
+            const input = document.getElementById(id);
+            const raw = input.value.trim();
+            if (!raw) return null;
+            const norm = normalize(raw);
+            const ch = challenges[id];
+            const ok = ch.patterns.some(p => p.test(norm));
+            input.style.backgroundColor = ok ? '#dcfce7' : '#fee2e2';
+            return { id, ok, ch };
+        }
+
+        function checkAll() {
+            const results = formulaIds.map(id => checkFormula(id));
+            let html = '', correct = 0, attempted = 0, total = 3;
+
+            // Check formulas
+            results.forEach(r => {
+                if (!r) return;
+                attempted++;
+                if (r.ok) {
+                    correct++;
+                    html += `<div class="result-line correct">#${r.id[1]} correct &mdash; r = ${r.ch.result.toFixed(2)}</div>`;
+                } else {
+                    html += `<div class="result-line incorrect">#${r.id[1]} incorrect &mdash; Hint: ${r.ch.hint}</div>`;
+                }
+            });
+
+            formulaIds.forEach((id, i) => {
+                if (!results[i]) html += `<div class="result-line empty">#${id[1]} &mdash; not attempted</div>`;
+            });
+
+            // Check MC
+            const selected = document.querySelector('input[name="predictor"]:checked');
+            document.querySelectorAll('.mc-option').forEach(opt => {
+                opt.style.backgroundColor = '';
+                opt.style.borderColor = '';
+            });
+
+            if (selected) {
+                attempted++;
+                const mcOk = selected.value === strongerPredictor;
+                const label = selected.closest('.mc-option');
+                if (mcOk) {
+                    correct++;
+                    label.style.backgroundColor = '#dcfce7';
+                    label.style.borderColor = '#22c55e';
+                    html += `<div class="result-line correct">#3 correct &mdash; Marketing Spend (r = ${r1.toFixed(2)}) is a stronger predictor than Employee Count (r = ${r2.toFixed(2)})</div>`;
+                } else {
+                    label.style.backgroundColor = '#fee2e2';
+                    label.style.borderColor = '#ef4444';
+                    html += `<div class="result-line incorrect">#3 incorrect &mdash; Hint: Compare the r values. The higher the absolute value, the stronger the predictor.</div>`;
+                }
+            } else {
+                html += `<div class="result-line empty">#3 &mdash; not attempted</div>`;
+            }
+
+            if (attempted === 0) {
+                html = '<div class="result-line empty">Enter at least one formula to check.</div>';
+            } else if (correct === total) {
+                html += `<div class="feedback-summary all-correct">All ${correct} answers correct!</div>`;
+            } else {
+                html += `<div class="feedback-summary partial">${correct} of ${attempted} correct.</div>`;
+            }
+
+            feedbackArea.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

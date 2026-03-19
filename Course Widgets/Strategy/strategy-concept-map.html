@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Concept Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 8px;
+            left: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-label {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .search-box:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .reset-btn {
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .reset-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        #graph-container {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            position: relative;
+            height: 700px;
+        }
+
+        #definition-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            height: 700px;
+        }
+
+        .panel-empty {
+            color: var(--color-neutral-400);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .panel-content {
+            display: none;
+        }
+
+        .panel-content.active {
+            display: block;
+        }
+
+        .panel-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 12px;
+        }
+
+        .panel-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--color-neutral-100);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            color: var(--color-neutral-600);
+        }
+
+        .panel-section {
+            margin-bottom: 16px;
+        }
+
+        .panel-section-title {
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .panel-section-content {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .connected-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .connected-btn {
+            width: 100%;
+            text-align: left;
+            padding: 8px 12px;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-family: inherit;
+            color: var(--color-neutral-900);
+        }
+
+        .connected-btn:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-300);
+        }
+
+        .connected-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke: white;
+            stroke-width: 2px;
+        }
+
+        .node circle:focus {
+            outline: 3px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .node.dimmed circle {
+            opacity: 0.2;
+        }
+
+        .node.dimmed text {
+            opacity: 0.2;
+        }
+
+        .node.focused circle {
+            stroke: #3182ce;
+            stroke-width: 4px;
+        }
+
+        .node text {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        .link {
+            stroke: #e2e8f0;
+            stroke-width: 2px;
+            stroke-opacity: 0.3;
+        }
+
+        .link.dimmed {
+            stroke-opacity: 0.1;
+        }
+
+        .link.highlighted {
+            stroke-opacity: 0.8;
+            stroke-width: 3px;
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            #definition-panel {
+                height: auto;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            #graph-container { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#definition-panel" class="skip-link">Skip to concept details</a>
+
+    <div class="container">
+        <h1>Course Concept Map</h1>
+        <p class="subtitle">Interactive visualization of strategic analysis frameworks and their connections</p>
+
+        <div class="legend" role="region" aria-label="Legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #6b9085;" role="img" aria-label="Green circle"></div>
+                <span>Course Outcomes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #5a9ea1;" role="img" aria-label="Turquoise circle"></div>
+                <span>Framework Pillars</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9b8aac;" role="img" aria-label="Purple circle"></div>
+                <span>Key Concepts</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #c5c0a8;" role="img" aria-label="Sand circle"></div>
+                <span>Canary Medical Applications</span>
+            </div>
+        </div>
+
+        <div class="controls" role="search">
+            <div class="search-wrapper">
+                <label for="search" class="search-label">Search concepts</label>
+                <input
+                    type="search"
+                    class="search-box"
+                    id="search"
+                    placeholder="Search concepts, frameworks, applications..."
+                    aria-describedby="search-instructions">
+                <div id="search-instructions" class="sr-only">
+                    Type to filter concepts by name or definition. Results update as you type.
+                </div>
+            </div>
+            <button class="reset-btn" id="reset" aria-label="Reset view and clear all filters">Reset View</button>
+        </div>
+
+        <div class="layout">
+            <div id="graph-container" role="application" aria-label="Interactive concept map">
+                <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" id="graph-instructions">
+                    Interactive force-directed graph showing relationships between strategy concepts.
+                    Click or press Enter on any node to view details.
+                    Use Tab key to navigate between nodes.
+                </div>
+            </div>
+
+            <div id="definition-panel" role="region" aria-live="polite" aria-atomic="true" tabindex="-1">
+                <div class="panel-empty" id="panel-empty">
+                    Click any node to explore concepts and connections
+                </div>
+
+                <div class="panel-content" id="panel-content">
+                    <div class="panel-label" id="panel-label"></div>
+                    <div class="panel-type" id="panel-type"></div>
+
+                    <div class="panel-section">
+                        <div class="panel-section-title">Definition</div>
+                        <div class="panel-section-content" id="panel-definition"></div>
+                    </div>
+
+                    <div class="panel-section" id="panel-extra" style="display: none;">
+                        <div class="panel-section-title" id="panel-extra-title"></div>
+                        <div class="panel-section-content" id="panel-extra-content"></div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-section-title" id="connected-title">Connected To</div>
+                        <div id="panel-connected" role="list" aria-labelledby="connected-title"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen reader announcements -->
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only" id="announcements"></div>
+
+    <script>
+        // Data
+        const nodes = [
+            // CLOs (Layer 1 - Course Learning Outcomes)
+            { id: 'clo1', label: 'CLO 1: Analyze Industry Structure', type: 'clo', definition: 'Analyze how industry structure shapes strategic possibilities using Porter\'s Five Forces framework.', color: '#6b9085' },
+            { id: 'clo2', label: 'CLO 2: Evaluate Strategic Positions', type: 'clo', definition: 'Evaluate strategic positions on the productivity frontier and assess the risk-return tradeoffs of different competitive approaches.', color: '#6b9085' },
+            { id: 'clo3', label: 'CLO 3: Apply Jobs-to-Be-Done', type: 'clo', definition: 'Apply the Jobs-to-Be-Done framework to identify why customers really hire products and services.', color: '#6b9085' },
+            { id: 'clo4', label: 'CLO 4: Analyze Value Chain', type: 'clo', definition: 'Analyze value chain decisions and determine when to integrate versus modularize activities.', color: '#6b9085' },
+            { id: 'clo5', label: 'CLO 5: Apply Three Rules', type: 'clo', definition: 'Apply the "Better before Cheaper" and "Revenue before Cost" principles to evaluate value creation and capture strategies.', color: '#6b9085' },
+            { id: 'clo6', label: 'CLO 6: Distinguish Change Types', type: 'clo', definition: 'Distinguish between strategic drift, expediency, and genuine adaptation when facing competitive pressure.', color: '#6b9085' },
+            { id: 'clo7', label: 'CLO 7: Synthesize Framework', type: 'clo', definition: 'Synthesize the four-part strategy framework (Goals, Value Proposition, Implementation, Limits) into coherent strategic analysis.', color: '#6b9085' },
+
+            // Framework Pillars (Layer 2)
+            { id: 'pillar-goals', label: 'Goals', type: 'pillar', definition: 'The first pillar of strategy: setting realistic goals based on industry structure analysis. Uses Five Forces to avoid implausible aspirations.', color: '#5a9ea1' },
+            { id: 'pillar-value', label: 'Value Proposition', type: 'pillar', definition: 'The second pillar of strategy: defining how you\'ll compete through positioning, customer connection, and differentiation.', color: '#5a9ea1' },
+            { id: 'pillar-implementation', label: 'Implementation', type: 'pillar', definition: 'The third pillar of strategy: making consistent choices about activities, value chain configuration, and organizational structure.', color: '#5a9ea1' },
+            { id: 'pillar-limits', label: 'Limits', type: 'pillar', definition: 'The fourth pillar of strategy: knowing when to persist with your strategy and when to adapt to changing conditions.', color: '#5a9ea1' },
+
+            // Key Concepts - Goals
+            { id: 'five-forces', label: 'Five Forces', type: 'concept', definition: 'Porter\'s framework for analyzing industry attractiveness through five competitive forces: rivalry, buyer power, supplier power, threat of substitutes, and threat of new entrants.', color: '#9b8aac' },
+            { id: 'rivalry', label: 'Rivalry', type: 'concept', definition: 'Competition among existing industry participants. Affects pricing, innovation, and market share dynamics.', color: '#9b8aac' },
+            { id: 'buyer-power', label: 'Buyer Power', type: 'concept', definition: 'The bargaining leverage customers have over industry participants, affecting pricing power and margins.', color: '#9b8aac' },
+            { id: 'supplier-power', label: 'Supplier Power', type: 'concept', definition: 'The bargaining leverage suppliers have over industry participants, affecting input costs and availability.', color: '#9b8aac' },
+            { id: 'substitutes', label: 'Substitutes', type: 'concept', definition: 'Products or services from outside the industry that can fulfill the same customer need, limiting pricing power.', color: '#9b8aac' },
+            { id: 'new-entrants', label: 'New Entrants', type: 'concept', definition: 'The threat of new competitors entering the industry, constrained by barriers to entry.', color: '#9b8aac' },
+            { id: 'industry-attractiveness', label: 'Industry Attractiveness', type: 'concept', definition: 'The overall profit potential of an industry, determined by the collective strength of the five forces. About 20% of performance variation comes from industry choice.', color: '#9b8aac' },
+
+            // Key Concepts - Value Proposition
+            { id: 'productivity-frontier', label: 'Productivity Frontier', type: 'concept', definition: 'The curve representing the maximum value a company can deliver at a given cost. Defines what\'s competitively possible.', color: '#9b8aac' },
+            { id: 'high-end', label: 'High-End Position', type: 'concept', definition: 'Strategic position offering superior performance at premium prices. Higher margins (25-40%) but smaller market. Examples: Four Seasons, Rolex.', color: '#9b8aac' },
+            { id: 'mid-market', label: 'Mid-Market Position', type: 'concept', definition: 'Strategic position offering balanced value. Largest market segment (55%) but most crowded and highest exit rates (18%).', color: '#9b8aac' },
+            { id: 'price-sensitive', label: 'Price-Sensitive Position', type: 'concept', definition: 'Strategic position offering adequate performance at lowest price. Lower margins (8-15%) but stable. Examples: Motel 6, Walmart.', color: '#9b8aac' },
+            { id: 'stuck-middle', label: 'Stuck in the Middle', type: 'concept', definition: 'A dangerous strategic position below the productivity frontier, offering neither superior performance nor lowest cost.', color: '#9b8aac' },
+            { id: 'jtbd', label: 'Jobs-to-Be-Done', type: 'concept', definition: 'Framework for understanding customer motivation by identifying the "jobs" customers are trying to accomplish when they "hire" a product.', color: '#9b8aac' },
+            { id: 'correlation-causation', label: 'Correlation vs Causation', type: 'concept', definition: 'Demographics tell you WHO buys. Jobs-to-Be-Done tells you WHY they buy. Correlation (demographics) is not causation (jobs).', color: '#9b8aac' },
+            { id: 'differentiation', label: 'Differentiation', type: 'concept', definition: 'Creating unique value that customers will pay a premium for. Four dimensions: Functionality → Reliability → Convenience → Price.', color: '#9b8aac' },
+            { id: 'diff-cycle', label: 'Differentiation Cycle', type: 'concept', definition: 'As industries mature, differentiation shifts from functionality to reliability to convenience to price. Each dimension becomes table stakes.', color: '#9b8aac' },
+
+            // Key Concepts - Implementation
+            { id: 'value-chain', label: 'Value Chain', type: 'concept', definition: 'The sequence of activities from raw materials to final customer. Key decision: which activities to perform internally vs. outsource.', color: '#9b8aac' },
+            { id: 'make-buy', label: 'Make vs Buy', type: 'concept', definition: 'The decision whether to perform activities internally (make) or outsource them (buy). Driven by three factors: Price, Power, and Performance.', color: '#9b8aac' },
+            { id: 'vertical-integration', label: 'Vertical Integration', type: 'concept', definition: 'Controlling more stages of the value chain. Trades flexibility for coordination and value capture. Examples: Ford River Rouge, Tesla.', color: '#9b8aac' },
+            { id: 'better-cheaper', label: 'Better Before Cheaper', type: 'concept', definition: 'Research finding that exceptional companies prioritize non-price differentiation over cost leadership. Rule #1 of The Three Rules.', color: '#9b8aac' },
+            { id: 'revenue-cost', label: 'Revenue Before Cost', type: 'concept', definition: 'Research finding that exceptional companies build profitability through revenue advantages rather than cost advantages. Rule #2 of The Three Rules.', color: '#9b8aac' },
+            { id: 'roa', label: 'ROA (Return on Assets)', type: 'concept', definition: 'Key metric for strategic performance. Can be achieved through margin (revenue focus) or turnover (cost focus). Revenue path more sustainable.', color: '#9b8aac' },
+
+            // Key Concepts - Limits
+            { id: 'persistence', label: 'Persistence', type: 'concept', definition: 'Maintaining strategic consistency over time. The "hedgehog" approach of sticking to what works, as demonstrated by great long-term performers.', color: '#9b8aac' },
+            { id: 'adaptation', label: 'Adaptation', type: 'concept', definition: 'Changing strategy in response to environmental shifts. The "fox" approach that\'s necessary when conditions fundamentally change.', color: '#9b8aac' },
+            { id: 'drift', label: 'Strategic Drift', type: 'concept', definition: 'Unintentional departure from strategy. Often motivated by short-term pressures rather than genuine strategic insight.', color: '#9b8aac' },
+            { id: 'expediency', label: 'Expediency', type: 'concept', definition: 'Tactical moves that sacrifice strategic positioning. "We\'ll just do this once" that becomes permanent drift.', color: '#9b8aac' },
+            { id: 'refounding', label: 'Refounding', type: 'concept', definition: 'Complete strategic reinvention. Rare and difficult, but sometimes necessary. Examples: Starbucks under Schultz, Apple under Jobs.', color: '#9b8aac' },
+
+            // Canary Medical Applications (Layer 4)
+            { id: 'canary-forces', label: 'Medical Device Forces', type: 'application', definition: 'Analysis of the medical device industry using Five Forces: high buyer power (hospitals), strong supplier concentration, regulatory barriers to entry.', context: '"The big companies make market share moves through their balance sheet—buy smaller companies with new tech" - Jeff Gross', color: '#c5c0a8' },
+            { id: 'canary-position', label: 'Canary vs Wearables', type: 'application', definition: 'Canary\'s strategic positioning against consumer wearables, choosing implant data over consumer health tracking.', context: '"We would get annihilated by Apple in the data game... the problem with patient compliance is the patient" - Bill Hunter', color: '#c5c0a8' },
+            { id: 'canary-customer', label: 'Patient vs Surgeon vs Hospital', type: 'application', definition: 'The complex customer landscape in medical devices where patients, surgeons, and hospitals all have different "jobs" they\'re trying to accomplish.', context: 'Who is really "hiring" the smart implant? Each stakeholder has different needs and different decision criteria.', color: '#c5c0a8' },
+            { id: 'canary-value-chain', label: 'Canary Value Chain', type: 'application', definition: 'Canary\'s decisions about what to build internally vs. outsource, particularly around implant manufacturing vs. data analytics.', context: '"We always viewed the implant as a means to an end—it\'s a data generator" - Bill Hunter', color: '#c5c0a8' },
+            { id: 'canary-data', label: 'Data as Strategy', type: 'application', definition: 'Canary\'s strategic asset: the unique data generated by implants that no competitor can replicate.', context: '"It\'s about the data, stupid" - Bill Hunter on Canary\'s core strategic advantage.', color: '#c5c0a8' },
+            { id: 'canary-tenets', label: 'Three Strategic Tenets', type: 'application', definition: 'Canary\'s strategic principles: (1) Technology must work, (2) Data is the asset, (3) Long-term value over short-term revenue.', context: '"If the technology doesn\'t work, nothing else really matters... It\'s about the data, stupid" - Bill Hunter', color: '#c5c0a8' }
+        ];
+
+        const edges = [
+            // CLO to Pillar connections
+            { source: 'clo1', target: 'pillar-goals' },
+            { source: 'clo2', target: 'pillar-value' },
+            { source: 'clo3', target: 'pillar-value' },
+            { source: 'clo4', target: 'pillar-implementation' },
+            { source: 'clo5', target: 'pillar-implementation' },
+            { source: 'clo6', target: 'pillar-limits' },
+            { source: 'clo7', target: 'pillar-goals' },
+            { source: 'clo7', target: 'pillar-value' },
+            { source: 'clo7', target: 'pillar-implementation' },
+            { source: 'clo7', target: 'pillar-limits' },
+
+            // Pillar to Concept connections - Goals
+            { source: 'pillar-goals', target: 'five-forces' },
+            { source: 'pillar-goals', target: 'industry-attractiveness' },
+            { source: 'five-forces', target: 'rivalry' },
+            { source: 'five-forces', target: 'buyer-power' },
+            { source: 'five-forces', target: 'supplier-power' },
+            { source: 'five-forces', target: 'substitutes' },
+            { source: 'five-forces', target: 'new-entrants' },
+            { source: 'five-forces', target: 'industry-attractiveness' },
+
+            // Pillar to Concept connections - Value Proposition
+            { source: 'pillar-value', target: 'productivity-frontier' },
+            { source: 'pillar-value', target: 'jtbd' },
+            { source: 'pillar-value', target: 'differentiation' },
+            { source: 'productivity-frontier', target: 'high-end' },
+            { source: 'productivity-frontier', target: 'mid-market' },
+            { source: 'productivity-frontier', target: 'price-sensitive' },
+            { source: 'productivity-frontier', target: 'stuck-middle' },
+            { source: 'jtbd', target: 'correlation-causation' },
+            { source: 'differentiation', target: 'diff-cycle' },
+
+            // Pillar to Concept connections - Implementation
+            { source: 'pillar-implementation', target: 'value-chain' },
+            { source: 'pillar-implementation', target: 'better-cheaper' },
+            { source: 'pillar-implementation', target: 'revenue-cost' },
+            { source: 'value-chain', target: 'make-buy' },
+            { source: 'value-chain', target: 'vertical-integration' },
+            { source: 'better-cheaper', target: 'roa' },
+            { source: 'revenue-cost', target: 'roa' },
+
+            // Pillar to Concept connections - Limits
+            { source: 'pillar-limits', target: 'persistence' },
+            { source: 'pillar-limits', target: 'adaptation' },
+            { source: 'pillar-limits', target: 'drift' },
+            { source: 'drift', target: 'expediency' },
+            { source: 'adaptation', target: 'refounding' },
+
+            // Concept to Canary Application connections
+            { source: 'five-forces', target: 'canary-forces' },
+            { source: 'productivity-frontier', target: 'canary-position' },
+            { source: 'jtbd', target: 'canary-customer' },
+            { source: 'value-chain', target: 'canary-value-chain' },
+            { source: 'canary-value-chain', target: 'canary-data' },
+            { source: 'canary-data', target: 'canary-tenets' },
+            { source: 'persistence', target: 'canary-tenets' },
+
+            // Cross-connections between concepts
+            { source: 'industry-attractiveness', target: 'high-end' },
+            { source: 'industry-attractiveness', target: 'mid-market' },
+            { source: 'industry-attractiveness', target: 'price-sensitive' },
+            { source: 'differentiation', target: 'high-end' },
+            { source: 'jtbd', target: 'differentiation' },
+            { source: 'better-cheaper', target: 'differentiation' },
+            { source: 'persistence', target: 'better-cheaper' }
+        ];
+
+        // Utility: Announce to screen readers
+        function announce(message) {
+            const announcer = document.getElementById('announcements');
+            announcer.textContent = message;
+            setTimeout(() => {
+                announcer.textContent = '';
+            }, 1000);
+        }
+
+        // Visualization
+        const width = document.getElementById('graph-container').clientWidth;
+        const height = 700;
+
+        const svg = d3.select('#graph-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('role', 'img')
+            .attr('aria-label', 'Force-directed graph showing relationships between strategy concepts');
+
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(edges).id(d => d.id).distance(120))
+            .force('charge', d3.forceManyBody().strength(-400))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(50))
+            .force('x', d3.forceX(width / 2).strength(0.05))
+            .force('y', d3.forceY(height / 2).strength(0.05));
+
+        const link = svg.append('g')
+            .attr('aria-hidden', 'true')
+            .selectAll('line')
+            .data(edges)
+            .join('line')
+            .attr('class', 'link');
+
+        const node = svg.append('g')
+            .selectAll('g')
+            .data(nodes)
+            .join('g')
+            .attr('class', 'node')
+            .call(d3.drag()
+                .on('start', dragStarted)
+                .on('drag', dragged)
+                .on('end', dragEnded));
+
+        node.append('circle')
+            .attr('r', d => d.type === 'clo' ? 30 : d.type === 'pillar' ? 25 : d.type === 'concept' ? 20 : 18)
+            .attr('fill', d => d.color)
+            .attr('tabindex', 0)
+            .attr('role', 'button')
+            .attr('aria-label', d => `${d.label}. ${d.type.replace('_', ' ')}. Press Enter to view details.`);
+
+        node.append('text')
+            .text(d => {
+                const label = d.label.includes(':') ? d.label.split(':')[1].trim() : d.label;
+                return label.length > 20 ? label.substring(0, 18) + '...' : label;
+            })
+            .attr('dy', 40)
+            .attr('aria-hidden', 'true')
+            .style('fill', '#171717');
+
+        // Click handler
+        node.on('click', (event, d) => {
+            showDefinition(d);
+            highlightConnections(d);
+        });
+
+        // Keyboard handler
+        node.selectAll('circle').on('keydown', (event, d) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showDefinition(d);
+                highlightConnections(d);
+            }
+        });
+
+        simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showDefinition(d) {
+            document.getElementById('panel-empty').style.display = 'none';
+            const panelContent = document.getElementById('panel-content');
+            panelContent.classList.add('active');
+
+            document.getElementById('panel-label').textContent = d.label;
+
+            const typeLabels = {
+                'clo': 'Course Learning Outcome',
+                'pillar': 'Framework Pillar',
+                'concept': 'Key Concept',
+                'application': 'Canary Medical Application'
+            };
+            document.getElementById('panel-type').textContent = typeLabels[d.type] || d.type;
+            document.getElementById('panel-definition').textContent = d.definition;
+
+            const extraSection = document.getElementById('panel-extra');
+            const extraTitle = document.getElementById('panel-extra-title');
+            const extraContent = document.getElementById('panel-extra-content');
+
+            if (d.context) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Canary Context';
+                extraContent.textContent = d.context;
+            } else {
+                extraSection.style.display = 'none';
+            }
+
+            const connected = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .map(e => e.source.id === d.id ? e.target : e.source);
+
+            const connectedContainer = document.getElementById('panel-connected');
+            connectedContainer.innerHTML = '';
+
+            if (connected.length === 0) {
+                const noConnections = document.createElement('p');
+                noConnections.textContent = 'No direct connections';
+                noConnections.style.color = 'var(--color-neutral-400)';
+                connectedContainer.appendChild(noConnections);
+            } else {
+                connected.forEach(n => {
+                    const btn = document.createElement('button');
+                    btn.className = 'connected-btn';
+                    btn.textContent = n.label;
+                    btn.setAttribute('aria-label', `View details for ${n.label}`);
+                    btn.onclick = () => {
+                        showDefinition(n);
+                        highlightConnections(n);
+                    };
+                    connectedContainer.appendChild(btn);
+                });
+            }
+
+            // Focus management
+            document.getElementById('definition-panel').focus();
+
+            // Announce to screen reader
+            announce(`Viewing ${d.label}. ${connected.length} connected concepts.`);
+        }
+
+        function highlightConnections(d) {
+            const connectedIds = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .flatMap(e => [e.source.id, e.target.id]);
+
+            connectedIds.push(d.id);
+
+            node.classed('dimmed', n => !connectedIds.includes(n.id));
+            node.classed('focused', n => n.id === d.id);
+            link.classed('dimmed', true);
+            link.classed('highlighted', e => e.source.id === d.id || e.target.id === d.id);
+        }
+
+        document.getElementById('reset').addEventListener('click', () => {
+            node.classed('dimmed', false);
+            node.classed('focused', false);
+            link.classed('dimmed', false);
+            link.classed('highlighted', false);
+
+            document.getElementById('panel-empty').style.display = 'block';
+            document.getElementById('panel-content').classList.remove('active');
+
+            document.getElementById('search').value = '';
+
+            announce('View reset. All filters cleared.');
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+
+            if (!query) {
+                node.classed('dimmed', false);
+                link.classed('dimmed', false);
+                announce('Search cleared. Showing all concepts.');
+                return;
+            }
+
+            const matches = nodes.filter(n =>
+                n.label.toLowerCase().includes(query) ||
+                n.definition.toLowerCase().includes(query)
+            ).map(n => n.id);
+
+            node.classed('dimmed', n => !matches.includes(n.id));
+            link.classed('dimmed', true);
+
+            announce(`${matches.length} concepts match your search for "${query}".`);
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            const newWidth = document.getElementById('graph-container').clientWidth;
+            svg.attr('width', newWidth);
+            simulation.force('center', d3.forceCenter(newWidth / 2, height / 2));
+            simulation.alpha(0.3).restart();
+        });
+    </script>
+</body>
+</html>

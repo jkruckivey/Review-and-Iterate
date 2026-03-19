@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Complete Strategy Framework</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* Pillar Colors */
+            --color-goals: #404040;
+            --color-goals-light: #525252;
+            --color-value-prop: #5a9ea1;
+            --color-value-prop-light: #7ab5b8;
+            --color-implementation: #8bb8a8;
+            --color-implementation-light: #a8ccc0;
+            --color-limits: #a3a3a3;
+            --color-limits-light: #b8b8b8;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        /* Framework Container */
+        .framework-container {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Pillars Grid */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Individual Pillar */
+        .pillar {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .pillar:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pillar:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .pillar.active {
+            border-color: var(--color-neutral-900);
+        }
+
+        .pillar-header {
+            padding: 1rem;
+            color: white;
+            text-align: center;
+        }
+
+        .pillar-goals .pillar-header { background: var(--color-goals); }
+        .pillar-value-prop .pillar-header { background: var(--color-value-prop); }
+        .pillar-implementation .pillar-header { background: var(--color-implementation); color: var(--color-neutral-900); }
+        .pillar-limits .pillar-header { background: var(--color-limits); color: var(--color-neutral-900); }
+
+        .pillar-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pillar-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pillar-question {
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .pillar-body {
+            padding: 1rem;
+        }
+
+        .pillar-elements {
+            list-style: none;
+        }
+
+        .pillar-elements li {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+            padding: 0.35rem 0;
+            border-bottom: 1px solid var(--color-neutral-100);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pillar-elements li:last-child {
+            border-bottom: none;
+        }
+
+        .element-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .pillar-goals .element-dot { background: var(--color-goals); }
+        .pillar-value-prop .element-dot { background: var(--color-value-prop); }
+        .pillar-implementation .element-dot { background: var(--color-implementation); }
+        .pillar-limits .element-dot { background: var(--color-limits); }
+
+        .pillar-expand-hint {
+            font-size: 0.7rem;
+            color: var(--color-neutral-400);
+            text-align: center;
+            padding-top: 0.5rem;
+        }
+
+        /* Connection Arrows */
+        .connections {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .connection-arrow {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+        }
+
+        .arrow-icon {
+            font-size: 1.25rem;
+            color: var(--color-neutral-400);
+        }
+
+        .connection-label {
+            background: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--color-neutral-200);
+            font-weight: 500;
+        }
+
+        /* Two Rules Box */
+        .two-rules {
+            background: var(--color-neutral-900);
+            color: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .two-rules-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .two-rules-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+
+        .two-rules-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .rule {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .rule-number {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+
+        .rule-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .rule-description {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .detail-panel.visible {
+            display: block;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+        }
+
+        .detail-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .detail-question {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            font-style: italic;
+        }
+
+        .detail-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .detail-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .detail-content p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-content ul {
+            margin-left: 1.25rem;
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+        }
+
+        .detail-content li {
+            margin-bottom: 0.35rem;
+        }
+
+        .module-refs {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-accent-dark);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .module-refs h5 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-refs p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            margin: 0;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: var(--color-accent);
+            color: var(--color-neutral-900);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .key-insight-text {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .pillars-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .rules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .connections {
+                display: none;
+            }
+
+            .pillar:hover {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pillars-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>The Complete Strategy Framework</h1>
+            <p>Four pillars for strategic analysis and action</p>
+        </div>
+
+        <div class="framework-container">
+            <!-- Pillars Grid -->
+            <div class="pillars-grid" role="list" aria-label="Strategy framework pillars">
+                <!-- Goals Pillar -->
+                <div class="pillar pillar-goals"
+                     role="button"
+                     tabindex="0"
+                     data-pillar="goals"
+                     aria-expanded="false"
+                     aria-controls="detail-panel">
+                    <div class="pillar-header">
+                        <div class="pillar-icon" aria-hidden="true">&#9968;</div>
+                        <div class="pillar-title">Goals</div>
+                        <div class="pillar-question">What can we achieve?</div>
+                    </div>
+                    <div class="pillar-body">
+                        <ul class="pillar-elements">
+                            <li><span class="element-dot"></span>Industry Forces</li>
+                            <li><span class="element-dot"></span>Five Forces Analysis</li>
+                            <li><span class="element-dot"></span>Profitability Constraints</li>
+                        </ul>
+                        <div class="pillar-expand-hint">Click to explore &rarr;</div>
+                    </div>
+                </div>
+
+                <!-- Value Proposition Pillar -->
+                <div class="pillar pillar-value-prop"
+                     role="button"
+                     tabindex="0"
+                     data-pillar="valueProp"
+                     aria-expanded="false"
+                     aria-controls="detail-panel">
+                    <div class="pillar-header">
+                        <div class="pillar-icon" aria-hidden="true">&#10022;</div>
+                        <div class="pillar-title">Value Proposition</div>
+                        <div class="pillar-question">How will we compete?</div>
+                    </div>
+                    <div class="pillar-body">
+                        <ul class="pillar-elements">
+                            <li><span class="element-dot"></span>Strategic Position</li>
+                            <li><span class="element-dot"></span>Customer Jobs (JTBD)</li>
+                            <li><span class="element-dot"></span>Differentiation</li>
+                        </ul>
+                        <div class="pillar-expand-hint">Click to explore &rarr;</div>
+                    </div>
+                </div>
+
+                <!-- Implementation Pillar -->
+                <div class="pillar pillar-implementation"
+                     role="button"
+                     tabindex="0"
+                     data-pillar="implementation"
+                     aria-expanded="false"
+                     aria-controls="detail-panel">
+                    <div class="pillar-header">
+                        <div class="pillar-icon" aria-hidden="true">&#9881;</div>
+                        <div class="pillar-title">Implementation</div>
+                        <div class="pillar-question">How will we execute?</div>
+                    </div>
+                    <div class="pillar-body">
+                        <ul class="pillar-elements">
+                            <li><span class="element-dot"></span>Value Chain</li>
+                            <li><span class="element-dot"></span>Create Value</li>
+                            <li><span class="element-dot"></span>Capture Value</li>
+                        </ul>
+                        <div class="pillar-expand-hint">Click to explore &rarr;</div>
+                    </div>
+                </div>
+
+                <!-- Limits Pillar -->
+                <div class="pillar pillar-limits"
+                     role="button"
+                     tabindex="0"
+                     data-pillar="limits"
+                     aria-expanded="false"
+                     aria-controls="detail-panel">
+                    <div class="pillar-header">
+                        <div class="pillar-icon" aria-hidden="true">&#9888;</div>
+                        <div class="pillar-title">Limits</div>
+                        <div class="pillar-question">When do we change?</div>
+                    </div>
+                    <div class="pillar-body">
+                        <ul class="pillar-elements">
+                            <li><span class="element-dot"></span>Persistence vs. Change</li>
+                            <li><span class="element-dot"></span>Strategic Drift</li>
+                            <li><span class="element-dot"></span>Adaptation</li>
+                        </ul>
+                        <div class="pillar-expand-hint">Click to explore &rarr;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Flow -->
+            <div class="connections" aria-hidden="true">
+                <span class="connection-label">Goals</span>
+                <span class="arrow-icon">→</span>
+                <span class="connection-label">Value Proposition</span>
+                <span class="arrow-icon">→</span>
+                <span class="connection-label">Implementation</span>
+                <span class="arrow-icon">→</span>
+                <span class="connection-label">Limits</span>
+                <span class="arrow-icon">↺</span>
+            </div>
+
+            <!-- Two Rules -->
+            <div class="two-rules">
+                <div class="two-rules-header">
+                    <div class="two-rules-label">Empirical Patterns from 25,000+ Companies</div>
+                    <div class="two-rules-title">The Two Rules</div>
+                </div>
+                <div class="rules-grid">
+                    <div class="rule">
+                        <div class="rule-number">Rule 1</div>
+                        <div class="rule-name">Better before Cheaper</div>
+                        <div class="rule-description">Create value through non-price differentiation</div>
+                    </div>
+                    <div class="rule">
+                        <div class="rule-number">Rule 2</div>
+                        <div class="rule-name">Revenue before Cost</div>
+                        <div class="rule-description">Capture value through pricing power</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Panel -->
+        <div id="detail-panel" class="detail-panel" role="region" aria-live="polite">
+            <div class="detail-header">
+                <span class="detail-icon" id="detail-icon"></span>
+                <div>
+                    <h3 class="detail-title" id="detail-title"></h3>
+                    <div class="detail-question" id="detail-question"></div>
+                </div>
+            </div>
+            <div class="detail-content" id="detail-content"></div>
+        </div>
+
+        <!-- Key Insight -->
+        <div class="key-insight">
+            <div class="key-insight-text">STRATEGY = Coherent choices across all four pillars</div>
+        </div>
+    </div>
+
+    <script>
+        const pillarData = {
+            goals: {
+                title: "Goals",
+                icon: "⛰",
+                question: "What goals are achievable given industry structure?",
+                content: `
+                    <h4>Core Insight</h4>
+                    <p>Industry structure constrains what any company can achieve. Before setting goals, you must understand what your industry permits.</p>
+
+                    <h4>Key Framework: Porter's Five Forces</h4>
+                    <ul>
+                        <li><strong>Rivalry:</strong> Intensity of competition among existing players</li>
+                        <li><strong>Supplier Power:</strong> Ability of suppliers to dictate terms</li>
+                        <li><strong>Buyer Power:</strong> Ability of customers to negotiate</li>
+                        <li><strong>New Entrants:</strong> Threat from potential competitors</li>
+                        <li><strong>Substitutes:</strong> Threat from alternative solutions</li>
+                    </ul>
+
+                    <h4>Why This Matters</h4>
+                    <p>~20% of performance variation comes from industry effects alone. A brilliant strategy in a structurally challenged industry may underperform a mediocre strategy in an attractive one.</p>
+
+                    <h4>Strategic Question</h4>
+                    <p>Given the forces in your industry, what profitability is realistically achievable? Goals that ignore industry constraints are wishes, not strategy.</p>
+
+                    <div class="module-refs">
+                        <h5>Course Coverage</h5>
+                        <p>Goal Setting Through Industry Analysis - Five Forces framework, industry profitability variation, realistic goal calibration</p>
+                    </div>
+                `
+            },
+            valueProp: {
+                title: "Value Proposition",
+                icon: "✦",
+                question: "How do we create value for customers?",
+                content: `
+                    <h4>Three Nested Choices</h4>
+                    <p>Value proposition involves three interconnected decisions that must align:</p>
+
+                    <h4>1. Strategic Position</h4>
+                    <p>Where do you compete on the productivity frontier?</p>
+                    <ul>
+                        <li><strong>High-End:</strong> Premium performance, premium prices (25-40% margins)</li>
+                        <li><strong>Mid-Market:</strong> Balanced offering, moderate prices (15-25% margins)</li>
+                        <li><strong>Price-Sensitive:</strong> Essential performance, lowest prices (8-15% margins)</li>
+                    </ul>
+
+                    <h4>2. Customer Jobs (JTBD)</h4>
+                    <p>What job are customers hiring you to do? Not demographics or surveys—the actual job they need accomplished.</p>
+
+                    <h4>3. Competitive Differentiation</h4>
+                    <p>How do you stand apart from others doing the same job? Four dimensions:</p>
+                    <ul>
+                        <li><strong>Functionality:</strong> What it does</li>
+                        <li><strong>Reliability:</strong> How consistently it performs</li>
+                        <li><strong>Convenience:</strong> How easy it is to use</li>
+                        <li><strong>Price:</strong> What it costs</li>
+                    </ul>
+
+                    <div class="module-refs">
+                        <h5>Course Coverage</h5>
+                        <p>Industry Position (productivity frontier, three positions) → Customer Connection (JTBD framework) → Competitive Differentiation (four dimensions)</p>
+                    </div>
+                `
+            },
+            implementation: {
+                title: "Implementation",
+                icon: "⚙",
+                question: "How do we deliver value and profit?",
+                content: `
+                    <h4>Three Implementation Decisions</h4>
+
+                    <h4>1. Value Chain</h4>
+                    <p>What do you do yourself vs. outsource? Three drivers determine integration decisions:</p>
+                    <ul>
+                        <li><strong>Price:</strong> Can you get it cheaper outside?</li>
+                        <li><strong>Power:</strong> Who controls the relationship?</li>
+                        <li><strong>Performance:</strong> Can you do it better yourself?</li>
+                    </ul>
+
+                    <h4>2. Create Value: Better before Cheaper</h4>
+                    <p>The first rule. Companies achieving exceptional performance consistently differentiate on non-price dimensions:</p>
+                    <ul>
+                        <li>7 of 9 Miracle Workers compete at the high-end</li>
+                        <li>7 of 9 Average Joes compete on price</li>
+                    </ul>
+
+                    <h4>3. Capture Value: Revenue before Cost</h4>
+                    <p>The second rule. Profitability advantage comes from pricing power, not cost efficiency:</p>
+                    <ul>
+                        <li>84% of advantage (MW vs. LR) comes from gross margin</li>
+                        <li>40%+ of Miracle Workers have higher costs but still win through pricing</li>
+                    </ul>
+
+                    <div class="module-refs">
+                        <h5>Course Coverage</h5>
+                        <p>Value Chain (make vs. buy decisions) → Create Value (Better before Cheaper) → Capture Value (Revenue before Cost)</p>
+                    </div>
+                `
+            },
+            limits: {
+                title: "Limits",
+                icon: "⚠",
+                question: "When do we persist vs. change?",
+                content: `
+                    <h4>Core Insight</h4>
+                    <p>Every strategy eventually reaches its limits. The strategic skill is knowing WHEN and HOW to respond.</p>
+
+                    <h4>Three Types of Change</h4>
+                    <ul>
+                        <li><strong>Drift:</strong> Unconscious movement away from strategy (DANGEROUS)</li>
+                        <li><strong>Expediency:</strong> Conscious short-term deviation (RISKY)</li>
+                        <li><strong>Adaptation:</strong> Deliberate evolution while preserving core (ESSENTIAL)</li>
+                    </ul>
+
+                    <h4>The Hard Questions</h4>
+                    <ul>
+                        <li>Is competitive pressure temporary or structural?</li>
+                        <li>Are we drifting or deliberately adapting?</li>
+                        <li>What must we preserve vs. what can change?</li>
+                        <li>Has our strategy reached its natural limit?</li>
+                    </ul>
+
+                    <h4>Strategy vs. Innovation</h4>
+                    <p>Strategy exploits existing constraints. Innovation breaks them. When strategy reaches its limit, the question becomes: persist, adapt, or innovate?</p>
+
+                    <div class="module-refs">
+                        <h5>Course Coverage</h5>
+                        <p>Persistence and Change - Southwest Airlines case study, drift vs. adaptation, recognizing strategic limits</p>
+                    </div>
+                `
+            }
+        };
+
+        const pillars = document.querySelectorAll('.pillar');
+        const detailPanel = document.getElementById('detail-panel');
+        const detailTitle = document.getElementById('detail-title');
+        const detailQuestion = document.getElementById('detail-question');
+        const detailContent = document.getElementById('detail-content');
+        const detailIcon = document.getElementById('detail-icon');
+
+        let activePillar = null;
+
+        function showPillarDetail(pillarKey) {
+            const data = pillarData[pillarKey];
+
+            // Update active states
+            pillars.forEach(p => {
+                p.classList.remove('active');
+                p.setAttribute('aria-expanded', 'false');
+            });
+
+            const selectedPillar = document.querySelector(`[data-pillar="${pillarKey}"]`);
+            selectedPillar.classList.add('active');
+            selectedPillar.setAttribute('aria-expanded', 'true');
+
+            // Update detail panel
+            detailTitle.textContent = data.title;
+            detailQuestion.textContent = data.question;
+            detailContent.innerHTML = data.content;
+            detailIcon.textContent = data.icon;
+
+            // Show panel
+            detailPanel.classList.add('visible');
+
+            activePillar = pillarKey;
+        }
+
+        pillars.forEach(pillar => {
+            pillar.addEventListener('click', () => {
+                showPillarDetail(pillar.dataset.pillar);
+            });
+
+            pillar.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    showPillarDetail(pillar.dataset.pillar);
+                }
+            });
+        });
+
+        // Show goals by default
+        showPillarDetail('goals');
+    </script>
+</body>
+</html>

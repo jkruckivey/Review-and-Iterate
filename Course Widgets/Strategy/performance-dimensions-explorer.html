@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Dimensions Explorer - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .industry-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--color-neutral-700);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .tab-btn.active {
+            background: var(--color-neutral-700);
+            color: white;
+            border-color: var(--color-neutral-700);
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .industry-content {
+            display: none;
+        }
+
+        .industry-content.active {
+            display: block;
+        }
+
+        .industry-header {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .industry-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .industry-header p {
+            color: var(--color-neutral-600);
+        }
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dimension-card {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .dimension-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .dimension-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-neutral-100);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .dimension-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .dimension-status {
+            margin-left: auto;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-battleground {
+            background: var(--color-neutral-800);
+            color: white;
+        }
+
+        .status-parity {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-700);
+        }
+
+        .status-emerging {
+            background: var(--color-neutral-400);
+            color: white;
+        }
+
+        .dimension-definition {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 1rem;
+        }
+
+        .requirement-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: var(--color-neutral-50);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .requirement-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+        }
+
+        .requirement-value {
+            font-size: 0.85rem;
+            color: var(--color-neutral-800);
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .insight-panel {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .insight-panel h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .insight-panel p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .knowledge-check {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .knowledge-check h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .question-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            color: var(--color-neutral-800);
+            margin-bottom: 1rem;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option-btn {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .option-btn:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .option-btn.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+        }
+
+        .option-btn.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+            opacity: 0.6;
+        }
+
+        .option-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .feedback-text {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback-text.show {
+            display: block;
+        }
+
+        .feedback-text.correct {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+        }
+
+        .feedback-text.incorrect {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-400);
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            border: 1px solid var(--color-neutral-700);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-300);
+            border-color: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .industry-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Performance Dimensions Explorer</h1>
+            <p class="subtitle">Explore how the four dimensions apply to different industries</p>
+        </header>
+
+        <div class="industry-tabs" role="tablist" aria-label="Industry selection">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="ev-panel" id="ev-tab" onclick="showIndustry('ev')">Electric Vehicles</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="smartphones-panel" id="smartphones-tab" onclick="showIndustry('smartphones')">Smartphones</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="streaming-panel" id="streaming-tab" onclick="showIndustry('streaming')">Streaming Services</button>
+        </div>
+
+        <!-- Electric Vehicles -->
+        <div class="industry-content active" id="ev-panel" role="tabpanel" aria-labelledby="ev-tab">
+            <div class="industry-header">
+                <h2>Electric Vehicles</h2>
+                <p>The EV industry is evolving rapidly through the differentiation cycle, with reliability currently emerging as a key battleground.</p>
+            </div>
+
+            <div class="dimensions-grid">
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">⚡</div>
+                        <div class="dimension-title">Functionality</div>
+                        <span class="dimension-status status-parity">Reaching Parity</span>
+                    </div>
+                    <p class="dimension-definition">Range, acceleration, cargo capacity, towing capability</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">200+ miles range for most buyers</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">400+ miles (diminishing returns beyond)</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">✓</div>
+                        <div class="dimension-title">Reliability</div>
+                        <span class="dimension-status status-battleground">Current Battleground</span>
+                    </div>
+                    <p class="dimension-definition">Battery longevity, software stability, build quality, service network</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">8-year/100k mile battery warranty</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">500k+ mile battery life (exceeds car lifespan)</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">◎</div>
+                        <div class="dimension-title">Convenience</div>
+                        <span class="dimension-status status-emerging">Emerging</span>
+                    </div>
+                    <p class="dimension-definition">Charging infrastructure, charging speed, software updates, integration</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Home charging + access to public network</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">10-minute full charge anywhere</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">$</div>
+                        <div class="dimension-title">Price</div>
+                        <span class="dimension-status status-parity">Not Yet Parity</span>
+                    </div>
+                    <p class="dimension-definition">Purchase price, total cost of ownership, incentives</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Competitive with comparable ICE vehicles</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">N/A (lower is always better)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-panel">
+                <h3>Key Insight: Current Competitive Landscape</h3>
+                <p>The EV industry has largely reached parity on range (functionality). The current battleground is <strong>reliability</strong>—battery longevity, build quality, and software stability. Tesla's panel gaps, legacy automakers' software issues, and battery degradation concerns are all reliability battles. <strong>Convenience</strong> (charging network) is emerging as the next frontier as range anxiety decreases.</p>
+            </div>
+
+            <div class="knowledge-check">
+                <h3>Quick Check: Electric Vehicles</h3>
+                <div class="question-container" id="ev-q1">
+                    <p class="question-text">A new EV startup announces 600 miles of range. Based on the framework, this is likely:</p>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer('ev-q1', 0, false)">A major competitive advantage that will drive sales</button>
+                        <button class="option-btn" onclick="checkAnswer('ev-q1', 1, true)">Beyond the "maximum useful level"—diminishing returns for most buyers</button>
+                        <button class="option-btn" onclick="checkAnswer('ev-q1', 2, false)">A sign that the industry is still in the functionality battleground</button>
+                    </div>
+                    <div class="feedback-text" id="ev-q1-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smartphones -->
+        <div class="industry-content" id="smartphones-panel" role="tabpanel" aria-labelledby="smartphones-tab">
+            <div class="industry-header">
+                <h2>Smartphones</h2>
+                <p>A mature industry where functionality and reliability have reached parity, pushing competition toward convenience and price.</p>
+            </div>
+
+            <div class="dimensions-grid">
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">⚡</div>
+                        <div class="dimension-title">Functionality</div>
+                        <span class="dimension-status status-parity">At Parity</span>
+                    </div>
+                    <p class="dimension-definition">Camera quality, processing power, display resolution, battery life</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Capable of apps, photos, video calls</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">Most users can't perceive further improvements</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">✓</div>
+                        <div class="dimension-title">Reliability</div>
+                        <span class="dimension-status status-parity">At Parity</span>
+                    </div>
+                    <p class="dimension-definition">Software stability, build durability, security updates, longevity</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">2-3 years of reliable use</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">5+ years (most users upgrade anyway)</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">◎</div>
+                        <div class="dimension-title">Convenience</div>
+                        <span class="dimension-status status-battleground">Current Battleground</span>
+                    </div>
+                    <p class="dimension-definition">Ecosystem integration, ease of use, data transfer, accessory compatibility</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Works with basic accessories and apps</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">Seamless integration across all devices</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">$</div>
+                        <div class="dimension-title">Price</div>
+                        <span class="dimension-status status-emerging">Emerging</span>
+                    </div>
+                    <p class="dimension-definition">Purchase price, trade-in value, payment plans, total cost</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Affordable financing options</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">N/A (lower is always better)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-panel">
+                <h3>Key Insight: The Ecosystem Battleground</h3>
+                <p>Smartphones have reached parity on functionality (camera, speed, display) and reliability. Apple's competitive advantage now rests heavily on <strong>convenience</strong>—the seamless integration across iPhone, iPad, Mac, Watch, and AirPods. This ecosystem lock-in explains why Apple can charge premium prices despite similar hardware specs. Price competition is emerging as Chinese manufacturers offer near-flagship specs at mid-range prices.</p>
+            </div>
+
+            <div class="knowledge-check">
+                <h3>Quick Check: Smartphones</h3>
+                <div class="question-container" id="phone-q1">
+                    <p class="question-text">Apple's ecosystem integration (iPhone + Mac + Watch + AirPods) is best understood as competing on:</p>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer('phone-q1', 0, false)">Functionality—more features than competitors</button>
+                        <button class="option-btn" onclick="checkAnswer('phone-q1', 1, false)">Reliability—Apple products are more stable</button>
+                        <button class="option-btn" onclick="checkAnswer('phone-q1', 2, true)">Convenience—seamless experience across devices</button>
+                    </div>
+                    <div class="feedback-text" id="phone-q1-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Streaming Services -->
+        <div class="industry-content" id="streaming-panel" role="tabpanel" aria-labelledby="streaming-tab">
+            <div class="industry-header">
+                <h2>Streaming Services</h2>
+                <p>A rapidly maturing industry where content discovery and user experience have become the competitive frontier.</p>
+            </div>
+
+            <div class="dimensions-grid">
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">⚡</div>
+                        <div class="dimension-title">Functionality</div>
+                        <span class="dimension-status status-parity">At Parity</span>
+                    </div>
+                    <p class="dimension-definition">Content library size, streaming quality (4K/HDR), device compatibility</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">HD streaming, major device support</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">4K/HDR (beyond this, marginal benefit)</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">✓</div>
+                        <div class="dimension-title">Reliability</div>
+                        <span class="dimension-status status-parity">At Parity</span>
+                    </div>
+                    <p class="dimension-definition">Uptime, buffering, app stability, consistent experience</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Works without buffering on decent internet</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">99.9% uptime (all major services achieve this)</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">◎</div>
+                        <div class="dimension-title">Convenience</div>
+                        <span class="dimension-status status-battleground">Current Battleground</span>
+                    </div>
+                    <p class="dimension-definition">Content discovery, recommendation algorithms, profile management, UI/UX</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Can find and watch content easily</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">AI perfectly predicts what you want to watch</span>
+                    </div>
+                </div>
+
+                <div class="dimension-card">
+                    <div class="dimension-header">
+                        <div class="dimension-icon">$</div>
+                        <div class="dimension-title">Price</div>
+                        <span class="dimension-status status-emerging">Emerging</span>
+                    </div>
+                    <p class="dimension-definition">Monthly subscription, ad-supported tiers, bundle options</p>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Minimum Requirement</span>
+                        <span class="requirement-value">Affordable monthly fee</span>
+                    </div>
+                    <div class="requirement-row">
+                        <span class="requirement-label">Maximum Useful Level</span>
+                        <span class="requirement-value">N/A (lower is always better)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-panel">
+                <h3>Key Insight: The Discovery Challenge</h3>
+                <p>Streaming services have reached parity on functionality (4K, similar UI) and reliability (all work well). The current battleground is <strong>convenience</strong>—specifically content discovery and curation. Netflix invests heavily in recommendation algorithms; Disney+ bundles content logically. <strong>Price</strong> is emerging as the next major battleground with ad-supported tiers, password crackdowns, and bundle strategies indicating increased price competition.</p>
+            </div>
+
+            <div class="knowledge-check">
+                <h3>Quick Check: Streaming Services</h3>
+                <div class="question-container" id="stream-q1">
+                    <p class="question-text">Netflix's heavy investment in recommendation algorithms suggests they are competing on:</p>
+                    <div class="options-container">
+                        <button class="option-btn" onclick="checkAnswer('stream-q1', 0, false)">Functionality—offering more content than others</button>
+                        <button class="option-btn" onclick="checkAnswer('stream-q1', 1, true)">Convenience—making it easier to find content you'll enjoy</button>
+                        <button class="option-btn" onclick="checkAnswer('stream-q1', 2, false)">Price—reducing the perceived cost per hour of entertainment</button>
+                    </div>
+                    <div class="feedback-text" id="stream-q1-feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const feedbackMessages = {
+            'ev-q1': {
+                correct: "Correct! At 600 miles, range is well beyond what most buyers need for daily use or even long trips. This is past the 'maximum useful level' of ~400 miles. The startup would be better served investing in reliability or convenience—dimensions where meaningful differentiation is still possible.",
+                incorrect: "Not quite. 600 miles is beyond the 'maximum useful level' for range. Most buyers' needs are met at 300-400 miles. Investment in range beyond this point has diminishing returns—the company might be better served focusing on reliability (the current battleground) or convenience (the emerging frontier)."
+            },
+            'phone-q1': {
+                correct: "Correct! Apple's ecosystem is a convenience play. The individual products may not be functionally superior, but the seamless experience of AirDrop, Handoff, iMessage across devices, and automatic syncing creates a convenience advantage that competitors struggle to match.",
+                incorrect: "Not quite. While Apple products are functional and reliable, the ecosystem advantage is about convenience—the seamless handoff between devices, automatic syncing, and integrated experience. Competitors match Apple on specs (functionality) and build quality (reliability), but can't replicate the ecosystem convenience."
+            },
+            'stream-q1': {
+                correct: "Correct! Netflix's recommendation engine is a convenience investment. All major services have vast libraries (functionality) that work reliably. The challenge is finding something to watch among thousands of options. Better recommendations reduce that friction—a pure convenience play.",
+                incorrect: "Not quite. The recommendation algorithm addresses the convenience dimension—specifically, reducing the friction of finding content among thousands of options. Having more content (functionality) doesn't help if users can't find what they want. Netflix is competing on making discovery easier, not on having more content."
+            }
+        };
+
+        function showIndustry(industry) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            document.querySelector(`#${industry}-tab`).classList.add('active');
+            document.querySelector(`#${industry}-tab`).setAttribute('aria-selected', 'true');
+
+            // Update content panels
+            document.querySelectorAll('.industry-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${industry}-panel`).classList.add('active');
+        }
+
+        function checkAnswer(questionId, selectedIndex, isCorrect) {
+            const container = document.getElementById(questionId);
+            const buttons = container.querySelectorAll('.option-btn');
+            const feedback = document.getElementById(`${questionId}-feedback`);
+
+            // Disable all buttons
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === selectedIndex) {
+                    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    btn.classList.add('selected');
+                }
+            });
+
+            // Show feedback
+            feedback.textContent = isCorrect ? feedbackMessages[questionId].correct : feedbackMessages[questionId].incorrect;
+            feedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+
+            // Announce to screen readers
+            feedback.setAttribute('role', 'alert');
+        }
+
+        // Keyboard navigation for tabs
+        document.querySelectorAll('.tab-btn').forEach((btn, index, buttons) => {
+            btn.addEventListener('keydown', (e) => {
+                let targetIndex;
+                if (e.key === 'ArrowRight') {
+                    targetIndex = (index + 1) % buttons.length;
+                } else if (e.key === 'ArrowLeft') {
+                    targetIndex = (index - 1 + buttons.length) % buttons.length;
+                }
+                if (targetIndex !== undefined) {
+                    buttons[targetIndex].focus();
+                    buttons[targetIndex].click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Correlation & Decision Analysis Mastery</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --color-neutral-900: #171717;
+            --color-neutral-700: #404040;
+            --color-neutral-600: #525252;
+            --color-neutral-500: #737373;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-50: #fafafa;
+            --color-correct: #034638;
+            --color-correct-bg: #d4e8e3;
+            --color-incorrect: #f59e0b;
+            --color-incorrect-bg: #fef3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-neutral-900);
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            display: none;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .scenario {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-900);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .scenario h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .scenario p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Geist', -apple-system, sans-serif;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .btn-check {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-check:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: var(--color-neutral-900);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-next.show {
+            display: block;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #022f28;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #78350f;
+        }
+
+        .feedback h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .results-details {
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .results-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid var(--color-correct);
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid var(--color-incorrect);
+        }
+
+        .result-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-retry {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 14px 32px;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-neutral-700);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Correlation & Decision Analysis Mastery</h1>
+            <p>Final Knowledge Check - 4 Questions</p>
+        </div>
+
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card active" data-question="1">
+            <div class="question-number">Question 1 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario:</h3>
+                <p>A researcher finds that ice cream sales and drowning deaths have a correlation of r = 0.85.</p>
+            </div>
+
+            <div class="question-text">
+                What's the most likely explanation?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label"><strong>A)</strong> Ice cream causes drowning</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label"><strong>B)</strong> Drowning causes people to eat ice cream</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label"><strong>C)</strong> A third variable (summer/hot weather) affects both</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label"><strong>D)</strong> The correlation is too weak to draw conclusions</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn1" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn1">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" data-question="2">
+            <div class="question-number">Question 2 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario:</h3>
+                <p>You calculate a correlation coefficient of r = -0.72 between product price and units sold.</p>
+            </div>
+
+            <div class="question-text">
+                How would you interpret this?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label"><strong>A)</strong> Higher prices cause lower sales</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label"><strong>B)</strong> There's a strong negative relationship\u2014as price increases, sales tend to decrease</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label"><strong>C)</strong> There's a weak relationship between price and sales</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label"><strong>D)</strong> The correlation is positive</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn2" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn2">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Question 3 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario:</h3>
+                <p>You're building a decision tree for a new product launch with multiple possible outcomes and probabilities.</p>
+            </div>
+
+            <div class="question-text">
+                The expected value of a decision node is calculated by:
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label"><strong>A)</strong> Taking the maximum outcome value</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label"><strong>B)</strong> Taking the minimum outcome value</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label"><strong>C)</strong> Multiplying each outcome by its probability and summing</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label"><strong>D)</strong> Averaging all possible outcomes equally</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn3" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn3">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Question 4 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario:</h3>
+                <p>You're analyzing whether advertising spend correlates with revenue. You find r = 0.65. A colleague says "Great, we should double our ad budget!"</p>
+            </div>
+
+            <div class="question-text">
+                What's wrong with this reasoning?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label"><strong>A)</strong> Nothing\u2014the correlation proves ads cause revenue</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label"><strong>B)</strong> The correlation is too weak to act on</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label"><strong>C)</strong> Correlation doesn't establish causation; other factors may drive both</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label"><strong>D)</strong> You should triple the budget instead</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn4" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn4">View Results</button>
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-score" id="scoreDisplay">0/4</div>
+            <div class="results-message" id="resultsMessage"></div>
+
+            <div class="results-details">
+                <h3>Your Answers:</h3>
+                <div id="resultsList"></div>
+            </div>
+
+            <button class="btn btn-retry" onclick="location.reload()">Retry Knowledge Check</button>
+        </div>
+    </div>
+
+    <script>
+        const totalQuestions = 4;
+        let answers = {};
+        let results = {};
+
+        const questions = [
+            {
+                num: 1,
+                correct: 'c',
+                correctFeedback: 'This is a classic example of a spurious correlation caused by a lurking variable. Hot summer weather increases both ice cream consumption AND swimming activity (leading to more drownings). Correlation \u2260 causation!',
+                incorrectFeedback: 'This is a classic example of a spurious correlation caused by a lurking variable. Hot summer weather increases both ice cream consumption AND swimming activity (leading to more drownings). Correlation \u2260 causation!',
+                title: 'Spurious Correlation'
+            },
+            {
+                num: 2,
+                correct: 'b',
+                correctFeedback: 'r = -0.72 indicates a strong negative relationship (close to -1). As one variable increases, the other tends to decrease. However, remember: correlation describes the relationship but doesn\'t prove causation. Other factors (competition, quality, marketing) also affect sales.',
+                incorrectFeedback: 'r = -0.72 indicates a strong negative relationship (close to -1). As one variable increases, the other tends to decrease. However, remember: correlation describes the relationship but doesn\'t prove causation. Other factors (competition, quality, marketing) also affect sales.',
+                title: 'Negative Correlation'
+            },
+            {
+                num: 3,
+                correct: 'c',
+                correctFeedback: 'Expected Value = \u03a3(Probability \u00d7 Outcome). Weight each outcome by how likely it is to occur, then sum. This gives you the average expected result over many repeated decisions.',
+                incorrectFeedback: 'Expected Value = \u03a3(Probability \u00d7 Outcome). Weight each outcome by how likely it is to occur, then sum. This gives you the average expected result over many repeated decisions.',
+                title: 'Expected Value'
+            },
+            {
+                num: 4,
+                correct: 'c',
+                correctFeedback: 'A correlation of 0.65 shows a moderately strong positive relationship, but doesn\'t prove causation. Perhaps successful companies have more money for both advertising AND revenue growth. Or maybe the relationship has diminishing returns. Controlled experiments or regression analysis with controls would be needed to establish causation.',
+                incorrectFeedback: 'A correlation of 0.65 shows a moderately strong positive relationship, but doesn\'t prove causation. Perhaps successful companies have more money for both advertising AND revenue growth. Or maybe the relationship has diminishing returns. Controlled experiments or regression analysis with controls would be needed to establish causation.',
+                title: 'Correlation vs Causation'
+            }
+        ];
+
+        function updateProgress() {
+            const progress = (Object.keys(answers).length / totalQuestions) * 100;
+            const progressBar = document.getElementById('progressFill');
+            progressBar.style.width = progress + '%';
+            progressBar.parentElement.setAttribute('aria-valuenow', progress);
+        }
+
+        questions.forEach(q => {
+            const questionNum = q.num;
+            const card = document.querySelector(`.question-card[data-question="${questionNum}"]`);
+            const options = card.querySelectorAll('.option');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById(`checkBtn${questionNum}`);
+            const nextBtn = document.getElementById(`nextBtn${questionNum}`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const optionsContainer = card.querySelector('.options');
+            const correctAnswer = optionsContainer.dataset.correct;
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = card.querySelector(`.option[data-value="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            checkBtn.addEventListener('click', () => {
+                const selectedValue = card.querySelector(`input[name="q${questionNum}"]:checked`)?.value;
+                if (!selectedValue) return;
+
+                const isCorrect = selectedValue === correctAnswer;
+                answers[questionNum] = selectedValue;
+                results[questionNum] = isCorrect;
+
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    option.style.pointerEvents = 'none';
+
+                    if (value === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (value === selectedValue && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (isCorrect) {
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = `<h3>\u2713 Correct!</h3><p>${q.correctFeedback}</p>`;
+                } else {
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `<h3>\u2717 Not quite</h3><p>${q.incorrectFeedback}</p>`;
+                }
+
+                checkBtn.style.display = 'none';
+                nextBtn.classList.add('show');
+                updateProgress();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (questionNum < totalQuestions) {
+                    card.classList.remove('active');
+                    const nextCard = document.querySelector(`.question-card[data-question="${questionNum + 1}"]`);
+                    nextCard.classList.add('active');
+                } else {
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const correctCount = Object.values(results).filter(r => r === true).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalQuestions}`;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You\'re ready for the Final Assessment.';
+            } else if (percentage >= 75) {
+                message = 'Great work! You understand correlation and decision analysis well.';
+            } else if (percentage >= 50) {
+                message = 'Good effort! Review correlation vs causation before the Final Assessment.';
+            } else {
+                message = 'Keep practicing! Review decision trees and correlation concepts.';
+            }
+            document.getElementById('resultsMessage').textContent = message;
+
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = questions.map(q => {
+                const isCorrect = results[q.num];
+                const icon = isCorrect ? '\u2713' : '\u2717';
+                const className = isCorrect ? 'correct' : 'incorrect';
+                return `
+                    <div class="result-item ${className}">
+                        <span class="result-icon">${icon}</span>
+                        <span>Question ${q.num}: ${q.title}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsScreen').classList.add('show');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differentiation Analyzer - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+        }
+
+        .industry-select {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .industry-select label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .industry-select select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+        }
+
+        .industry-select select:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .analysis-section {
+            display: none;
+        }
+
+        .analysis-section.active {
+            display: block;
+        }
+
+        .dimension-assessment {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dimension-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .dimension-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--color-neutral-100);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .dimension-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .assessment-question {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .status-options {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .status-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            background: var(--color-neutral-50);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .status-btn:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .status-btn.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-700);
+            color: white;
+        }
+
+        .status-btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .status-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            border: 1px solid var(--color-neutral-700);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-300);
+            border-color: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border-color: var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-400);
+        }
+
+        .results-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-panel h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-col h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-neutral-100);
+        }
+
+        .comparison-item:last-child {
+            border-bottom: none;
+        }
+
+        .match-icon {
+            margin-left: 0.5rem;
+        }
+
+        .strategic-insight {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .strategic-insight h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .strategic-insight p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-options {
+                flex-direction: column;
+            }
+
+            .status-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Differentiation Analyzer</h1>
+            <p class="subtitle">Assess where differentiation is happening in real industries</p>
+        </header>
+
+        <div class="industry-select">
+            <label for="industry-dropdown">Select an Industry to Analyze:</label>
+            <select id="industry-dropdown" onchange="selectIndustry(this.value)">
+                <option value="">-- Choose an industry --</option>
+                <option value="smartphones">Smartphones</option>
+                <option value="streaming">Streaming Services</option>
+                <option value="fastfood">Fast Food</option>
+                <option value="airlines">Airlines</option>
+            </select>
+        </div>
+
+        <div class="analysis-section" id="analysis-section">
+            <div class="dimension-assessment" data-dimension="functionality">
+                <div class="dimension-header">
+                    <div class="dimension-icon">⚡</div>
+                    <div class="dimension-title">Functionality</div>
+                </div>
+                <p class="assessment-question" id="functionality-question"></p>
+                <div class="status-options">
+                    <button class="status-btn" onclick="selectStatus('functionality', 'parity')" data-status="parity">
+                        <span class="status-label">Parity</span>
+                        <span class="status-desc">All similar, not differentiating</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('functionality', 'battleground')" data-status="battleground">
+                        <span class="status-label">Battleground</span>
+                        <span class="status-desc">Active competition, real differences</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('functionality', 'emerging')" data-status="emerging">
+                        <span class="status-label">Emerging</span>
+                        <span class="status-desc">Beginning to matter</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dimension-assessment" data-dimension="reliability">
+                <div class="dimension-header">
+                    <div class="dimension-icon">✓</div>
+                    <div class="dimension-title">Reliability</div>
+                </div>
+                <p class="assessment-question" id="reliability-question"></p>
+                <div class="status-options">
+                    <button class="status-btn" onclick="selectStatus('reliability', 'parity')" data-status="parity">
+                        <span class="status-label">Parity</span>
+                        <span class="status-desc">All similar, not differentiating</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('reliability', 'battleground')" data-status="battleground">
+                        <span class="status-label">Battleground</span>
+                        <span class="status-desc">Active competition, real differences</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('reliability', 'emerging')" data-status="emerging">
+                        <span class="status-label">Emerging</span>
+                        <span class="status-desc">Beginning to matter</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dimension-assessment" data-dimension="convenience">
+                <div class="dimension-header">
+                    <div class="dimension-icon">◎</div>
+                    <div class="dimension-title">Convenience</div>
+                </div>
+                <p class="assessment-question" id="convenience-question"></p>
+                <div class="status-options">
+                    <button class="status-btn" onclick="selectStatus('convenience', 'parity')" data-status="parity">
+                        <span class="status-label">Parity</span>
+                        <span class="status-desc">All similar, not differentiating</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('convenience', 'battleground')" data-status="battleground">
+                        <span class="status-label">Battleground</span>
+                        <span class="status-desc">Active competition, real differences</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('convenience', 'emerging')" data-status="emerging">
+                        <span class="status-label">Emerging</span>
+                        <span class="status-desc">Beginning to matter</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dimension-assessment" data-dimension="price">
+                <div class="dimension-header">
+                    <div class="dimension-icon">$</div>
+                    <div class="dimension-title">Price</div>
+                </div>
+                <p class="assessment-question" id="price-question"></p>
+                <div class="status-options">
+                    <button class="status-btn" onclick="selectStatus('price', 'parity')" data-status="parity">
+                        <span class="status-label">Parity</span>
+                        <span class="status-desc">All similar, not differentiating</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('price', 'battleground')" data-status="battleground">
+                        <span class="status-label">Battleground</span>
+                        <span class="status-desc">Active competition, real differences</span>
+                    </button>
+                    <button class="status-btn" onclick="selectStatus('price', 'emerging')" data-status="emerging">
+                        <span class="status-label">Emerging</span>
+                        <span class="status-desc">Beginning to matter</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" id="analyze-btn" onclick="showResults()" disabled>Analyze My Assessment</button>
+                <button class="btn btn-secondary" onclick="resetAnalysis()">Reset</button>
+            </div>
+        </div>
+
+        <div class="results-panel" id="results-panel">
+            <h3>Analysis Results</h3>
+
+            <div class="score-display">
+                <div class="score-number" id="score-display">0/4</div>
+                <div class="score-label">Dimensions matched with expert analysis</div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-col">
+                    <h4>Your Assessment</h4>
+                    <div id="your-assessment"></div>
+                </div>
+                <div class="comparison-col">
+                    <h4>Expert View</h4>
+                    <div id="expert-assessment"></div>
+                </div>
+            </div>
+
+            <div class="strategic-insight">
+                <h4>Strategic Implications</h4>
+                <p id="strategic-insight-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const industryData = {
+            smartphones: {
+                name: "Smartphones",
+                questions: {
+                    functionality: "How much variation exists in camera quality, processing power, and display technology between major brands?",
+                    reliability: "Do smartphone brands differ meaningfully in software stability, durability, and security updates?",
+                    convenience: "How significant are differences in ecosystem integration, ease of use, and cross-device experience?",
+                    price: "Is price a primary differentiator, or do other factors dominate purchasing decisions?"
+                },
+                expert: {
+                    functionality: "parity",
+                    reliability: "parity",
+                    convenience: "battleground",
+                    price: "emerging"
+                },
+                insight: "Smartphones have reached parity on functionality (all flagships have great cameras, fast processors) and reliability (all work well). The current battleground is convenience—specifically ecosystem integration (Apple's seamless experience vs. Android flexibility). Price competition is emerging as Chinese manufacturers offer near-flagship specs at mid-range prices, pressuring the premium segment."
+            },
+            streaming: {
+                name: "Streaming Services",
+                questions: {
+                    functionality: "How much do streaming services differ in content library size and streaming quality?",
+                    reliability: "Are there meaningful differences in uptime, buffering, or app stability between services?",
+                    convenience: "How significant are differences in content discovery, recommendations, and user interface?",
+                    price: "Is price competition intensifying, or do content differences dominate choice?"
+                },
+                expert: {
+                    functionality: "parity",
+                    reliability: "parity",
+                    convenience: "battleground",
+                    price: "emerging"
+                },
+                insight: "Streaming services have reached parity on functionality (all offer 4K, mobile apps) and reliability (all work consistently). The current battleground is convenience—specifically content discovery and curation. Netflix's recommendation algorithm, Disney+'s family profiles, and HBO Max's curated collections are convenience plays. Price competition is emerging with ad-supported tiers, password crackdowns, and bundle strategies."
+            },
+            fastfood: {
+                name: "Fast Food",
+                questions: {
+                    functionality: "How much do fast food chains differ in food quality, menu variety, and taste?",
+                    reliability: "Are there meaningful differences in consistency, accuracy, and food safety between chains?",
+                    convenience: "How significant are differences in speed, mobile ordering, and pickup/delivery options?",
+                    price: "Is price competition the primary battlefield, or do other factors dominate?"
+                },
+                expert: {
+                    functionality: "parity",
+                    reliability: "parity",
+                    convenience: "battleground",
+                    price: "battleground"
+                },
+                insight: "Fast food has reached parity on functionality (all serve acceptable food quickly) and reliability (consistency is table stakes). The industry has two active battlegrounds: Convenience (mobile ordering, drive-thru efficiency, delivery partnerships) and Price (value menus, combo deals, app-exclusive offers). Chains like Chick-fil-A differentiate on convenience (efficient service), while McDonald's competes heavily on both convenience and price."
+            },
+            airlines: {
+                name: "Airlines",
+                questions: {
+                    functionality: "How much do airlines differ in getting you from A to B safely and on-schedule?",
+                    reliability: "Are there meaningful differences in on-time performance, baggage handling, and service recovery?",
+                    convenience: "How significant are differences in booking ease, check-in, boarding, and in-flight experience?",
+                    price: "Is price the primary factor in airline choice, or do service differences matter more?"
+                },
+                expert: {
+                    functionality: "parity",
+                    reliability: "battleground",
+                    convenience: "emerging",
+                    price: "battleground"
+                },
+                insight: "Airlines have reached parity on functionality (all planes fly safely). Reliability (on-time performance, cancellation rates) remains a battleground—Delta's operational excellence vs. Spirit's reliability challenges. Price is a major battleground between legacy carriers and ultra-low-cost carriers. Convenience (app experience, boarding, premium economy) is emerging as the next frontier as airlines seek differentiation beyond price."
+            }
+        };
+
+        let selectedIndustry = null;
+        let userAssessment = {
+            functionality: null,
+            reliability: null,
+            convenience: null,
+            price: null
+        };
+
+        function selectIndustry(industry) {
+            if (!industry) {
+                document.getElementById('analysis-section').classList.remove('active');
+                document.getElementById('results-panel').classList.remove('show');
+                return;
+            }
+
+            selectedIndustry = industry;
+            const data = industryData[industry];
+
+            // Update questions
+            document.getElementById('functionality-question').textContent = data.questions.functionality;
+            document.getElementById('reliability-question').textContent = data.questions.reliability;
+            document.getElementById('convenience-question').textContent = data.questions.convenience;
+            document.getElementById('price-question').textContent = data.questions.price;
+
+            // Reset selections
+            resetAnalysis();
+
+            // Show analysis section
+            document.getElementById('analysis-section').classList.add('active');
+        }
+
+        function selectStatus(dimension, status) {
+            const container = document.querySelector(`[data-dimension="${dimension}"]`);
+            const buttons = container.querySelectorAll('.status-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.dataset.status === status) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            userAssessment[dimension] = status;
+            checkCanAnalyze();
+        }
+
+        function checkCanAnalyze() {
+            const allSelected = Object.values(userAssessment).every(v => v !== null);
+            document.getElementById('analyze-btn').disabled = !allSelected;
+        }
+
+        function showResults() {
+            if (!selectedIndustry) return;
+
+            const data = industryData[selectedIndustry];
+            const expert = data.expert;
+            let matches = 0;
+
+            // Build comparison display
+            const yourAssessment = document.getElementById('your-assessment');
+            const expertAssessment = document.getElementById('expert-assessment');
+            yourAssessment.innerHTML = '';
+            expertAssessment.innerHTML = '';
+
+            const dimensions = ['functionality', 'reliability', 'convenience', 'price'];
+            const labels = {
+                functionality: 'Functionality',
+                reliability: 'Reliability',
+                convenience: 'Convenience',
+                price: 'Price'
+            };
+            const statusLabels = {
+                parity: 'Parity',
+                battleground: 'Battleground',
+                emerging: 'Emerging'
+            };
+
+            dimensions.forEach(dim => {
+                const isMatch = userAssessment[dim] === expert[dim];
+                if (isMatch) matches++;
+
+                const yourItem = document.createElement('div');
+                yourItem.className = 'comparison-item';
+                yourItem.innerHTML = `
+                    <span>${labels[dim]}</span>
+                    <span>${statusLabels[userAssessment[dim]]} ${isMatch ? '<span class="match-icon">✓</span>' : '<span class="match-icon">✗</span>'}</span>
+                `;
+                yourAssessment.appendChild(yourItem);
+
+                const expertItem = document.createElement('div');
+                expertItem.className = 'comparison-item';
+                expertItem.innerHTML = `
+                    <span>${labels[dim]}</span>
+                    <span>${statusLabels[expert[dim]]}</span>
+                `;
+                expertAssessment.appendChild(expertItem);
+            });
+
+            document.getElementById('score-display').textContent = `${matches}/4`;
+            document.getElementById('strategic-insight-text').textContent = data.insight;
+
+            document.getElementById('results-panel').classList.add('show');
+            document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetAnalysis() {
+            userAssessment = {
+                functionality: null,
+                reliability: null,
+                convenience: null,
+                price: null
+            };
+
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('results-panel').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

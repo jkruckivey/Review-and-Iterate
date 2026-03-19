@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Frontier Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+        }
+
+        .controls {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .controls h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-selector label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+        }
+
+        .mode-selector input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .scenario-selector {
+            margin-top: 1rem;
+        }
+
+        .scenario-selector label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-selector select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-family: 'Geist', sans-serif;
+            font-size: 1rem;
+            background: white;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-selector select:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .graph-container {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .graph-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        canvas {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 4px;
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.success {
+            background: var(--color-success);
+            border: 2px solid var(--color-success);
+        }
+
+        .legend-dot.error {
+            background: var(--color-error);
+            border: 2px solid var(--color-error);
+        }
+
+        .legend-dot.neutral {
+            background: var(--color-neutral-600);
+            border: 2px solid var(--color-neutral-600);
+        }
+
+        .company-list {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .company-list h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .company-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 4px;
+            background: var(--color-neutral-50);
+            cursor: move;
+        }
+
+        .company-item:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .company-name {
+            font-weight: 500;
+            color: var(--color-neutral-900);
+        }
+
+        .company-position {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        .feedback-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .feedback-panel h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .feedback-text {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--color-neutral-700);
+            border-radius: 4px;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-neutral-300);
+            text-align: center;
+            color: var(--color-neutral-500);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .mode-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Productivity Frontier Explorer</h1>
+            <p class="subtitle">Explore strategic positioning through the performance-cost tradeoff</p>
+        </header>
+
+        <main>
+            <!-- Controls -->
+            <section class="controls">
+                <h2>Mode & Scenario</h2>
+
+                <div class="mode-selector">
+                    <label>
+                        <input type="radio" name="mode" value="beginner" checked>
+                        Beginner (Pre-positioned examples)
+                    </label>
+                    <label>
+                        <input type="radio" name="mode" value="advanced">
+                        Advanced (Position companies yourself)
+                    </label>
+                </div>
+
+                <div class="scenario-selector">
+                    <label for="scenario">Industry Scenario:</label>
+                    <select id="scenario">
+                        <option value="baseline">Baseline Industry</option>
+                        <option value="tech">New Manufacturing Technology</option>
+                        <option value="innovation">Disruptive Innovation</option>
+                    </select>
+                </div>
+
+                <button class="btn" id="reset-btn" style="margin-top: 1rem;">Reset Positions</button>
+            </section>
+
+            <!-- Graph -->
+            <section class="graph-container" role="img" aria-label="Productivity frontier graph">
+                <div class="graph-wrapper">
+                    <canvas id="frontier-canvas" width="700" height="500"></canvas>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-dot success"></div>
+                        <span>On Frontier (Competitive Advantage)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot error"></div>
+                        <span>Below Frontier (Stuck in the Middle)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot neutral"></div>
+                        <span>Not yet positioned</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Company List (Advanced Mode) -->
+            <section class="company-list" id="company-list" style="display: none;">
+                <h2>Drag Companies to Graph</h2>
+                <div class="company-item" draggable="true" data-company="amazon">
+                    <div class="company-name">Amazon</div>
+                    <div class="company-position">Click on graph to position</div>
+                </div>
+                <div class="company-item" draggable="true" data-company="walmart">
+                    <div class="company-name">Walmart</div>
+                    <div class="company-position">Click on graph to position</div>
+                </div>
+                <div class="company-item" draggable="true" data-company="luxury">
+                    <div class="company-name">Luxury Brand (e.g., Tiffany)</div>
+                    <div class="company-position">Click on graph to position</div>
+                </div>
+            </section>
+
+            <!-- Feedback -->
+            <section class="feedback-panel" role="region" aria-live="polite">
+                <h2>Analysis</h2>
+                <p class="feedback-text" id="feedback-content">
+                    The productivity frontier represents the best achievable performance-cost tradeoff in an industry.
+                    Companies on the frontier have a sustainable competitive advantage.
+                    Companies below the frontier are "stuck in the middle" and operationally inefficient.
+                </p>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('frontier-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Get colors from CSS variables for canvas drawing
+        const rootStyles = getComputedStyle(document.documentElement);
+        const colors = {
+            axis: rootStyles.getPropertyValue('--color-neutral-400').trim() || '#a3a3a3',
+            label: rootStyles.getPropertyValue('--color-neutral-700').trim() || '#404040',
+            frontier: rootStyles.getPropertyValue('--color-neutral-600').trim() || '#525252',
+            text: rootStyles.getPropertyValue('--color-neutral-900').trim() || '#171717',
+            success: rootStyles.getPropertyValue('--color-success').trim() || '#22c55e',
+            error: rootStyles.getPropertyValue('--color-error').trim() || '#ef4444'
+        };
+
+        // Company positions (x: cost, y: performance, both 0-100)
+        let companies = {
+            amazon: { x: null, y: null, label: 'Amazon' },
+            walmart: { x: null, y: null, label: 'Walmart' },
+            luxury: { x: null, y: null, label: 'Luxury Brand' }
+        };
+
+        let currentMode = 'beginner';
+        let currentScenario = 'baseline';
+        let selectedCompany = null;
+
+        // Frontier curves (different scenarios)
+        const frontiers = {
+            baseline: (x) => 100 - Math.sqrt((100 - x) * 100), // Curved frontier
+            tech: (x) => Math.min(100, 105 - Math.sqrt((100 - x) * 100)), // Shifted outward
+            innovation: (x) => Math.min(100, 90 - Math.sqrt((100 - x) * 80)) // Different shape
+        };
+
+        // Initialize
+        function init() {
+            loadBeginnerMode();
+            drawGraph();
+            setupEventListeners();
+        }
+
+        function loadBeginnerMode() {
+            // Pre-position companies for beginner mode
+            companies.amazon.x = 30;
+            companies.amazon.y = 75;
+
+            companies.walmart.x = 15;
+            companies.walmart.y = 60;
+
+            companies.luxury.x = 85;
+            companies.luxury.y = 95;
+        }
+
+        function drawGraph() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw axes
+            ctx.strokeStyle = colors.axis;
+            ctx.lineWidth = 2;
+
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(50, 450);
+            ctx.lineTo(50, 30);
+            ctx.stroke();
+
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(50, 450);
+            ctx.lineTo(650, 450);
+            ctx.stroke();
+
+            // Axis labels
+            ctx.fillStyle = colors.label;
+            ctx.font = '14px Geist, sans-serif';
+            ctx.textAlign = 'center';
+
+            // X-axis label
+            ctx.fillText('Relative Cost Position', 350, 485);
+            ctx.fillText('(Low Cost)', 150, 470);
+            ctx.fillText('(High Cost)', 550, 470);
+
+            // Y-axis label
+            ctx.save();
+            ctx.translate(15, 250);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Product Performance', 0, 0);
+            ctx.restore();
+
+            ctx.fillText('(Low)', 50, 465);
+            ctx.fillText('(High)', 50, 45);
+
+            // Draw frontier curve
+            drawFrontier();
+
+            // Draw companies
+            drawCompanies();
+        }
+
+        function drawFrontier() {
+            const frontierFunc = frontiers[currentScenario];
+
+            ctx.strokeStyle = colors.frontier;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let x = 0; x <= 100; x += 0.5) {
+                const y = frontierFunc(x);
+                const canvasX = mapToCanvas(x, 'x');
+                const canvasY = mapToCanvas(y, 'y');
+
+                if (x === 0) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+
+            ctx.stroke();
+
+            // Label frontier
+            ctx.fillStyle = colors.frontier;
+            ctx.font = 'bold 14px Geist, sans-serif';
+            ctx.fillText('Productivity Frontier', 400, 100);
+        }
+
+        function drawCompanies() {
+            Object.entries(companies).forEach(([id, company]) => {
+                if (company.x === null || company.y === null) return;
+
+                const canvasX = mapToCanvas(company.x, 'x');
+                const canvasY = mapToCanvas(company.y, 'y');
+
+                // Determine status (on frontier, below, impossible)
+                const frontierY = frontiers[currentScenario](company.x);
+                const diff = company.y - frontierY;
+
+                let color;
+                if (Math.abs(diff) < 3) {
+                    color = colors.success; // Green - on frontier
+                } else if (diff < -3) {
+                    color = colors.error; // Red - below frontier
+                } else {
+                    color = colors.frontier; // Neutral - not positioned yet
+                }
+
+                // Draw dot
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(canvasX, canvasY, 8, 0, 2 * Math.PI);
+                ctx.fill();
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw label
+                ctx.fillStyle = colors.text;
+                ctx.font = '12px Geist, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(company.label, canvasX, canvasY - 15);
+            });
+        }
+
+        function mapToCanvas(value, axis) {
+            if (axis === 'x') {
+                return 50 + (value / 100) * 600;
+            } else { // y
+                return 450 - (value / 100) * 420;
+            }
+        }
+
+        function mapFromCanvas(canvasValue, axis) {
+            if (axis === 'x') {
+                return Math.max(0, Math.min(100, ((canvasValue - 50) / 600) * 100));
+            } else { // y
+                return Math.max(0, Math.min(100, ((450 - canvasValue) / 420) * 100));
+            }
+        }
+
+        function updateFeedback() {
+            let feedback = '';
+
+            Object.entries(companies).forEach(([id, company]) => {
+                if (company.x === null || company.y === null) return;
+
+                const frontierY = frontiers[currentScenario](company.x);
+                const diff = company.y - frontierY;
+
+                if (Math.abs(diff) < 3) {
+                    feedback += `<strong>${company.label}</strong>: On the frontier - sustainable competitive advantage. `;
+                    if (company.x < 40) {
+                        feedback += `Positioned as <em>cost leader</em>. `;
+                    } else {
+                        feedback += `Positioned as <em>differentiator</em>. `;
+                    }
+                } else if (diff < -3) {
+                    feedback += `<strong>${company.label}</strong>: Below the frontier - "stuck in the middle" and operationally inefficient. `;
+                }
+
+                feedback += '<br>';
+            });
+
+            if (currentScenario === 'tech') {
+                feedback += '<br><em>New manufacturing technology has shifted the frontier outward, creating opportunities for better performance at lower cost.</em>';
+            } else if (currentScenario === 'innovation') {
+                feedback += '<br><em>Disruptive innovation has changed the frontier shape, enabling new strategic positions.</em>';
+            }
+
+            document.getElementById('feedback-content').innerHTML = feedback || 'Click on the graph to position companies.';
+        }
+
+        function setupEventListeners() {
+            // Mode selector
+            document.querySelectorAll('input[name="mode"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    currentMode = e.target.value;
+
+                    if (currentMode === 'beginner') {
+                        document.getElementById('company-list').style.display = 'none';
+                        loadBeginnerMode();
+                    } else {
+                        document.getElementById('company-list').style.display = 'block';
+                        // Clear positions for advanced mode
+                        Object.keys(companies).forEach(id => {
+                            companies[id].x = null;
+                            companies[id].y = null;
+                        });
+                    }
+
+                    drawGraph();
+                    updateFeedback();
+                });
+            });
+
+            // Scenario selector
+            document.getElementById('scenario').addEventListener('change', (e) => {
+                currentScenario = e.target.value;
+                drawGraph();
+                updateFeedback();
+            });
+
+            // Canvas click (advanced mode)
+            canvas.addEventListener('click', (e) => {
+                if (currentMode !== 'advanced') return;
+                if (!selectedCompany) {
+                    alert('Please select a company from the list below first.');
+                    return;
+                }
+
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const canvasX = (e.clientX - rect.left) * scaleX;
+                const canvasY = (e.clientY - rect.top) * scaleY;
+
+                const x = mapFromCanvas(canvasX, 'x');
+                const y = mapFromCanvas(canvasY, 'y');
+
+                companies[selectedCompany].x = x;
+                companies[selectedCompany].y = y;
+
+                selectedCompany = null;
+                document.querySelectorAll('.company-item').forEach(item => {
+                    item.style.background = '';
+                });
+
+                drawGraph();
+                updateFeedback();
+            });
+
+            // Company selection (advanced mode)
+            document.querySelectorAll('.company-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const companyId = e.currentTarget.dataset.company;
+                    selectedCompany = companyId;
+
+                    document.querySelectorAll('.company-item').forEach(i => {
+                        i.style.background = '';
+                    });
+
+                    e.currentTarget.style.background = '#e5e5e5';
+                });
+            });
+
+            // Reset button
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                if (currentMode === 'beginner') {
+                    loadBeginnerMode();
+                } else {
+                    Object.keys(companies).forEach(id => {
+                        companies[id].x = null;
+                        companies[id].y = null;
+                    });
+                }
+
+                drawGraph();
+                updateFeedback();
+            });
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

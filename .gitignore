@@ -1,0 +1,26 @@
+# Office documents
+*.docx
+*.xlsx
+*.pptx
+*.doc
+*.xls
+
+# Python scripts (build tools, not served)
+*.py
+*.pyc
+__pycache__/
+
+# Temp files
+temp_*
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.claude/
+.playwright-mcp/
+
+# Storyboards and non-web content
+Week 3 Storyboards/

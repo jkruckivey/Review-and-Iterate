@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Working Capital Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff; --correct: #48825d; --incorrect: #c45a5a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--turquoise); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        .quiz-meta { display: flex; justify-content: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+        .meta-item { background-color: var(--white); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .meta-item span { font-weight: 600; color: var(--text-primary); }
+        .progress-container { background-color: var(--white); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .progress-label { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); }
+        .progress-count { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+        .progress-bar { height: 8px; background-color: var(--grey-light); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background-color: var(--turquoise-dark); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
+        .question-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .question-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+        .question-number { background-color: var(--turquoise); color: var(--text-primary); min-width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+        .question-text { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); flex: 1; padding-top: 3px; }
+        .options { display: flex; flex-direction: column; gap: 8px; }
+        .option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid var(--grey-light); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; background-color: var(--white); }
+        .option:hover:not(.disabled) { border-color: var(--turquoise-dark); background-color: var(--grey-bg); }
+        .option.selected { border-color: var(--turquoise-dark); background-color: var(--turquoise); }
+        .option.correct { border-color: var(--correct); background-color: var(--green); }
+        .option.incorrect { border-color: var(--incorrect); background-color: #f8e8e8; }
+        .option.disabled { cursor: default; }
+        .option-letter { width: 26px; height: 26px; border-radius: 6px; background-color: var(--grey-light); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; color: var(--text-secondary); margin-right: 12px; flex-shrink: 0; }
+        .option.selected .option-letter { background-color: var(--turquoise-dark); color: var(--text-primary); }
+        .option.correct .option-letter { background-color: var(--correct); color: var(--white); }
+        .option.incorrect .option-letter { background-color: var(--incorrect); color: var(--white); }
+        .option-text { flex: 1; font-size: 0.85rem; color: var(--text-primary); }
+        .option-icon { font-size: 0.9rem; margin-left: 10px; flex-shrink: 0; }
+        .feedback { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 0.8rem; line-height: 1.6; display: none; }
+        .feedback.correct { background-color: var(--green); border-left: 3px solid var(--correct); color: var(--text-primary); display: block; }
+        .feedback.incorrect { background-color: #f8e8e8; border-left: 3px solid var(--incorrect); color: var(--text-primary); display: block; }
+        .results-card { background-color: var(--white); border-radius: 12px; padding: 40px 28px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: none; }
+        .results-card.show { display: block; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; background-color: var(--green); }
+        .score-circle.needs-work { background-color: var(--purple); }
+        .score-number { font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+        .score-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; }
+        .results-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .results-message { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px; }
+        .retry-btn { display: inline-block; background-color: var(--white); color: var(--text-primary); border: 2px solid var(--text-primary); padding: 12px 32px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .retry-btn:hover { background-color: var(--text-primary); color: var(--white); }
+        @media (max-width: 600px) { body { padding: 24px 16px; } .header h1 { font-size: 1.5rem; } .quiz-meta { flex-direction: column; gap: 8px; align-items: center; } .question-card { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 2.4</div>
+            <h1>Knowledge Check: Working Capital Management</h1>
+            <p>Test your understanding of liquidity, the cash conversion cycle, and working capital trade-offs</p>
+        </div>
+        <div class="quiz-meta">
+            <div class="meta-item"><span>4</span> questions</div>
+            <div class="meta-item"><span>~3</span> minutes</div>
+            <div class="meta-item">Instant feedback</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-label">Progress</span>
+                <span class="progress-count"><span id="answered-count">0</span> of 4 answered</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+        <div id="quiz-container"></div>
+        <div class="results-card" id="results-card">
+            <div class="score-circle" id="score-circle"><span class="score-number" id="score-number">0/4</span><span class="score-label">Correct</span></div>
+            <h2 class="results-title" id="results-title"></h2>
+            <p class="results-message" id="results-message"></p>
+            <button class="retry-btn" onclick="resetQuiz()">Try Again</button>
+        </div>
+    </div>
+    <script>
+        const questions = [
+            { text: "What does working capital measure?", options: ["The firm's profitability", "The firm's short-term liquidity position", "The firm's leverage", "The firm's long-term solvency"], correct: 1, feedback: { correct: "Correct! Working capital (Current Assets − Current Liabilities) measures the firm's short-term liquidity and operational flexibility — its ability to meet near-term obligations.", incorrect: "Not quite. Working capital measures short-term liquidity. It shows whether the firm has enough current assets to cover its current liabilities and operate smoothly day-to-day." } },
+            { text: "What three elements make up the cash conversion cycle (CCC)?", options: ["Assets, liabilities, and equity", "Inventory period, receivables period, and payables period", "Revenue, costs, and profit", "Operating, investing, and financing activities"], correct: 1, feedback: { correct: "Correct! CCC = Inventory Period + Receivables Period − Payables Period. It measures how long cash is tied up in operations before being recovered from customers.", incorrect: "Not quite. The cash conversion cycle combines: (1) how long inventory is held, (2) how long it takes to collect from customers, minus (3) how long you have to pay suppliers." } },
+            { text: "If a company's cash conversion cycle decreases, what does that mean?", options: ["Profitability has increased", "Cash is recovered faster, improving liquidity", "Leverage has decreased", "Assets have grown"], correct: 1, feedback: { correct: "Correct! A shorter CCC means cash comes back faster. Less capital is tied up in operations, improving liquidity and reducing the need for short-term financing.", incorrect: "Not quite. A shorter cash conversion cycle means cash is recovered faster. This improves liquidity because less money is tied up waiting in inventory or receivables." } },
+            { text: "What is the trade-off between liquidity and profitability in working capital management?", options: ["They always move in the same direction", "Holding more liquidity increases safety but can reduce returns", "Liquidity has no impact on profitability", "Higher liquidity always increases profit"], correct: 1, feedback: { correct: "Correct! Holding more cash and liquid assets provides safety but earns less than investing that capital. Managers must balance the security of liquidity against the opportunity cost of idle resources.", incorrect: "Not quite. There's a fundamental trade-off: more liquidity means more safety but potentially lower returns, since idle cash doesn't generate profits. Effective management balances these competing objectives." } }
+        ];
+        let selectedAnswers = [], submitted = false;
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            selectedAnswers = new Array(questions.length).fill(-1);
+            container.innerHTML = questions.map((q, i) => `
+                <div class="question-card" id="q${i}">
+                    <div class="question-header"><div class="question-number">${i+1}</div><div class="question-text">${q.text}</div></div>
+                    <div class="options">${q.options.map((o, j) => `<div class="option" onclick="selectOption(${i},${j})"><span class="option-letter">${String.fromCharCode(65+j)}</span><span class="option-text">${o}</span><span class="option-icon"></span></div>`).join('')}</div>
+                    <div class="feedback" id="feedback-${i}"></div>
+                </div>
+            `).join('');
+        }
+        function selectOption(q, o) {
+            if (submitted) return;
+            document.querySelectorAll(`#q${q} .option`).forEach((el, i) => el.classList.toggle('selected', i === o));
+            selectedAnswers[q] = o;
+            updateProgress();
+            checkCompletion();
+        }
+        function updateProgress() {
+            const answered = selectedAnswers.filter(a => a !== -1).length;
+            document.getElementById('answered-count').textContent = answered;
+            document.getElementById('progress-fill').style.width = (answered / questions.length * 100) + '%';
+        }
+        function checkCompletion() {
+            if (selectedAnswers.every(a => a !== -1) && !submitted) {
+                showResults();
+            }
+        }
+        function showResults() {
+            submitted = true;
+            let score = 0;
+            questions.forEach((q, i) => {
+                const card = document.getElementById(`q${i}`), opts = card.querySelectorAll('.option'), fb = document.getElementById(`feedback-${i}`);
+                opts.forEach(o => o.classList.add('disabled'));
+                if (selectedAnswers[i] === q.correct) {
+                    score++; opts[selectedAnswers[i]].classList.add('correct'); opts[selectedAnswers[i]].querySelector('.option-icon').textContent = '✓';
+                    fb.className = 'feedback correct'; fb.textContent = q.feedback.correct;
+                } else {
+                    opts[selectedAnswers[i]].classList.add('incorrect'); opts[selectedAnswers[i]].querySelector('.option-icon').textContent = '✗';
+                    opts[q.correct].classList.add('correct'); opts[q.correct].querySelector('.option-icon').textContent = '✓';
+                    fb.className = 'feedback incorrect'; fb.textContent = q.feedback.incorrect;
+                }
+            });
+            document.getElementById('score-number').textContent = `${score}/${questions.length}`;
+            document.getElementById('score-circle').className = score >= 3 ? 'score-circle' : 'score-circle needs-work';
+            document.getElementById('results-title').textContent = score === 4 ? 'Excellent!' : score >= 3 ? 'Great job!' : 'Keep learning!';
+            document.getElementById('results-message').textContent = score >= 3 ? "You understand working capital management and the liquidity-profitability trade-off. You're ready for the Module 2 final quiz!" : "Review the working capital material and try again to strengthen your understanding.";
+            document.getElementById('results-card').classList.add('show');
+            document.getElementById('results-card').scrollIntoView({ behavior: 'smooth' });
+        }
+        function resetQuiz() { submitted = false; document.getElementById('results-card').classList.remove('show'); initQuiz(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        initQuiz();
+    </script>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivey Online Unified Widget Gallery</title>
+
+<!-- Import Geist Font (as mandated by the Style Guide) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   THE UNIFIED IVEY CSS STANDARD
+   Based on the "Geist Neutral" system with standardized A11y and Semantic Colors
+   ========================================================================== */
+:root {
+  /* Neutral Scale */
+  --color-neutral-50:  #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Accent Colors */
+  --color-accent:       #262626;  /* Neutral Dark Interactive Base */
+  --color-pastel-teal:  #c0d1cd;  
+  --color-purple:       #d5cae0;
+  --color-turquoise:    #bfe5e7;
+  --color-sand:         #f0ede0;
+
+  /* Semantic Feedback Colors */
+  --color-success:       #22c55e;
+  --color-success-light: #dcfce7;
+  --color-error:         #ef4444;
+  --color-error-light:   #fee2e2;
+  --color-warning:       #f59e0b;
+  --color-warning-light: #fef3c7;
+}
+
+/* Base Styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+  padding: 40px 24px;
+  line-height: 1.5;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+
+/* Reduced Motion (A11y Requirement) */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Focus States (A11y Requirement) */
+:focus-visible { outline: 2px solid var(--color-neutral-900); outline-offset: 2px; }
+
+/* Dashboard Layout */
+.container { max-width: 1000px; margin: 0 auto; }
+.header { margin-bottom: 48px; border-bottom: 1px solid var(--color-neutral-200); padding-bottom: 24px; }
+.header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.header p { color: var(--color-neutral-600); font-size: 1.125rem; }
+
+.section { background: white; border: 1px solid var(--color-neutral-200); border-radius: 12px; padding: 32px; margin-bottom: 32px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
+.section h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 24px; padding-bottom: 8px; border-bottom: 1px solid var(--color-neutral-100); }
+
+/* Typography Display */
+.type-sample { margin-bottom: 16px; border-bottom: 1px solid var(--color-neutral-100); padding-bottom: 12px; align-items: baseline; display: flex; gap: 24px;}
+.type-sample-label { width: 120px; color: var(--color-neutral-500); font-size: 0.875rem; flex-shrink: 0; }
+
+/* Color Swatches */
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+.swatch { border-radius: 8px; overflow: hidden; border: 1px solid var(--color-neutral-200); }
+.swatch-color { height: 80px; width: 100%; display: flex; align-items: flex-end; padding: 8px; font-weight: 600; font-size: 0.875rem;}
+.swatch-details { padding: 12px; font-size: 0.75rem; background: white; color: var(--color-neutral-600); }
+.swatch-details strong { color: var(--color-neutral-900); display: block; margin-bottom: 2px; }
+
+/* Buttons Display */
+.button-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--color-neutral-800); color: white; padding: 12px 24px;
+  border: none; border-radius: 8px; font-family: 'Geist', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;
+}
+.btn-primary:hover { background: var(--color-neutral-700); }
+.btn-primary:disabled { background: var(--color-neutral-400); opacity: 0.6; cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--color-neutral-100); color: var(--color-neutral-800); padding: 12px 24px;
+  border: 1px solid var(--color-neutral-300); border-radius: 8px; font-family: 'Geist', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;
+}
+.btn-secondary:hover { background: var(--color-neutral-200); }
+
+.btn-preset {
+  background: white; color: var(--color-neutral-700); border: 1px solid var(--color-neutral-300);
+  padding: 8px 16px; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; font-family: 'Geist', sans-serif;
+  transition: all 0.2s ease;
+}
+.btn-preset:hover { background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
+.btn-preset.active { background: var(--color-pastel-teal); border-color: var(--color-accent); color: var(--color-neutral-900); }
+
+/* Feedback States */
+.feedback-box { padding: 16px; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+.feedback-box svg { flex-shrink: 0; margin-top: 2px; }
+.feedback-correct { background: var(--color-success-light); border: 1px solid var(--color-success); color: var(--color-neutral-900); }
+.feedback-incorrect { background: var(--color-error-light); border: 1px solid var(--color-error); color: var(--color-neutral-900); }
+.feedback-hint { background: var(--color-warning-light); border: 1px solid var(--color-warning); color: var(--color-neutral-900); }
+
+/* Interactive Sample Widget */
+.widget-sample { border: 1px solid var(--color-neutral-300); border-radius: 12px; padding: 24px; background: var(--color-neutral-50); }
+.question-text { font-size: 1.125rem; font-weight: 500; margin-bottom: 16px; }
+
+.mcq-option {
+  display: flex; align-items: center; padding: 16px; border: 1px solid var(--color-neutral-300);
+  border-radius: 8px; margin-bottom: 12px; background: white; cursor: pointer;
+  transition: all 0.2s ease; position: relative;
+}
+.mcq-option:hover { border-color: var(--color-neutral-500); background: var(--color-neutral-100); }
+.mcq-option input[type="radio"] {
+  /* Hide standard radio, build custom one for styling */
+  opacity: 0; position: absolute;
+}
+
+/* Custom Radio Circle */
+.radio-circle {
+  width: 20px; height: 20px; border: 2px solid var(--color-neutral-400); border-radius: 50%;
+  margin-right: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.radio-inner { width: 10px; height: 10px; background: var(--color-accent); border-radius: 50%; opacity: 0; transform: scale(0); transition: all 0.2s ease; }
+
+/* Selected State */
+.mcq-option.selected { border-color: var(--color-accent); background: #f4f8f7; }
+.mcq-option.selected .radio-circle { border-color: var(--color-accent); }
+.mcq-option.selected .radio-inner { opacity: 1; transform: scale(1); }
+
+/* Focus State applied to label when hiding input */
+.mcq-option input[type="radio"]:focus-visible + .radio-circle { outline: 2px solid var(--color-neutral-900); outline-offset: 4px; }
+
+#feedback-live-region { margin-top: 24px; min-height: 80px; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="header">
+    <h1>Ivey Unified Design System</h1>
+    <p>Phase 3 Standard — Converging formatting, accessibility, and interaction into a single source of truth.</p>
+  </div>
+
+  <!-- SECTION 1: COLORS -->
+  <div class="section">
+    <h2>1. The Semantic Palette</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">Replacing the scattered styles (Purple errors, Preds Gold, Teal pastels) with fixed semantic values.</p>
+    
+    <div class="swatch-grid" style="margin-bottom: 32px;">
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-neutral-900); color: white;">Neutral 900</div>
+        <div class="swatch-details"><strong>Text / Primary Btn</strong>#171717</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-neutral-500); color: white;">Neutral 500</div>
+        <div class="swatch-details"><strong>Secondary Text</strong>#737373</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-neutral-100); color: var(--color-neutral-900);">Neutral 100</div>
+        <div class="swatch-details"><strong>Backgrounds</strong>#f5f5f5</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-accent); color: white;">Neutral Accent</div>
+        <div class="swatch-details"><strong>Interactive Base</strong>#262626</div>
+      </div>
+      <!-- Bringing back the Pastels! -->
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-pastel-teal); color: var(--color-neutral-900);">Pastel Teal</div>
+        <div class="swatch-details"><strong>Secondary BG</strong>#c0d1cd</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-purple); color: var(--color-neutral-900);">Muted Purple</div>
+        <div class="swatch-details"><strong>Categories</strong>#d5cae0</div>
+      </div>
+       <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-turquoise); color: var(--color-neutral-900);">Light Cyan</div>
+        <div class="swatch-details"><strong>Insights/Callouts</strong>#bfe5e7</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-sand); color: var(--color-neutral-900);">Warm Beige</div>
+        <div class="swatch-details"><strong>Scenario Boxes</strong>#f0ede0</div>
+      </div>
+    </div>
+
+    <!-- Feedback Colors -->
+    <h3 style="font-size: 1rem; margin-bottom: 16px; color: var(--color-neutral-600);">Feedback & Assessment States</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-success); color: white;">Success Base</div>
+        <div class="swatch-details"><strong>Correct States</strong>#22c55e</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-success-light); color: var(--color-neutral-900);">Success Light</div>
+        <div class="swatch-details"><strong>Correct BGs</strong>#dcfce7</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-error); color: white;">Error Base</div>
+        <div class="swatch-details"><strong>Incorrect States</strong>#ef4444</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--color-error-light); color: var(--color-neutral-900);">Error Light</div>
+        <div class="swatch-details"><strong>Incorrect BGs</strong>#fee2e2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION X: TYPOGRAPHY -->
+  <div class="section">
+    <h2>2. Typography Standards</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">
+      The standard mandates <code>Geist</code> via Google Fonts for all body and heading text, overriding system defaults to ensure unity across macOS and Windows.
+    </p>
+    
+    <div style="margin-bottom: 32px;">
+      <div class="type-sample">
+        <div class="type-sample-label">Heading 1</div>
+        <div style="font-size: 2.25rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;">Module Overview</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-sample-label">Heading 2</div>
+        <div style="font-size: 1.5rem; font-weight: 600; line-height: 1.2;">Learning Outcomes</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-sample-label">Heading 3</div>
+        <div style="font-size: 1.125rem; font-weight: 500; line-height: 1.4;">Instructions</div>
+      </div>
+    </div>
+    
+    <div style="background: var(--color-neutral-50); padding: 24px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <p style="margin-bottom: 16px;">This is standard body text at 1rem (16px). It should be highly legible, using <strong style="color: var(--color-neutral-900);">semi-bold weights</strong> for emphasis rather than italics. The line-height is set to 1.5 to ensure comfortable reading during long-form widget cases.</p>
+      <p style="margin-bottom: 0;">For code blocks, data points, arrays, or mathematical formulas, the standard requires a monospace font stack like <span style="font-family: Consolas, 'Courier New', monospace; background: var(--color-neutral-200); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; border: 1px solid var(--color-neutral-300);">Profit = Revenue - Expenses</span> to maintain rigid column spacing.</p>
+    </div>
+  </div>
+
+
+  <!-- SECTION 3: INTERACTION & ACCESSIBILITY -->
+  <div class="section">
+    <h2>3. Interaction Standards (A11y Compliant)</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">No gradients. Thick 2px focus outlines. Solid contrast ratios.</p>
+    
+    <div style="margin-bottom: 32px;">
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-600);">Standard Buttons</h3>
+      <div class="button-row">
+        <button class="btn-primary">Submit Answer</button>
+        <button class="btn-secondary">Reset Chart</button>
+        <button class="btn-primary" disabled>Disabled State</button>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-600);">Toggles & Scenarios</h3>
+      <div class="button-row">
+        <button class="btn-preset active" aria-pressed="true">Scenario A</button>
+        <button class="btn-preset" aria-pressed="false">Scenario B</button>
+        <button class="btn-preset" aria-pressed="false">Scenario C</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SECTION 4: LIVING WIDGET DEMO -->
+  <div class="section">
+    <h2>4. Sample Integration: Knowledge Check</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">This proves the style guidelines applied to an actual widget structure. It includes <code>aria-live</code> regions for screen readers, and strictly uses the Red/Green paradigms (abolishing the Accounting-Purple-Error issue).</p>
+    
+    <div class="widget-sample">
+      
+      <!-- The quiz widget -->
+      <fieldset style="border: none;">
+        <legend class="question-text">According to the unified design standard, which color should <strong>never</strong> be used to indicate an error state?</legend>
+        
+        <label class="mcq-option" id="opt-1" onclick="selectOption('opt-1')">
+          <input type="radio" name="quiz" value="red" tabindex="0">
+          <div class="radio-circle"><div class="radio-inner"></div></div>
+          <span>Red (#ef4444)</span>
+        </label>
+        
+        <label class="mcq-option" id="opt-2" onclick="selectOption('opt-2')">
+          <input type="radio" name="quiz" value="purple" tabindex="0">
+          <div class="radio-circle"><div class="radio-inner"></div></div>
+          <span>Purple (#5B2C6F)</span>
+        </label>
+        
+        <label class="mcq-option" id="opt-3" onclick="selectOption('opt-3')">
+          <input type="radio" name="quiz" value="orange" tabindex="0">
+          <div class="radio-circle"><div class="radio-inner"></div></div>
+          <span>Orange (#f59e0b)</span>
+        </label>
+      </fieldset>
+
+      <div style="margin-top: 24px;">
+        <button class="btn-primary" onclick="checkAnswer()">Submit Output</button>
+      </div>
+
+      <!-- ARIA Live region for accessibility -->
+      <div id="feedback-live-region" aria-live="polite">
+        <!-- Feedback boxes inject here -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 5: SPLASHSCREEN / CONCEPT PREAMBLE -->
+  <div class="section">
+    <h2>5. Concept Preamble (Splashscreen)</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">Every interactive widget should open with a concept preamble screen that explains the underlying principle, formula, or framework before students begin interacting. This ensures learners understand <em>what</em> they're practicing and <em>why</em>, not just <em>how</em> to click buttons. The Streaming Wars simulator below is a live example — click "Begin Simulation" to see the transition.</p>
+
+    <div class="widget-sample" style="padding: 0; overflow: hidden;">
+      <iframe
+        src="Exemplars/Widgets/simulators/streaming-wars-strategy.html"
+        title="Streaming Wars Strategy Simulator — splashscreen example"
+        style="width: 100%; height: 680px; border: none; display: block;"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <div style="margin-top: 24px; background: var(--color-neutral-50); padding: 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-700);">Splashscreen Requirements</h3>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>MLO tag:</strong> Top of screen, shows which Module Learning Outcome(s) the widget addresses. Uses the turquoise label style.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Title:</strong> Clear, descriptive widget name. H3 or equivalent, 700 weight.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Concept explanation:</strong> 1-3 sentences explaining the underlying principle, framework, or math. This is the "why" — what the student needs to understand before practicing.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Formula or framework box (if applicable):</strong> Displayed in monospace font on a neutral-50 background. Shows the math, model, or decision criteria students will apply.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Task description:</strong> On a sand background. Tells the student exactly what they'll do in the activity — in plain, action-oriented language.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>"Begin Activity" button:</strong> Primary button, centered. Transitions to the interactive content. Student can return to the preamble via a "Back to Instructions" secondary button.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5b: EXPLICIT SUBMIT RULE -->
+  <div class="section">
+    <h2>5b. Explicit Submit Requirement</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">Any widget that requires a student to make a selection must use an explicit submit action. Selecting an option must never be the implicit submit — clicking and confirming are two separate steps.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+
+      <div style="border: 2px solid var(--color-error); border-radius: 8px; padding: 20px; background: var(--color-error-light);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-800);">Incorrect — Auto-advance on click</h3>
+        <div style="background: white; border-radius: 6px; padding: 16px;">
+          <p style="font-size: 0.8125rem; font-weight: 500; margin-bottom: 12px; color: var(--color-neutral-800);">Which factor drives ROA?</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="padding: 10px 14px; border: 1px solid var(--color-neutral-300); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-100); cursor: default;">Price</div>
+            <div style="padding: 10px 14px; border: 2px solid var(--color-neutral-800); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-800); color: white; cursor: default;">Volume ← clicking this immediately advances</div>
+            <div style="padding: 10px 14px; border: 1px solid var(--color-neutral-300); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-100); cursor: default;">Cost</div>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--color-error); margin-top: 10px; font-weight: 600;">No confirm step — student cannot reconsider</p>
+        </div>
+      </div>
+
+      <div style="border: 2px solid var(--color-success); border-radius: 8px; padding: 20px; background: var(--color-success-light);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-800);">Correct — Select, then submit</h3>
+        <div style="background: white; border-radius: 6px; padding: 16px;">
+          <p style="font-size: 0.8125rem; font-weight: 500; margin-bottom: 12px; color: var(--color-neutral-800);">Which factor drives ROA?</p>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+            <div style="padding: 10px 14px; border: 1px solid var(--color-neutral-300); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-100); cursor: default;">Price</div>
+            <div style="padding: 10px 14px; border: 2px solid var(--color-neutral-800); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-800); color: white; cursor: default;">Volume ← selected, waiting for submit</div>
+            <div style="padding: 10px 14px; border: 1px solid var(--color-neutral-300); border-radius: 6px; font-size: 0.8125rem; background: var(--color-neutral-100); cursor: default;">Cost</div>
+          </div>
+          <div style="display: flex; justify-content: flex-end;">
+            <div style="background: var(--color-neutral-800); color: white; padding: 8px 18px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; cursor: default;">Submit</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background: var(--color-neutral-50); padding: 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-700);">The Rule</h3>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Any selection-based widget must have an explicit submit button.</strong> This applies to MCQ, decision trees, drag-and-drop, sorting, and any other widget where the student chooses between options. Clicking an option highlights it — a separate primary button confirms and advances.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>The submit button should be disabled until a selection is made.</strong> This prevents empty submissions and signals to the student that a choice is required before they can proceed.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>The button always says "Submit"</strong> — for every step, every widget type, every stage of a multi-step flow. Do not use "Continue", "Next", "See Results", or any other label.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>Exception:</strong> Scenario toggles and preset filters (btn-preset) are not submissions — they filter or reframe content in place and do not need a confirm step. The rule applies to selections that lock in an answer or advance the student's path.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6: BUTTON PLACEMENT -->
+  <div class="section">
+    <h2>6. Button Placement Standards</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">Consistent button placement reduces cognitive load. Students should always know where to look for the next action.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+
+      <!-- Primary action placement -->
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px;">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-700);">Primary Actions</h3>
+        <div style="background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 16px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 0.75rem; color: var(--color-neutral-400); font-style: italic;">[Widget content area]</p>
+          <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+            <button class="btn-primary" style="font-size: 0.875rem; padding: 10px 20px;">Submit Answer</button>
+          </div>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 8px;">Submit, Check, Next — always <strong>bottom-right</strong> of the content area.</p>
+      </div>
+
+      <!-- Secondary action placement -->
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px;">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-700);">Primary + Secondary Pair</h3>
+        <div style="background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 16px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 0.75rem; color: var(--color-neutral-400); font-style: italic;">[Widget content area]</p>
+          <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+            <button class="btn-secondary" style="font-size: 0.875rem; padding: 10px 20px;">Reset</button>
+            <button class="btn-primary" style="font-size: 0.875rem; padding: 10px 20px;">Submit Answer</button>
+          </div>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 8px;">Secondary (Reset) on the left, primary (Submit) on the right. Matches step navigation pattern.</p>
+      </div>
+
+      <!-- Full three-button layout -->
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px;">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-700);">Full Layout (Multi-Step + Submit)</h3>
+        <div style="background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 16px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between;">
+          <p style="font-size: 0.75rem; color: var(--color-neutral-400); font-style: italic;">[Multi-step widget with submit action]</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+            <button class="btn-secondary" style="font-size: 0.875rem; padding: 10px 20px;">← Previous</button>
+            <button class="btn-secondary" style="font-size: 0.875rem; padding: 10px 20px;">Reset</button>
+            <button class="btn-primary" style="font-size: 0.875rem; padding: 10px 20px;">Submit Answer</button>
+          </div>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 8px;"><strong>← Previous</strong> (left) · <strong>Reset</strong> (center) · <strong>Submit</strong> (right). The standard three-button layout.</p>
+      </div>
+
+      <!-- Scenario/toggle placement -->
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px;">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-700);">Scenario Toggles</h3>
+        <div style="background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 16px; min-height: 120px; display: flex; flex-direction: column;">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <button class="btn-preset active" style="font-size: 0.75rem; padding: 6px 12px;" aria-pressed="true">Industry A</button>
+            <button class="btn-preset" style="font-size: 0.75rem; padding: 6px 12px;" aria-pressed="false">Industry B</button>
+            <button class="btn-preset" style="font-size: 0.75rem; padding: 6px 12px;" aria-pressed="false">Industry C</button>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--color-neutral-400); font-style: italic; flex: 1;">[Content changes based on selection]</p>
+        </div>
+        <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-top: 8px;">Scenario/preset toggles go <strong>above</strong> the content they control. Horizontal row, wrap on mobile.</p>
+      </div>
+
+    </div>
+
+    <div style="background: var(--color-neutral-50); padding: 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-700);">Button Placement Rules</h3>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Primary actions</strong> (Submit, Check, Next) are always bottom-right of their content area. The right side is the "forward" position — it's where learners look to progress.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>The standard three-button layout</strong> is: Previous (left) · Reset (center) · Submit (right). This gives learners navigation, a clean slate option, and the forward action — all in predictable positions. Left = back, center = undo, right = forward.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Not every widget needs all three.</strong> Single-step widgets may only need Reset + Submit. Non-interactive explorations may only need Previous + Next. Use the subset that fits, but always keep the same positional logic: backward actions left, forward actions right.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Scenario toggles</strong> and presets go above the content they control, as a horizontal button row. They're input selectors, not actions — placing them above signals "choose first, then see the result."</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>Exception:</strong> Splashscreen "Begin Activity" buttons are centered, since the entire screen is a single call-to-action with no competing content.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7: REFERENCE EXEMPLARS -->
+  <div class="section">
+    <h2>7. Reference Exemplars</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">When building new widgets, start from the golden set exemplars. These have been audited for design system compliance and scored 7/7.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px; background: var(--color-neutral-50);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--color-neutral-800);">Golden Set (7/7 Compliance)</h3>
+        <p style="font-size: 0.8125rem; color: var(--color-neutral-600); margin-bottom: 12px;">Use these as starting templates for new widgets.</p>
+        <div style="font-size: 0.8125rem; line-height: 1.8; color: var(--color-neutral-700);">
+          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">simulators/streaming-wars-strategy.html</code></p>
+          <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-bottom: 8px;">Strategy games, multi-scenario simulations</p>
+          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">calculators/athlete-brand-calculator.html</code></p>
+          <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-bottom: 8px;">Complex multi-tab calculators</p>
+          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">calculators/sponsorship-roi-calculator.html</code></p>
+          <p style="font-size: 0.75rem; color: var(--color-neutral-500);">Financial modeling with ARIA live regions</p>
+        </div>
+      </div>
+
+      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px; background: var(--color-neutral-50);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--color-neutral-800);">By Widget Type</h3>
+        <p style="font-size: 0.8125rem; color: var(--color-neutral-600); margin-bottom: 12px;">Best starting point for each category.</p>
+        <div style="font-size: 0.8125rem; line-height: 2; color: var(--color-neutral-700);">
+          <p><strong>Calculator:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">athlete-brand-calculator.html</code></p>
+          <p><strong>Simulator:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">streaming-wars-strategy.html</code></p>
+          <p><strong>Explorer:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">athlete-decision-tree.html</code></p>
+          <p><strong>Quiz:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">sponsorship-roi-pre-assessment.html</code></p>
+          <p><strong>Infographic:</strong> <em style="color: var(--color-neutral-500);">None passing — use explorer patterns</em></p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background: var(--color-neutral-50); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <p style="font-size: 0.8125rem; color: var(--color-neutral-600);">
+        <strong>Full exemplar library:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">exemplars/Widgets/</code> — 40 widgets across 6 categories (calculators, exercises, explorers, infographics, quizzes, simulators). See <code style="font-family: Consolas, monospace; font-size: 0.75rem;">INDEX.md</code> for the full catalogue, <code style="font-family: Consolas, monospace; font-size: 0.75rem;">QUALITY.md</code> for compliance scores, and <code style="font-family: Consolas, monospace; font-size: 0.75rem;">TIERS.md</code> for complexity-based selection.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  let currentSelection = null;
+
+  function selectOption(id) {
+    // Clear previous selection
+    document.querySelectorAll('.mcq-option').forEach(el => el.classList.remove('selected'));
+    
+    // Set new selection visually
+    const selectedEl = document.getElementById(id);
+    selectedEl.classList.add('selected');
+    selectedEl.querySelector('input').checked = true;
+    
+    currentSelection = selectedEl.querySelector('input').value;
+    
+    // Clear existing feedback
+    document.getElementById('feedback-live-region').innerHTML = '';
+  }
+
+  // Allow keyboard interaction (Enter/Space on inputs)
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('keydown', function(e) {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectOption(this.parentElement.id);
+      }
+    });
+  });
+
+  function checkAnswer() {
+    const feedbackRegion = document.getElementById('feedback-live-region');
+    
+    if (!currentSelection) {
+      feedbackRegion.innerHTML = `
+        <div class="feedback-hint">
+          <strong>Alert:</strong> Please select an option before submitting.
+        </div>
+      `;
+      return;
+    }
+
+    if (currentSelection === 'purple') {
+      feedbackRegion.innerHTML = `
+        <div class="feedback-correct">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <div>
+            <strong style="display:block; margin-bottom: 4px;">Correct!</strong>
+            Prior versions of the Accounting course used Purple for incorrect states. This broke universal UX conventions. We have standardized on semantic Red/Green exclusively.
+          </div>
+        </div>
+      `;
+    } else {
+      feedbackRegion.innerHTML = `
+        <div class="feedback-incorrect">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          <div>
+            <strong style="display:block; margin-bottom: 4px;">Incorrect.</strong>
+            Review the "Current State" section of the Widget Style Guide regarding the Accounting courses' use of Ivey Brand colors.
+          </div>
+        </div>
+      `;
+    }
+  }
+</script>
+
+</body>
+</html>

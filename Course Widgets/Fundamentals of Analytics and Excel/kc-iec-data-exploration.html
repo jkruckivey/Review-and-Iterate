@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: IEC Data Exploration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #c0d1cd;
+            --color-error: #ef4444;
+            --color-info: #bfe5e7;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            text-align: center;
+        }
+
+        .info-box a {
+            color: var(--color-neutral-800);
+            text-decoration: underline;
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.completed {
+            background: #bfe5e7;
+        }
+
+        .progress-dot.active {
+            background: var(--color-neutral-800);
+            transform: scale(1.2);
+        }
+
+        /* Question Container */
+        .question-container {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .question-type {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding-left: 12px;
+            border-left: 2px solid var(--color-neutral-300);
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 1rem 1.25rem;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .option:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-800);
+            background: var(--color-neutral-100);
+        }
+
+        .option.correct {
+            border-color: #c0d1cd;
+            background: #f0f5f4;
+        }
+
+        .option.incorrect {
+            border-color: #f0ede0;
+            background: #faf9f5;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--color-neutral-800);
+        }
+
+        .option.correct .option-letter {
+            background: var(--color-success);
+        }
+
+        .option.incorrect .option-letter {
+            background: var(--color-error);
+        }
+
+        .option-text {
+            flex-grow: 1;
+            color: var(--color-neutral-900);
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #f0f5f4;
+            border-left: 4px solid #c0d1cd;
+            color: var(--color-neutral-900);
+        }
+
+        .feedback.incorrect {
+            background: #faf9f5;
+            border-left: 4px solid #f0ede0;
+            color: var(--color-neutral-900);
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            border: 8px solid var(--color-neutral-200);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        .results-container h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .results-message {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .results-message p {
+            margin-bottom: 0.75rem;
+        }
+
+        .results-message p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .question-card { padding: 1rem; }
+            .option { padding: 0.75rem 1rem; }
+            .score-circle {
+                width: 120px;
+                height: 120px;
+            }
+            .score-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen active">
+            <h1>Knowledge Check: IEC Data Exploration</h1>
+            <p class="subtitle">5 questions | Part 1 of IEC Case Analysis</p>
+
+            <div class="info-box">
+                <strong>Purpose:</strong> Verify you've explored the IEC broadcast client data before calculating expected values.<br>
+                Use the IEC data file provided earlier in this module.
+            </div>
+
+            <div class="progress-indicator" id="progress-dots">
+                <div class="progress-dot active" data-question="1"></div>
+                <div class="progress-dot" data-question="2"></div>
+                <div class="progress-dot" data-question="3"></div>
+                <div class="progress-dot" data-question="4"></div>
+                <div class="progress-dot" data-question="5"></div>
+            </div>
+
+            <!-- Question 1 -->
+            <div class="question-container active" id="question-1">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 1 of 5</span>
+                        <span class="question-type">Excel: COUNTIF</span>
+                    </div>
+                    <div class="question-text">
+                        How many of the 11 territories have a backup client option available?
+                    </div>
+                    <div class="hint">Hint: Use COUNTIF to count "Yes" values in the Backup_Available column.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options for question 1">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(1, 'a')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(1,'a');}">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">3 territories</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(1, 'b')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(1,'b');}">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">4 territories</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(1, 'c')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(1,'c');}">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">5 territories</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(1, 'd')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(1,'d');}">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">6 territories</span>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-1" role="alert"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="submit-1" onclick="submitAnswer(1)" disabled>Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-container" id="question-2">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 2 of 5</span>
+                        <span class="question-type">Excel: SUM</span>
+                    </div>
+                    <div class="question-text">
+                        What is the total potential revenue if ALL primary clients renewed?
+                    </div>
+                    <div class="hint">Hint: Use SUM on the Renewal_Fee column. Note that Client K has a renewal fee of 0.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options for question 2">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(2, 'a')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(2,'a');}">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">3,990,000</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(2, 'b')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(2,'b');}">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">4,140,000</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(2, 'c')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(2,'c');}">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">4,370,000</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(2, 'd')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(2,'d');}">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">5,120,000</span>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-2" role="alert"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="submit-2" onclick="submitAnswer(2)" disabled>Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-container" id="question-3">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 3 of 5</span>
+                        <span class="question-type">Excel: MAX</span>
+                    </div>
+                    <div class="question-text">
+                        Which territory has the highest renewal probability?
+                    </div>
+                    <div class="hint">Hint: Use MAX or sort the data by Renewal_Probability.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options for question 3">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(3, 'a')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(3,'a');}">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Territory A (0.90)</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(3, 'b')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(3,'b');}">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Territory C (0.80)</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(3, 'c')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(3,'c');}">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">Territory H (0.95)</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(3, 'd')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(3,'d');}">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">Territory F (0.75)</span>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-3" role="alert"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="submit-3" onclick="submitAnswer(3)" disabled>Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-container" id="question-4">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 4 of 5</span>
+                        <span class="question-type">Excel: AVERAGE</span>
+                    </div>
+                    <div class="question-text">
+                        What is the average renewal fee across all 11 territories?
+                    </div>
+                    <div class="hint">Hint: Use AVERAGE on the Renewal_Fee column.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options for question 4">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(4, 'a')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(4,'a');}">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">326,364</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(4, 'b')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(4,'b');}">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">362,727</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(4, 'c')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(4,'c');}">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">399,000</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(4, 'd')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(4,'d');}">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">443,333</span>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-4" role="alert"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="submit-4" onclick="submitAnswer(4)" disabled>Submit Answer</button>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-container" id="question-5">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 5 of 5</span>
+                        <span class="question-type">Data Comprehension</span>
+                    </div>
+                    <div class="question-text">
+                        Territory K is unusual. What makes it different from other territories?
+                    </div>
+                    <div class="hint">Hint: Look at Territory K's renewal probability (0.00) and backup availability.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options for question 5">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(5, 'a')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(5,'a');}">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">It has the highest backup probability</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(5, 'b')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(5,'b');}">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">It has no primary client but does have a backup option</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(5, 'c')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(5,'c');}">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">It has both the lowest renewal and backup probabilities</span>
+                        </div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false"
+                             onclick="selectOption(5, 'd')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectOption(5,'d');}">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">It has no backup option available</span>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-5" role="alert"></div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="submit-5" onclick="submitAnswer(5)" disabled>Submit Answer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-container">
+                <div class="score-circle">
+                    <div>
+                        <span class="score-number" id="final-score">0</span><span style="font-size: 1.5rem; color: var(--color-neutral-600);">/5</span>
+                        <div class="score-label">Your Score</div>
+                    </div>
+                </div>
+                <h2>Data Exploration Complete</h2>
+
+                <div class="results-message" id="results-message">
+                    <!-- Dynamic message will be inserted here -->
+                </div>
+
+                <div class="info-box">
+                    <strong>Next Step:</strong> Proceed to Part 2 to calculate expected values for each territory.
+                </div>
+
+                <div class="button-group">
+                    <button class="btn" onclick="restartQuiz()">Retake Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const questions = {
+            1: {
+                correct: 'c',
+                feedback: {
+                    correct: '<strong>Correct!</strong> Territories A, B, G, H, and K have backup options available (Backup_Available = Yes). Use =COUNTIF(range, "Yes") to verify.',
+                    incorrect: '<strong>Not quite.</strong> Count the "Yes" values in the Backup_Available column. Territories A, B, G, H, and K = 5 territories have backup options.'
+                }
+            },
+            2: {
+                correct: 'a',
+                feedback: {
+                    correct: '<strong>Correct!</strong> SUM of all Renewal_Fee values = 3,990,000. Note that Territory K contributes 0 because there is no primary client.',
+                    incorrect: '<strong>Not quite.</strong> Use =SUM() on the Renewal_Fee column. Add all values: 750,000 + 720,000 + 525,000 + 480,000 + 450,000 + 375,000 + 300,000 + 150,000 + 150,000 + 90,000 + 0 = 3,990,000.'
+                }
+            },
+            3: {
+                correct: 'c',
+                feedback: {
+                    correct: '<strong>Correct!</strong> Territory H has the highest renewal probability at 0.95 (95%). You can use =MAX() or sort the data to find this.',
+                    incorrect: '<strong>Not quite.</strong> Look more carefully at the Renewal_Probability column. Territory H has 0.95, which is higher than A\'s 0.90.'
+                }
+            },
+            4: {
+                correct: 'b',
+                feedback: {
+                    correct: '<strong>Correct!</strong> AVERAGE = 3,990,000 / 11 = 362,727. Use =AVERAGE() on the Renewal_Fee column.',
+                    incorrect: '<strong>Not quite.</strong> Use =AVERAGE() on the Renewal_Fee column: 3,990,000 total / 11 territories = 362,727.'
+                }
+            },
+            5: {
+                correct: 'b',
+                feedback: {
+                    correct: '<strong>Correct!</strong> Territory K has Renewal_Probability = 0 (no primary client) but Backup_Available = Yes with 0.6 probability. This represents a territory where IEC lost their main client but has a lead on a replacement.',
+                    incorrect: '<strong>Not quite.</strong> Look at Territory K\'s data: Renewal_Probability is 0.00 (no primary client) but Backup_Available is "Yes" with 0.6 backup probability. It\'s the only territory with no primary client.'
+                }
+            }
+        };
+
+        // State
+        let currentQuestion = 1;
+        let selectedAnswers = {};
+        let score = 0;
+        const totalQuestions = 5;
+
+        // Select option
+        function selectOption(questionNum, option) {
+            // Clear previous selections
+            const options = document.querySelectorAll(`#question-${questionNum} .option`);
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
+            });
+
+            // Select current option
+            event.currentTarget.classList.add('selected');
+            event.currentTarget.setAttribute('aria-checked', 'true');
+            selectedAnswers[questionNum] = option;
+
+            // Enable submit button
+            document.getElementById(`submit-${questionNum}`).disabled = false;
+
+            announceToScreenReader(`Option ${option.toUpperCase()} selected`);
+        }
+
+        // Submit answer
+        function submitAnswer(questionNum) {
+            const selectedAnswer = selectedAnswers[questionNum];
+            const correctAnswer = questions[questionNum].correct;
+            const isCorrect = selectedAnswer === correctAnswer;
+
+            // Update score
+            if (isCorrect) {
+                score++;
+            }
+
+            // Show feedback
+            const feedback = document.getElementById(`feedback-${questionNum}`);
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = isCorrect ?
+                questions[questionNum].feedback.correct :
+                questions[questionNum].feedback.incorrect;
+
+            // Update option styling
+            const options = document.querySelectorAll(`#question-${questionNum} .option`);
+            options.forEach((opt, index) => {
+                opt.classList.add('disabled');
+                opt.style.pointerEvents = 'none';
+
+                const optionLetter = String.fromCharCode(97 + index); // 'a', 'b', 'c', 'd'
+                if (optionLetter === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (optionLetter === selectedAnswer && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            // Disable submit button and show next button
+            document.getElementById(`submit-${questionNum}`).style.display = 'none';
+
+            // Add next/finish button
+            const buttonGroup = document.querySelector(`#question-${questionNum} .button-group`);
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'btn';
+            nextBtn.textContent = questionNum === totalQuestions ? 'View Results' : 'Next Question';
+            nextBtn.onclick = () => questionNum === totalQuestions ? showResults() : nextQuestion();
+            buttonGroup.appendChild(nextBtn);
+
+            // Update progress dots
+            const dot = document.querySelector(`.progress-dot[data-question="${questionNum}"]`);
+            dot.classList.remove('active');
+            dot.classList.add('completed');
+
+            announceToScreenReader(isCorrect ? 'Correct answer' : 'Incorrect answer');
+        }
+
+        // Next question
+        function nextQuestion() {
+            // Hide current question
+            document.getElementById(`question-${currentQuestion}`).classList.remove('active');
+
+            // Show next question
+            currentQuestion++;
+            document.getElementById(`question-${currentQuestion}`).classList.add('active');
+
+            // Update progress dots
+            const nextDot = document.querySelector(`.progress-dot[data-question="${currentQuestion}"]`);
+            nextDot.classList.add('active');
+
+            window.scrollTo(0, 0);
+            announceToScreenReader(`Question ${currentQuestion} of ${totalQuestions}`);
+        }
+
+        // Show results
+        function showResults() {
+            // Hide quiz screen
+            document.getElementById('quiz-screen').classList.remove('active');
+
+            // Show results screen
+            document.getElementById('results-screen').classList.add('active');
+
+            // Update score
+            document.getElementById('final-score').textContent = score;
+
+            // Generate results message
+            const resultsMessage = document.getElementById('results-message');
+            let message = '';
+
+            if (score === 5) {
+                message = `
+                    <p><strong>Excellent work!</strong> You've thoroughly explored the IEC broadcast client data.</p>
+                    <p><strong>Key insights you've confirmed:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>5 territories have backup options (A, B, G, H, K)</li>
+                        <li>Total potential renewal revenue is 3,990,000</li>
+                        <li>Territory H has highest renewal probability (0.95)</li>
+                        <li>Territory K is unique - no primary client but has backup potential</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">You're ready to calculate expected values in Part 2!</p>
+                `;
+            } else if (score >= 3) {
+                message = `
+                    <p><strong>Good effort!</strong> You understand most of the IEC client data.</p>
+                    <p>Review the feedback above to strengthen your understanding of:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Using COUNTIF, SUM, MAX, and AVERAGE in Excel</li>
+                        <li>Identifying key patterns in the data</li>
+                        <li>Understanding Territory K's unique situation</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">Proceed to Part 2 when ready.</p>
+                `;
+            } else {
+                message = `
+                    <p><strong>Take time to explore the data more carefully.</strong></p>
+                    <p>Before proceeding, make sure you can:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Use COUNTIF to count specific values</li>
+                        <li>Use SUM to total a column</li>
+                        <li>Use MAX to find the highest value</li>
+                        <li>Use AVERAGE to calculate the mean</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Recommendation:</strong> Review the IEC data file and practice these functions before retaking the quiz.</p>
+                `;
+            }
+
+            resultsMessage.innerHTML = message;
+
+            window.scrollTo(0, 0);
+            announceToScreenReader(`Quiz complete. You scored ${score} out of ${totalQuestions}`);
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            // Reset state
+            currentQuestion = 1;
+            selectedAnswers = {};
+            score = 0;
+
+            // Reset UI
+            document.querySelectorAll('.question-container').forEach((q, index) => {
+                q.classList.remove('active');
+                if (index === 0) q.classList.add('active');
+
+                // Reset options
+                q.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+                    opt.style.pointerEvents = 'auto';
+                    opt.setAttribute('aria-checked', 'false');
+                });
+
+                // Reset feedback
+                const feedback = q.querySelector('.feedback');
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                feedback.innerHTML = '';
+
+                // Reset buttons
+                const buttonGroup = q.querySelector('.button-group');
+                const submitBtn = buttonGroup.querySelector('.btn');
+                submitBtn.disabled = true;
+                submitBtn.style.display = 'inline-block';
+
+                // Remove next button if exists
+                const nextBtn = buttonGroup.querySelector('.btn:nth-child(2)');
+                if (nextBtn) nextBtn.remove();
+            });
+
+            // Reset progress dots
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+                if (index === 0) dot.classList.add('active');
+            });
+
+            // Show quiz screen
+            document.getElementById('results-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+
+            window.scrollTo(0, 0);
+            announceToScreenReader('Quiz restarted');
+        }
+
+        // Accessibility announcement
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Keyboard support for Enter on submit buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitButtons = document.querySelectorAll('.btn');
+            submitButtons.forEach(btn => {
+                btn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !btn.disabled) {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

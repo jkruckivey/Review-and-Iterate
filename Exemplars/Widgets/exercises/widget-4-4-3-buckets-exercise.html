@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Buckets: What Did You Observe?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-project: #6b9085;
+            --color-project-light: #c0d1cd;
+            --color-challenge: #3b82f6;
+            --color-challenge-light: #dbeafe;
+            --color-challenge-border: #93c5fd;
+            --color-complexity: #8b5cf6;
+            --color-complexity-light: #ede9fe;
+            --color-complexity-border: #c4b5fd;
+            --color-connection: #22c55e;
+            --color-connection-light: #dcfce7;
+            --color-connection-border: #86efac;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: white;
+            color: var(--color-neutral-800);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget-box {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .widget-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-neutral-800);
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .widget-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-project);
+            border-radius: 50%;
+        }
+
+        .widget-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .widget-description {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+            line-height: 1.65;
+        }
+
+        /* Progress indicator */
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-segment {
+            flex: 1;
+            height: 4px;
+            background: var(--color-neutral-200);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .progress-segment.filled-challenge { background: var(--color-challenge); }
+        .progress-segment.filled-complexity { background: var(--color-complexity); }
+        .progress-segment.filled-connection { background: var(--color-connection); }
+
+        /* Bucket sections */
+        .bucket {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .bucket.bucket-challenge:focus-within,
+        .bucket.bucket-challenge.active { border-color: var(--color-challenge-border); }
+        .bucket.bucket-complexity:focus-within,
+        .bucket.bucket-complexity.active { border-color: var(--color-complexity-border); }
+        .bucket.bucket-connection:focus-within,
+        .bucket.bucket-connection.active { border-color: var(--color-connection-border); }
+
+        .bucket-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .bucket-header:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .bucket-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bucket-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bucket-challenge .bucket-icon { background: var(--color-challenge-light); color: var(--color-challenge); }
+        .bucket-complexity .bucket-icon { background: var(--color-complexity-light); color: var(--color-complexity); }
+        .bucket-connection .bucket-icon { background: var(--color-connection-light); color: var(--color-connection); }
+
+        .bucket-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .bucket-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+        }
+
+        .bucket-status {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-neutral-400);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .bucket-status.complete {
+            color: var(--color-project);
+        }
+
+        .check-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .chevron {
+            width: 20px;
+            height: 20px;
+            color: var(--color-neutral-400);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
+        }
+
+        .bucket.expanded .chevron {
+            transform: rotate(180deg);
+        }
+
+        .bucket-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .bucket.expanded .bucket-content {
+            max-height: 500px;
+        }
+
+        .bucket-inner {
+            padding: 0 1.25rem 1.25rem;
+        }
+
+        .bucket-prompt {
+            font-size: 0.875rem;
+            color: var(--color-neutral-600);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .bucket-challenge .bucket-prompt { background: var(--color-challenge-light); }
+        .bucket-complexity .bucket-prompt { background: var(--color-complexity-light); }
+        .bucket-connection .bucket-prompt { background: var(--color-connection-light); }
+
+        .bucket-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--color-neutral-800);
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .bucket-textarea::placeholder {
+            color: var(--color-neutral-400);
+        }
+
+        .bucket-challenge .bucket-textarea:focus { border-color: var(--color-challenge); }
+        .bucket-complexity .bucket-textarea:focus { border-color: var(--color-complexity); }
+        .bucket-connection .bucket-textarea:focus { border-color: var(--color-connection); }
+
+        .char-hint {
+            font-size: 0.75rem;
+            color: var(--color-neutral-400);
+            margin-top: 0.375rem;
+            text-align: right;
+        }
+
+        /* Action buttons */
+        .action-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .btn-secondary {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-300);
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-800);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-primary:disabled {
+            background: var(--color-neutral-300);
+            color: var(--color-neutral-500);
+            cursor: not-allowed;
+        }
+
+        /* Summary panel */
+        .summary-panel {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .summary-panel.visible {
+            display: block;
+        }
+
+        .summary-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 1rem;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-card-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.375rem;
+        }
+
+        .summary-card.challenge .summary-card-label { color: var(--color-challenge); }
+        .summary-card.complexity .summary-card-label { color: var(--color-complexity); }
+        .summary-card.connection .summary-card-label { color: var(--color-connection); }
+
+        .summary-card-text {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .summary-transition {
+            background: var(--color-project-light);
+            border-left: 3px solid var(--color-project);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .summary-transition p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .widget-box { padding: 1.25rem; }
+            .bucket-header { padding: 0.875rem 1rem; }
+            .bucket-inner { padding: 0 1rem 1rem; }
+            .bucket-textarea { min-height: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="widget-box">
+            <div class="widget-header">
+                <span class="widget-badge">Exercise</span>
+            </div>
+            <h1 class="widget-title">3 Buckets: What Did You Observe?</h1>
+            <p class="widget-description">Based on the Avatar behind-the-scenes footage you just watched, capture your observations in each of the three buckets below. Think about how the nature of work changed compared to the traditional moviemaking system described earlier in this session. There are no wrong answers -- this is about developing your observational lens. You will see the SME's detailed analysis in the next two modules.</p>
+
+            <div class="progress-bar" role="progressbar" aria-label="Completion progress: 0 of 3 buckets filled" aria-valuenow="0" aria-valuemin="0" aria-valuemax="3">
+                <div class="progress-segment" id="prog-challenge"></div>
+                <div class="progress-segment" id="prog-complexity"></div>
+                <div class="progress-segment" id="prog-connection"></div>
+            </div>
+
+            <!-- Challenge bucket -->
+            <div class="bucket bucket-challenge expanded" id="bucket-challenge">
+                <div class="bucket-header" role="button" tabindex="0" aria-expanded="true" aria-controls="content-challenge" onclick="toggleBucket('challenge')" onkeydown="handleHeaderKey(event, 'challenge')">
+                    <div class="bucket-header-left">
+                        <div class="bucket-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        </div>
+                        <span class="bucket-label">Challenge</span>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <span class="bucket-status" id="status-challenge"></span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+                <div class="bucket-content" id="content-challenge">
+                    <div class="bucket-inner">
+                        <p class="bucket-prompt">Where did the challenge shift? What became harder? What became easier? What was entirely new? Think about specific roles: actors, director, camera crew, costume designers, technologists.</p>
+                        <label for="textarea-challenge" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Your observations about Challenge</label>
+                        <textarea class="bucket-textarea" id="textarea-challenge" placeholder="Describe what you observed about how challenges shifted..." oninput="handleInput('challenge')"></textarea>
+                        <div class="char-hint" id="hint-challenge">Aim for at least 2 sentences</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complexity bucket -->
+            <div class="bucket bucket-complexity" id="bucket-complexity">
+                <div class="bucket-header" role="button" tabindex="0" aria-expanded="false" aria-controls="content-complexity" onclick="toggleBucket('complexity')" onkeydown="handleHeaderKey(event, 'complexity')">
+                    <div class="bucket-header-left">
+                        <div class="bucket-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+                        </div>
+                        <span class="bucket-label">Complexity</span>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <span class="bucket-status" id="status-complexity"></span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+                <div class="bucket-content" id="content-complexity">
+                    <div class="bucket-inner">
+                        <p class="bucket-prompt">Where did the complexity of the job become broader or narrower? Who now needs to understand more of the overall system to do their work well? Where do decisions ripple across multiple areas?</p>
+                        <label for="textarea-complexity" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Your observations about Complexity</label>
+                        <textarea class="bucket-textarea" id="textarea-complexity" placeholder="Describe what you observed about how complexity changed..." oninput="handleInput('complexity')"></textarea>
+                        <div class="char-hint" id="hint-complexity">Aim for at least 2 sentences</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection bucket -->
+            <div class="bucket bucket-connection" id="bucket-connection">
+                <div class="bucket-header" role="button" tabindex="0" aria-expanded="false" aria-controls="content-connection" onclick="toggleBucket('connection')" onkeydown="handleHeaderKey(event, 'connection')">
+                    <div class="bucket-header-left">
+                        <div class="bucket-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <span class="bucket-label">Connection</span>
+                    </div>
+                    <div style="display:flex;align-items:center;">
+                        <span class="bucket-status" id="status-connection"></span>
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+                <div class="bucket-content" id="content-connection">
+                    <div class="bucket-inner">
+                        <p class="bucket-prompt">Where did the connections between roles reorganize? Who is now working with people they did not work with before? Where did collaboration patterns change? Who became more central? Who became more peripheral?</p>
+                        <label for="textarea-connection" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Your observations about Connection</label>
+                        <textarea class="bucket-textarea" id="textarea-connection" placeholder="Describe what you observed about how connections changed..." oninput="handleInput('connection')"></textarea>
+                        <div class="char-hint" id="hint-connection">Aim for at least 2 sentences</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="action-row">
+                <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
+                <button class="btn btn-primary" id="btn-submit" onclick="submitObservations()" disabled>Submit Observations</button>
+            </div>
+
+            <!-- Summary panel -->
+            <div class="summary-panel" id="summary-panel" aria-live="polite">
+                <h2 class="summary-header">Your Observations</h2>
+                <div class="summary-card challenge">
+                    <div class="summary-card-label">Challenge</div>
+                    <p class="summary-card-text" id="summary-challenge"></p>
+                </div>
+                <div class="summary-card complexity">
+                    <div class="summary-card-label">Complexity</div>
+                    <p class="summary-card-text" id="summary-complexity"></p>
+                </div>
+                <div class="summary-card connection">
+                    <div class="summary-card-label">Connection</div>
+                    <p class="summary-card-text" id="summary-connection"></p>
+                </div>
+                <div class="summary-transition">
+                    <p>Great observations. In the next two modules, you will see the SME's detailed analysis of how Challenge, Complexity, and Connection each transformed across multiple roles. Compare your observations to the systematic analysis that follows.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BUCKETS = ['challenge', 'complexity', 'connection'];
+        const STORAGE_KEY = 'funai-3buckets-observations';
+
+        const state = {
+            challenge: '',
+            complexity: '',
+            connection: '',
+            submitted: false
+        };
+
+        // Load saved state
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    BUCKETS.forEach(b => {
+                        if (parsed[b]) {
+                            state[b] = parsed[b];
+                            document.getElementById('textarea-' + b).value = parsed[b];
+                        }
+                    });
+                    if (parsed.submitted) {
+                        state.submitted = true;
+                        showSummary();
+                    }
+                    updateProgress();
+                }
+            } catch (e) {
+                // Ignore storage errors
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                // Ignore storage errors
+            }
+        }
+
+        function toggleBucket(name) {
+            const bucket = document.getElementById('bucket-' + name);
+            const isExpanded = bucket.classList.contains('expanded');
+            const header = bucket.querySelector('.bucket-header');
+
+            if (isExpanded) {
+                bucket.classList.remove('expanded');
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                bucket.classList.add('expanded');
+                header.setAttribute('aria-expanded', 'true');
+                // Focus the textarea when expanding
+                setTimeout(() => {
+                    document.getElementById('textarea-' + name).focus();
+                }, 150);
+            }
+        }
+
+        function handleHeaderKey(event, name) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleBucket(name);
+            }
+        }
+
+        function handleInput(name) {
+            const textarea = document.getElementById('textarea-' + name);
+            state[name] = textarea.value.trim();
+            updateProgress();
+            updateHint(name);
+            saveState();
+        }
+
+        function updateHint(name) {
+            const hint = document.getElementById('hint-' + name);
+            const text = state[name];
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            if (sentences.length >= 2) {
+                hint.textContent = sentences.length + ' sentences';
+                hint.style.color = 'var(--color-project)';
+            } else if (text.length > 0) {
+                hint.textContent = 'Aim for at least 2 sentences';
+                hint.style.color = 'var(--color-neutral-400)';
+            } else {
+                hint.textContent = 'Aim for at least 2 sentences';
+                hint.style.color = 'var(--color-neutral-400)';
+            }
+        }
+
+        function updateProgress() {
+            let filled = 0;
+            BUCKETS.forEach(name => {
+                const hasFill = state[name].length > 0;
+                const prog = document.getElementById('prog-' + name);
+                const status = document.getElementById('status-' + name);
+
+                if (hasFill) {
+                    filled++;
+                    prog.classList.add('filled-' + name);
+                    status.classList.add('complete');
+                    status.innerHTML = '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+                } else {
+                    prog.classList.remove('filled-' + name);
+                    status.classList.remove('complete');
+                    status.innerHTML = '';
+                }
+            });
+
+            const progressBar = document.querySelector('.progress-bar');
+            progressBar.setAttribute('aria-valuenow', filled);
+            progressBar.setAttribute('aria-label', 'Completion progress: ' + filled + ' of 3 buckets filled');
+
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = filled < 3;
+        }
+
+        function submitObservations() {
+            if (state.submitted) return;
+            state.submitted = true;
+            saveState();
+            showSummary();
+        }
+
+        function showSummary() {
+            // Populate summary cards
+            BUCKETS.forEach(name => {
+                document.getElementById('summary-' + name).textContent = state[name];
+            });
+
+            // Disable textareas
+            BUCKETS.forEach(name => {
+                document.getElementById('textarea-' + name).setAttribute('readonly', 'true');
+            });
+
+            // Collapse all buckets
+            BUCKETS.forEach(name => {
+                const bucket = document.getElementById('bucket-' + name);
+                bucket.classList.remove('expanded');
+                bucket.querySelector('.bucket-header').setAttribute('aria-expanded', 'false');
+            });
+
+            // Hide submit button, show summary
+            document.querySelector('.action-row').style.display = 'none';
+            document.getElementById('summary-panel').classList.add('visible');
+
+            // Scroll to summary
+            setTimeout(() => {
+                document.getElementById('summary-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 200);
+        }
+
+        function clearAll() {
+            if (state.submitted) return;
+            BUCKETS.forEach(name => {
+                state[name] = '';
+                document.getElementById('textarea-' + name).value = '';
+                updateHint(name);
+            });
+            updateProgress();
+            saveState();
+        }
+
+        // Initialize
+        loadState();
+        BUCKETS.forEach(name => updateHint(name));
+    </script>
+</body>
+</html>

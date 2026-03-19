@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: IEC Sports Revenue Analysis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 24px 32px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .instructions {
+            background: #f0fdf4;
+            border-left: 4px solid #059669;
+            padding: 16px 24px;
+            margin: 24px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .instructions h2 {
+            font-size: 1rem;
+            color: #047857;
+            margin-bottom: 8px;
+        }
+
+        .instructions p {
+            font-size: 0.9rem;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .instructions code {
+            background: #dcfce7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #059669;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #047857;
+        }
+
+        .questions {
+            padding: 24px 32px;
+        }
+
+        .question {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            background: #059669;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 44px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: #059669;
+            background: #f0fdf4;
+        }
+
+        .option.selected {
+            border-color: #059669;
+            background: #dcfce7;
+        }
+
+        .option.correct {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option-marker {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .option.selected .option-marker {
+            border-color: #059669;
+            background: #059669;
+        }
+
+        .option.correct .option-marker {
+            border-color: #22c55e;
+            background: #22c55e;
+        }
+
+        .option.incorrect .option-marker {
+            border-color: #ef4444;
+            background: #ef4444;
+        }
+
+        .option-marker::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .option.selected .option-marker::after,
+        .option.correct .option-marker::after,
+        .option.incorrect .option-marker::after {
+            opacity: 1;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            color: #334155;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            margin-left: 44px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #f0fdf4;
+            color: #166534;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fef2f2;
+            color: #991b1b;
+            display: block;
+        }
+
+        .submit-section {
+            padding: 24px 32px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .score {
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+
+        .score-value {
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .results-banner {
+            padding: 20px 32px;
+            text-align: center;
+            display: none;
+        }
+
+        .results-banner.show {
+            display: block;
+        }
+
+        .results-banner.perfect {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .results-banner.good {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .results-banner.retry {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .results-banner h2 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .header, .questions, .submit-section {
+                padding: 20px;
+            }
+
+            .options {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IEC Sports Revenue Analysis</h1>
+            <p>Calculate maximum revenue scenarios for broadcast rights</p>
+        </div>
+
+        <div class="instructions">
+            <h2>Instructions</h2>
+            <p>IEC in Sports has 11 uncertain broadcast territories. Download the client data and calculate revenue totals. Remember: Client K has no primary renewal (0% probability) but has a backup available.</p>
+            <p><strong>Confirmed pre-sales:</strong> €8,000,000 (already secured)</p>
+            <a href="../Cases/iec-broadcast-clients.xlsx" download class="download-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download iec-broadcast-clients.xlsx
+            </a>
+        </div>
+
+        <div class="results-banner" id="resultsBanner">
+            <h2 id="resultsTitle"></h2>
+            <p id="resultsMessage"></p>
+        </div>
+
+        <div class="questions" id="questionsContainer">
+            <!-- Question 1 -->
+            <div class="question" data-correct="b">
+                <div class="question-header">
+                    <span class="question-number">1</span>
+                    <span class="question-text">What is the TOTAL of all primary renewal fees (Renewal_Fee_EUR column)?</span>
+                </div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€3,450,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€3,990,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€4,250,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€4,780,000</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback1"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question" data-correct="c">
+                <div class="question-header">
+                    <span class="question-number">2</span>
+                    <span class="question-text">What is the TOTAL of all backup fees (Backup_Fee_EUR column)?</span>
+                </div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€1,180,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€1,280,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€1,380,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€1,480,000</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question" data-correct="a">
+                <div class="question-header">
+                    <span class="question-number">3</span>
+                    <span class="question-text">How many clients have a backup option available?</span>
+                </div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a">
+                        <span class="option-marker"></span>
+                        <span class="option-text">5</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b">
+                        <span class="option-marker"></span>
+                        <span class="option-text">6</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c">
+                        <span class="option-marker"></span>
+                        <span class="option-text">7</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d">
+                        <span class="option-marker"></span>
+                        <span class="option-text">8</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback3"></div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question" data-correct="d">
+                <div class="question-header">
+                    <span class="question-number">4</span>
+                    <span class="question-text">In the MAXIMUM scenario (all primaries renew + Client K's backup), what is the total from uncertain territories?</span>
+                </div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€3,990,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€4,000,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€4,050,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€4,070,000</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question" data-correct="b">
+                <div class="question-header">
+                    <span class="question-number">5</span>
+                    <span class="question-text">What is the TOTAL MAXIMUM REVENUE (confirmed €8M + maximum from uncertain)?</span>
+                </div>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€11,990,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€12,070,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€12,380,000</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d">
+                        <span class="option-marker"></span>
+                        <span class="option-text">€13,370,000</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback5"></div>
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <div class="score">
+                Score: <span class="score-value" id="scoreDisplay">0/5</span>
+            </div>
+            <div>
+                <button class="btn btn-secondary" id="resetBtn" style="display: none;">Try Again</button>
+                <button class="btn btn-primary" id="submitBtn">Check Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = document.querySelectorAll('.question');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const resultsBanner = document.getElementById('resultsBanner');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultsMessage = document.getElementById('resultsMessage');
+
+        const feedbackMessages = {
+            1: {
+                correct: "Correct! =SUM(C2:C12) gives €3,990,000 total primary fees.",
+                incorrect: "Not quite. Use =SUM(C2:C12) on the Renewal_Fee_EUR column. Total is €3,990,000."
+            },
+            2: {
+                correct: "Correct! =SUM(F2:F12) gives €1,380,000 total backup fees.",
+                incorrect: "Not quite. Use =SUM(F2:F12) on the Backup_Fee_EUR column. Total is €1,380,000."
+            },
+            3: {
+                correct: "Correct! =COUNTIF(D2:D12,\"Yes\") returns 5 clients with backups (A, B, G, H, K).",
+                incorrect: "Not quite. Use =COUNTIF(D2:D12,\"Yes\"). There are 5 clients with backup options."
+            },
+            4: {
+                correct: "Correct! Primary fees (€3,990,000) + K's backup (€80,000) = €4,070,000.",
+                incorrect: "Maximum = All primaries renew + K's backup. That's €3,990,000 + €80,000 = €4,070,000."
+            },
+            5: {
+                correct: "Correct! Confirmed (€8M) + Maximum uncertain (€4.07M) = €12,070,000.",
+                incorrect: "Total Maximum = €8,000,000 + €4,070,000 = €12,070,000."
+            }
+        };
+
+        // Handle option selection
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', () => {
+                const questionDiv = option.closest('.question');
+                questionDiv.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+                option.querySelector('input').checked = true;
+            });
+            option.setAttribute('tabindex', '0');
+            option.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    option.click();
+                }
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            let score = 0;
+
+            questions.forEach((question, index) => {
+                const qNum = index + 1;
+                const correctAnswer = question.dataset.correct;
+                const selectedOption = question.querySelector('input:checked');
+                const feedback = document.getElementById(`feedback${qNum}`);
+
+                question.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect', 'selected');
+                });
+
+                if (selectedOption) {
+                    const selectedValue = selectedOption.value;
+                    const selectedLabel = selectedOption.closest('.option');
+
+                    if (selectedValue === correctAnswer) {
+                        selectedLabel.classList.add('correct');
+                        feedback.className = 'feedback correct';
+                        feedback.textContent = feedbackMessages[qNum].correct;
+                        score++;
+                    } else {
+                        selectedLabel.classList.add('incorrect');
+                        question.querySelectorAll('.option').forEach(opt => {
+                            if (opt.querySelector('input').value === correctAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                        feedback.className = 'feedback incorrect';
+                        feedback.textContent = feedbackMessages[qNum].incorrect;
+                    }
+                } else {
+                    question.querySelectorAll('.option').forEach(opt => {
+                        if (opt.querySelector('input').value === correctAnswer) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = "No answer selected. " + feedbackMessages[qNum].incorrect;
+                }
+            });
+
+            scoreDisplay.textContent = `${score}/5`;
+
+            resultsBanner.classList.add('show');
+            if (score === 5) {
+                resultsBanner.className = 'results-banner show perfect';
+                resultsTitle.textContent = 'Excellent Work!';
+                resultsMessage.textContent = 'You understand revenue scenario analysis!';
+            } else if (score >= 3) {
+                resultsBanner.className = 'results-banner show good';
+                resultsTitle.textContent = 'Good Progress!';
+                resultsMessage.textContent = `You got ${score}/5 correct. Review the feedback below.`;
+            } else {
+                resultsBanner.className = 'results-banner show retry';
+                resultsTitle.textContent = 'Keep Practicing!';
+                resultsMessage.textContent = `You got ${score}/5 correct. Review the data and try again.`;
+            }
+
+            submitBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            questions.forEach((question, index) => {
+                const qNum = index + 1;
+                question.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect', 'selected');
+                    opt.style.pointerEvents = 'auto';
+                });
+                question.querySelectorAll('input').forEach(input => {
+                    input.checked = false;
+                });
+                document.getElementById(`feedback${qNum}`).className = 'feedback';
+            });
+
+            scoreDisplay.textContent = '0/5';
+            resultsBanner.classList.remove('show');
+            submitBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

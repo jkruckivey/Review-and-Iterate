@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Central Tendency & Dispersion</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --color-neutral-900: #171717;
+            --color-neutral-700: #404040;
+            --color-neutral-600: #525252;
+            --color-neutral-500: #737373;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-200: #dddddd;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-50: #f7f7f7;
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #bfe5e7;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            display: none;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .scenario {
+            background: #f5fafa;
+            border-left: 3px solid #bfe5e7;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .scenario h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .scenario ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 12px 0;
+        }
+
+        .scenario li {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 4px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .scenario li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .btn-check {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-check:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: var(--color-neutral-900);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-next.show {
+            display: block;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #171717;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #171717;
+        }
+
+        .feedback h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .results-details {
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .results-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid var(--color-correct);
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid var(--color-incorrect);
+        }
+
+        .result-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-retry {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 14px 32px;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-neutral-700);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Knowledge Check</h1>
+            <p>Central Tendency & Dispersion - 5 Questions</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <!-- Question 1: Mean Calculation -->
+        <div class="question-card active" data-question="1">
+            <div class="question-number">Question 1 of 5</div>
+
+            <div class="question-text">
+                A company tracks daily sales: $200, $250, $230, $240, $260. What is the mean (average) sales?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label"><strong>A)</strong> $230</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label"><strong>B)</strong> $236</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label"><strong>C)</strong> $240</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label"><strong>D)</strong> $250</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn1" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn1">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <!-- Question 2: Median Calculation -->
+        <div class="question-card" data-question="2">
+            <div class="question-number">Question 2 of 5</div>
+
+            <div class="question-text">
+                For the same sales data ($200, $250, $230, $240, $260), what is the median?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label"><strong>A)</strong> $230</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label"><strong>B)</strong> $236</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label"><strong>C)</strong> $240</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label"><strong>D)</strong> $250</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn2" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn2">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <!-- Question 3: Mean vs Median with Outlier -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Question 3 of 5</div>
+
+            <div class="question-text">
+                Employee salaries are $45k, $48k, $50k, $52k, and $200k (CEO). Which measure best represents "typical" salary?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label"><strong>A)</strong> Mean ($79k) - best represents the center</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label"><strong>B)</strong> Median ($50k) - best represents typical employee</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label"><strong>C)</strong> Mode - most frequent value</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label"><strong>D)</strong> Maximum ($200k) - shows the range</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn3" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn3">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Question 4: Mode Calculation -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Question 4 of 5</div>
+
+            <div class="question-text">
+                Customer order sizes: 5, 5, 8, 10, 12. What is the mode?
+            </div>
+
+            <div class="options" data-correct="a">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label"><strong>A)</strong> 5</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label"><strong>B)</strong> 8</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label"><strong>C)</strong> 10</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label"><strong>D)</strong> There is no mode</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn4" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn4">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <!-- Question 5: Retail Traffic Analysis -->
+        <div class="question-card" data-question="5">
+            <div class="question-number">Question 5 of 5</div>
+
+            <div class="question-text">
+                A retail analyst sees these daily customer counts: 120, 130, 125, 128, 450 (Black Friday). Should they use mean or median to report "typical" daily traffic?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q5" value="a">
+                    <span class="option-label"><strong>A)</strong> Mean, because it includes all data</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q5" value="b">
+                    <span class="option-label"><strong>B)</strong> Median, because the Black Friday spike is an outlier</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q5" value="c">
+                    <span class="option-label"><strong>C)</strong> Mode, because it's the most common</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q5" value="d">
+                    <span class="option-label"><strong>D)</strong> Either works equally well</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn5" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn5">View Results →</button>
+            </div>
+
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-score" id="scoreDisplay">0/5</div>
+            <div class="results-message" id="resultsMessage"></div>
+
+            <div class="results-details">
+                <h3>Your Answers:</h3>
+                <div id="resultsList"></div>
+            </div>
+
+            <button class="btn btn-retry" onclick="location.reload()">Retry Knowledge Check</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        let answers = {};
+        let results = {};
+
+        const questions = [
+            {
+                num: 1,
+                correct: 'b',
+                correctFeedback: 'Correct! Mean = (200 + 250 + 230 + 240 + 260) ÷ 5 = 1,180 ÷ 5 = $236. This is calculated using Excel\'s =AVERAGE() function.',
+                incorrectFeedback: 'To calculate the mean, add all values and divide by the count: (200 + 250 + 230 + 240 + 260) ÷ 5 = $236.',
+                title: 'Calculating Mean'
+            },
+            {
+                num: 2,
+                correct: 'c',
+                correctFeedback: 'Perfect! First, arrange the values in order: $200, $230, $240, $250, $260. The middle value (3rd of 5 values) is $240. Use =MEDIAN() in Excel.',
+                incorrectFeedback: 'To find the median, arrange values in order and select the middle value. Ordered: $200, $230, $240, $250, $260. The middle value is $240.',
+                title: 'Calculating Median'
+            },
+            {
+                num: 3,
+                correct: 'b',
+                correctFeedback: 'Excellent! The median ($50k) is the best choice because the CEO\'s $200k salary is an outlier that skews the mean to $79k—much higher than what most employees earn. Median is resistant to outliers.',
+                incorrectFeedback: 'The CEO\'s $200k pulls the mean up to $79k, which doesn\'t represent typical employees. The median ($50k) ignores extreme values and better represents what a typical employee earns.',
+                title: 'Choosing Appropriate Measure'
+            },
+            {
+                num: 4,
+                correct: 'a',
+                correctFeedback: 'Correct! The mode is the most frequently occurring value. The value 5 appears twice, while all others appear once. Use =MODE.SNGL() in Excel.',
+                incorrectFeedback: 'The mode is the most frequent value. In this dataset, 5 appears twice while all other values appear only once, so 5 is the mode.',
+                title: 'Calculating Mode'
+            },
+            {
+                num: 5,
+                correct: 'b',
+                correctFeedback: 'Perfect! Black Friday (450) is an extreme outlier. The mean would be 190.6, suggesting nearly 200 customers daily—misleading! The median (128) better represents a typical day.',
+                incorrectFeedback: 'When data has extreme outliers (like Black Friday), the mean gets pulled toward the outlier. The median stays close to the center of typical values, giving a better sense of "normal" days.',
+                title: 'Interpreting with Outliers'
+            }
+        ];
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (Object.keys(answers).length / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Setup event listeners for each question
+        questions.forEach(q => {
+            const questionNum = q.num;
+            const card = document.querySelector(`.question-card[data-question="${questionNum}"]`);
+            const options = card.querySelectorAll('.option');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById(`checkBtn${questionNum}`);
+            const nextBtn = document.getElementById(`nextBtn${questionNum}`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const optionsContainer = card.querySelector('.options');
+            const correctAnswer = optionsContainer.dataset.correct;
+
+            // Enable check button when option selected
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = card.querySelector(`.option[data-value="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            // Option click handler
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            // Check answer
+            checkBtn.addEventListener('click', () => {
+                const selectedValue = card.querySelector(`input[name="q${questionNum}"]:checked`)?.value;
+                if (!selectedValue) return;
+
+                const isCorrect = selectedValue === correctAnswer;
+                answers[questionNum] = selectedValue;
+                results[questionNum] = isCorrect;
+
+                // Show visual feedback
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    option.style.pointerEvents = 'none';
+
+                    if (value === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (value === selectedValue && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Show feedback
+                if (isCorrect) {
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = `
+                        <h3>✓ Correct!</h3>
+                        <p>${q.correctFeedback}</p>
+                    `;
+                } else {
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `
+                        <h3>✗ Not quite</h3>
+                        <p>${q.incorrectFeedback}</p>
+                    `;
+                }
+
+                checkBtn.style.display = 'none';
+                nextBtn.classList.add('show');
+                updateProgress();
+            });
+
+            // Next button
+            nextBtn.addEventListener('click', () => {
+                if (questionNum < totalQuestions) {
+                    // Go to next question
+                    card.classList.remove('active');
+                    const nextCard = document.querySelector(`.question-card[data-question="${questionNum + 1}"]`);
+                    nextCard.classList.add('active');
+                    currentQuestion++;
+                } else {
+                    // Show results
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const correctCount = Object.values(results).filter(r => r === true).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalQuestions}`;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You have mastered linear functions.';
+            } else if (percentage >= 50) {
+                message = 'Good work! Review the concepts you missed.';
+            } else {
+                message = 'Keep practicing! Review the module content and try again.';
+            }
+            document.getElementById('resultsMessage').textContent = message;
+
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = questions.map(q => {
+                const isCorrect = results[q.num];
+                const icon = isCorrect ? '✓' : '✗';
+                const className = isCorrect ? 'correct' : 'incorrect';
+                return `
+                    <div class="result-item ${className}">
+                        <span class="result-icon">${icon}</span>
+                        <span>Question ${q.num}: ${q.title}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsScreen').classList.add('show');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

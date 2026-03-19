@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Development Project Board — Mockup v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-neutral-50:  #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+
+    --color-accent:       #6b9085;
+    --color-accent-light: #c0d1cd;
+    --color-purple:       #d5cae0;
+    --color-turquoise:    #bfe5e7;
+    --color-sand:         #f0ede0;
+
+    --color-success:      #22c55e;
+    --color-success-light:#dcfce7;
+    --color-error:        #ef4444;
+    --color-error-light:  #fee2e2;
+    --color-warning:      #f59e0b;
+    --color-warning-light:#fef3c7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+    padding: 24px;
+  }
+
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--color-neutral-500); margin-bottom: 24px; }
+
+  .board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; align-items: flex-start; }
+
+  .column {
+    min-width: 232px; max-width: 232px; background: white;
+    border-radius: 8px; border: 1px solid var(--color-neutral-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex; flex-direction: column;
+  }
+  .column-header {
+    padding: 12px 14px 8px;
+    border-bottom: 1px solid var(--color-neutral-200);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .column-title { font-size: 13px; font-weight: 600; color: var(--color-neutral-800); }
+  .column-count {
+    font-size: 11px; color: white; background: var(--color-neutral-600);
+    border-radius: 10px; padding: 1px 7px; min-width: 20px; text-align: center;
+    font-weight: 500;
+  }
+  .column-desc {
+    font-size: 10px; color: var(--color-neutral-500); padding: 8px 14px;
+    border-bottom: 1px solid var(--color-neutral-100); line-height: 1.5;
+  }
+  .column-cards { padding: 8px; flex: 1; min-height: 80px; }
+
+  /* Cards */
+  .card {
+    background: white; border: 1px solid var(--color-neutral-200);
+    border-radius: 8px; padding: 10px 12px;
+    margin-bottom: 8px; cursor: pointer;
+    transition: box-shadow 0.2s ease;
+    border-left: 4px solid transparent;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+  .card-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--color-neutral-800); }
+  .card-subtitle { font-size: 10px; color: var(--color-neutral-500); margin-bottom: 8px; }
+
+  .card-labels { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+  .label {
+    font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 500;
+  }
+  .label-sp { background: var(--color-accent-light); color: var(--color-neutral-800); }
+  .label-cb { background: var(--color-turquoise); color: var(--color-neutral-800); }
+  .label-critical { background: var(--color-error-light); color: #991b1b; }
+  .label-major { background: var(--color-warning-light); color: #92400e; }
+  .label-cards { background: var(--color-sand); color: var(--color-neutral-700); }
+  .label-flagged { background: var(--color-purple); color: var(--color-neutral-800); }
+
+  .card-meta { display: flex; justify-content: space-between; align-items: center; }
+  .card-assignee { font-size: 10px; color: var(--color-neutral-500); font-weight: 500; }
+  .card-status {
+    font-size: 9px; color: var(--color-neutral-600);
+    background: var(--color-neutral-100); border-radius: 4px; padding: 2px 6px;
+    font-weight: 500;
+  }
+
+  /* Card border colors by state */
+  .card.state-storyboard { border-left-color: var(--color-sand); }
+  .card.state-normal { border-left-color: var(--color-accent); }
+  .card.state-critical { border-left-color: var(--color-error); }
+  .card.state-major { border-left-color: var(--color-warning); }
+  .card.state-flagged { border-left-color: #7c3aed; }
+  .card.state-done { border-left-color: var(--color-success); opacity: 0.8; }
+
+  /* Arrows */
+  .arrow {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 16px; color: var(--color-neutral-300); font-size: 18px;
+    align-self: center; margin-top: 20px;
+  }
+
+  /* Phase labels */
+  .phase-group { display: flex; flex-direction: column; align-items: center; }
+  .phase-label {
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+    padding: 4px 12px; border-radius: 4px; margin-bottom: 8px; text-align: center;
+  }
+  .phase-storyboard { background: var(--color-sand); color: var(--color-neutral-700); }
+  .phase-build { background: var(--color-accent-light); color: var(--color-neutral-800); }
+  .phase-qa { background: var(--color-purple); color: var(--color-neutral-800); }
+  .phase-done { background: var(--color-success-light); color: #166534; }
+
+  .phase-columns { display: flex; gap: 12px; }
+
+  /* Flow diagram */
+  .flow-section {
+    margin-top: 24px; padding: 20px; background: white; border-radius: 8px;
+    border: 1px solid var(--color-neutral-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    max-width: 100%;
+  }
+  .flow-section h2 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-800); }
+  .flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .flow-box {
+    padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--color-neutral-200);
+  }
+  .flow-arrow { color: var(--color-neutral-400); font-size: 14px; }
+  .flow-return {
+    font-size: 11px; font-style: italic; color: var(--color-neutral-600);
+    margin-top: 8px; padding-left: 4px;
+  }
+  .flow-return span { color: var(--color-error); }
+
+  /* Notes sections */
+  .notes-section {
+    margin-top: 16px; padding: 20px; background: white; border-radius: 8px;
+    border: 1px solid var(--color-neutral-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    max-width: 100%;
+  }
+  .notes-section h2 {
+    font-size: 14px; font-weight: 600; margin-bottom: 12px;
+    color: var(--color-neutral-800);
+  }
+  .notes-section h3 {
+    font-size: 12px; font-weight: 600; margin-top: 16px; margin-bottom: 8px;
+    color: var(--color-neutral-700);
+  }
+  .notes-section p {
+    font-size: 12px; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;
+  }
+  .notes-section ul {
+    font-size: 12px; line-height: 1.7; padding-left: 20px; margin-bottom: 8px;
+    color: var(--color-neutral-700);
+  }
+  .notes-section code {
+    background: var(--color-neutral-100); padding: 1px 5px; border-radius: 4px;
+    font-size: 11px; font-family: Consolas, 'Courier New', monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Fundamentals of Strategy — Development Board</h1>
+<p class="subtitle">Self-Paced · 11 Units + Wrap-Up · Prof. Michael Raynor</p>
+
+<div class="board">
+
+  <!-- STORYBOARD PHASE -->
+  <div class="phase-group">
+    <div class="phase-label phase-storyboard">Storyboard</div>
+    <div class="phase-columns">
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Storyboard</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Author drafts unit storyboard — content, video scripts, widget specs, assessments</div>
+        <div class="column-cards">
+          <div class="card state-storyboard">
+            <div class="card-title">Unit 10: Change</div>
+            <div class="card-subtitle">Week 10 · 4 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">James K.</span></div>
+          </div>
+          <div class="card state-storyboard">
+            <div class="card-title">Unit 11: Ends of Strategy</div>
+            <div class="card-subtitle">Week 11 · 5 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">James K.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">SB Review</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Reviewers 1 & 2 · Holistic review using QA checklist · BugHerd cards created</div>
+        <div class="column-cards">
+          <div class="card state-storyboard">
+            <div class="card-title">Unit 8: Capture Value</div>
+            <div class="card-subtitle">Week 8 · 4 modules</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-cards">6 cards</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Luiza</span>
+              <span class="card-status">R1 ✓ · R2 ✓</span>
+            </div>
+          </div>
+          <div class="card state-storyboard">
+            <div class="card-title">Unit 9: Persistence</div>
+            <div class="card-subtitle">Week 9 · 4 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta">
+              <span class="card-assignee">Yuvika</span>
+              <span class="card-status">R1 in progress</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- BUILD PHASE -->
+  <div class="phase-group">
+    <div class="phase-label phase-build">Build</div>
+    <div class="phase-columns">
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Development</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Author builds approved storyboard on platform — uploads content, videos, widgets</div>
+        <div class="column-cards">
+          <div class="card state-normal">
+            <div class="card-title">Unit 6: Create Value</div>
+            <div class="card-subtitle">Week 7 · 4 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">James K.</span></div>
+          </div>
+          <div class="card state-normal">
+            <div class="card-title">Unit 7: Capture Value</div>
+            <div class="card-subtitle">Week 8 · 4 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta">
+              <span class="card-assignee">James K.</span>
+              <span class="card-status">SB approved ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- QA PHASE -->
+  <div class="phase-group">
+    <div class="phase-label phase-qa">QA</div>
+    <div class="phase-columns">
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Review</span>
+          <span class="column-count">1</span>
+        </div>
+        <div class="column-desc">Reviewers 1 & 2 · QA checklist on live platform · BugHerd cards created</div>
+        <div class="column-cards">
+          <div class="card state-major">
+            <div class="card-title">Unit 4: Differentiation</div>
+            <div class="card-subtitle">Week 5 · 4 modules</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-major">14 cards</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Yuvika</span>
+              <span class="card-status">R1 ✓ · R2 ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Implementation</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Author responds to all BugHerd cards · Implements fixes · Documents decisions</div>
+        <div class="column-cards">
+          <div class="card state-critical">
+            <div class="card-title">Unit 3: Customer Connection</div>
+            <div class="card-subtitle">Week 4 · 4 modules</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-critical">2 critical</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">James K.</span>
+              <span class="card-status">11 cards · 7 done</span>
+            </div>
+          </div>
+          <div class="card state-normal">
+            <div class="card-title">Unit 5: Value Chain</div>
+            <div class="card-subtitle">Week 6 · 3 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta">
+              <span class="card-assignee">James K.</span>
+              <span class="card-status">5 cards · 0 done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Verification</span>
+          <span class="column-count">1</span>
+        </div>
+        <div class="column-desc">Reviewer 3 · Holistic review + verify actioned BugHerd cards · Archive or escalate</div>
+        <div class="column-cards">
+          <div class="card state-flagged">
+            <div class="card-title">Unit 2: Industry Position</div>
+            <div class="card-subtitle">Week 3 · 4 modules</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-flagged">1 flagged</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Majid</span>
+              <span class="card-status">12 archived · 1 flagged</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow">→</div>
+
+  <!-- DONE -->
+  <div class="phase-group">
+    <div class="phase-label phase-done">Done</div>
+    <div class="phase-columns">
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Done</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">All BugHerd cards archived · Verified · Ready for deployment</div>
+        <div class="column-cards">
+          <div class="card state-done">
+            <div class="card-title">Unit 0: Introduction</div>
+            <div class="card-subtitle">Week 1 · 1 module</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">✓ All cards archived</span></div>
+          </div>
+          <div class="card state-done">
+            <div class="card-title">Unit 1: Goal Setting</div>
+            <div class="card-subtitle">Week 2 · 4 modules</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">✓ All cards archived</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Flow diagram -->
+<div class="flow-section">
+  <h2>Card Flow</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="background:var(--color-sand)">Storyboard</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-sand)">SB Review</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-accent-light)">Development</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-purple)">Review</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-purple)">Implementation</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-purple)">Verification</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:var(--color-success-light)">Done</div>
+  </div>
+  <div class="flow-return"><span>↩</span> SB Review can return cards to Storyboard for revisions</div>
+  <div class="flow-return"><span>↩</span> Verification can return cards to Implementation for unactioned items</div>
+</div>
+
+<!-- Setup Notes -->
+<div class="notes-section">
+  <h2>Board Structure</h2>
+  <p>Seven columns across three phases, plus Done:</p>
+  <ul>
+    <li><strong>Storyboard</strong> (2 columns) — Storyboard → SB Review</li>
+    <li><strong>Build</strong> (1 column) — Development</li>
+    <li><strong>QA</strong> (3 columns) — Review → Implementation → Verification</li>
+    <li><strong>Done</strong> (1 column)</li>
+  </ul>
+
+  <h3>How It Works</h3>
+  <p><strong>Storyboard:</strong> Author drafts the unit storyboard — all content, video scripts, widget specs, assessment designs. This is the blueprint.</p>
+  <p><strong>SB Review:</strong> Reviewers 1 & 2 review the storyboard holistically using the QA checklist. Feedback goes into BugHerd. Author addresses feedback. Card moves to Development once approved. This catches content and design issues before anything gets built.</p>
+  <p><strong>Development:</strong> Author builds the approved storyboard on the Uplimit platform. Only storyboard-approved units enter this column.</p>
+  <p><strong>Review:</strong> Reviewers 1 & 2 review the built unit on the live platform. This catches platform-specific issues — broken widgets, formatting, navigation, media playback.</p>
+  <p><strong>Implementation:</strong> Author responds to all BugHerd cards and implements fixes.</p>
+  <p><strong>Verification:</strong> Reviewer 3 does a holistic review and verifies all BugHerd cards have been actioned. Archives resolved cards, flags unresolved ones. Flagged cards go back to Implementation.</p>
+  <p><strong>Done:</strong> All cards archived, unit verified, ready for deployment.</p>
+
+  <h3>Planner Setup</h3>
+  <ul>
+    <li><strong>One board per course.</strong> Named: <code>[Course Name] — Development Board</code></li>
+    <li><strong>Seven buckets:</strong> Storyboard, SB Review, Development, Review, Implementation, Verification, Done</li>
+    <li><strong>One card per unit.</strong> Self-paced = module, Cohort = week</li>
+    <li><strong>Card checklist:</strong> Sub-modules within the unit tracked as checklist items on the card</li>
+    <li><strong>BugHerd link:</strong> Card description or first comment links to the BugHerd project for that course</li>
+    <li><strong>Labels:</strong> Self-Paced / Cohort, priority indicators from BugHerd card counts</li>
+  </ul>
+
+  <h3>Why Two Review Points?</h3>
+  <p>The storyboard review catches content, pedagogy, and design issues before you spend time building on the platform. The platform review catches issues that only appear in the built version — broken interactions, media playback, navigation flow, formatting. Catching a bad video script at storyboard stage saves rebuilding a HeyGen video. Catching a broken widget requires the platform review.</p>
+</div>
+
+</body>
+</html>

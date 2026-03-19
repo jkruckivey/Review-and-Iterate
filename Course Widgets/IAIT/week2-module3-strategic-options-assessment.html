@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Options Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-dark: #5a7a6f;
+            --color-accent-light: #e8f2ef;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 700px; margin: 0 auto; }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 4px solid var(--color-accent);
+            padding: 16px;
+            margin-bottom: 32px;
+            border-radius: var(--border-radius);
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }
+
+        .option-card {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .option-title { font-size: 1.05rem; font-weight: 700; }
+
+        .option-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            background: var(--color-accent);
+            color: white;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .option-prompt {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-neutral-200);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover { background: var(--color-accent-dark); }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            border: none;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        .result {
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .result-header {
+            background: var(--color-accent);
+            color: white;
+            padding: 16px 24px;
+            text-align: center;
+        }
+
+        .result-header h2 { font-size: 1.15rem; font-weight: 700; }
+
+        .result-body { padding: 24px; }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .bar-row:last-of-type { margin-bottom: 0; }
+
+        .bar-label {
+            width: 110px;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--color-neutral-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--color-accent);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .bar-fill.top { background: var(--color-accent-dark); }
+
+        .bar-score {
+            width: 30px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-neutral-700);
+        }
+
+        .result-note {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-neutral-200);
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .result-note strong { color: var(--color-neutral-900); }
+
+        .export-section {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 2px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: var(--color-accent-dark); }
+
+        .export-note {
+            margin-top: 10px;
+            color: var(--color-neutral-500);
+            font-size: 0.85rem;
+        }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .bar-label { width: 85px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Strategic Options Assessment</h1>
+        <p class="subtitle">Rate viability for your organization, see which option fits best</p>
+
+        <div class="info-box">
+            For each strategic option, rate how viable it is for your organization on a scale of 1 (not viable) to 5 (highly viable). Consider your S-curve position, supply-demand diagnostic, and organizational capabilities.
+        </div>
+
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Fight Back</span>
+                <span class="option-value" id="v1" aria-live="polite">3</span>
+            </div>
+            <p class="option-prompt">Can you adopt AI and compete head-on? Do your advantages transfer?</p>
+            <input type="range" id="s1" min="1" max="5" value="3" aria-label="Fight Back viability" oninput="update()">
+            <div class="scale-labels"><span>Not viable</span><span>Highly viable</span></div>
+        </div>
+
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Double Down</span>
+                <span class="option-value" id="v2" aria-live="polite">3</span>
+            </div>
+            <p class="option-prompt">Is your core value proposition AI-resistant? Does AI enhance what you do?</p>
+            <input type="range" id="s2" min="1" max="5" value="3" aria-label="Double Down viability" oninput="update()">
+            <div class="scale-labels"><span>Not viable</span><span>Highly viable</span></div>
+        </div>
+
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Retrench</span>
+                <span class="option-value" id="v3" aria-live="polite">3</span>
+            </div>
+            <p class="option-prompt">Do defensible niches exist? Can you serve them profitably?</p>
+            <input type="range" id="s3" min="1" max="5" value="3" aria-label="Retrench viability" oninput="update()">
+            <div class="scale-labels"><span>Not viable</span><span>Highly viable</span></div>
+        </div>
+
+        <div class="option-card">
+            <div class="option-header">
+                <span class="option-title">Move Away</span>
+                <span class="option-value" id="v4" aria-live="polite">3</span>
+            </div>
+            <p class="option-prompt">Are adjacent opportunities available? Do your capabilities transfer?</p>
+            <input type="range" id="s4" min="1" max="5" value="3" aria-label="Move Away viability" oninput="update()">
+            <div class="scale-labels"><span>Not viable</span><span>Highly viable</span></div>
+        </div>
+
+        <div class="result" aria-live="polite">
+            <div class="result-header">
+                <h2>Your Viability Comparison</h2>
+            </div>
+            <div class="result-body">
+                <div class="bar-row">
+                    <span class="bar-label">Fight Back</span>
+                    <div class="bar-track"><div class="bar-fill" id="b1"></div></div>
+                    <span class="bar-score" id="bs1">3</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">Double Down</span>
+                    <div class="bar-track"><div class="bar-fill" id="b2"></div></div>
+                    <span class="bar-score" id="bs2">3</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">Retrench</span>
+                    <div class="bar-track"><div class="bar-fill" id="b3"></div></div>
+                    <span class="bar-score" id="bs3">3</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-label">Move Away</span>
+                    <div class="bar-track"><div class="bar-fill" id="b4"></div></div>
+                    <span class="bar-score" id="bs4">3</span>
+                </div>
+                <div class="result-note" id="result-note">
+                    <strong>All options tied.</strong> Adjust the sliders to reflect your organization's specific context.
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <button class="btn" onclick="exportCSV()" aria-label="Export assessment to CSV">Export Results to CSV</button>
+            <p class="export-note">Download your viability ratings</p>
+        </div>
+    </div>
+
+    <script>
+        const names = ['Fight Back', 'Double Down', 'Retrench', 'Move Away'];
+
+        function update() {
+            const scores = [1,2,3,4].map(i => parseInt(document.getElementById('s'+i).value));
+            const max = Math.max(...scores);
+
+            scores.forEach((s, i) => {
+                const idx = i + 1;
+                document.getElementById('v'+idx).textContent = s;
+                document.getElementById('bs'+idx).textContent = s;
+                const bar = document.getElementById('b'+idx);
+                bar.style.width = (s / 5) * 100 + '%';
+                bar.classList.toggle('top', s === max && scores.filter(x => x === max).length < 4);
+            });
+
+            const tops = names.filter((_, i) => scores[i] === max);
+            const note = document.getElementById('result-note');
+
+            if (tops.length === 4) {
+                note.innerHTML = '<strong>All options tied.</strong> Adjust the sliders to reflect your organization\'s specific context.';
+            } else if (tops.length > 1) {
+                note.innerHTML = '<strong>Top options: ' + tops.join(' and ') + '.</strong> A hybrid approach may be appropriate -- but remember, hybrids require more discipline, not less.';
+            } else {
+                const msgs = {
+                    'Fight Back': 'You see the strongest case for competing head-on with AI. Make sure you have the investment capacity and speed to execute.',
+                    'Double Down': 'You see the strongest case for strengthening your current position. Stay honest about whether disruption is truly limited or you\'re seeing what you want to see.',
+                    'Retrench': 'You see the strongest case for focusing on defensible niches. Confirm these niches are large enough to sustain your organization.',
+                    'Move Away': 'You see the strongest case for pivoting. Validate that your capabilities genuinely transfer to the new opportunity.'
+                };
+                note.innerHTML = '<strong>Strongest option: ' + tops[0] + '.</strong> ' + msgs[tops[0]];
+            }
+        }
+
+        function exportCSV() {
+            const scores = [1,2,3,4].map(i => parseInt(document.getElementById('s'+i).value));
+            let csv = 'Strategic Options Assessment - Results\n\nOption,Viability Score\n';
+            names.forEach((n, i) => csv += n + ',' + scores[i] + '\n');
+            const max = Math.max(...scores);
+            const tops = names.filter((_, i) => scores[i] === max);
+            csv += '\nTop Option(s),"' + tops.join(', ') + '"\n';
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'strategic-options-assessment.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.addEventListener('DOMContentLoaded', update);
+    </script>
+</body>
+</html>

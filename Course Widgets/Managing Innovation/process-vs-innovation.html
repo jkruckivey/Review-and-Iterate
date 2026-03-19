@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process Control vs. Innovation</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--pale-sage) 0%, var(--pale-blue) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .infographic {
+    background: var(--cream);
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(3,70,56,0.15);
+    width: 100%;
+    max-width: 1100px;
+    overflow: hidden;
+  }
+
+  /* COLUMN HEADERS */
+  .columns-header {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+  }
+
+  .col-header {
+    padding: 20px 36px;
+    text-align: center;
+  }
+
+  .col-header.left {
+    background: var(--ivey-green);
+  }
+
+  .col-header.right {
+    background: var(--pale-blue);
+  }
+
+  .col-header-divider {
+    background: var(--cream);
+    width: 4px;
+  }
+
+  .col-label {
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .col-header.left .col-label {
+    color: var(--pale-sage);
+  }
+
+  .col-header.right .col-label {
+    color: var(--ivey-green);
+  }
+
+  .col-title {
+    font-size: 1.15em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .col-header.left .col-title {
+    color: var(--white);
+  }
+
+  .col-header.right .col-title {
+    color: var(--ivey-green);
+  }
+
+  .col-goal {
+    font-size: 0.76em;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  .col-header.left .col-goal {
+    color: var(--pale-sage);
+  }
+
+  .col-header.right .col-goal {
+    color: var(--text-light);
+  }
+
+  /* CONTENT ROWS */
+  .content-body {
+    padding: 0 0 8px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 4px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .row:last-child {
+    border-bottom: none;
+  }
+
+  .row-divider {
+    background: var(--border);
+  }
+
+  .cell {
+    padding: 22px 32px;
+  }
+
+  .cell.left {
+    background: var(--white);
+    border-right: none;
+  }
+
+  .cell.right {
+    background: var(--cream);
+  }
+
+  .cell-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .cell-tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.68em;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .cell.left .cell-tag {
+    background: var(--pale-sage);
+    color: var(--ivey-green);
+  }
+
+  .cell.right .cell-tag {
+    background: var(--pale-purple);
+    color: var(--ivey-green);
+  }
+
+  .cell-heading {
+    font-size: 0.88em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    margin-bottom: 8px;
+  }
+
+  .cell-text {
+    font-size: 0.76em;
+    color: var(--text-mid);
+    line-height: 1.65;
+  }
+
+  .cell-stat {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--pale-sage);
+    color: var(--ivey-green);
+    font-size: 0.68em;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 10px;
+  }
+
+  .cell.right .cell-stat {
+    background: var(--pale-purple);
+  }
+
+  /* ROW LABEL IN CENTER */
+  .row-label-strip {
+    display: grid;
+    grid-template-columns: 1fr 4px 1fr;
+    background: var(--ivey-green);
+  }
+
+  .row-label-left {
+    padding: 7px 32px;
+    font-size: 0.68em;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--pale-sage);
+    text-align: right;
+  }
+
+  .row-label-divider {
+    background: var(--pale-sage);
+    opacity: 0.3;
+  }
+
+  .row-label-right {
+    padding: 7px 32px;
+    font-size: 0.68em;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--pale-blue);
+  }
+
+  /* FOOTER */
+  .inf-footer {
+    background: var(--ivey-green);
+    padding: 14px 36px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 2px solid var(--pale-sage);
+  }
+
+  .footer-label {
+    color: var(--pale-sage);
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .footer-text {
+    color: var(--cream);
+    font-size: 0.76em;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="infographic">
+
+  <!-- COLUMN HEADERS -->
+  <div class="columns-header">
+    <div class="col-header left">
+      <div class="col-label">Industrial Process</div>
+      <div class="col-title">Process Control</div>
+      <div class="col-goal">The goal: eliminate variation, maximize consistency</div>
+    </div>
+    <div class="col-header-divider"></div>
+    <div class="col-header right">
+      <div class="col-label">Innovation Process</div>
+      <div class="col-title">Creative Discovery</div>
+      <div class="col-goal">The goal: generate variation, welcome surprise</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: EFFICIENCY / VARIATION -->
+  <div class="row-label-strip">
+    <div class="row-label-left">Efficiency</div>
+    <div class="row-label-divider"></div>
+    <div class="row-label-right">Variation</div>
+  </div>
+
+  <div class="row">
+    <div class="cell left">
+      <div class="cell-heading">Measurable gains, fast</div>
+      <div class="cell-text">When McNerney introduced Six Sigma at 3M in 2000, results were swift and tangible. The company trimmed 10% of its workforce and operating margins climbed from 17% to 23% in just four years. By conventional measures, it was working.</div>
+      <span class="cell-stat">Margins: 17% → 23% by 2005</span>
+    </div>
+    <div class="row-divider"></div>
+    <div class="cell right">
+      <div class="cell-heading">The engine of discovery</div>
+      <div class="cell-text">For decades, 3M's product development thrived on unpredictability. Variation was not a problem to be solved; it was the engine of discovery. When Six Sigma was applied to R&amp;D, new product launches dropped sharply. The same logic that eliminated defects in manufacturing also eliminated the creative accidents that led to breakthroughs.</div>
+    </div>
+  </div>
+
+  <!-- ROW 2: PREDICTABILITY / EXPERIMENTATION -->
+  <div class="row-label-strip">
+    <div class="row-label-left">Predictability</div>
+    <div class="row-label-divider"></div>
+    <div class="row-label-right">Experimentation</div>
+  </div>
+
+  <div class="row">
+    <div class="cell left">
+      <div class="cell-heading">Surprises are not welcome</div>
+      <div class="cell-text">Six Sigma is built on the idea of bringing process variation under control, managing operations so that outputs stay within a specific, narrow range. Surprises are not welcome. Accidents are, by design, nearly impossible.</div>
+    </div>
+    <div class="row-divider"></div>
+    <div class="cell right">
+      <div class="cell-heading">A commitment to failure tolerance</div>
+      <div class="cell-text">3M's "30/5 objective" was a cultural commitment to constant experimentation and a tolerance for failure. Thirty percent of sales had to come from products less than five years old, keeping the pipeline full of new ideas, many of which would not work out. Six Sigma's drive to eliminate errors ran directly counter to that.</div>
+      <span class="cell-stat">30% of sales from products under 5 years old</span>
+    </div>
+  </div>
+
+  <!-- ROW 3: STABILITY / SURPRISE -->
+  <div class="row-label-strip">
+    <div class="row-label-left">Stability</div>
+    <div class="row-label-divider"></div>
+    <div class="row-label-right">Surprise</div>
+  </div>
+
+  <div class="row">
+    <div class="cell left">
+      <div class="cell-heading">Valuable in the right place</div>
+      <div class="cell-text">Over time, Six Sigma aims to shrink variance further still, making processes ever more reliable and their outputs ever more foreseeable. In 3M's manufacturing operations, this was genuinely valuable. The problem was that the same logic was applied everywhere.</div>
+    </div>
+    <div class="row-divider"></div>
+    <div class="cell right">
+      <div class="cell-heading">Happy accidents, by design</div>
+      <div class="cell-text">Some of 3M's most celebrated innovations, including Post-it Notes, were happy accidents. They came from unexpected results that someone had the curiosity and freedom to follow. Six Sigma's goal of keeping outcomes within a predictable range meant eliminating the very conditions that made those moments possible.</div>
+      <span class="cell-stat">WSJ still writing about the dry spell in 2023</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="inf-footer">
+    <span class="footer-label">The Tension</span>
+    <span class="footer-text">The tools that make organizations more efficient are often the same tools that make them less innovative. Managing this tension is one of the central challenges of leading innovation.</span>
+  </div>
+
+</div>
+
+</body>
+</html>

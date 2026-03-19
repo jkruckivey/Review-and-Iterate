@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tree Components - Interactive Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-green: #c0d1cd;
+            --color-green-dark: #7a9985;
+            --color-purple: #d5cae0;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+
+            --color-decision: #4a90d9;
+            --color-chance: #e67e22;
+            --color-outcome: #27ae60;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .widget-container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.375rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.9rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-neutral-500);
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+        }
+
+        .tab-btn:focus {
+            outline: 2px solid var(--color-green-dark);
+            outline-offset: 2px;
+        }
+
+        .tab-btn.active {
+            color: var(--color-neutral-900);
+            background: var(--color-green);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-green-dark);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Components Section */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .component-card {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .component-card:hover {
+            border-color: var(--color-neutral-300);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .component-card:focus {
+            outline: 2px solid var(--color-green-dark);
+            outline-offset: 2px;
+        }
+
+        .component-card.selected {
+            border-color: var(--color-green-dark);
+            background: var(--color-green);
+        }
+
+        .component-symbol {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .decision-symbol {
+            width: 50px;
+            height: 50px;
+            background: var(--color-decision);
+            border-radius: 6px;
+        }
+
+        .chance-symbol {
+            width: 50px;
+            height: 50px;
+            background: var(--color-chance);
+            border-radius: 50%;
+        }
+
+        .outcome-symbol {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 45px solid var(--color-outcome);
+        }
+
+        .component-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .component-card .symbol-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.75rem;
+        }
+
+        .component-card p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            line-height: 1.5;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: var(--color-sand);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .detail-panel h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-panel ul {
+            margin-left: 1.25rem;
+            color: var(--color-neutral-700);
+            font-size: 0.9rem;
+        }
+
+        .detail-panel li {
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-panel .example {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .detail-panel .example strong {
+            color: var(--color-neutral-800);
+        }
+
+        /* Tree Visualization */
+        .tree-container {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .tree-svg {
+            width: 100%;
+            min-width: 700px;
+            height: 380px;
+        }
+
+        /* SVG Styles */
+        .node-decision {
+            fill: var(--color-decision);
+        }
+
+        .node-chance {
+            fill: var(--color-chance);
+        }
+
+        .node-outcome {
+            fill: var(--color-outcome);
+        }
+
+        .branch-line {
+            stroke: var(--color-neutral-400);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .branch-line.highlight {
+            stroke: var(--color-green-dark);
+            stroke-width: 3;
+        }
+
+        .branch-line.rejected {
+            stroke: var(--color-neutral-300);
+            stroke-width: 2;
+            stroke-dasharray: 5,5;
+        }
+
+        .node-label {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            fill: var(--color-neutral-700);
+        }
+
+        .node-value {
+            font-family: 'Geist', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            fill: white;
+        }
+
+        .prob-label {
+            font-family: 'Geist', sans-serif;
+            font-size: 10px;
+            fill: var(--color-neutral-500);
+        }
+
+        .outcome-value {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            fill: var(--color-neutral-800);
+        }
+
+        .ev-label {
+            font-family: 'Geist', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            fill: var(--color-decision);
+        }
+
+        .rejected-mark {
+            font-family: 'Geist', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            fill: #e74c3c;
+        }
+
+        .node-highlight {
+            stroke: #ffc107;
+            stroke-width: 4;
+            fill: none;
+            animation: pulse-node 1.5s infinite;
+        }
+
+        @keyframes pulse-node {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Step Controls */
+        .step-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: var(--color-green-dark);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.375rem;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .step-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--color-neutral-300);
+            background: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--color-neutral-100);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: var(--color-green-dark);
+            border-color: var(--color-green-dark);
+            color: white;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: var(--color-turquoise);
+            border: 1px solid #9dd5d8;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .key-insight h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        /* Direction Indicators */
+        .direction-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0 1rem;
+        }
+
+        .direction-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .direction-label.build {
+            color: var(--color-decision);
+        }
+
+        .direction-label.solve {
+            color: var(--color-outcome);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .components-grid { grid-template-columns: 1fr; }
+            .tab-nav { flex-wrap: wrap; }
+            .step-controls { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container">
+        <div class="header">
+            <h2>Decision Tree Components</h2>
+            <p>Learn the building blocks of decision tree analysis</p>
+        </div>
+
+        <div class="tab-nav" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="components">Components</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="example">Build Example</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="calculate">Calculate EVs</button>
+        </div>
+
+        <!-- Tab 1: Components -->
+        <div class="tab-content active" id="components-tab">
+            <div class="components-grid">
+                <div class="component-card selected" tabindex="0" data-component="decision" role="button" aria-pressed="true">
+                    <div class="component-symbol">
+                        <div class="decision-symbol"></div>
+                    </div>
+                    <h3>Decision Node</h3>
+                    <p class="symbol-label">Square</p>
+                    <p>Choices YOU control</p>
+                </div>
+
+                <div class="component-card" tabindex="0" data-component="chance" role="button" aria-pressed="false">
+                    <div class="component-symbol">
+                        <div class="chance-symbol"></div>
+                    </div>
+                    <h3>Chance Node</h3>
+                    <p class="symbol-label">Circle</p>
+                    <p>Random events you DON'T control</p>
+                </div>
+
+                <div class="component-card" tabindex="0" data-component="outcome" role="button" aria-pressed="false">
+                    <div class="component-symbol">
+                        <div class="outcome-symbol"></div>
+                    </div>
+                    <h3>Outcome</h3>
+                    <p class="symbol-label">End Point</p>
+                    <p>Final monetary values</p>
+                </div>
+            </div>
+
+            <div class="detail-panel" id="detail-panel">
+                <h4><span style="display:inline-block;width:20px;height:20px;background:var(--color-decision);border-radius:3px;vertical-align:middle;"></span> Decision Nodes (Squares)</h4>
+                <ul>
+                    <li>Represent choices <strong>you control</strong></li>
+                    <li>Draw branches for each alternative (Yes/No, Option A/B)</li>
+                    <li>You pick the best option based on expected values</li>
+                </ul>
+                <div class="example">
+                    <strong>Examples:</strong> "Bid on project?", "Launch product?", "Hire consultant?"
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Build Example -->
+        <div class="tab-content" id="example-tab">
+            <div class="direction-row">
+                <span class="direction-label build">Build: Left to Right &rarr;</span>
+            </div>
+            <div class="tree-container">
+                <svg class="tree-svg" id="build-tree" viewBox="0 0 700 380">
+                    <!-- Tree will be drawn by JavaScript -->
+                </svg>
+            </div>
+            <div class="step-controls">
+                <div class="step-info">
+                    <span class="step-badge" id="build-badge">Step 1 of 5</span>
+                    <h4 class="step-title" id="build-title">Start with the Decision</h4>
+                    <p class="step-description" id="build-description">Your company is deciding whether to bid on a consulting project. The bid costs $10,000 to prepare.</p>
+                </div>
+                <div class="step-nav">
+                    <button class="nav-btn" id="build-prev" disabled>&larr; Prev</button>
+                    <button class="nav-btn primary" id="build-next">Next &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Calculate EVs -->
+        <div class="tab-content" id="calculate-tab">
+            <div class="direction-row">
+                <span class="direction-label solve">&larr; Solve: Right to Left</span>
+            </div>
+            <div class="tree-container">
+                <svg class="tree-svg" id="calc-tree" viewBox="0 0 700 380">
+                    <!-- Tree will be drawn by JavaScript -->
+                </svg>
+            </div>
+            <div class="step-controls">
+                <div class="step-info">
+                    <span class="step-badge" id="calc-badge">Step 1 of 4</span>
+                    <h4 class="step-title" id="calc-title">Start at the Outcomes</h4>
+                    <p class="step-description" id="calc-description">Begin at the rightmost endpoints. These are your final monetary outcomes for each path.</p>
+                </div>
+                <div class="step-nav">
+                    <button class="nav-btn" id="calc-prev" disabled>&larr; Prev</button>
+                    <button class="nav-btn primary" id="calc-next">Next &rarr;</button>
+                </div>
+            </div>
+            <div class="key-insight" id="calc-insight" style="display:none;">
+                <h4>Decision: Bid on the Project</h4>
+                <p>Expected value of bidding ($17,000) exceeds not bidding ($0), so the optimal decision is to <strong>submit the bid</strong>.</p>
+            </div>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcements"></div>
+
+    <script>
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+
+                announce(`${btn.textContent} tab selected`);
+            });
+        });
+
+        // Component cards
+        const componentCards = document.querySelectorAll('.component-card');
+        const detailPanel = document.getElementById('detail-panel');
+
+        const componentDetails = {
+            decision: {
+                title: '<span style="display:inline-block;width:20px;height:20px;background:var(--color-decision);border-radius:3px;vertical-align:middle;"></span> Decision Nodes (Squares)',
+                content: `
+                    <ul>
+                        <li>Represent choices <strong>you control</strong></li>
+                        <li>Draw branches for each alternative (Yes/No, Option A/B)</li>
+                        <li>You pick the best option based on expected values</li>
+                    </ul>
+                    <div class="example">
+                        <strong>Examples:</strong> "Bid on project?", "Launch product?", "Hire consultant?"
+                    </div>
+                `
+            },
+            chance: {
+                title: '<span style="display:inline-block;width:20px;height:20px;background:var(--color-chance);border-radius:50%;vertical-align:middle;"></span> Chance Nodes (Circles)',
+                content: `
+                    <ul>
+                        <li>Represent random events <strong>you don't control</strong></li>
+                        <li>Each branch has a probability (must sum to 1.0)</li>
+                        <li>Calculate expected value: EV = Sum(Probability x Outcome)</li>
+                    </ul>
+                    <div class="example">
+                        <strong>Examples:</strong> "Will bid be accepted?", "Market response?", "Competitor actions?"
+                    </div>
+                `
+            },
+            outcome: {
+                title: '<span style="display:inline-block;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:18px solid var(--color-outcome);vertical-align:middle;"></span> Outcomes (End Points)',
+                content: `
+                    <ul>
+                        <li>Final monetary values (profit, loss, cost, revenue)</li>
+                        <li>Appear at the "leaves" of the tree (rightmost)</li>
+                        <li>Every path through the tree ends at an outcome</li>
+                    </ul>
+                    <div class="example">
+                        <strong>Examples:</strong> "$50,000 profit", "-$10,000 loss", "$0 (no change)"
+                    </div>
+                `
+            }
+        };
+
+        componentCards.forEach(card => {
+            card.addEventListener('click', () => {
+                componentCards.forEach(c => {
+                    c.classList.remove('selected');
+                    c.setAttribute('aria-pressed', 'false');
+                });
+                card.classList.add('selected');
+                card.setAttribute('aria-pressed', 'true');
+
+                const component = card.dataset.component;
+                const details = componentDetails[component];
+                detailPanel.innerHTML = `<h4>${details.title}</h4>${details.content}`;
+
+                announce(`${card.querySelector('h3').textContent} selected`);
+            });
+
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.click();
+                }
+            });
+        });
+
+        // Build Tree Steps
+        const buildSteps = [
+            {
+                badge: "Step 1 of 5",
+                title: "Start with the Decision",
+                description: "Your company is deciding whether to bid on a consulting project. The bid costs $10,000 to prepare.",
+                elements: ['decision-node']
+            },
+            {
+                badge: "Step 2 of 5",
+                title: "Draw Decision Branches",
+                description: "Create branches for each alternative: 'Bid' (costs $10K) or 'Don't Bid' (no cost, no potential gain).",
+                elements: ['decision-node', 'bid-branch', 'nobid-branch']
+            },
+            {
+                badge: "Step 3 of 5",
+                title: "Add Chance Node",
+                description: "If you bid, the outcome is uncertain. Add a chance node (circle) representing 'Will the bid be accepted?'",
+                elements: ['decision-node', 'bid-branch', 'nobid-branch', 'chance-node']
+            },
+            {
+                badge: "Step 4 of 5",
+                title: "Draw Probability Branches",
+                description: "Add branches from the chance node: 'Win' (30% probability) and 'Lose' (70% probability). Probabilities must sum to 1.0!",
+                elements: ['decision-node', 'bid-branch', 'nobid-branch', 'chance-node', 'win-branch', 'lose-branch']
+            },
+            {
+                badge: "Step 5 of 5",
+                title: "Add Outcomes",
+                description: "End each path with a monetary outcome. Win: $100K revenue - $10K cost = $90K. Lose: -$10K (bid cost). Don't bid: $0.",
+                elements: ['decision-node', 'bid-branch', 'nobid-branch', 'chance-node', 'win-branch', 'lose-branch', 'outcomes']
+            }
+        ];
+
+        let buildStep = 0;
+
+        function drawBuildTree(step) {
+            const svg = document.getElementById('build-tree');
+            const elements = buildSteps[step].elements;
+
+            let html = '';
+
+            // Decision node (always show from step 0)
+            if (elements.includes('decision-node')) {
+                html += `
+                    <rect x="50" y="165" width="40" height="40" rx="4" class="node-decision" ${step === 0 ? 'style="stroke:#ffc107;stroke-width:4;"' : ''}/>
+                    <text x="70" y="230" class="node-label" text-anchor="middle">Bid?</text>
+                `;
+            }
+
+            // Bid branch
+            if (elements.includes('bid-branch')) {
+                html += `
+                    <path d="M 90 175 L 180 100" class="branch-line" ${step === 1 ? 'style="stroke:#ffc107;stroke-width:3;"' : ''}/>
+                    <text x="125" y="125" class="node-label">Bid</text>
+                    <text x="125" y="140" class="prob-label">(-$10K cost)</text>
+                `;
+            }
+
+            // No bid branch
+            if (elements.includes('nobid-branch')) {
+                html += `
+                    <path d="M 90 195 L 180 280" class="branch-line" ${step === 1 ? 'style="stroke:#ffc107;stroke-width:3;"' : ''}/>
+                    <text x="115" y="255" class="node-label">Don't Bid</text>
+                `;
+
+                if (elements.includes('outcomes')) {
+                    html += `
+                        <polygon points="190,270 200,290 180,290" class="node-outcome"/>
+                        <text x="220" y="285" class="outcome-value">$0</text>
+                    `;
+                }
+            }
+
+            // Chance node
+            if (elements.includes('chance-node')) {
+                html += `
+                    <circle cx="200" cy="100" r="20" class="node-chance" ${step === 2 ? 'style="stroke:#ffc107;stroke-width:4;"' : ''}/>
+                    <text x="200" y="75" class="node-label" text-anchor="middle">Accepted?</text>
+                `;
+            }
+
+            // Win/Lose branches
+            if (elements.includes('win-branch')) {
+                html += `
+                    <path d="M 220 90 L 320 50" class="branch-line" ${step === 3 ? 'style="stroke:#ffc107;stroke-width:3;"' : ''}/>
+                    <text x="260" y="55" class="node-label">Win</text>
+                    <text x="260" y="70" class="prob-label">(30%)</text>
+                `;
+            }
+
+            if (elements.includes('lose-branch')) {
+                html += `
+                    <path d="M 220 110 L 320 150" class="branch-line" ${step === 3 ? 'style="stroke:#ffc107;stroke-width:3;"' : ''}/>
+                    <text x="260" y="145" class="node-label">Lose</text>
+                    <text x="260" y="160" class="prob-label">(70%)</text>
+                `;
+            }
+
+            // Outcomes
+            if (elements.includes('outcomes')) {
+                html += `
+                    <polygon points="330,40 340,60 320,60" class="node-outcome" style="stroke:#ffc107;stroke-width:3;"/>
+                    <text x="355" y="55" class="outcome-value">+$90,000</text>
+                    <text x="355" y="70" class="prob-label">($100K - $10K)</text>
+
+                    <polygon points="330,140 340,160 320,160" class="node-outcome" style="stroke:#ffc107;stroke-width:3;"/>
+                    <text x="355" y="155" class="outcome-value">-$10,000</text>
+                    <text x="355" y="170" class="prob-label">(bid cost only)</text>
+                `;
+            }
+
+            svg.innerHTML = html;
+        }
+
+        document.getElementById('build-prev').addEventListener('click', () => {
+            if (buildStep > 0) {
+                buildStep--;
+                updateBuildStep();
+            }
+        });
+
+        document.getElementById('build-next').addEventListener('click', () => {
+            if (buildStep < buildSteps.length - 1) {
+                buildStep++;
+                updateBuildStep();
+            }
+        });
+
+        function updateBuildStep() {
+            const step = buildSteps[buildStep];
+            document.getElementById('build-badge').textContent = step.badge;
+            document.getElementById('build-title').textContent = step.title;
+            document.getElementById('build-description').textContent = step.description;
+            document.getElementById('build-prev').disabled = buildStep === 0;
+            document.getElementById('build-next').disabled = buildStep === buildSteps.length - 1;
+            drawBuildTree(buildStep);
+            announce(step.title);
+        }
+
+        // Calculate Tree Steps
+        const calcSteps = [
+            {
+                badge: "Step 1 of 4",
+                title: "Start at the Outcomes",
+                description: "Begin at the rightmost endpoints. These are your final monetary outcomes: Win (+$90K), Lose (-$10K), Don't Bid ($0).",
+                highlight: 'outcomes'
+            },
+            {
+                badge: "Step 2 of 4",
+                title: "Calculate Chance Node EV",
+                description: "At the chance node, calculate Expected Value: EV = (0.30 x $90,000) + (0.70 x -$10,000) = $27,000 - $7,000 = $20,000",
+                highlight: 'chance',
+                showEV: true
+            },
+            {
+                badge: "Step 3 of 4",
+                title: "Compare at Decision Node",
+                description: "At the decision node, compare: Bid (EV = $20K - $10K cost already included = $20K wait, let me recalculate)... Actually the $20K already accounts for the -$10K in the Lose branch. Compare $20K vs $0.",
+                highlight: 'decision',
+                showEV: true,
+                showDecisionEV: true
+            },
+            {
+                badge: "Step 4 of 4",
+                title: "Make the Optimal Decision",
+                description: "Since EV of Bid ($20,000) > Don't Bid ($0), the optimal decision is to BID. Mark the rejected branch with X.",
+                highlight: 'final',
+                showEV: true,
+                showDecisionEV: true,
+                showRejected: true
+            }
+        ];
+
+        let calcStep = 0;
+
+        function drawCalcTree(step) {
+            const svg = document.getElementById('calc-tree');
+            const s = calcSteps[step];
+
+            let html = `
+                <!-- Full tree structure -->
+                <rect x="50" y="165" width="40" height="40" rx="4" class="node-decision"/>
+                <text x="70" y="230" class="node-label" text-anchor="middle">Bid?</text>
+
+                <path d="M 90 175 L 180 100" class="branch-line ${s.showRejected ? '' : ''}"/>
+                <text x="125" y="125" class="node-label">Bid</text>
+
+                <path d="M 90 195 L 180 280" class="branch-line ${s.showRejected ? 'rejected' : ''}"/>
+                <text x="115" y="255" class="node-label">Don't Bid</text>
+
+                <circle cx="200" cy="100" r="20" class="node-chance"/>
+
+                <path d="M 220 90 L 320 50" class="branch-line"/>
+                <text x="260" y="55" class="node-label">Win</text>
+                <text x="260" y="70" class="prob-label">(30%)</text>
+
+                <path d="M 220 110 L 320 150" class="branch-line"/>
+                <text x="260" y="145" class="node-label">Lose</text>
+                <text x="260" y="160" class="prob-label">(70%)</text>
+
+                <polygon points="330,40 340,60 320,60" class="node-outcome"/>
+                <text x="355" y="55" class="outcome-value">+$90,000</text>
+
+                <polygon points="330,140 340,160 320,160" class="node-outcome"/>
+                <text x="355" y="155" class="outcome-value">-$10,000</text>
+
+                <polygon points="190,270 200,290 180,290" class="node-outcome"/>
+                <text x="220" y="285" class="outcome-value">$0</text>
+            `;
+
+            // Highlights
+            if (s.highlight === 'outcomes') {
+                html += `
+                    <rect x="310" y="30" width="100" height="50" rx="4" fill="none" stroke="#ffc107" stroke-width="3" stroke-dasharray="5,3"/>
+                    <rect x="310" y="130" width="100" height="50" rx="4" fill="none" stroke="#ffc107" stroke-width="3" stroke-dasharray="5,3"/>
+                    <rect x="170" y="260" width="70" height="40" rx="4" fill="none" stroke="#ffc107" stroke-width="3" stroke-dasharray="5,3"/>
+                `;
+            }
+
+            if (s.highlight === 'chance') {
+                html += `<circle cx="200" cy="100" r="26" fill="none" stroke="#ffc107" stroke-width="3"/>`;
+            }
+
+            if (s.highlight === 'decision' || s.highlight === 'final') {
+                html += `<rect x="44" y="159" width="52" height="52" rx="6" fill="none" stroke="#ffc107" stroke-width="3"/>`;
+            }
+
+            // Show EVs
+            if (s.showEV) {
+                html += `
+                    <text x="200" y="105" class="ev-label" text-anchor="middle">$20K</text>
+                `;
+            }
+
+            if (s.showDecisionEV) {
+                html += `
+                    <text x="70" y="190" class="ev-label" text-anchor="middle">$20K</text>
+                `;
+            }
+
+            if (s.showRejected) {
+                html += `
+                    <text x="140" y="245" class="rejected-mark">X</text>
+                `;
+            }
+
+            svg.innerHTML = html;
+
+            // Show/hide insight
+            document.getElementById('calc-insight').style.display = step === 3 ? 'block' : 'none';
+        }
+
+        document.getElementById('calc-prev').addEventListener('click', () => {
+            if (calcStep > 0) {
+                calcStep--;
+                updateCalcStep();
+            }
+        });
+
+        document.getElementById('calc-next').addEventListener('click', () => {
+            if (calcStep < calcSteps.length - 1) {
+                calcStep++;
+                updateCalcStep();
+            }
+        });
+
+        function updateCalcStep() {
+            const step = calcSteps[calcStep];
+            document.getElementById('calc-badge').textContent = step.badge;
+            document.getElementById('calc-title').textContent = step.title;
+            document.getElementById('calc-description').textContent = step.description;
+            document.getElementById('calc-prev').disabled = calcStep === 0;
+            document.getElementById('calc-next').disabled = calcStep === calcSteps.length - 1;
+            drawCalcTree(calcStep);
+            announce(step.title);
+        }
+
+        function announce(message) {
+            const el = document.getElementById('announcements');
+            el.textContent = message;
+            setTimeout(() => { el.textContent = ''; }, 1000);
+        }
+
+        // Initialize
+        drawBuildTree(0);
+        drawCalcTree(0);
+    </script>
+</body>
+</html>

@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stakeholder Coalition Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ─── Base ───────────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #374151;
+      display: flex;
+      justify-content: center;
+      padding: 16px 0;
+    }
+
+    .container {
+      width: 760px;
+      padding: 16px 24px;
+    }
+
+    /* ─── Header ─────────────────────────────────────────────── */
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    /* ─── Matrix wrapper ─────────────────────────────────────── */
+    .matrix-wrapper {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* Y-axis label (rotated) */
+    .y-axis-label-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      flex-shrink: 0;
+    }
+
+    .y-axis-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6b7280;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+    }
+
+    /* Arrow row helpers */
+    .y-arrow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      width: 18px;
+      flex-shrink: 0;
+      padding: 2px 0;
+    }
+
+    .arrow-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 0.5px;
+    }
+
+    .arrow-line-v {
+      flex: 1;
+      width: 1px;
+      background: #e5e7eb;
+      margin: 4px 0;
+    }
+
+    /* Main grid */
+    .matrix-grid-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* 2×2 grid */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 0;
+    }
+
+    /* ─── Quadrant cards ─────────────────────────────────────── */
+    .quadrant {
+      position: relative;
+      border-radius: 12px;
+      border: 1.5px solid transparent;
+      padding: 22px 22px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+      outline: none;
+      min-height: 140px;
+    }
+
+    .quadrant:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    /* Champions: top-right — sage green (high influence, high support) */
+    .q-champions {
+      background: #f0f5f3;
+      border-color: #6b9085;
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .q-champions:hover,
+    .q-champions.active {
+      border-color: #6b9085;
+      box-shadow: 0 4px 16px rgba(107, 144, 133, 0.18);
+    }
+
+    /* Resistors: top-left — dark gray (high influence, low support) */
+    .q-resistors {
+      background: #f9fafb;
+      border-color: #374151;
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .q-resistors:hover,
+    .q-resistors.active {
+      border-color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(55, 65, 81, 0.12);
+    }
+
+    /* Advocates: bottom-right — light sage (low influence, high support) */
+    .q-advocates {
+      background: #f0f5f3;
+      border-color: #a3c4b8;
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .q-advocates:hover,
+    .q-advocates.active {
+      border-color: #6b9085;
+      box-shadow: 0 4px 16px rgba(107, 144, 133, 0.14);
+    }
+
+    /* Monitors: bottom-left — neutral gray (low influence, low support) */
+    .q-monitors {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .q-monitors:hover,
+    .q-monitors.active {
+      border-color: #9ca3af;
+      box-shadow: 0 4px 16px rgba(107, 114, 128, 0.14);
+    }
+
+    /* Quadrant header row */
+    .q-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .q-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.2px;
+    }
+
+    .q-strategy-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    .q-champions .q-strategy-pill {
+      background: #a3c4b8;
+      color: #5a7f74;
+    }
+    .q-resistors .q-strategy-pill {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .q-advocates .q-strategy-pill {
+      background: #a3c4b8;
+      color: #5a7f74;
+    }
+    .q-monitors .q-strategy-pill {
+      background: #e5e7eb;
+      color: #6b7280;
+    }
+
+    /* Axis position tags */
+    .q-position {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Summary line always visible */
+    .q-summary {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    /* Expand indicator */
+    .q-expand-hint {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #9ca3af;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .q-expand-hint::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border: 1.5px solid #9ca3af;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .quadrant.active .q-expand-hint::before {
+      background: #9ca3af;
+    }
+
+    /* ─── X-axis labels beneath grid ─────────────────────────── */
+    .x-axis-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .x-axis-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .x-axis-outer {
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .x-axis-outer-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6b7280;
+    }
+
+    /* Arrow between Low/High labels */
+    .x-arrow-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 5px;
+    }
+
+    .x-arrow-label-left {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .x-arrow-label-right {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .x-arrow-line {
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+      margin: 0 8px;
+    }
+
+    /* ─── Detail panel ───────────────────────────────────────── */
+    .detail-panel {
+      margin-top: 20px;
+      border-radius: 12px;
+      border: 1.5px solid #e5e7eb;
+      overflow: hidden;
+      /* Collapsed by default */
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+    }
+
+    .detail-panel.visible {
+      max-height: 600px;
+      opacity: 1;
+    }
+
+    .detail-inner {
+      padding: 24px 26px 26px;
+    }
+
+    /* Detail panel accent bar */
+    .detail-panel.panel-champions { border-color: #6b9085; }
+    .detail-panel.panel-resistors { border-color: #374151; }
+    .detail-panel.panel-advocates { border-color: #a3c4b8; }
+    .detail-panel.panel-monitors  { border-color: #9ca3af; }
+
+    .detail-panel.panel-champions .detail-inner { background: #f0f5f3; }
+    .detail-panel.panel-resistors .detail-inner { background: #f9fafb; }
+    .detail-panel.panel-advocates .detail-inner { background: #f0f5f3; }
+    .detail-panel.panel-monitors  .detail-inner { background: #f3f4f6; }
+
+    .detail-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .detail-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.2px;
+    }
+
+    .detail-strategy-pill {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .panel-champions .detail-strategy-pill { background: #a3c4b8; color: #5a7f74; }
+    .panel-resistors .detail-strategy-pill { background: #e5e7eb; color: #374151; }
+    .panel-advocates .detail-strategy-pill { background: #a3c4b8; color: #5a7f74; }
+    .panel-monitors  .detail-strategy-pill { background: #e5e7eb; color: #6b7280; }
+
+    .detail-description {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    /* Detail sections: Characteristics + Engagement */
+    .detail-sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .detail-section {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 16px 18px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .detail-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .detail-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .detail-list li {
+      font-size: 12.5px;
+      color: #374151;
+      line-height: 1.55;
+      padding: 4px 0 4px 16px;
+      position: relative;
+    }
+
+    /* Accent dot color per quadrant */
+    .panel-champions .detail-list li::before,
+    .panel-advocates .detail-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 7px;
+      height: 2px;
+      background: #6b9085;
+      border-radius: 1px;
+    }
+
+    .panel-resistors .detail-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 7px;
+      height: 2px;
+      background: #374151;
+      border-radius: 1px;
+    }
+
+    .panel-monitors .detail-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 7px;
+      height: 2px;
+      background: #9ca3af;
+      border-radius: 1px;
+    }
+
+    /* Example callout */
+    .detail-example {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-radius: 8px;
+      border-left: 3px solid #e5e7eb;
+    }
+
+    .panel-champions .detail-example { border-left-color: #6b9085; }
+    .panel-resistors .detail-example { border-left-color: #374151; }
+    .panel-advocates .detail-example { border-left-color: #a3c4b8; }
+    .panel-monitors  .detail-example { border-left-color: #9ca3af; }
+
+    .detail-example-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .detail-example p {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #374151;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ─── Synthesis bar ──────────────────────────────────────── */
+    .synthesis {
+      text-align: center;
+      padding: 18px 24px;
+      background: #f0f5f3;
+      border-radius: 8px;
+      border-left: 3px solid #6b9085;
+      margin-top: 20px;
+    }
+
+    .synthesis p {
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+
+    .synthesis em {
+      font-style: italic;
+      color: #5a7f74;
+      font-weight: 600;
+    }
+
+    /* ─── Accessibility: screen reader only ──────────────────── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 800px) {
+      body { padding: 20px 0; }
+      .container { width: 100%; padding: 20px; }
+      h1 { font-size: 20px; }
+      .matrix-grid { grid-template-columns: 1fr; }
+      .x-axis-row { grid-template-columns: 1fr; }
+      .detail-sections { grid-template-columns: 1fr; }
+      .q-champions { grid-column: 1; grid-row: 1; }
+      .q-resistors { grid-column: 1; grid-row: 2; }
+      .q-advocates { grid-column: 1; grid-row: 3; }
+      .q-monitors  { grid-column: 1; grid-row: 4; }
+      .y-axis-label-col,
+      .y-arrow-col { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Live region for screen reader announcements -->
+  <div aria-live="polite" aria-atomic="true" class="sr-only" id="sr-announce"></div>
+
+  <!-- ── Matrix ───────────────────────────────────────────── -->
+  <div class="matrix-wrapper" role="region" aria-label="2 by 2 stakeholder matrix. Rows represent influence level; columns represent support level.">
+
+    <!-- Y-axis label -->
+    <div class="y-axis-label-col" aria-hidden="true">
+      <span class="y-axis-label">Influence</span>
+    </div>
+
+    <!-- Y-axis arrow column -->
+    <div class="y-arrow-col" aria-hidden="true">
+      <span class="arrow-label">High</span>
+      <div class="arrow-line-v"></div>
+      <span class="arrow-label">Low</span>
+    </div>
+
+    <!-- Grid + x-axis -->
+    <div class="matrix-grid-col">
+
+      <div class="matrix-grid">
+
+        <!-- RESISTORS: High Influence, Low Support (top-left) -->
+        <div
+          class="quadrant q-resistors"
+          id="q-resistors"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+          aria-controls="panel-resistors"
+          aria-label="Resistors quadrant: High Influence, Low Support. Strategy: Engage. Click to expand details."
+          onclick="toggleQuadrant('resistors')"
+          onkeydown="handleKey(event, 'resistors')"
+        >
+          <div class="q-header">
+            <span class="q-name">Resistors</span>
+            <span class="q-strategy-pill">Engage</span>
+          </div>
+          <div class="q-position" aria-hidden="true">High Influence &middot; Low Support</div>
+          <p class="q-summary">Can block transformation. Understand their concerns; address root causes before they become enemies.</p>
+          <p class="q-expand-hint" aria-hidden="true">Click to expand strategy details</p>
+        </div>
+
+        <!-- CHAMPIONS: High Influence, High Support (top-right) -->
+        <div
+          class="quadrant q-champions"
+          id="q-champions"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+          aria-controls="panel-champions"
+          aria-label="Champions quadrant: High Influence, High Support. Strategy: Partner. Click to expand details."
+          onclick="toggleQuadrant('champions')"
+          onkeydown="handleKey(event, 'champions')"
+        >
+          <div class="q-header">
+            <span class="q-name">Champions</span>
+            <span class="q-strategy-pill">Partner</span>
+          </div>
+          <div class="q-position" aria-hidden="true">High Influence &middot; High Support</div>
+          <p class="q-summary">Your most powerful allies. Give them visible roles and involve them in decision-making.</p>
+          <p class="q-expand-hint" aria-hidden="true">Click to expand strategy details</p>
+        </div>
+
+        <!-- MONITORS: Low Influence, Low Support (bottom-left) -->
+        <div
+          class="quadrant q-monitors"
+          id="q-monitors"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+          aria-controls="panel-monitors"
+          aria-label="Monitors quadrant: Low Influence, Low Support. Strategy: Watch. Click to expand details."
+          onclick="toggleQuadrant('monitors')"
+          onkeydown="handleKey(event, 'monitors')"
+        >
+          <div class="q-header">
+            <span class="q-name">Monitors</span>
+            <span class="q-strategy-pill">Watch</span>
+          </div>
+          <div class="q-position" aria-hidden="true">Low Influence &middot; Low Support</div>
+          <p class="q-summary">Low priority. Keep informed; their stance may shift as transformation progresses.</p>
+          <p class="q-expand-hint" aria-hidden="true">Click to expand strategy details</p>
+        </div>
+
+        <!-- ADVOCATES: Low Influence, High Support (bottom-right) -->
+        <div
+          class="quadrant q-advocates"
+          id="q-advocates"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+          aria-controls="panel-advocates"
+          aria-label="Advocates quadrant: Low Influence, High Support. Strategy: Leverage. Click to expand details."
+          onclick="toggleQuadrant('advocates')"
+          onkeydown="handleKey(event, 'advocates')"
+        >
+          <div class="q-header">
+            <span class="q-name">Advocates</span>
+            <span class="q-strategy-pill">Leverage</span>
+          </div>
+          <div class="q-position" aria-hidden="true">Low Influence &middot; High Support</div>
+          <p class="q-summary">Enthusiastic supporters who lack formal power. Amplify their voices; connect them with champions.</p>
+          <p class="q-expand-hint" aria-hidden="true">Click to expand strategy details</p>
+        </div>
+
+      </div><!-- /.matrix-grid -->
+
+      <!-- X-axis labels -->
+      <div class="x-arrow-row" aria-hidden="true">
+        <span class="x-arrow-label-left">Low Support</span>
+        <div class="x-arrow-line"></div>
+        <span class="x-arrow-label-right">High Support</span>
+      </div>
+
+      <div class="x-axis-outer" aria-hidden="true">
+        <span class="x-axis-outer-label">Support Level</span>
+      </div>
+
+    </div><!-- /.matrix-grid-col -->
+  </div><!-- /.matrix-wrapper -->
+
+  <!-- ── Detail Panels ──────────────────────────────────────── -->
+
+  <!-- Champions panel -->
+  <div
+    class="detail-panel panel-champions"
+    id="panel-champions"
+    role="region"
+    aria-label="Champions strategy details"
+  >
+    <div class="detail-inner">
+      <div class="detail-title-row">
+        <span class="detail-name">Champions</span>
+        <span class="detail-strategy-pill">Strategy: Partner</span>
+      </div>
+      <p class="detail-description">
+        Your core coalition. Champions see transformation as their win — it solves a problem they care about.
+        Involve them early in shaping strategy, not just executing it. When people co-create, they become invested in success.
+      </p>
+      <div class="detail-sections">
+        <div class="detail-section">
+          <div class="detail-section-label">Characteristics</div>
+          <ul class="detail-list" aria-label="Champion characteristics">
+            <li>High organizational influence and credibility</li>
+            <li>Genuine belief in the transformation vision</li>
+            <li>Willing to advocate when you're not in the room</li>
+            <li>Often motivated by aligned personal interests</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-label">Engagement Approach</div>
+          <ul class="detail-list" aria-label="Champion engagement approach">
+            <li>Give ownership of specific workstreams</li>
+            <li>Showcase contributions publicly to reinforce commitment</li>
+            <li>Involve in decision-making, not just execution</li>
+            <li>Frame the transformation as their win</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail-example">
+        <div class="detail-example-label">Course Example</div>
+        <p>When Adobe transitioned to Creative Cloud, they recruited product managers as champions by giving them authority to design new cloud-enabled features. Product managers became fierce advocates because the transformation empowered them to innovate.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resistors panel -->
+  <div
+    class="detail-panel panel-resistors"
+    id="panel-resistors"
+    role="region"
+    aria-label="Resistors strategy details"
+  >
+    <div class="detail-inner">
+      <div class="detail-title-row">
+        <span class="detail-name">Resistors</span>
+        <span class="detail-strategy-pill">Strategy: Engage</span>
+      </div>
+      <p class="detail-description">
+        High-influence resistors can block transformation entirely. Dismissing them as "blockers" and working around them
+        creates enemies who sabotage quietly. Effective leaders engage directly: understand why they resist, then address root causes.
+      </p>
+      <div class="detail-sections">
+        <div class="detail-section">
+          <div class="detail-section-label">Root Causes of Resistance</div>
+          <ul class="detail-list" aria-label="Root causes of resistance">
+            <li>Fear of loss: job security, status, expertise becoming obsolete</li>
+            <li>Lack of trust: previous failed initiatives, skepticism about leadership</li>
+            <li>Information gap: don't understand the vision or their role in it</li>
+            <li>Legitimate concerns: they see risks leadership hasn't considered</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-label">Engagement Approach</div>
+          <ul class="detail-list" aria-label="Resistor engagement approach">
+            <li>Hold 1-on-1 conversations before drawing conclusions</li>
+            <li>Ask: "What concerns you? What would need to be true to support this?"</li>
+            <li>Listen genuinely — resistors often surface valid risks</li>
+            <li>Incorporate valid concerns to strengthen the plan</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail-example">
+        <div class="detail-example-label">Course Example</div>
+        <p>A healthcare system launching AI diagnostics faced resistance from radiologists fearing job displacement. Leadership reframed: "AI handles routine scans; you focus on complex cases requiring expertise." Involving radiologists in designing AI integration turned resistance into ownership.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advocates panel -->
+  <div
+    class="detail-panel panel-advocates"
+    id="panel-advocates"
+    role="region"
+    aria-label="Advocates strategy details"
+  >
+    <div class="detail-inner">
+      <div class="detail-title-row">
+        <span class="detail-name">Advocates</span>
+        <span class="detail-strategy-pill">Strategy: Leverage</span>
+      </div>
+      <p class="detail-description">
+        Advocates are enthusiastic supporters who lack formal authority. They may not be in the room where decisions are made,
+        but they influence peers. Amplifying their voices multiplies the coalition's reach without requiring additional political capital.
+      </p>
+      <div class="detail-sections">
+        <div class="detail-section">
+          <div class="detail-section-label">Characteristics</div>
+          <ul class="detail-list" aria-label="Advocate characteristics">
+            <li>High enthusiasm for the transformation vision</li>
+            <li>Limited formal authority or organizational seniority</li>
+            <li>Credible with peers at their level</li>
+            <li>Often frontline workers or mid-level contributors</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-label">Engagement Approach</div>
+          <ul class="detail-list" aria-label="Advocate engagement approach">
+            <li>Connect them with champions who can amplify their voice</li>
+            <li>Include in cross-functional working groups</li>
+            <li>Give them platforms: town halls, internal communications</li>
+            <li>Recognize contributions publicly to sustain motivation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail-example">
+        <div class="detail-example-label">Course Example</div>
+        <p>Frontline service technicians who are excited about predictive maintenance tools can be powerful peer influencers. Connecting them with the CTO champion and featuring their experiences in internal communications spreads genuine enthusiasm without top-down pressure.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitors panel -->
+  <div
+    class="detail-panel panel-monitors"
+    id="panel-monitors"
+    role="region"
+    aria-label="Monitors strategy details"
+  >
+    <div class="detail-inner">
+      <div class="detail-title-row">
+        <span class="detail-name">Monitors</span>
+        <span class="detail-strategy-pill">Strategy: Watch</span>
+      </div>
+      <p class="detail-description">
+        Monitors are low priority for intensive engagement. Keep them informed through standard communication channels.
+        Their stance may shift as transformation progresses — visible wins can convert passive observers into advocates over time.
+      </p>
+      <div class="detail-sections">
+        <div class="detail-section">
+          <div class="detail-section-label">Characteristics</div>
+          <ul class="detail-list" aria-label="Monitor characteristics">
+            <li>Low organizational influence on the transformation</li>
+            <li>Not actively opposing or supporting the initiative</li>
+            <li>May become more relevant as the transformation scales</li>
+            <li>Stance is often driven by what they observe happening elsewhere</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-label">Engagement Approach</div>
+          <ul class="detail-list" aria-label="Monitor engagement approach">
+            <li>Keep informed through standard communications</li>
+            <li>Don't over-invest political capital here</li>
+            <li>Monitor for shifts — a change in stance signals something worth noting</li>
+            <li>Quick wins and visible momentum can move them toward support</li>
+          </ul>
+        </div>
+      </div>
+      <div class="detail-example">
+        <div class="detail-example-label">Course Example</div>
+        <p>A Finance team concerned about AI ROI but not directly involved in implementation sits in this quadrant. Keep them updated on business case developments. As pilots demonstrate results, their stance will naturally shift — and their influence may increase as budget decisions approach.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Synthesis ──────────────────────────────────────────── -->
+  <div class="synthesis">
+    <p>Build from <em>partners</em> first — then engage resistors directly. Your most dangerous mistake is ignoring high-influence resistors and hoping they stay quiet.</p>
+  </div>
+
+</div><!-- /.container -->
+
+<script>
+  // ── State ────────────────────────────────────────────────────
+  let activeQuadrant = null;
+
+  // ── Toggle logic ─────────────────────────────────────────────
+  function toggleQuadrant(id) {
+    const quadrantEl = document.getElementById('q-' + id);
+    const panelEl    = document.getElementById('panel-' + id);
+    const srEl       = document.getElementById('sr-announce');
+
+    const isCurrentlyActive = activeQuadrant === id;
+
+    // Close whichever panel is open
+    if (activeQuadrant) {
+      const prevQ = document.getElementById('q-' + activeQuadrant);
+      const prevP = document.getElementById('panel-' + activeQuadrant);
+      prevQ.classList.remove('active');
+      prevQ.setAttribute('aria-expanded', 'false');
+      prevP.classList.remove('visible');
+    }
+
+    if (isCurrentlyActive) {
+      // Toggle off
+      activeQuadrant = null;
+      srEl.textContent = 'Panel closed.';
+    } else {
+      // Open new panel
+      activeQuadrant = id;
+      quadrantEl.classList.add('active');
+      quadrantEl.setAttribute('aria-expanded', 'true');
+      panelEl.classList.add('visible');
+
+      // Announce to screen readers
+      const nameMap = {
+        champions: 'Champions',
+        resistors: 'Resistors',
+        advocates: 'Advocates',
+        monitors:  'Monitors'
+      };
+      srEl.textContent = nameMap[id] + ' strategy details expanded.';
+
+      // Scroll panel into view smoothly
+      setTimeout(function() {
+        panelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+  }
+
+  // ── Keyboard support ─────────────────────────────────────────
+  function handleKey(event, id) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleQuadrant(id);
+    }
+  }
+</script>
+
+</body>
+</html>

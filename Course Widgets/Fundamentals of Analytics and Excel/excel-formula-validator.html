@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Formula Validator - Practice Basic Functions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Color Scale */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #c0d1cd;
+            --color-error: #ef4444;
+            --color-warning: #f0ede0;
+
+            /* Border Radius */
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            padding: 24px;
+            min-height: 100vh;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 32px;
+            text-align: center;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .excel-grid-container {
+            padding: 32px;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--color-neutral-50);
+            border-radius: var(--border-radius);
+        }
+
+        .challenge-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .challenge-badge {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .excel-grid {
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .excel-row {
+            display: grid;
+            grid-template-columns: 50px repeat(5, 1fr);
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .excel-row:last-child {
+            border-bottom: none;
+        }
+
+        .excel-cell {
+            padding: 12px;
+            border-right: 1px solid var(--color-neutral-200);
+            background: white;
+            font-size: 14px;
+            color: var(--color-neutral-900);
+        }
+
+        .excel-cell:last-child {
+            border-right: none;
+        }
+
+        .excel-header {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            text-align: center;
+            color: var(--color-neutral-700);
+        }
+
+        .row-number {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            text-align: center;
+            color: var(--color-neutral-700);
+        }
+
+        .formula-input-cell {
+            background: #faf9f5;
+            padding: 0;
+        }
+
+        .formula-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background: transparent;
+        }
+
+        .formula-input:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .result-cell {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+        }
+
+        .correct {
+            background: #f0f5f4 !important;
+            color: #404040;
+        }
+
+        .incorrect {
+            background: #fee2e2 !important;
+            color: #991b1b;
+        }
+
+        .task-description {
+            background: var(--color-neutral-50);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            border-left: 4px solid var(--color-neutral-300);
+        }
+
+        .task-description h3 {
+            color: var(--color-neutral-900);
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .task-description p {
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Geist', -apple-system, sans-serif;
+        }
+
+        .check-button {
+            background: var(--color-neutral-900);
+            color: white;
+            flex: 1;
+        }
+
+        .check-button:hover {
+            background: var(--color-neutral-700);
+            transform: translateY(-1px);
+        }
+
+        .check-button:focus {
+            outline: 2px solid var(--color-neutral-600);
+            outline-offset: 2px;
+        }
+
+        .check-button:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hint-button {
+            background: #f0ede0;
+            color: var(--color-neutral-900);
+            flex: 0 0 auto;
+        }
+
+        .hint-button:hover {
+            background: #e5e0ce;
+        }
+
+        .hint-button:focus {
+            outline: 2px solid var(--color-neutral-600);
+            outline-offset: 2px;
+        }
+
+        .next-button {
+            background: var(--color-neutral-700);
+            color: white;
+            flex: 1;
+        }
+
+        .next-button:hover {
+            background: var(--color-neutral-600);
+        }
+
+        .next-button:focus {
+            outline: 2px solid var(--color-neutral-600);
+            outline-offset: 2px;
+        }
+
+        .feedback {
+            padding: 24px;
+            border-radius: var(--border-radius);
+            margin-top: 24px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .feedback.success {
+            background: #f0f5f4;
+            border: 2px solid var(--color-success);
+            color: #404040;
+        }
+
+        .feedback.error {
+            background: #fee2e2;
+            border: 2px solid var(--color-error);
+            color: #991b1b;
+        }
+
+        .feedback.hint {
+            background: #faf9f5;
+            border: 2px solid var(--color-warning);
+            color: #525252;
+        }
+
+        .feedback strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            background: var(--color-neutral-200);
+            height: 8px;
+            border-radius: var(--border-radius);
+            margin: 24px 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #bfe5e7;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-message h2 {
+            color: var(--color-neutral-900);
+            font-size: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .completion-message p {
+            color: var(--color-neutral-700);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .excel-row {
+                grid-template-columns: 40px repeat(5, minmax(80px, 1fr));
+            }
+
+            .excel-cell {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Excel Formula Validator</h1>
+            <p>Practice writing SUM, AVERAGE, MIN, and MAX formulas with instant feedback</p>
+        </header>
+
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="excel-grid-container" id="challengeContainer">
+            <!-- Challenge content injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            {
+                level: 1,
+                badge: "Challenge 1 of 3",
+                title: "Calculate Total Quarterly Revenue",
+                description: "CloudFlow had the following monthly revenues in Q1. Calculate the total revenue for the quarter.",
+                task: "Write a formula in cell B7 to calculate the sum of all monthly revenues (B4:B6).",
+                data: [
+                    ["Month", "Revenue", "", "", ""],
+                    ["January", "$52,000", "", "", ""],
+                    ["February", "$48,500", "", "", ""],
+                    ["March", "$61,200", "", "", ""],
+                    ["Total Q1 Revenue", "", "", "", ""]
+                ],
+                inputCell: { row: 4, col: 1 },
+                correctAnswers: ["=SUM(B4:B6)", "=sum(B4:B6)", "=SUM(b4:b6)", "=sum(b4:b6)"],
+                hint: "Use the SUM function. The syntax is =SUM(first_cell:last_cell). In this case, you need to add cells B4 through B6.",
+                expectedResult: "$161,700",
+                explanation: "Excellent! SUM(B4:B6) adds all values in the range. This is much faster than typing =B4+B5+B6."
+            },
+            {
+                level: 2,
+                badge: "Challenge 2 of 3",
+                title: "Calculate Average Customer Spend",
+                description: "Analyze customer spending patterns for CloudFlow's top 5 customers this month.",
+                task: "Write a formula in cell C9 to calculate the average spend across all customers (C4:C8).",
+                data: [
+                    ["", "Customer", "Monthly Spend", "", ""],
+                    ["", "Acme Corp", "$2,400", "", ""],
+                    ["", "TechStart Inc", "$1,850", "", ""],
+                    ["", "DataFlow LLC", "$3,200", "", ""],
+                    ["", "CloudBiz Co", "$2,100", "", ""],
+                    ["", "InnoSoft", "$2,650", "", ""],
+                    ["", "Average Spend", "", "", ""]
+                ],
+                inputCell: { row: 6, col: 2 },
+                correctAnswers: ["=AVERAGE(C4:C8)", "=average(C4:C8)", "=AVERAGE(c4:c8)", "=average(c4:c8)"],
+                hint: "Use the AVERAGE function. The syntax is =AVERAGE(first_cell:last_cell). You need the average of C4 through C8.",
+                expectedResult: "$2,440",
+                explanation: "Perfect! AVERAGE(C4:C8) calculates the mean by adding all values and dividing by the count. This helps CloudFlow understand typical customer value."
+            },
+            {
+                level: 3,
+                badge: "Challenge 3 of 3",
+                title: "Find Performance Range (MIN and MAX)",
+                description: "CloudFlow's sales team had varying performance this quarter. Find the lowest and highest sales figures.",
+                task: "Write TWO formulas: In D9 use MIN to find the lowest sales, and in D10 use MAX to find the highest sales from the range D4:D8.",
+                data: [
+                    ["", "", "Salesperson", "Q1 Sales", ""],
+                    ["", "", "Alice Johnson", "$42,000", ""],
+                    ["", "", "Bob Smith", "$38,500", ""],
+                    ["", "", "Carol Lee", "$51,200", ""],
+                    ["", "", "David Brown", "$29,800", ""],
+                    ["", "", "Emma Wilson", "$46,300", ""],
+                    ["", "", "Lowest Sales", "", ""],
+                    ["", "", "Highest Sales", "", ""]
+                ],
+                inputCell: [{ row: 6, col: 3 }, { row: 7, col: 3 }],
+                correctAnswers: [
+                    ["=MIN(D4:D8)", "=min(D4:D8)", "=MIN(d4:d8)", "=min(d4:d8)"],
+                    ["=MAX(D4:D8)", "=max(D4:D8)", "=MAX(d4:d8)", "=max(d4:d8)"]
+                ],
+                hint: "Use MIN for the first cell (D9) and MAX for the second cell (D10). Both should reference the range D4:D8.",
+                expectedResult: ["$29,800", "$51,200"],
+                explanation: "Excellent work! MIN finds the smallest value and MAX finds the largest. Together, they show the performance range: $21,400 spread."
+            }
+        ];
+
+        let currentChallenge = 0;
+        let completedChallenges = 0;
+
+        function renderChallenge(index) {
+            const challenge = challenges[index];
+            const container = document.getElementById('challengeContainer');
+
+            // Build header
+            let html = `
+                <div class="challenge-header">
+                    <div class="challenge-title">${challenge.title}</div>
+                    <div class="challenge-badge">${challenge.badge}</div>
+                </div>
+
+                <div class="task-description">
+                    <h3>Scenario:</h3>
+                    <p>${challenge.description}</p>
+                    <h3>Your Task:</h3>
+                    <p>${challenge.task}</p>
+                </div>
+
+                <div class="excel-grid">
+            `;
+
+            // Build Excel grid header
+            html += `
+                <div class="excel-row">
+                    <div class="excel-cell excel-header"></div>
+                    <div class="excel-cell excel-header">A</div>
+                    <div class="excel-cell excel-header">B</div>
+                    <div class="excel-cell excel-header">C</div>
+                    <div class="excel-cell excel-header">D</div>
+                    <div class="excel-cell excel-header">E</div>
+                </div>
+            `;
+
+            // Build data rows
+            challenge.data.forEach((row, rowIndex) => {
+                html += `<div class="excel-row">`;
+                html += `<div class="excel-cell row-number">${rowIndex + 3}</div>`;
+
+                for (let colIndex = 0; colIndex < 5; colIndex++) {
+                    const cellValue = row[colIndex] || '';
+
+                    // Check if this is an input cell
+                    let isInputCell = false;
+                    if (Array.isArray(challenge.inputCell)) {
+                        isInputCell = challenge.inputCell.some(cell => cell.row === rowIndex && cell.col === colIndex);
+                    } else {
+                        isInputCell = challenge.inputCell.row === rowIndex && challenge.inputCell.col === colIndex;
+                    }
+
+                    if (isInputCell) {
+                        const inputIndex = Array.isArray(challenge.inputCell)
+                            ? challenge.inputCell.findIndex(cell => cell.row === rowIndex && cell.col === colIndex)
+                            : 0;
+                        html += `<div class="excel-cell formula-input-cell">
+                            <input type="text"
+                                   class="formula-input"
+                                   id="formulaInput${inputIndex}"
+                                   placeholder="Enter formula..."
+                                   aria-label="Formula input for ${String.fromCharCode(65 + colIndex)}${rowIndex + 3}">
+                        </div>`;
+                    } else {
+                        html += `<div class="excel-cell">${cellValue}</div>`;
+                    }
+                }
+
+                html += `</div>`;
+            });
+
+            html += `</div>`; // Close excel-grid
+
+            // Add buttons
+            html += `
+                <div class="button-group">
+                    <button class="check-button" onclick="checkFormula()" id="checkButton">
+                        Check Formula
+                    </button>
+                    <button class="hint-button" onclick="showHint()">
+                        Show Hint
+                    </button>
+                </div>
+
+                <div id="feedback" role="alert" aria-live="polite"></div>
+            `;
+
+            container.innerHTML = html;
+            updateProgress();
+        }
+
+        function checkFormula() {
+            const challenge = challenges[currentChallenge];
+            const feedback = document.getElementById('feedback');
+
+            if (Array.isArray(challenge.inputCell)) {
+                // Multiple inputs (Challenge 3)
+                let allCorrect = true;
+                const userInputs = [];
+
+                for (let i = 0; i < challenge.inputCell.length; i++) {
+                    const input = document.getElementById(`formulaInput${i}`).value.trim();
+                    userInputs.push(input);
+
+                    const correctAnswers = challenge.correctAnswers[i];
+                    // Case-insensitive comparison
+                    const inputUpper = input.toUpperCase();
+                    const correctAnswersUpper = correctAnswers.map(ans => ans.toUpperCase());
+                    if (!correctAnswersUpper.includes(inputUpper)) {
+                        allCorrect = false;
+                    }
+                }
+
+                if (allCorrect) {
+                    feedback.className = 'feedback success';
+                    feedback.innerHTML = `
+                        <strong>✓ Perfect!</strong>
+                        ${challenge.explanation}
+                        <br><br>
+                        <strong>Your formulas:</strong> ${userInputs.join(' and ')}
+                        <br>
+                        <strong>Results:</strong> ${challenge.expectedResult.join(' and ')}
+                    `;
+
+                    completedChallenges++;
+                    updateProgress();
+
+                    if (currentChallenge < challenges.length - 1) {
+                        feedback.innerHTML += `
+                            <div class="button-group" style="margin-top: 24px;">
+                                <button class="next-button" onclick="nextChallenge()">
+                                    Next Challenge →
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        showCompletion();
+                    }
+                } else {
+                    feedback.className = 'feedback error';
+                    feedback.innerHTML = `
+                        <strong>✗ Not quite right</strong>
+                        Double-check your formulas. Remember:
+                        <ul>
+                            <li>Start with = sign</li>
+                            <li>Use MIN for the first formula and MAX for the second</li>
+                            <li>Reference the range D4:D8 in both formulas</li>
+                        </ul>
+                    `;
+                }
+            } else {
+                // Single input (Challenges 1 and 2)
+                const userInput = document.getElementById('formulaInput0').value.trim();
+
+                // Case-insensitive comparison
+                const inputUpper = userInput.toUpperCase();
+                const correctAnswersUpper = challenge.correctAnswers.map(ans => ans.toUpperCase());
+
+                if (correctAnswersUpper.includes(inputUpper)) {
+                    feedback.className = 'feedback success';
+                    feedback.innerHTML = `
+                        <strong>✓ Correct!</strong>
+                        ${challenge.explanation}
+                        <br><br>
+                        <strong>Your formula:</strong> ${userInput}
+                        <br>
+                        <strong>Result:</strong> ${challenge.expectedResult}
+                    `;
+
+                    completedChallenges++;
+                    updateProgress();
+
+                    if (currentChallenge < challenges.length - 1) {
+                        feedback.innerHTML += `
+                            <div class="button-group" style="margin-top: 24px;">
+                                <button class="next-button" onclick="nextChallenge()">
+                                    Next Challenge →
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        showCompletion();
+                    }
+                } else {
+                    feedback.className = 'feedback error';
+                    feedback.innerHTML = `
+                        <strong>✗ Not quite right</strong>
+                        ${userInput ? `You entered: <code>${userInput}</code>` : 'You need to enter a formula.'}
+                        <br><br>
+                        Remember to:
+                        <ul>
+                            <li>Start your formula with = sign</li>
+                            <li>Use the correct function name</li>
+                            <li>Reference the correct cell range</li>
+                        </ul>
+                        Try the hint button if you're stuck!
+                    `;
+                }
+            }
+        }
+
+        function showHint() {
+            const challenge = challenges[currentChallenge];
+            const feedback = document.getElementById('feedback');
+
+            feedback.className = 'feedback hint';
+            feedback.innerHTML = `
+                <strong>Hint</strong>
+                ${challenge.hint}
+            `;
+        }
+
+        function nextChallenge() {
+            currentChallenge++;
+            renderChallenge(currentChallenge);
+        }
+
+        function updateProgress() {
+            const progress = (completedChallenges / challenges.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.querySelector('.progress-bar').setAttribute('aria-valuenow', progress);
+        }
+
+        function showCompletion() {
+            const container = document.getElementById('challengeContainer');
+            container.innerHTML = `
+                <div class="completion-message">
+                    <h2>Congratulations!</h2>
+                    <p>You've mastered SUM, AVERAGE, MIN, and MAX functions!</p>
+                    <p style="margin-top: 24px;">These foundational functions are the building blocks of Excel analysis. You'll use them constantly in business scenarios to calculate totals, find patterns, and understand data ranges.</p>
+                    <p style="margin-top: 16px;"><strong>Next Step:</strong> Continue to the next module to learn about absolute cell references.</p>
+                </div>
+            `;
+        }
+
+        // Initialize first challenge on page load
+        renderChallenge(0);
+
+        // Keyboard accessibility: Enter key to check formula
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const checkButton = document.getElementById('checkButton');
+                if (checkButton) {
+                    checkFormula();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

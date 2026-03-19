@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Timeline Approach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --turquoise: #bfe5e7; --turquoise-dark: #9dd4d7;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff; --highlight: #ffd966;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 920px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--purple); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+
+        .concept-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .concept-list { list-style: none; }
+        .concept-list li { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px; padding-left: 28px; position: relative; line-height: 1.7; }
+        .concept-list li:before { content: '✓'; position: absolute; left: 0; color: var(--purple-dark); font-weight: 700; font-size: 1.1rem; }
+
+        .interactive-section { background-color: var(--white); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 2px solid var(--purple); }
+        .section-title { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .section-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+
+        .timeline-builder { background-color: var(--grey-bg); border-radius: 12px; padding: 32px 24px; margin-bottom: 24px; min-height: 200px; }
+        .timeline-container { position: relative; padding: 40px 0; }
+        .timeline-line { display: flex; align-items: center; justify-content: space-between; position: relative; margin: 20px 0; }
+        .timeline-bar { position: absolute; top: 50%; left: 0; right: 0; height: 4px; background-color: var(--purple-dark); z-index: 0; }
+        .timeline-point { width: 80px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; cursor: pointer; transition: all 0.2s ease; }
+        .timeline-point:hover .timeline-dot { transform: scale(1.3); }
+        .timeline-point.active .timeline-dot { background-color: var(--green-dark); border-color: var(--green-dark); transform: scale(1.4); }
+        .timeline-point.active .timeline-label { color: var(--green-dark); font-weight: 700; }
+        .timeline-dot { width: 16px; height: 16px; border-radius: 50%; background-color: var(--purple-dark); border: 4px solid var(--white); box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease; }
+        .timeline-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-top: 10px; transition: all 0.2s ease; }
+        .timeline-value { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-top: 6px; padding: 6px 10px; border-radius: 6px; background-color: var(--white); box-shadow: 0 1px 3px rgba(0,0,0,0.08); min-width: 70px; text-align: center; opacity: 0; transition: all 0.3s ease; }
+        .timeline-value.show { opacity: 1; transform: translateY(-5px); }
+        .timeline-value.outflow { color: var(--incorrect); }
+        .timeline-value.inflow { color: var(--correct); }
+        .timeline-arrow { font-size: 1.2rem; margin-bottom: 4px; opacity: 0; transition: all 0.3s ease; }
+        .timeline-arrow.show { opacity: 1; }
+
+        .control-panel { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .control-btn { background-color: var(--purple); color: var(--text-primary); border: 2px solid var(--purple-dark); padding: 10px 20px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .control-btn:hover { background-color: var(--purple-dark); transform: translateY(-1px); }
+        .control-btn.active { background-color: var(--green); border-color: var(--green-dark); }
+
+        .info-box { background-color: var(--turquoise); border-radius: 8px; padding: 16px 20px; margin-top: 20px; border-left: 4px solid var(--turquoise-dark); }
+        .info-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .info-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+        .demo-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .demo-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+        .scenario-btn { display: block; width: 100%; background-color: var(--grey-bg); color: var(--text-primary); border: 2px solid var(--grey-light); padding: 14px 20px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-bottom: 10px; text-align: left; }
+        .scenario-btn:hover { background-color: var(--purple); border-color: var(--purple-dark); }
+        .scenario-description { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-weight: 400; }
+
+        .key-points { background-color: var(--green); border-radius: 12px; padding: 24px; margin-top: 24px; }
+        .key-points-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+        .key-points-list { list-style: none; }
+        .key-points-list li { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px; padding-left: 24px; position: relative; line-height: 1.6; }
+        .key-points-list li:before { content: '→'; position: absolute; left: 0; color: var(--green-dark); font-weight: 700; font-size: 1rem; }
+
+        @media (max-width: 600px) { 
+            body { padding: 24px 16px; } 
+            .header h1 { font-size: 1.5rem; }
+            .timeline-point { width: 60px; }
+            .timeline-value { font-size: 0.8rem; min-width: 60px; padding: 4px 8px; }
+            .control-panel { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 4.2</div>
+            <h1>The Timeline Approach</h1>
+            <p>Visualize cash flows through time with interactive timelines</p>
+        </div>
+
+        <div class="concept-card">
+            <ul class="concept-list">
+                <li><strong>A timeline plots cash flows in order</strong>, making it easier to visualize when they occur and how to discount or compound them</li>
+                <li><strong>Always label time 0 as "today"</strong> — this is your reference point for all present and future value calculations</li>
+                <li><strong>Each tick on the line equals one compounding period</strong> (year, quarter, month) — maintain consistency throughout your analysis</li>
+            </ul>
+        </div>
+
+        <div class="interactive-section">
+            <div class="section-title">
+                <span>🎯</span>
+                <span>Interactive Timeline Builder</span>
+            </div>
+            <div class="section-subtitle">Click on each time point to reveal the cash flows</div>
+
+            <div class="timeline-builder">
+                <div class="timeline-container">
+                    <div class="timeline-line">
+                        <div class="timeline-bar"></div>
+                        <div class="timeline-point" onclick="revealPoint(0)">
+                            <div class="timeline-arrow" id="arrow-0">↓</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Time 0<br><small>(Today)</small></div>
+                            <div class="timeline-value outflow" id="value-0">-$1,000</div>
+                        </div>
+                        <div class="timeline-point" onclick="revealPoint(1)">
+                            <div class="timeline-arrow" id="arrow-1">↑</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 1</div>
+                            <div class="timeline-value inflow" id="value-1">+$500</div>
+                        </div>
+                        <div class="timeline-point" onclick="revealPoint(2)">
+                            <div class="timeline-arrow" id="arrow-2">↑</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 2</div>
+                            <div class="timeline-value inflow" id="value-2">+$500</div>
+                        </div>
+                        <div class="timeline-point" onclick="revealPoint(3)">
+                            <div class="timeline-arrow" id="arrow-3">↑</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 3</div>
+                            <div class="timeline-value inflow" id="value-3">+$500</div>
+                        </div>
+                        <div class="timeline-point" onclick="revealPoint(4)">
+                            <div class="timeline-arrow" id="arrow-4">↑</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 4</div>
+                            <div class="timeline-value inflow" id="value-4">+$500</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <button class="control-btn" onclick="revealAll()">Show All Cash Flows</button>
+                <button class="control-btn" onclick="resetTimeline()">Reset Timeline</button>
+                <button class="control-btn" onclick="explainExample()">Explain This Example</button>
+            </div>
+
+            <div class="info-box" id="explanation" style="display: none;">
+                <div class="info-title">💡 Understanding This Timeline</div>
+                <div class="info-text">
+                    This represents an <strong>investment scenario</strong>: You invest $1,000 today (outflow at Time 0) and receive $500 per year for 4 years (inflows from Year 1-4). The downward arrow (↓) shows money leaving your pocket, while upward arrows (↑) show money coming in. This pattern is typical of bond investments, equipment purchases, or any project with an upfront cost followed by recurring returns.
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-card">
+            <div class="demo-title">📊 Try Different Scenarios</div>
+            <button class="scenario-btn" onclick="loadScenario('loan')">
+                <div>💰 Loan Payment Stream</div>
+                <div class="scenario-description">Borrow today, make equal payments over time</div>
+            </button>
+            <button class="scenario-btn" onclick="loadScenario('savings')">
+                <div>🏦 Savings Plan</div>
+                <div class="scenario-description">Regular deposits growing to a future lump sum</div>
+            </button>
+            <button class="scenario-btn" onclick="loadScenario('project')">
+                <div>🏗️ Capital Project</div>
+                <div class="scenario-description">Upfront investment with uneven returns</div>
+            </button>
+        </div>
+
+        <div class="key-points">
+            <div class="key-points-title">Key Timeline Principles</div>
+            <ul class="key-points-list">
+                <li><strong>Consistent spacing:</strong> Each period must represent the same time interval (don't mix months and years)</li>
+                <li><strong>Direction matters:</strong> Outflows (payments, investments) point down; inflows (receipts) point up</li>
+                <li><strong>Time 0 is your anchor:</strong> All present value calculations discount back to Time 0; all future values compound forward from Time 0</li>
+                <li><strong>Visual clarity:</strong> A well-drawn timeline prevents calculation errors by making the cash flow pattern obvious</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let revealedPoints = new Set();
+        
+        function revealPoint(index) {
+            const point = document.querySelectorAll('.timeline-point')[index];
+            const value = document.getElementById(`value-${index}`);
+            const arrow = document.getElementById(`arrow-${index}`);
+            
+            if (!revealedPoints.has(index)) {
+                point.classList.add('active');
+                value.classList.add('show');
+                arrow.classList.add('show');
+                revealedPoints.add(index);
+                
+                // Small celebration effect
+                setTimeout(() => {
+                    point.classList.remove('active');
+                }, 600);
+            }
+        }
+
+        function revealAll() {
+            for (let i = 0; i <= 4; i++) {
+                revealPoint(i);
+            }
+            document.getElementById('explanation').style.display = 'block';
+        }
+
+        function resetTimeline() {
+            revealedPoints.clear();
+            document.querySelectorAll('.timeline-value').forEach(v => v.classList.remove('show'));
+            document.querySelectorAll('.timeline-arrow').forEach(a => a.classList.remove('show'));
+            document.querySelectorAll('.timeline-point').forEach(p => p.classList.remove('active'));
+            document.getElementById('explanation').style.display = 'none';
+        }
+
+        function explainExample() {
+            revealAll();
+            document.getElementById('explanation').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function loadScenario(type) {
+            resetTimeline();
+            
+            const scenarios = {
+                loan: {
+                    values: ['+$5,000', '-$1,500', '-$1,500', '-$1,500', '-$1,500'],
+                    directions: ['↑', '↓', '↓', '↓', '↓'],
+                    classes: ['inflow', 'outflow', 'outflow', 'outflow', 'outflow'],
+                    explanation: '<strong>Loan Scenario:</strong> You receive $5,000 today (inflow) and make four annual payments of $1,500 (outflows). This is the borrower\'s perspective — opposite of a lender\'s timeline.'
+                },
+                savings: {
+                    values: ['-$1,000', '-$1,000', '-$1,000', '-$1,000', '+$4,800'],
+                    directions: ['↓', '↓', '↓', '↓', '↑'],
+                    classes: ['outflow', 'outflow', 'outflow', 'outflow', 'inflow'],
+                    explanation: '<strong>Savings Plan:</strong> You deposit $1,000 annually for 4 years (outflows) and receive a lump sum of $4,800 in Year 4 (inflow). The final amount includes your deposits plus accumulated interest.'
+                },
+                project: {
+                    values: ['-$1,000', '+$300', '+$400', '+$600', '+$800'],
+                    directions: ['↓', '↑', '↑', '↑', '↑'],
+                    classes: ['outflow', 'inflow', 'inflow', 'inflow', 'inflow'],
+                    explanation: '<strong>Capital Project:</strong> Initial investment of $1,000 generates increasing returns over 4 years as the project matures. This uneven cash flow pattern requires careful discounting of each period individually.'
+                }
+            };
+            
+            const scenario = scenarios[type];
+            
+            // Update values and styling
+            for (let i = 0; i <= 4; i++) {
+                const valueEl = document.getElementById(`value-${i}`);
+                const arrowEl = document.getElementById(`arrow-${i}`);
+                
+                valueEl.textContent = scenario.values[i];
+                arrowEl.textContent = scenario.directions[i];
+                
+                valueEl.className = 'timeline-value ' + scenario.classes[i];
+            }
+            
+            // Show explanation
+            const infoBox = document.getElementById('explanation');
+            infoBox.querySelector('.info-text').innerHTML = scenario.explanation;
+            
+            revealAll();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Trends Predictor - Strategic Planning Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: #171717;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #171717;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #525252;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Progress indicator */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: #e5e5e5;
+            z-index: 0;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .progress-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e5e5e5;
+            color: #737373;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .progress-step.active .progress-circle {
+            background: #171717;
+            color: white;
+        }
+
+        .progress-step.completed .progress-circle {
+            background: #059669;
+            color: white;
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            color: #737373;
+            text-align: center;
+            max-width: 80px;
+        }
+
+        .progress-step.active .progress-label {
+            color: #171717;
+            font-weight: 600;
+        }
+
+        /* Step containers */
+        .step {
+            display: none;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            color: #525252;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Trend cards */
+        .trends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .trend-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .trend-card:hover {
+            border-color: #a3a3a3;
+        }
+
+        .trend-card.selected {
+            border-color: #171717;
+            background: #f5f5f5;
+        }
+
+        .trend-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .trend-name {
+            font-weight: 600;
+            color: #171717;
+            margin-bottom: 4px;
+        }
+
+        .trend-desc {
+            font-size: 0.85rem;
+            color: #525252;
+        }
+
+        .selection-status {
+            background: #171717;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Budget allocation */
+        .allocation-container {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .allocation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .budget-display {
+            text-align: center;
+        }
+
+        .budget-label {
+            font-size: 0.85rem;
+            color: #525252;
+            margin-bottom: 4px;
+        }
+
+        .budget-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #171717;
+        }
+
+        .budget-status {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .budget-status.incomplete {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .budget-status.complete {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .budget-status.over {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .allocation-item {
+            margin-bottom: 20px;
+        }
+
+        .allocation-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .allocation-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .trend-title {
+            font-weight: 600;
+            color: #171717;
+        }
+
+        .allocation-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #171717;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #171717;
+            background: white;
+            color: #171717;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .slider-btn:hover {
+            background: #171717;
+            color: white;
+        }
+
+        .slider-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e5e5;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #171717;
+            cursor: pointer;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: #f5f5f5;
+            border-color: #171717;
+        }
+
+        /* Results sections */
+        .results-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .results-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #171717;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-bottom: 15px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .impact-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .impact-label {
+            font-size: 0.75rem;
+            color: #525252;
+            margin-bottom: 4px;
+        }
+
+        .impact-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .impact-positive { color: #059669; }
+        .impact-neutral { color: #525252; }
+        .impact-negative { color: #dc2626; }
+
+        /* Expert comparison */
+        .expert-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .expert-card {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .expert-name {
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .expert-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .expert-item:last-child {
+            border-bottom: none;
+        }
+
+        .your-picks {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .match-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        .match-yes { background: #059669; }
+        .match-no { background: #e5e5e5; }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #171717;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #404040;
+        }
+
+        .btn-primary:disabled {
+            background: #a3a3a3;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #171717;
+            border: 2px solid #171717;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* Scenario tabs */
+        .scenario-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scenario-tab {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .scenario-tab:hover {
+            background: #fafafa;
+        }
+
+        .scenario-tab.active {
+            background: #171717;
+            color: white;
+            border-color: #171717;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .trends-grid { grid-template-columns: 1fr; }
+            .expert-grid { grid-template-columns: 1fr; }
+            .impact-grid { grid-template-columns: repeat(3, 1fr); }
+            .progress-label { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Future Trends Predictor</h1>
+        <p class="subtitle">Build your 5-year strategic investment thesis</p>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar" role="navigation" aria-label="Progress">
+            <div class="progress-step active" id="prog-1">
+                <div class="progress-circle">1</div>
+                <div class="progress-label">Select Trends</div>
+            </div>
+            <div class="progress-step" id="prog-2">
+                <div class="progress-circle">2</div>
+                <div class="progress-label">Allocate Budget</div>
+            </div>
+            <div class="progress-step" id="prog-3">
+                <div class="progress-circle">3</div>
+                <div class="progress-label">View Impact</div>
+            </div>
+            <div class="progress-step" id="prog-4">
+                <div class="progress-circle">4</div>
+                <div class="progress-label">Compare Experts</div>
+            </div>
+            <div class="progress-step" id="prog-5">
+                <div class="progress-circle">5</div>
+                <div class="progress-label">Export</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Select Trends -->
+        <div class="step active" id="step-1">
+            <h2 class="step-title">Step 1: Select Your Top 3 Trends</h2>
+            <p class="step-description">Which emerging trends will most impact sports business over the next 5 years? Choose the three you believe are most critical.</p>
+
+            <div class="trends-grid" id="trendsGrid"></div>
+
+            <div class="selection-status" id="selectionStatus">Select 3 trends to continue (0 selected)</div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="toStep2" disabled onclick="goToStep(2)">Continue to Budget Allocation</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Allocate Budget -->
+        <div class="step" id="step-2">
+            <h2 class="step-title">Step 2: Allocate Your $50M Budget</h2>
+            <p class="step-description">You have $50 million to invest across your chosen trends. Use the sliders or buttons to distribute your budget. You must allocate exactly $50M.</p>
+
+            <div class="allocation-container">
+                <div class="allocation-header">
+                    <div class="budget-display">
+                        <div class="budget-label">Allocated</div>
+                        <div class="budget-amount" id="allocatedAmount">$0M</div>
+                    </div>
+                    <div class="budget-status incomplete" id="budgetStatus">$50M remaining</div>
+                    <div class="budget-display">
+                        <div class="budget-label">Total Budget</div>
+                        <div class="budget-amount">$50M</div>
+                    </div>
+                </div>
+
+                <div id="allocationSliders"></div>
+
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="distributeEvenly()">Split Evenly</button>
+                    <button class="quick-btn" onclick="allocateAll(0)">All to #1</button>
+                    <button class="quick-btn" onclick="allocateAll(1)">All to #2</button>
+                    <button class="quick-btn" onclick="allocateAll(2)">All to #3</button>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                <button class="btn btn-primary" id="toStep3" disabled onclick="goToStep(3)">View Revenue Impact</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Impact Analysis -->
+        <div class="step" id="step-3">
+            <h2 class="step-title">Step 3: Revenue Stream Impact</h2>
+            <p class="step-description">Based on your trend allocation, here's the projected impact on the 5 revenue streams over 3 years.</p>
+
+            <div class="results-card">
+                <div class="scenario-tabs">
+                    <button class="scenario-tab active" onclick="switchScenario('optimistic')">Optimistic</button>
+                    <button class="scenario-tab" onclick="switchScenario('realistic')">Realistic</button>
+                    <button class="scenario-tab" onclick="switchScenario('pessimistic')">Pessimistic</button>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="impactChart"></canvas>
+                </div>
+
+                <div class="impact-grid" id="impactGrid"></div>
+
+                <p style="font-size: 0.8rem; color: #737373; margin-top: 15px; font-style: italic;">
+                    Note: Projections are illustrative scenarios for learning purposes, based on industry trend analysis. Actual results vary by market conditions, execution, and timing. Betting growth led primarily by Millennials (42%) with Gen Z (34%) participation plateauing in recent quarters.
+                </p>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToStep(2)">Adjust Budget</button>
+                <button class="btn btn-primary" onclick="goToStep(4)">Compare to Expert Forecasts</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Expert Comparison -->
+        <div class="step" id="step-4">
+            <h2 class="step-title">Step 4: Expert Forecast Comparison</h2>
+            <p class="step-description">How do your picks compare to leading industry analysts? Green dots indicate alignment with your selections.</p>
+
+            <div class="results-card">
+                <div class="expert-grid">
+                    <div class="expert-card">
+                        <div class="expert-name">McKinsey & Company</div>
+                        <div class="expert-item">
+                            <span>AI & Personalization</span>
+                            <span>35% <span class="match-indicator" id="match-mckinsey-ai"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>Women's Sports Growth</span>
+                            <span>25% <span class="match-indicator" id="match-mckinsey-womens"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>Direct-to-Fan Models</span>
+                            <span>20% <span class="match-indicator" id="match-mckinsey-directfan"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>Gen Z Engagement</span>
+                            <span>20% <span class="match-indicator" id="match-mckinsey-genz"></span></span>
+                        </div>
+                    </div>
+                    <div class="expert-card">
+                        <div class="expert-name">Deloitte Sports</div>
+                        <div class="expert-item">
+                            <span>Streaming Dominance</span>
+                            <span>30% <span class="match-indicator" id="match-deloitte-streaming"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>Betting Integration</span>
+                            <span>28% <span class="match-indicator" id="match-deloitte-betting"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>Gen Z Engagement</span>
+                            <span>22% <span class="match-indicator" id="match-deloitte-genz"></span></span>
+                        </div>
+                        <div class="expert-item">
+                            <span>International Expansion</span>
+                            <span>20% <span class="match-indicator" id="match-deloitte-international"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-card your-picks">
+                <div class="results-title">Your Investment Thesis</div>
+                <div id="yourPicks"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToStep(3)">Back to Impact</button>
+                <button class="btn btn-primary" onclick="goToStep(5)">Export Your Analysis</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Export -->
+        <div class="step" id="step-5">
+            <h2 class="step-title">Step 5: Export Your Analysis</h2>
+            <p class="step-description">Save your strategic analysis for your CFL Expansion Final Proposal.</p>
+
+            <div class="results-card">
+                <div class="results-title">Summary</div>
+                <div id="exportSummary"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToStep(1)">Start Over</button>
+                <button class="btn btn-primary" onclick="exportToPDF()">Download PDF Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Trend data
+        const trends = [
+            { id: 'ai', name: 'AI & Personalization', desc: 'Machine learning for fan experience customization' },
+            { id: 'vr', name: 'VR/AR Experiences', desc: 'Immersive viewing and virtual venue experiences' },
+            { id: 'blockchain', name: 'Blockchain & NFTs', desc: 'Digital collectibles and fan tokens' },
+            { id: 'streaming', name: 'Streaming Dominance', desc: 'Direct streaming replacing traditional broadcast' },
+            { id: 'womens', name: "Women's Sports Growth", desc: "Explosive growth in women's leagues and viewership" },
+            { id: 'emerging', name: 'Emerging Sports', desc: 'Non-traditional sports gaining mainstream traction' },
+            { id: 'genz', name: 'Gen Z Engagement', desc: 'Short-form content and mobile-first experiences' },
+            { id: 'international', name: 'International Expansion', desc: 'Global markets and cross-border fan growth' },
+            { id: 'betting', name: 'Betting Integration', desc: 'In-app betting and real-time wagering features' },
+            { id: 'directfan', name: 'Direct-to-Fan Models', desc: 'Bypassing intermediaries for direct relationships' },
+            { id: 'esg', name: 'ESG & Sustainability', desc: 'Environmental and social responsibility initiatives' },
+            { id: 'athlete', name: 'Athlete Empowerment', desc: 'Player-driven brands and direct monetization' }
+        ];
+
+        // State
+        let selectedTrends = [];
+        let allocations = {};
+        let currentScenario = 'realistic';
+        let impactChart = null;
+
+        // Initialize
+        function init() {
+            renderTrendCards();
+        }
+
+        function renderTrendCards() {
+            const grid = document.getElementById('trendsGrid');
+            grid.innerHTML = trends.map(trend => `
+                <div class="trend-card" data-id="${trend.id}" onclick="toggleTrend('${trend.id}')" tabindex="0" role="checkbox" aria-checked="false">
+                    <div class="trend-name">${trend.name}</div>
+                    <div class="trend-desc">${trend.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTrend(id) {
+            const card = document.querySelector(`[data-id="${id}"]`);
+            const index = selectedTrends.indexOf(id);
+
+            if (index > -1) {
+                selectedTrends.splice(index, 1);
+                card.classList.remove('selected');
+                card.setAttribute('aria-checked', 'false');
+            } else if (selectedTrends.length < 3) {
+                selectedTrends.push(id);
+                card.classList.add('selected');
+                card.setAttribute('aria-checked', 'true');
+            }
+
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            const count = selectedTrends.length;
+            const status = document.getElementById('selectionStatus');
+            const btn = document.getElementById('toStep2');
+
+            if (count === 3) {
+                status.textContent = 'Great! 3 trends selected. Continue to allocate your budget.';
+                btn.disabled = false;
+            } else {
+                status.textContent = `Select 3 trends to continue (${count} selected)`;
+                btn.disabled = true;
+            }
+
+            // Disable unselected cards when 3 are selected
+            document.querySelectorAll('.trend-card').forEach(card => {
+                if (count >= 3 && !selectedTrends.includes(card.dataset.id)) {
+                    card.classList.add('disabled');
+                } else {
+                    card.classList.remove('disabled');
+                }
+            });
+        }
+
+        function goToStep(stepNum) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.progress-step').forEach(p => {
+                p.classList.remove('active');
+                p.classList.remove('completed');
+            });
+
+            // Show current step
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+
+            // Update progress
+            for (let i = 1; i <= 5; i++) {
+                const prog = document.getElementById(`prog-${i}`);
+                if (i < stepNum) {
+                    prog.classList.add('completed');
+                } else if (i === stepNum) {
+                    prog.classList.add('active');
+                }
+            }
+
+            // Step-specific setup
+            if (stepNum === 2) {
+                setupAllocationSliders();
+            } else if (stepNum === 3) {
+                renderImpactChart();
+                renderImpactGrid();
+            } else if (stepNum === 4) {
+                updateExpertComparison();
+                renderYourPicks();
+            } else if (stepNum === 5) {
+                renderExportSummary();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setupAllocationSliders() {
+            const container = document.getElementById('allocationSliders');
+
+            // Initialize allocations if needed
+            selectedTrends.forEach(id => {
+                if (allocations[id] === undefined) {
+                    allocations[id] = 0;
+                }
+            });
+
+            container.innerHTML = selectedTrends.map((id, index) => {
+                const trend = trends.find(t => t.id === id);
+                const value = allocations[id] || 0;
+                return `
+                    <div class="allocation-item">
+                        <div class="allocation-label">
+                            <span class="trend-title">${index + 1}. ${trend.name}</span>
+                            <span class="allocation-value" id="val-${id}">$${value}M</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" onclick="adjustAllocation('${id}', -5)" aria-label="Decrease by 5">−</button>
+                            <input type="range" id="slider-${id}" min="0" max="50" value="${value}"
+                                   oninput="updateAllocation('${id}', this.value)"
+                                   aria-label="${trend.name} allocation">
+                            <button class="slider-btn" onclick="adjustAllocation('${id}', 5)" aria-label="Increase by 5">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateBudgetDisplay();
+        }
+
+        function updateAllocation(id, value) {
+            allocations[id] = parseInt(value);
+            document.getElementById(`val-${id}`).textContent = `$${value}M`;
+            updateBudgetDisplay();
+        }
+
+        function adjustAllocation(id, delta) {
+            const slider = document.getElementById(`slider-${id}`);
+            let newVal = parseInt(slider.value) + delta;
+            newVal = Math.max(0, Math.min(50, newVal));
+            slider.value = newVal;
+            updateAllocation(id, newVal);
+        }
+
+        function updateBudgetDisplay() {
+            const total = Object.values(allocations).reduce((sum, val) => sum + val, 0);
+            const remaining = 50 - total;
+
+            document.getElementById('allocatedAmount').textContent = `$${total}M`;
+
+            const status = document.getElementById('budgetStatus');
+            const btn = document.getElementById('toStep3');
+
+            if (remaining > 0) {
+                status.textContent = `$${remaining}M remaining`;
+                status.className = 'budget-status incomplete';
+                btn.disabled = true;
+            } else if (remaining === 0) {
+                status.textContent = 'Budget fully allocated!';
+                status.className = 'budget-status complete';
+                btn.disabled = false;
+            } else {
+                status.textContent = `$${Math.abs(remaining)}M over budget!`;
+                status.className = 'budget-status over';
+                btn.disabled = true;
+            }
+        }
+
+        function distributeEvenly() {
+            const perTrend = Math.floor(50 / selectedTrends.length);
+            const remainder = 50 - (perTrend * selectedTrends.length);
+
+            selectedTrends.forEach((id, i) => {
+                const val = i === 0 ? perTrend + remainder : perTrend;
+                allocations[id] = val;
+                document.getElementById(`slider-${id}`).value = val;
+                document.getElementById(`val-${id}`).textContent = `$${val}M`;
+            });
+
+            updateBudgetDisplay();
+        }
+
+        function allocateAll(index) {
+            selectedTrends.forEach((id, i) => {
+                const val = i === index ? 50 : 0;
+                allocations[id] = val;
+                document.getElementById(`slider-${id}`).value = val;
+                document.getElementById(`val-${id}`).textContent = `$${val}M`;
+            });
+
+            updateBudgetDisplay();
+        }
+
+        // Impact calculations
+        const impactMatrix = {
+            ai: { media: 15, ticketing: 10, sponsorship: 20, merch: 25, betting: 30 },
+            vr: { media: 25, ticketing: 5, sponsorship: 15, merch: 10, betting: 20 },
+            blockchain: { media: 5, ticketing: 3, sponsorship: 10, merch: 30, betting: 15 },
+            streaming: { media: 40, ticketing: -10, sponsorship: 15, merch: 5, betting: 25 },
+            womens: { media: 35, ticketing: 30, sponsorship: 40, merch: 35, betting: 20 },
+            emerging: { media: 20, ticketing: 25, sponsorship: 30, merch: 15, betting: 25 },
+            genz: { media: 15, ticketing: -5, sponsorship: 25, merch: 20, betting: 35 },
+            international: { media: 30, ticketing: 15, sponsorship: 35, merch: 40, betting: 25 },
+            betting: { media: 10, ticketing: 5, sponsorship: 20, merch: 5, betting: 100 },
+            directfan: { media: -20, ticketing: 40, sponsorship: 15, merch: 35, betting: 10 },
+            esg: { media: 5, ticketing: 3, sponsorship: 25, merch: 10, betting: -10 },
+            athlete: { media: 10, ticketing: 5, sponsorship: 30, merch: 40, betting: 15 }
+        };
+
+        const scenarioMultipliers = { optimistic: 1.5, realistic: 1.0, pessimistic: 0.5 };
+
+        function calculateImpact() {
+            const multiplier = scenarioMultipliers[currentScenario];
+            const streams = ['media', 'ticketing', 'sponsorship', 'merch', 'betting'];
+
+            return streams.map(stream => {
+                let impact = 0;
+                selectedTrends.forEach(id => {
+                    const weight = (allocations[id] || 0) / 50;
+                    impact += impactMatrix[id][stream] * weight * multiplier;
+                });
+                return Math.round(impact);
+            });
+        }
+
+        function renderImpactChart() {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+
+            if (impactChart) impactChart.destroy();
+
+            const impacts = calculateImpact();
+
+            impactChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Media Rights', 'Ticketing', 'Sponsorship', 'Merchandising', 'Betting'],
+                    datasets: [{
+                        label: 'Revenue Impact',
+                        data: impacts,
+                        backgroundColor: impacts.map(v => v >= 0 ? '#059669' : '#dc2626'),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: `${currentScenario.charAt(0).toUpperCase() + currentScenario.slice(1)} Scenario - 3 Year Projected Impact`,
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: v => (v >= 0 ? '+' : '') + v + '%'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderImpactGrid() {
+            const impacts = calculateImpact();
+            const labels = ['Media', 'Tickets', 'Sponsors', 'Merch', 'Betting'];
+
+            document.getElementById('impactGrid').innerHTML = impacts.map((val, i) => {
+                const cls = val > 10 ? 'impact-positive' : val < -5 ? 'impact-negative' : 'impact-neutral';
+                const sign = val >= 0 ? '+' : '';
+                return `
+                    <div class="impact-item">
+                        <div class="impact-label">${labels[i]}</div>
+                        <div class="impact-value ${cls}">${sign}${val}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchScenario(scenario) {
+            currentScenario = scenario;
+            document.querySelectorAll('.scenario-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.textContent.toLowerCase().includes(scenario));
+            });
+            renderImpactChart();
+            renderImpactGrid();
+        }
+
+        function updateExpertComparison() {
+            const expertPicks = {
+                'mckinsey-ai': 'ai',
+                'mckinsey-womens': 'womens',
+                'mckinsey-directfan': 'directfan',
+                'mckinsey-genz': 'genz',
+                'deloitte-streaming': 'streaming',
+                'deloitte-betting': 'betting',
+                'deloitte-genz': 'genz',
+                'deloitte-international': 'international'
+            };
+
+            Object.entries(expertPicks).forEach(([key, trendId]) => {
+                const indicator = document.getElementById(`match-${key}`);
+                if (indicator) {
+                    indicator.className = 'match-indicator ' + (selectedTrends.includes(trendId) ? 'match-yes' : 'match-no');
+                }
+            });
+        }
+
+        function renderYourPicks() {
+            const container = document.getElementById('yourPicks');
+            container.innerHTML = selectedTrends.map(id => {
+                const trend = trends.find(t => t.id === id);
+                const pct = Math.round((allocations[id] / 50) * 100);
+                return `
+                    <div class="expert-item">
+                        <span>${trend.name}</span>
+                        <span>$${allocations[id]}M (${pct}%)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderExportSummary() {
+            const impacts = calculateImpact();
+            const labels = ['Media Rights', 'Ticketing', 'Sponsorship', 'Merchandising', 'Betting'];
+
+            let html = '<p style="margin-bottom: 15px;"><strong>Your Trend Selections:</strong></p>';
+
+            html += selectedTrends.map(id => {
+                const trend = trends.find(t => t.id === id);
+                const pct = Math.round((allocations[id] / 50) * 100);
+                return `<p style="margin-left: 15px;">• ${trend.name}: $${allocations[id]}M (${pct}%)</p>`;
+            }).join('');
+
+            html += '<p style="margin: 15px 0;"><strong>Projected Revenue Impact (Realistic):</strong></p>';
+
+            html += labels.map((label, i) => {
+                const sign = impacts[i] >= 0 ? '+' : '';
+                return `<p style="margin-left: 15px;">• ${label}: ${sign}${impacts[i]}%</p>`;
+            }).join('');
+
+            document.getElementById('exportSummary').innerHTML = html;
+        }
+
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            pdf.setFontSize(20);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Future Trends Strategic Analysis', 20, 20);
+
+            pdf.setFontSize(12);
+            pdf.setFont(undefined, 'normal');
+            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 30);
+
+            let y = 45;
+
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Selected Trends & Budget Allocation', 20, y);
+            y += 10;
+
+            pdf.setFontSize(11);
+            pdf.setFont(undefined, 'normal');
+            selectedTrends.forEach(id => {
+                const trend = trends.find(t => t.id === id);
+                const pct = Math.round((allocations[id] / 50) * 100);
+                pdf.text(`• ${trend.name}: $${allocations[id]}M (${pct}%)`, 25, y);
+                y += 7;
+            });
+
+            y += 10;
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Projected Revenue Impact (Realistic Scenario)', 20, y);
+            y += 10;
+
+            const impacts = calculateImpact();
+            const labels = ['Media Rights', 'Ticketing', 'Sponsorship', 'Merchandising', 'Betting'];
+
+            pdf.setFontSize(11);
+            pdf.setFont(undefined, 'normal');
+            labels.forEach((label, i) => {
+                const sign = impacts[i] >= 0 ? '+' : '';
+                pdf.text(`• ${label}: ${sign}${impacts[i]}%`, 25, y);
+                y += 7;
+            });
+
+            y += 10;
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.text('Expert Alignment', 20, y);
+            y += 10;
+
+            pdf.setFontSize(11);
+            pdf.setFont(undefined, 'normal');
+            const expertTrends = ['ai', 'womens', 'streaming', 'betting', 'genz', 'directfan', 'international'];
+            const matches = selectedTrends.filter(id => expertTrends.includes(id));
+            pdf.text(`Your selections align with ${matches.length} of the top expert-recommended trends.`, 25, y);
+
+            pdf.setFontSize(9);
+            pdf.setTextColor(128);
+            pdf.text('Generated by Future Trends Predictor - Business of Sports Marketing', 20, 280);
+
+            pdf.save('future-trends-analysis.pdf');
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

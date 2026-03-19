@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Tables for Sensitivity Analysis - Interactive Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Uplimit Design System */
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fef3c7;
+            --color-primary: #c0d1cd;
+            --color-highlight: #fff3cd;
+            --color-selection: #cce5ff;
+
+            --font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-neutral-50);
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.95rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-neutral-900);
+            transition: width 0.3s ease;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--color-neutral-300);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .step-dot.active {
+            background: var(--color-neutral-900);
+            transform: scale(1.2);
+        }
+
+        .step-dot.completed {
+            background: var(--color-neutral-600);
+        }
+
+        .step-dot:hover {
+            transform: scale(1.3);
+        }
+
+        /* Main Demo Area */
+        .demo-area {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            min-height: 500px;
+        }
+
+        .step-content {
+            padding: 24px;
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-number {
+            background: var(--color-neutral-900);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .step-description {
+            color: var(--color-neutral-600);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Excel Mockup Styles */
+        .excel-mockup {
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        .excel-mockup.allow-overflow {
+            overflow: visible;
+        }
+
+        .excel-ribbon {
+            background: var(--color-neutral-100);
+            border-bottom: 1px solid var(--color-neutral-300);
+            padding: 8px 12px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .ribbon-tab {
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .ribbon-tab.active {
+            background: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ribbon-tab.highlight {
+            background: var(--color-highlight);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+        }
+
+        .ribbon-content {
+            background: white;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--color-neutral-200);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            overflow: visible;
+            position: relative;
+        }
+
+        .ribbon-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ribbon-button {
+            padding: 8px 12px;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .ribbon-button.highlight {
+            background: var(--color-highlight);
+            border-color: var(--color-warning);
+            animation: pulse 1.5s infinite;
+        }
+
+        .ribbon-label {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Spreadsheet Grid */
+        .spreadsheet {
+            display: grid;
+            font-size: 0.8rem;
+        }
+
+        .spreadsheet.cols-5 {
+            grid-template-columns: 35px repeat(4, 1fr);
+        }
+
+        .spreadsheet.cols-6 {
+            grid-template-columns: 35px repeat(5, 1fr);
+        }
+
+        .cell {
+            padding: 6px 8px;
+            border-right: 1px solid var(--color-neutral-200);
+            border-bottom: 1px solid var(--color-neutral-200);
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cell.header {
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            justify-content: center;
+        }
+
+        .cell.row-header {
+            background: var(--color-neutral-100);
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .cell.highlight {
+            background: var(--color-highlight);
+            animation: pulse 1.5s infinite;
+        }
+
+        .cell.selected {
+            background: var(--color-selection);
+            outline: 2px solid #0066cc;
+            outline-offset: -2px;
+        }
+
+        .cell.formula {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        .cell.input-values {
+            background: #e8f4e8;
+        }
+
+        .cell.output-values {
+            background: #e8f0ff;
+        }
+
+        .cell.positive {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .cell.negative {
+            color: var(--color-error);
+            font-weight: 600;
+        }
+
+        /* Dialog Box */
+        .dialog-overlay {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .dialog-box {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .dialog-header {
+            background: var(--color-neutral-100);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--color-neutral-200);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dialog-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--color-neutral-500);
+        }
+
+        .dialog-body {
+            padding: 20px;
+        }
+
+        .dialog-field {
+            margin-bottom: 16px;
+        }
+
+        .dialog-field label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .dialog-field input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .dialog-field input.highlight {
+            border-color: var(--color-warning);
+            background: var(--color-highlight);
+        }
+
+        .dialog-field .hint {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            margin-top: 4px;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            padding: 12px 20px;
+            border-top: 1px solid var(--color-neutral-200);
+            background: var(--color-neutral-50);
+        }
+
+        .dialog-btn {
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .dialog-btn.primary {
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+        }
+
+        .dialog-btn.primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .dialog-btn.secondary {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .dialog-btn.highlight {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            min-width: 180px;
+            z-index: 10;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item.highlight {
+            background: var(--color-highlight);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid var(--color-neutral-200);
+            background: var(--color-neutral-50);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.prev {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            color: var(--color-neutral-700);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .nav-btn.next {
+            background: var(--color-neutral-900);
+            border: none;
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .step-counter {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Key Insight Box */
+        .insight-box {
+            background: var(--color-success-light);
+            border-left: 4px solid var(--color-success);
+            padding: 16px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-top: 20px;
+        }
+
+        .insight-box h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-neutral-800);
+        }
+
+        .insight-box p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        /* Results Display */
+        .interpretation-box {
+            background: var(--color-neutral-100);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .interpretation-box h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .interpretation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--color-neutral-300);
+        }
+
+        .interpretation-item:last-child {
+            border-bottom: none;
+        }
+
+        .interpretation-label {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+        }
+
+        .interpretation-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .interpretation-value.positive {
+            color: var(--color-success);
+        }
+
+        .interpretation-value.negative {
+            color: var(--color-error);
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            text-align: center;
+            padding: 12px;
+            background: var(--color-neutral-100);
+            border-radius: var(--border-radius);
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+        }
+
+        .kbd {
+            display: inline-block;
+            padding: 2px 8px;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Tables for Sensitivity Analysis</h1>
+            <p>Learn to test how profit changes across a range of uncertain values</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 14.3%"></div>
+            </div>
+            <div class="step-indicator" id="stepIndicator">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <div class="demo-area">
+            <!-- Step 1: The Problem -->
+            <div class="step-content active" data-step="1">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    The Sensitivity Analysis Challenge
+                </div>
+                <p class="step-description">
+                    Santa Rosa Raisins must buy grapes at an uncertain market price (between $0.15 and $0.35/lb). How much does profit change across this range? Let's use a Data Table to find out!
+                </p>
+
+                <div class="excel-mockup">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab">Data</div>
+                    </div>
+                    <div class="spreadsheet cols-5">
+                        <div class="cell header"></div>
+                        <div class="cell header">A</div>
+                        <div class="cell header">B</div>
+                        <div class="cell header">C</div>
+                        <div class="cell header">D</div>
+
+                        <div class="cell row-header">1</div>
+                        <div class="cell"><strong>SRR Profit Model</strong></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">2</div>
+                        <div class="cell">Market Grape Price</div>
+                        <div class="cell highlight">$0.25</div>
+                        <div class="cell formula">← Uncertain!</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">3</div>
+                        <div class="cell">Demand (lbs needed)</div>
+                        <div class="cell">1,562,500</div>
+                        <div class="cell formula">Total grapes required</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">4</div>
+                        <div class="cell">Revenue</div>
+                        <div class="cell">$688,000</div>
+                        <div class="cell formula">=Price × Quantity sold</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">5</div>
+                        <div class="cell">Contract Grapes Cost</div>
+                        <div class="cell">$350,000</div>
+                        <div class="cell formula">=1,400,000 lbs × $0.25</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">6</div>
+                        <div class="cell">Market Grapes Cost</div>
+                        <div class="cell">$40,625</div>
+                        <div class="cell formula">=162,500 lbs × B2</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">7</div>
+                        <div class="cell">Other Costs</div>
+                        <div class="cell">$200,000</div>
+                        <div class="cell formula">Processing, labor, etc.</div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">8</div>
+                        <div class="cell"><strong>Profit</strong></div>
+                        <div class="cell highlight"><strong>$97,375</strong></div>
+                        <div class="cell formula">=B4-B5-B6-B7</div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>The Question</h4>
+                    <p>What if market price is $0.15? $0.20? $0.30? $0.35?<br>
+                    <strong>Data Tables calculate ALL scenarios at once</strong>—no manual testing required!</p>
+                </div>
+            </div>
+
+            <!-- Step 2: Set Up Test Values -->
+            <div class="step-content" data-step="2">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    Set Up Your Test Values
+                </div>
+                <p class="step-description">
+                    First, create a column of test values. These are the market prices you want to analyze (from $0.15 to $0.35).
+                </p>
+
+                <div class="excel-mockup">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab active">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab">Data</div>
+                    </div>
+                    <div class="spreadsheet cols-6">
+                        <div class="cell header"></div>
+                        <div class="cell header">A</div>
+                        <div class="cell header">B</div>
+                        <div class="cell header">C</div>
+                        <div class="cell header">D</div>
+                        <div class="cell header">E</div>
+
+                        <div class="cell row-header">8</div>
+                        <div class="cell"><strong>Sensitivity Analysis</strong></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">9</div>
+                        <div class="cell">Market Price</div>
+                        <div class="cell">Profit</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">10</div>
+                        <div class="cell input-values highlight">$0.15</div>
+                        <div class="cell"></div>
+                        <div class="cell formula">← Results go here</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">11</div>
+                        <div class="cell input-values highlight">$0.20</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">12</div>
+                        <div class="cell input-values highlight">$0.25</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">13</div>
+                        <div class="cell input-values highlight">$0.30</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">14</div>
+                        <div class="cell input-values highlight">$0.35</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Tip: Use Consistent Increments</h4>
+                    <p>Test values in regular increments (like $0.05 steps) make it easy to see patterns. Include your base case ($0.25) for reference.</p>
+                </div>
+            </div>
+
+            <!-- Step 3: Link to Formula -->
+            <div class="step-content" data-step="3">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    Link to Your Profit Formula
+                </div>
+                <p class="step-description">
+                    In the cell above and to the right of your test values, enter a reference to your Profit formula. This tells the Data Table what to calculate.
+                </p>
+
+                <div class="excel-mockup">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab active">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab">Data</div>
+                    </div>
+                    <div class="spreadsheet cols-6">
+                        <div class="cell header"></div>
+                        <div class="cell header">A</div>
+                        <div class="cell header">B</div>
+                        <div class="cell header">C</div>
+                        <div class="cell header">D</div>
+                        <div class="cell header">E</div>
+
+                        <div class="cell row-header">8</div>
+                        <div class="cell"><strong>Sensitivity Analysis</strong></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">9</div>
+                        <div class="cell">Market Price</div>
+                        <div class="cell highlight selected">=B6</div>
+                        <div class="cell formula">← Reference to Profit cell!</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">10</div>
+                        <div class="cell input-values">$0.15</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">11</div>
+                        <div class="cell input-values">$0.20</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">12</div>
+                        <div class="cell input-values">$0.25</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">13</div>
+                        <div class="cell input-values">$0.30</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">14</div>
+                        <div class="cell input-values">$0.35</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Critical Step!</h4>
+                    <p>Cell B9 contains <code>=B6</code> (a reference to your Profit formula). This formula must reference the input cell (B2 - Market Price) that you're testing.</p>
+                </div>
+            </div>
+
+            <!-- Step 4: Select Data Table Range -->
+            <div class="step-content" data-step="4">
+                <div class="step-title">
+                    <span class="step-number">4</span>
+                    Select the Entire Data Table Range
+                </div>
+                <p class="step-description">
+                    Select from the formula cell (B9) down through all test values (A10:B14). This range includes: the formula, test values, and empty cells for results.
+                </p>
+
+                <div class="excel-mockup">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab active">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab">Data</div>
+                    </div>
+                    <div class="spreadsheet cols-6">
+                        <div class="cell header"></div>
+                        <div class="cell header">A</div>
+                        <div class="cell header">B</div>
+                        <div class="cell header">C</div>
+                        <div class="cell header">D</div>
+                        <div class="cell header">E</div>
+
+                        <div class="cell row-header">8</div>
+                        <div class="cell"><strong>Sensitivity Analysis</strong></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">9</div>
+                        <div class="cell selected">Market Price</div>
+                        <div class="cell selected">=B6</div>
+                        <div class="cell formula">← Top-left of selection</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">10</div>
+                        <div class="cell selected">$0.15</div>
+                        <div class="cell selected"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">11</div>
+                        <div class="cell selected">$0.20</div>
+                        <div class="cell selected"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">12</div>
+                        <div class="cell selected">$0.25</div>
+                        <div class="cell selected"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">13</div>
+                        <div class="cell selected">$0.30</div>
+                        <div class="cell selected"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">14</div>
+                        <div class="cell selected">$0.35</div>
+                        <div class="cell selected"></div>
+                        <div class="cell formula">← Bottom of selection</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Selection Range: A9:B14</h4>
+                    <p>The range includes the header row with the formula (row 9) and all test values below it (rows 10-14). The empty B column cells will be filled with calculated profits.</p>
+                </div>
+            </div>
+
+            <!-- Step 5: Access Data Table -->
+            <div class="step-content" data-step="5">
+                <div class="step-title">
+                    <span class="step-number">5</span>
+                    Open Data Table Dialog
+                </div>
+                <p class="step-description">
+                    With the range selected, go to <strong>Data → What-If Analysis → Data Table</strong>. This opens the Data Table configuration dialog.
+                </p>
+
+                <div class="excel-mockup allow-overflow" style="margin-bottom: 100px;">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab highlight">Data</div>
+                    </div>
+                    <div class="ribbon-content">
+                        <div class="ribbon-group">
+                            <div class="ribbon-button">Get Data</div>
+                            <div class="ribbon-label">Get & Transform</div>
+                        </div>
+                        <div class="ribbon-group">
+                            <div class="ribbon-button">Sort A-Z</div>
+                            <div class="ribbon-label">Sort & Filter</div>
+                        </div>
+                        <div class="ribbon-group" style="position: relative;">
+                            <div class="ribbon-button highlight" style="background: var(--color-highlight);">What-If Analysis ▼</div>
+                            <div class="ribbon-label">Forecast</div>
+                            <div class="dropdown-menu" style="top: 45px; left: 0;">
+                                <div class="dropdown-item">Scenario Manager...</div>
+                                <div class="dropdown-item">Goal Seek...</div>
+                                <div class="dropdown-item highlight">Data Table...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>What-If Analysis Suite</h4>
+                    <p>Data Table is one of three What-If Analysis tools:<br>
+                    <strong>Goal Seek</strong> - Find ONE input for desired output<br>
+                    <strong>Data Table</strong> - Test MANY inputs at once<br>
+                    <strong>Scenario Manager</strong> - Compare named scenarios</p>
+                </div>
+            </div>
+
+            <!-- Step 6: Configure Data Table -->
+            <div class="step-content" data-step="6">
+                <div class="step-title">
+                    <span class="step-number">6</span>
+                    Configure Column Input Cell
+                </div>
+                <p class="step-description">
+                    In the Data Table dialog, enter the <strong>Column input cell</strong> (because test values are in a column). This is the cell that should be replaced with each test value—the Market Grape Price cell (B2).
+                </p>
+
+                <div class="dialog-overlay">
+                    <div class="dialog-box">
+                        <div class="dialog-header">
+                            Data Table
+                            <button class="dialog-close">×</button>
+                        </div>
+                        <div class="dialog-body">
+                            <div class="dialog-field">
+                                <label>Row input cell:</label>
+                                <input type="text" value="" placeholder="(Leave blank for one-variable table)">
+                                <div class="hint">For test values in a row (not used here)</div>
+                            </div>
+                            <div class="dialog-field">
+                                <label>Column input cell:</label>
+                                <input type="text" value="$B$2" class="highlight">
+                                <div class="hint">The input cell to substitute (Market Price)</div>
+                            </div>
+                        </div>
+                        <div class="dialog-buttons">
+                            <button class="dialog-btn secondary">Cancel</button>
+                            <button class="dialog-btn primary highlight">OK</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Column vs. Row Input</h4>
+                    <p><strong>Column input:</strong> Test values are in a vertical column (most common)<br>
+                    <strong>Row input:</strong> Test values are in a horizontal row<br>
+                    For one-variable analysis, only fill in one!</p>
+                </div>
+            </div>
+
+            <!-- Step 7: View Results -->
+            <div class="step-content" data-step="7">
+                <div class="step-title">
+                    <span class="step-number">7</span>
+                    Interpret Your Results
+                </div>
+                <p class="step-description">
+                    Excel instantly calculates profit for each market price scenario. Now you can see exactly how sensitive your profit is to market grape price changes!
+                </p>
+
+                <div class="excel-mockup">
+                    <div class="excel-ribbon">
+                        <div class="ribbon-tab active">Home</div>
+                        <div class="ribbon-tab">Insert</div>
+                        <div class="ribbon-tab">Data</div>
+                    </div>
+                    <div class="spreadsheet cols-6">
+                        <div class="cell header"></div>
+                        <div class="cell header">A</div>
+                        <div class="cell header">B</div>
+                        <div class="cell header">C</div>
+                        <div class="cell header">D</div>
+                        <div class="cell header">E</div>
+
+                        <div class="cell row-header">8</div>
+                        <div class="cell"><strong>Sensitivity Analysis</strong></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">9</div>
+                        <div class="cell">Market Price</div>
+                        <div class="cell">Profit</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">10</div>
+                        <div class="cell input-values">$0.15</div>
+                        <div class="cell output-values positive">$113,625</div>
+                        <div class="cell formula">← Best case!</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">11</div>
+                        <div class="cell input-values">$0.20</div>
+                        <div class="cell output-values positive">$105,500</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">12</div>
+                        <div class="cell input-values">$0.25</div>
+                        <div class="cell output-values positive">$97,375</div>
+                        <div class="cell formula">← Base case</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">13</div>
+                        <div class="cell input-values">$0.30</div>
+                        <div class="cell output-values positive">$89,250</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+
+                        <div class="cell row-header">14</div>
+                        <div class="cell input-values">$0.35</div>
+                        <div class="cell output-values positive">$81,125</div>
+                        <div class="cell formula">← Worst case</div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                    </div>
+                </div>
+
+                <div class="interpretation-box">
+                    <h4>Sensitivity Analysis Summary</h4>
+                    <div class="interpretation-item">
+                        <span class="interpretation-label">Best Case ($0.15)</span>
+                        <span class="interpretation-value positive">$113,625 profit</span>
+                    </div>
+                    <div class="interpretation-item">
+                        <span class="interpretation-label">Worst Case ($0.35)</span>
+                        <span class="interpretation-value positive">$81,125 profit</span>
+                    </div>
+                    <div class="interpretation-item">
+                        <span class="interpretation-label">Profit Range</span>
+                        <span class="interpretation-value">$32,500 variation</span>
+                    </div>
+                    <div class="interpretation-item">
+                        <span class="interpretation-label">Break-Even Risk?</span>
+                        <span class="interpretation-value positive">None - always profitable!</span>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <h4>Business Insight</h4>
+                    <p>Even with market prices at the worst case ($0.35/lb), SRR remains profitable. The $32,500 profit swing across the range is manageable risk. This sensitivity analysis gives confidence in the pricing strategy!</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <button class="nav-btn prev" id="prevBtn" disabled>
+                    <span>←</span> Previous
+                </button>
+                <span class="step-counter">
+                    Step <span id="currentStep">1</span> of 7
+                </span>
+                <button class="nav-btn next" id="nextBtn">
+                    Next <span>→</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="keyboard-hint">
+            <span class="kbd">←</span> <span class="kbd">→</span> Use arrow keys to navigate
+        </div>
+    </div>
+
+    <script>
+        const totalSteps = 7;
+        let currentStep = 1;
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressFill = document.getElementById('progressFill');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const currentStepDisplay = document.getElementById('currentStep');
+
+        // Initialize step dots
+        function initStepDots() {
+            stepIndicator.innerHTML = '';
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'step-dot' + (i === 1 ? ' active' : '');
+                dot.setAttribute('data-step', i);
+                dot.setAttribute('role', 'button');
+                dot.setAttribute('aria-label', `Go to step ${i}`);
+                dot.setAttribute('tabindex', '0');
+                dot.addEventListener('click', () => goToStep(i));
+                dot.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        goToStep(i);
+                    }
+                });
+                stepIndicator.appendChild(dot);
+            }
+        }
+
+        function updateUI() {
+            // Update step content
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+                if (parseInt(content.dataset.step) === currentStep) {
+                    content.classList.add('active');
+                }
+            });
+
+            // Update progress bar
+            progressFill.style.width = `${(currentStep / totalSteps) * 100}%`;
+
+            // Update step dots
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                const step = parseInt(dot.dataset.step);
+                dot.classList.remove('active', 'completed');
+                if (step === currentStep) {
+                    dot.classList.add('active');
+                } else if (step < currentStep) {
+                    dot.classList.add('completed');
+                }
+            });
+
+            // Update counter
+            currentStepDisplay.textContent = currentStep;
+
+            // Update buttons
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.textContent = currentStep === totalSteps ? 'Restart' : 'Next →';
+
+            // Announce for screen readers
+            const stepContent = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+            const title = stepContent.querySelector('.step-title').textContent;
+            announceStep(title);
+        }
+
+        function goToStep(step) {
+            if (step >= 1 && step <= totalSteps) {
+                currentStep = step;
+                updateUI();
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+            } else {
+                currentStep = 1;
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        function announceStep(title) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.style.cssText = 'position: absolute; left: -9999px;';
+            announcement.textContent = `Step ${currentStep} of ${totalSteps}: ${title}`;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', prevStep);
+        nextBtn.addEventListener('click', nextStep);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                prevStep();
+            }
+        });
+
+        // Initialize
+        initStepDots();
+        updateUI();
+    </script>
+</body>
+</html>

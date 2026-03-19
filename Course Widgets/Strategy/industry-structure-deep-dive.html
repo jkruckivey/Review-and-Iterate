@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry Structure Deep Dive - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Industry Selection */
+        .industry-selection {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .selection-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .industry-option {
+            padding: 1rem;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .industry-option:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .industry-option.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+        }
+
+        /* Data Dashboard */
+        .data-dashboard {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .data-dashboard.show {
+            display: block;
+        }
+
+        .dashboard-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            padding: 1rem;
+        }
+
+        .data-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        /* Force Analysis */
+        .force-analysis {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .force-analysis.show {
+            display: block;
+        }
+
+        .force-section {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .force-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .force-description {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .slider-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--color-neutral-700);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-neutral-200);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-700);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-700);
+            cursor: pointer;
+            border: none;
+        }
+
+        .evidence-section {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            padding: 1rem;
+        }
+
+        .evidence-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .evidence-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .evidence-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .evidence-option:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .evidence-option input[type="checkbox"] {
+            margin-top: 0.2rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .evidence-text {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            flex: 1;
+        }
+
+        .evidence-option.validated.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .evidence-option.validated.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        /* Overall Assessment */
+        .overall-assessment {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .overall-assessment.show {
+            display: block;
+        }
+
+        .assessment-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .attractiveness-slider {
+            margin-bottom: 1.5rem;
+        }
+
+        .justification-box {
+            margin-top: 1rem;
+        }
+
+        .justification-box label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .justification-box textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        .justification-box textarea:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            border: 1px solid var(--color-neutral-700);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-300);
+            border-color: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-summary {
+            background: var(--color-neutral-100);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1.25rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--color-neutral-700);
+            margin-bottom: 1rem;
+        }
+
+        .insight-section {
+            background: var(--color-neutral-50);
+            border-radius: 4px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-text {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .industry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Industry Structure Deep Dive</h1>
+            <p class="subtitle">Analyze real industry data and apply Porter's Five Forces framework</p>
+        </header>
+
+        <!-- Step 1: Industry Selection -->
+        <div class="industry-selection" id="industry-selection">
+            <h2 class="selection-title">Step 1: Select Industry to Analyze</h2>
+            <div class="industry-grid" id="industry-grid">
+                <!-- Industry options will be generated here -->
+            </div>
+        </div>
+
+        <!-- Step 2: Data Dashboard -->
+        <div class="data-dashboard" id="data-dashboard">
+            <h2 class="dashboard-title">Step 2: Industry Structural Data</h2>
+            <p style="color: var(--color-neutral-600); margin-bottom: 1.5rem;">Study these metrics before rating each force:</p>
+            <div class="data-grid" id="data-grid">
+                <!-- Data cards will be generated here -->
+            </div>
+        </div>
+
+        <!-- Step 3: Force Analysis -->
+        <div class="force-analysis" id="force-analysis">
+            <h2 class="dashboard-title" style="margin-bottom: 1.5rem;">Step 3: Rate Each Force & Select Evidence</h2>
+            <div id="forces-container">
+                <!-- Force sections will be generated here -->
+            </div>
+        </div>
+
+        <!-- Step 4: Overall Assessment -->
+        <div class="overall-assessment" id="overall-assessment">
+            <h2 class="assessment-title">Step 4: Overall Industry Attractiveness</h2>
+            <p style="color: var(--color-neutral-600); margin-bottom: 1.5rem;">Based on your Five Forces analysis, rate overall industry attractiveness:</p>
+
+            <div class="attractiveness-slider">
+                <div class="slider-label">
+                    <span>Industry Attractiveness:</span>
+                    <span class="slider-value" id="attractiveness-value">5</span>
+                </div>
+                <input type="range" id="attractiveness-slider" min="1" max="10" value="5" oninput="updateAttractivenessValue(this.value)">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-neutral-600); margin-top: 0.5rem;">
+                    <span>Very Unattractive (1)</span>
+                    <span>Very Attractive (10)</span>
+                </div>
+            </div>
+
+            <div class="justification-box">
+                <label for="justification-text">Explain your rating (2-3 sentences):</label>
+                <textarea id="justification-text" placeholder="Why did you rate this industry's attractiveness as you did? Which forces had the biggest impact?"></textarea>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn" id="analyze-btn" onclick="compareWithExpert()" disabled>Compare with Expert Analysis</button>
+            <button class="btn btn-secondary" onclick="resetWidget()">Start Over</button>
+        </div>
+
+        <div class="results-panel" id="results-panel">
+            <h2 class="results-title">Expert Porter Analysis</h2>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Industry data with real structural metrics
+        const industries = {
+            airlines: {
+                name: 'Commercial Airlines',
+                data: {
+                    'Top 4 Buyers (%)': '45%',
+                    'Supplier Concentration (Herfindahl)': '0.31 (High)',
+                    'Number of Competitors': '25 major carriers',
+                    'Market Share of Top 5': '68%',
+                    'Startup Capital Required': '$500M - $2B',
+                    'Regulatory Approval Time': '18-24 months',
+                    'Substitute Growth Rate': '+12% annually',
+                    'Price Elasticity': 'High (1.8)'
+                },
+                forces: {
+                    buyerPower: {
+                        rating: 'High',
+                        evidence: [
+                            { text: 'Top 4 buyers control 45% of market', correct: true },
+                            { text: 'Price comparison websites empower customers', correct: true },
+                            { text: 'Switching costs are near zero', correct: true },
+                            { text: 'Corporate travel departments negotiate bulk discounts', correct: true },
+                            { text: 'Limited customer loyalty to specific carriers', correct: false }
+                        ]
+                    },
+                    supplierPower: {
+                        rating: 'High',
+                        evidence: [
+                            { text: 'Aircraft duopoly (Boeing/Airbus) controls 90% of market', correct: true },
+                            { text: 'Fuel suppliers are moderately concentrated', correct: false },
+                            { text: 'Airport gate access is limited and controlled', correct: true },
+                            { text: 'Aircraft maintenance has high switching costs', correct: true },
+                            { text: 'Labor unions have significant bargaining power', correct: true }
+                        ]
+                    },
+                    rivalry: {
+                        rating: 'Intense',
+                        evidence: [
+                            { text: '25 major carriers compete intensely for routes', correct: true },
+                            { text: 'High fixed costs drive price competition', correct: true },
+                            { text: 'Overcapacity in many markets', correct: true },
+                            { text: 'Product is highly commoditized', correct: true },
+                            { text: 'Strong brand differentiation reduces competition', correct: false }
+                        ]
+                    },
+                    newEntrants: {
+                        rating: 'Medium',
+                        evidence: [
+                            { text: 'Requires $500M-$2B startup capital', correct: true },
+                            { text: '18-24 month regulatory approval process', correct: true },
+                            { text: 'Gate access at major airports is limited', correct: true },
+                            { text: 'Low-cost carriers have successfully entered', correct: true },
+                            { text: 'Easy to obtain aircraft financing', correct: false }
+                        ]
+                    },
+                    substitutes: {
+                        rating: 'High',
+                        evidence: [
+                            { text: 'Video conferencing growing at 12% annually', correct: true },
+                            { text: 'High-speed rail competitive on short routes', correct: true },
+                            { text: 'Remote work reduces business travel', correct: true },
+                            { text: 'Price elasticity of 1.8 shows easy substitution', correct: true },
+                            { text: 'No viable substitutes exist for long-distance travel', correct: false }
+                        ]
+                    }
+                },
+                expertRating: 2,
+                expertInsight: 'Airlines face intense competitive forces from all five directions. High buyer power (empowered by price transparency), high supplier power (aircraft duopoly, gate constraints), intense rivalry (commoditization, high fixed costs), growing substitutes (video conferencing, high-speed rail), and moderate barriers (capital requirements offset by LCC entrants) combine to make this one of the least attractive industries. Average ROA: 3.2%.'
+            },
+            pharma: {
+                name: 'Pharmaceuticals',
+                data: {
+                    'Top 4 Buyers (%)': '28%',
+                    'Supplier Concentration (Herfindahl)': '0.12 (Low)',
+                    'Number of Competitors': '150+ firms',
+                    'Market Share of Top 5': '42%',
+                    'Startup Capital Required': '$2B - $10B',
+                    'Regulatory Approval Time': '10-15 years',
+                    'Substitute Availability': 'Low for patented drugs',
+                    'Patent Protection': '20 years'
+                },
+                forces: {
+                    buyerPower: {
+                        rating: 'Medium',
+                        evidence: [
+                            { text: 'Insurance companies and PBMs negotiate prices', correct: true },
+                            { text: 'Government healthcare programs have purchasing power', correct: true },
+                            { text: 'Patients have limited direct purchasing power', correct: true },
+                            { text: 'Physician prescription decisions reduce buyer power', correct: true },
+                            { text: 'Generic availability increases buyer power post-patent', correct: true }
+                        ]
+                    },
+                    supplierPower: {
+                        rating: 'Low',
+                        evidence: [
+                            { text: 'Chemical suppliers are fragmented and numerous', correct: true },
+                            { text: 'Manufacturing can be outsourced to contract manufacturers', correct: true },
+                            { text: 'Raw materials are commodity chemicals', correct: true },
+                            { text: 'R&D talent is specialized but available', correct: false },
+                            { text: 'Equipment suppliers have high concentration', correct: false }
+                        ]
+                    },
+                    rivalry: {
+                        rating: 'Medium',
+                        evidence: [
+                            { text: 'Patent protection limits direct competition', correct: true },
+                            { text: 'High R&D costs create differentiation', correct: true },
+                            { text: '150+ competitors fragment the market', correct: false },
+                            { text: 'Therapeutic categories have few competitors', correct: true },
+                            { text: 'Price competition is limited by insurance', correct: true }
+                        ]
+                    },
+                    newEntrants: {
+                        rating: 'Very Low',
+                        evidence: [
+                            { text: 'Requires $2B-$10B in capital to develop a drug', correct: true },
+                            { text: '10-15 year FDA approval process', correct: true },
+                            { text: 'Patent protection creates barriers', correct: true },
+                            { text: 'Clinical trial expertise is rare', correct: true },
+                            { text: 'Generic manufacturers easily enter after patent expiry', correct: false }
+                        ]
+                    },
+                    substitutes: {
+                        rating: 'Low',
+                        evidence: [
+                            { text: 'Few therapeutic alternatives for patented drugs', correct: true },
+                            { text: 'Biosimilars face regulatory hurdles', correct: true },
+                            { text: 'Generics emerge after 20-year patents expire', correct: true },
+                            { text: 'Alternative medicine has limited efficacy', correct: true },
+                            { text: 'Medical devices substitute for many drugs', correct: false }
+                        ]
+                    }
+                },
+                expertRating: 8,
+                expertInsight: 'Pharmaceuticals is highly attractive due to strong structural barriers. Very low threat of new entrants (10-15 year approval, $2B-$10B investment), low supplier power (fragmented suppliers), limited substitutes during patent life, and patent-protected differentiation all contribute to strong profitability. The primary constraint is growing buyer power from PBMs and government programs. Average ROA: 18.5%.'
+            }
+        };
+
+        let selectedIndustry = null;
+        let forceRatings = {};
+        let evidenceSelections = {};
+
+        // Initialize industry selection
+        function initializeIndustrySelection() {
+            const grid = document.getElementById('industry-grid');
+
+            Object.keys(industries).forEach(key => {
+                const industry = industries[key];
+                const option = document.createElement('div');
+                option.className = 'industry-option';
+                option.textContent = industry.name;
+                option.onclick = () => selectIndustry(key);
+                grid.appendChild(option);
+            });
+        }
+
+        function selectIndustry(industryKey) {
+            selectedIndustry = industries[industryKey];
+
+            // Update UI
+            document.querySelectorAll('.industry-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+
+            // Show data dashboard
+            loadDataDashboard();
+            document.getElementById('data-dashboard').classList.add('show');
+
+            // Load force analysis
+            loadForceAnalysis();
+            document.getElementById('force-analysis').classList.add('show');
+
+            // Show overall assessment
+            document.getElementById('overall-assessment').classList.add('show');
+        }
+
+        function loadDataDashboard() {
+            const grid = document.getElementById('data-grid');
+            grid.innerHTML = '';
+
+            Object.entries(selectedIndustry.data).forEach(([label, value]) => {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                card.innerHTML = `
+                    <div class="data-label">${label}</div>
+                    <div class="data-value">${value}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function loadForceAnalysis() {
+            const container = document.getElementById('forces-container');
+            container.innerHTML = '';
+
+            const forceDescriptions = {
+                buyerPower: 'Buyer Power: Do customers have leverage to negotiate prices down?',
+                supplierPower: 'Supplier Power: Can suppliers dictate terms and prices?',
+                rivalry: 'Competitive Rivalry: How intense is competition among existing firms?',
+                newEntrants: 'Threat of New Entrants: Can new competitors easily enter the market?',
+                substitutes: 'Threat of Substitutes: Are there alternative products/services?'
+            };
+
+            Object.entries(selectedIndustry.forces).forEach(([forceKey, forceData]) => {
+                const section = document.createElement('div');
+                section.className = 'force-section';
+
+                const evidenceHTML = forceData.evidence.map((ev, idx) => `
+                    <label class="evidence-option" data-force="${forceKey}" data-idx="${idx}">
+                        <input type="checkbox" onchange="handleEvidenceSelection('${forceKey}', ${idx}, this.checked)">
+                        <span class="evidence-text">${ev.text}</span>
+                    </label>
+                `).join('');
+
+                section.innerHTML = `
+                    <div class="force-header">${forceDescriptions[forceKey]}</div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Your Rating:</span>
+                            <span class="slider-value" id="${forceKey}-value">Medium</span>
+                        </div>
+                        <input type="range" id="${forceKey}-slider" min="1" max="5" value="3"
+                               oninput="updateForceRating('${forceKey}', this.value)">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-neutral-600); margin-top: 0.5rem;">
+                            <span>Very Low</span>
+                            <span>Very High</span>
+                        </div>
+                    </div>
+                    <div class="evidence-section">
+                        <div class="evidence-title">Select evidence supporting your rating:</div>
+                        <div class="evidence-options">
+                            ${evidenceHTML}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(section);
+            });
+
+            forceRatings = {};
+            evidenceSelections = {};
+        }
+
+        function updateForceRating(forceKey, value) {
+            const labels = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];
+            document.getElementById(`${forceKey}-value`).textContent = labels[value - 1];
+            forceRatings[forceKey] = parseInt(value);
+            checkAnalysisComplete();
+        }
+
+        function handleEvidenceSelection(forceKey, idx, checked) {
+            if (!evidenceSelections[forceKey]) {
+                evidenceSelections[forceKey] = [];
+            }
+            evidenceSelections[forceKey][idx] = checked;
+            checkAnalysisComplete();
+        }
+
+        function updateAttractivenessValue(value) {
+            document.getElementById('attractiveness-value').textContent = value + '/10';
+        }
+
+        function checkAnalysisComplete() {
+            const forcesComplete = Object.keys(selectedIndustry.forces).length === Object.keys(forceRatings).length;
+            const evidenceComplete = Object.keys(evidenceSelections).length >= Object.keys(selectedIndustry.forces).length;
+            const justification = document.getElementById('justification-text').value.trim();
+
+            if (forcesComplete && evidenceComplete && justification.length > 20) {
+                document.getElementById('analyze-btn').disabled = false;
+            }
+        }
+
+        // Check justification text
+        document.getElementById('justification-text').addEventListener('input', checkAnalysisComplete);
+
+        function compareWithExpert() {
+            // Validate evidence selections
+            Object.entries(selectedIndustry.forces).forEach(([forceKey, forceData]) => {
+                forceData.evidence.forEach((ev, idx) => {
+                    const option = document.querySelector(`.evidence-option[data-force="${forceKey}"][data-idx="${idx}"]`);
+                    const checkbox = option.querySelector('input[type="checkbox"]');
+
+                    option.classList.add('validated');
+
+                    if ((checkbox.checked && ev.correct) || (!checkbox.checked && !ev.correct)) {
+                        option.classList.add('correct');
+                    } else {
+                        option.classList.add('incorrect');
+                    }
+                });
+            });
+
+            showResults();
+        }
+
+        function showResults() {
+            const attractiveness = parseInt(document.getElementById('attractiveness-slider').value);
+            const expertRating = selectedIndustry.expertRating;
+            const diff = Math.abs(attractiveness - expertRating);
+
+            let scoreText = '';
+            if (diff <= 1) {
+                scoreText = 'Excellent alignment with expert analysis';
+            } else if (diff <= 2) {
+                scoreText = 'Good understanding, minor differences';
+            } else {
+                scoreText = 'Significant differences - review expert insights';
+            }
+
+            const resultsContent = document.getElementById('results-content');
+            resultsContent.innerHTML = `
+                <div class="results-summary">
+                    <div class="results-text"><strong>${scoreText}</strong></div>
+                    <div class="results-text">
+                        <strong>Your Rating:</strong> ${attractiveness}/10<br>
+                        <strong>Expert Porter Rating:</strong> ${expertRating}/10
+                    </div>
+                    <div class="results-text">
+                        Review the evidence you selected above - correct selections are highlighted in green, incorrect in red.
+                    </div>
+                </div>
+
+                <div class="insight-section">
+                    <div class="insight-title">Expert Porter Analysis: ${selectedIndustry.name}</div>
+                    <div class="insight-text">${selectedIndustry.expertInsight}</div>
+                </div>
+
+                <div class="insight-section">
+                    <div class="insight-title">Your Justification</div>
+                    <div class="insight-text">${document.getElementById('justification-text').value}</div>
+                </div>
+
+                <div class="insight-section">
+                    <div class="insight-title">Key Learning</div>
+                    <div class="insight-text">
+                        Industry attractiveness comes from the combined effect of all five forces. A single strong force can undermine profitability even if other forces are favorable. The most attractive industries have high barriers to entry, weak buyers, weak suppliers, low rivalry, and few substitutes.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('results-panel').classList.add('show');
+            document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetWidget() {
+            selectedIndustry = null;
+            forceRatings = {};
+            evidenceSelections = {};
+
+            document.querySelectorAll('.industry-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            document.getElementById('data-dashboard').classList.remove('show');
+            document.getElementById('force-analysis').classList.remove('show');
+            document.getElementById('overall-assessment').classList.remove('show');
+            document.getElementById('results-panel').classList.remove('show');
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('justification-text').value = '';
+            document.getElementById('attractiveness-slider').value = 5;
+            document.getElementById('attractiveness-value').textContent = '5';
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeIndustrySelection);
+    </script>
+</body>
+</html>

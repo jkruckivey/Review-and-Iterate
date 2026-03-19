@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Widget Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-hover: #eff6ff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Geist', sans-serif; background: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 300px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .sidebar-header h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+        .sidebar-header p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .nav-section { padding: 16px 0; }
+        .nav-title { padding: 0 24px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
+        
+        .nav-item { display: block; padding: 10px 24px; color: var(--text-main); text-decoration: none; font-size: 0.9375rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .nav-item:hover { background: var(--bg); }
+        .nav-item.active { background: var(--primary-hover); color: var(--primary); border-right: 3px solid var(--primary); }
+        .nav-item .badge { float: right; background: var(--border); color: var(--text-muted); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+        .nav-item.active .badge { background: var(--primary); color: white; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
+        
+        .view-header { padding: 24px 40px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .view-title { font-size: 1.5rem; font-weight: 600; }
+        
+        /* Grid View */
+        .widget-grid { flex: 1; padding: 40px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 32px; align-content: start; }
+        .widget-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .widget-card-header { padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
+        .widget-card-title { font-size: 0.875rem; font-weight: 600; color: var(--text-main); word-break: break-all; }
+        .widget-card iframe { width: 100%; height: 500px; border: none; background: white; }
+        
+        /* Split Compare View */
+        .split-view { display: none; flex: 1; flex-direction: row; height: calc(100vh - 85px); }
+        .split-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--surface); }
+        .split-pane:last-child { border-right: none; }
+        .split-controls { padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg); display: flex; gap: 12px; }
+        .split-controls select { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 0.875rem; }
+        .split-iframe-container { flex: 1; overflow: hidden; position: relative; background: #e2e8f0; }
+        .split-iframe-container iframe { width: 100%; height: 100%; border: none; position: absolute; top:0; left:0; background: white; }
+
+        /* Empty State */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center; padding: 40px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>Course Widgets</h1>
+            <p>Compare actual widget implementations across disciplines.</p>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Tools</div>
+            <a class="nav-item" id="nav-compare" onclick="showCompareView()">Side-by-Side Compare</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Courses</div>
+            <div id="course-nav-list"></div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="view-header">
+            <h2 class="view-title" id="view-title">Select a course</h2>
+        </div>
+
+        <!-- Single Course Grid View -->
+        <div class="widget-grid" id="widget-grid">
+            <div class="empty-state">
+                <h3>Welcome to the Course Widget Comparison</h3>
+                <p style="margin-top: 8px;">Select a course from the sidebar to view its widgets, or use the Side-by-Side tool to compare two widgets directly.</p>
+            </div>
+        </div>
+
+        <!-- Side-by-Side Compare View -->
+        <div class="split-view" id="split-view">
+            <div class="split-pane">
+                <div class="split-controls">
+                    <select id="select-a" onchange="updateSplit('a')"><option value="">Select Widget A...</option></select>
+                </div>
+                <div class="split-iframe-container" id="container-a">
+                    <div class="empty-state">Select a widget above</div>
+                </div>
+            </div>
+            
+            <div class="split-pane">
+                <div class="split-controls">
+                    <select id="select-b" onchange="updateSplit('b')"><option value="">Select Widget B...</option></select>
+                </div>
+                <div class="split-iframe-container" id="container-b">
+                    <div class="empty-state">Select a widget above</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const widgetData = {"Acounting": ["Course Widgets/Acounting/ACC - M3 Financial Statements - Build an Income Statement Activity 1 - Income Statement Builder.html", "Course Widgets/Acounting/ACC - M3 Financial Statements - Build an Income Statement Activity 2 - Advanced Income Statement Challenge.html", "Course Widgets/Acounting/ACC - M3 Financial Statements - Expense Classification Activity.html", "Course Widgets/Acounting/ACC - M3 Financial Statements - Financial Statements - Final Challenge.html", "Course Widgets/Acounting/ACC - M4 Ratio Analysis - Building Luna's Balance Sheet.html", "Course Widgets/Acounting/ACC - M4 Ratio Analysis - Financial Ratio Comparison Project - Instructions.html", "Course Widgets/Acounting/ACC - M4 Ratio Analysis - What Are Financial Ratios.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Caribbean Internet Cafe - V2.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Caribbean Internet Cafe - V3.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Caribbean Internet Cafe.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Cost Classification Matching Activity - V2.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Cost Classification Matching Activity.html", "Course Widgets/Acounting/ACC - M5 Understanding Managerial Accounting - Sailing Voyages Case Solution.html"], "Business of Sports Marketing": ["Course Widgets/Business of Sports Marketing/cfl-project-tie-in.html", "Course Widgets/Business of Sports Marketing/future-trends-predictor.html", "Course Widgets/Business of Sports Marketing/heritage-strategy-pre-assessment.html", "Course Widgets/Business of Sports Marketing/heritage-transformation-strategist.html", "Course Widgets/Business of Sports Marketing/learning-outcomes-week.html", "Course Widgets/Business of Sports Marketing/legacy-innovation-matrix.html", "Course Widgets/Business of Sports Marketing/week5-concept-map.html"], "Finance": ["Course Widgets/Finance/11_quiz_financial_statements.html", "Course Widgets/Finance/12_quiz_financial_ratios.html", "Course Widgets/Finance/13_quiz_roe_decomposition.html", "Course Widgets/Finance/14_quiz_working_capital.html", "Course Widgets/Finance/20_quiz_tvm_basics.html", "Course Widgets/Finance/21_quiz_capital_budgeting.html", "Course Widgets/Finance/22_quiz_profitability_index.html", "Course Widgets/Finance/23_quiz_valuing_securities.html", "Course Widgets/Finance/24_quiz_module4_final.html", "Course Widgets/Finance/28_quiz_timeline_approach.html", "Course Widgets/Finance/30_exercise_draw_and_solve.html", "Course Widgets/Finance/32_interactive_timeline_approach.html", "Course Widgets/Finance/34_reflection_module4.html"], "Fundamentals of Analytics and Excel": ["Course Widgets/Fundamentals of Analytics and Excel/analysis-toolpak-demo.html", "Course Widgets/Fundamentals of Analytics and Excel/bin-width-explorer.html", "Course Widgets/Fundamentals of Analytics and Excel/data-table-demo.html", "Course Widgets/Fundamentals of Analytics and Excel/decision-tree-demo.html", "Course Widgets/Fundamentals of Analytics and Excel/decision-tree-practice.html", "Course Widgets/Fundamentals of Analytics and Excel/ecommerce-pivot-table-simulator.html", "Course Widgets/Fundamentals of Analytics and Excel/excel-correl-function-practice.html", "Course Widgets/Fundamentals of Analytics and Excel/excel-formula-validator.html", "Course Widgets/Fundamentals of Analytics and Excel/excel-sandbox-statistics.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-decision-trees-m7.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-iec-data-exploration.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-iec-expected-value-v2.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-iec-scenario-analysis.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m2-brent-harbridge-auction.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m2-iec-revenue.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m3-quadratic-mastery.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m4-functions-verification.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m5-bid-ratio-analysis.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m5-expected-value.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m5-statistics-mastery.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m6-chace-shipping.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m6-coffee-cafe-pivot.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m7-correlation-mastery.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-m7-iec-simulation.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-1.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-2.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-3.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-4.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-5.html", "Course Widgets/Fundamentals of Analytics and Excel/kc-module-6.html", "Course Widgets/Fundamentals of Analytics and Excel/keyboard-shortcuts-practice.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-0.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-1.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-2.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-3.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-4.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-5.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-6.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-7.html", "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-8.html"], "IAIT": ["Course Widgets/IAIT/week2-module1-s-curve-mapping.html", "Course Widgets/IAIT/week2-module2-ai-impact-diagnostic.html", "Course Widgets/IAIT/week2-module3-strategic-options-assessment.html", "Course Widgets/IAIT/week2-module3-timing-decision-tree.html", "Course Widgets/IAIT/week5-module1-microsoft-vs-ge.html", "Course Widgets/IAIT/week5-module2-stakeholder-coalition-map.html", "Course Widgets/IAIT/week5-module3-energy-curve.html"], "Managing Innovation": ["Course Widgets/Managing Innovation/3m-sixsigma-timeline(1).html", "Course Widgets/Managing Innovation/ambidexterity-types(1).html", "Course Widgets/Managing Innovation/ambidexterity-types.html", "Course Widgets/Managing Innovation/costs-vs-uncertainty(1).html", "Course Widgets/Managing Innovation/costs-vs-uncertainty.html", "Course Widgets/Managing Innovation/etypes-options.html", "Course Widgets/Managing Innovation/greenlight-process(1).html", "Course Widgets/Managing Innovation/greenlight-process.html", "Course Widgets/Managing Innovation/jordan-timeline.html", "Course Widgets/Managing Innovation/pareto-distribution.html", "Course Widgets/Managing Innovation/process-vs-innovation.html", "Course Widgets/Managing Innovation/shape-of-innovation(1).html", "Course Widgets/Managing Innovation/three-films-chart.html", "Course Widgets/Managing Innovation/user-innovation-chart.html", "Course Widgets/Managing Innovation/vipp-discussion-widget.html"], "Strategy": ["Course Widgets/Strategy/complete-framework-analyzer.html", "Course Widgets/Strategy/complete-framework-summary.html", "Course Widgets/Strategy/correlation-vs-causation-detective.html", "Course Widgets/Strategy/course-roadmap.html", "Course Widgets/Strategy/differentiation-analyzer.html", "Course Widgets/Strategy/five-forces-analyzer.html", "Course Widgets/Strategy/five-forces-identifier.html", "Course Widgets/Strategy/goal-reality-check.html", "Course Widgets/Strategy/index.html", "Course Widgets/Strategy/industry-performance-explorer.html", "Course Widgets/Strategy/industry-position-plotter.html", "Course Widgets/Strategy/industry-structure-deep-dive.html", "Course Widgets/Strategy/jobs-discovery-workshop.html", "Course Widgets/Strategy/jobs-to-be-done.html", "Course Widgets/Strategy/jtbd-research-workshop.html", "Course Widgets/Strategy/knowledge-check-customer-connection.html", "Course Widgets/Strategy/knowledge-check-five-forces-identification.html", "Course Widgets/Strategy/knowledge-check-frontier-concept.html", "Course Widgets/Strategy/knowledge-check-industry-performance.html", "Course Widgets/Strategy/knowledge-check-three-positions.html", "Course Widgets/Strategy/learning-outcomes-map.html", "Course Widgets/Strategy/learning-outcomes-module-1.html", "Course Widgets/Strategy/learning-outcomes-module-10.html", "Course Widgets/Strategy/learning-outcomes-module-2.html", "Course Widgets/Strategy/learning-outcomes-module-3.html", "Course Widgets/Strategy/learning-outcomes-module-4.html", "Course Widgets/Strategy/learning-outcomes-module-5.html", "Course Widgets/Strategy/learning-outcomes-module-6.html", "Course Widgets/Strategy/learning-outcomes-module-7.html", "Course Widgets/Strategy/learning-outcomes-module-8.html", "Course Widgets/Strategy/learning-outcomes-module-9.html", "Course Widgets/Strategy/mid-market-squeeze.html", "Course Widgets/Strategy/part-2-knowledge-check.html", "Course Widgets/Strategy/part-3-knowledge-check.html", "Course Widgets/Strategy/performance-dimensions-explorer.html", "Course Widgets/Strategy/position-metrics.html", "Course Widgets/Strategy/position-risk-return-calculator.html", "Course Widgets/Strategy/productivity-frontier.html", "Course Widgets/Strategy/profitability-driver-analyzer.html", "Course Widgets/Strategy/real-company-position-analyzer.html", "Course Widgets/Strategy/revenue-vs-cost-distribution.html", "Course Widgets/Strategy/rivalry-dimensions.html", "Course Widgets/Strategy/roa-decomposition-chart.html", "Course Widgets/Strategy/southwest-airlines-timeline.html", "Course Widgets/Strategy/strategic-decision-analyzer.html", "Course Widgets/Strategy/strategic-position-matcher.html", "Course Widgets/Strategy/strategic-positioning-integrator.html", "Course Widgets/Strategy/strategy-concept-map.html", "Course Widgets/Strategy/substitutes-framework.html", "Course Widgets/Strategy/value-chain-analyzer.html", "Course Widgets/Strategy/value-creation-analyzer.html", "Course Widgets/Strategy/value-creation-matrix.html", "Course Widgets/Strategy/vertical-structure-diagram.html", "Course Widgets/Strategy/wrigley-weis-comic.html"]};
+        
+        // Populate Sidebar
+        const navList = document.getElementById('course-nav-list');
+        const selectA = document.getElementById('select-a');
+        const selectB = document.getElementById('select-b');
+        
+        // Build option groups for selects
+        let optionsHtml = '<option value="">Select a widget...</option>';
+        
+        Object.keys(widgetData).sort().forEach(course => {
+            const widgets = widgetData[course];
+            
+            // Add sidebar item
+            const a = document.createElement('a');
+            a.className = 'nav-item';
+            a.innerHTML = `${course} <span class="badge">${widgets.length}</span>`;
+            a.onclick = () => showCourse(course, a);
+            navList.appendChild(a);
+            
+            // Add to dropdowns
+            optionsHtml += `<optgroup label="${course}">`;
+            widgets.forEach(w => {
+                const filename = w.split('/').pop();
+                optionsHtml += `<option value="${w}">${filename}</option>`;
+            });
+            optionsHtml += `</optgroup>`;
+        });
+        
+        selectA.innerHTML = optionsHtml;
+        selectB.innerHTML = optionsHtml;
+
+        function showCourse(courseName, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            document.getElementById('widget-grid').style.display = 'grid';
+            document.getElementById('split-view').style.display = 'none';
+            document.getElementById('view-title').textContent = courseName;
+            
+            const grid = document.getElementById('widget-grid');
+            grid.innerHTML = '';
+            
+            widgetData[courseName].forEach(widgetPath => {
+                const filename = widgetPath.split('/').pop();
+                grid.innerHTML += `
+                    <div class="widget-card">
+                        <div class="widget-card-header">
+                            <div class="widget-card-title">${filename}</div>
+                        </div>
+                        <iframe src="${widgetPath}" loading="lazy"></iframe>
+                    </div>
+                `;
+            });
+        }
+        
+        function showCompareView() {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-compare').classList.add('active');
+            
+            document.getElementById('widget-grid').style.display = 'none';
+            document.getElementById('split-view').style.display = 'flex';
+            document.getElementById('view-title').textContent = "Side-by-Side Comparison";
+        }
+        
+        function updateSplit(pane) {
+            const select = document.getElementById('select-' + pane);
+            const container = document.getElementById('container-' + pane);
+            const path = select.value;
+            
+            if (path) {
+                container.innerHTML = `<iframe src="${path}"></iframe>`;
+            } else {
+                container.innerHTML = `<div class="empty-state">Select a widget above</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

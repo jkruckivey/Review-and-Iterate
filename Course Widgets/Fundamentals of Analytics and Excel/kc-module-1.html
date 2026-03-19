@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Linear Functions</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --color-neutral-900: #171717;
+            --color-neutral-700: #404040;
+            --color-neutral-600: #525252;
+            --color-neutral-500: #737373;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-200: #dddddd;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-50: #f7f7f7;
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #bfe5e7;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            display: none;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .scenario {
+            background: #f5fafa;
+            border-left: 3px solid #bfe5e7;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .scenario h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .scenario ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 12px 0;
+        }
+
+        .scenario li {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 4px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .scenario li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .btn-check {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-check:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: var(--color-neutral-900);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-next.show {
+            display: block;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #171717;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #171717;
+        }
+
+        .feedback h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .results-details {
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .results-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid var(--color-correct);
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid var(--color-incorrect);
+        }
+
+        .result-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-retry {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 14px 32px;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-neutral-700);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Knowledge Check</h1>
+            <p>Linear Functions - 5 Questions</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <!-- Question 1: Identifying Linear Functions -->
+        <div class="question-card active" data-question="1">
+            <div class="question-number">Question 1 of 5</div>
+
+            <div class="question-text">
+                Which of the following equations represents a linear function?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label"><strong>A)</strong> y = 3x² + 5</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label"><strong>B)</strong> y = 12x + 200</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label"><strong>C)</strong> y = 50/x</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label"><strong>D)</strong> y = 2ˣ</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn1" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn1">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <!-- Question 2: Slope Interpretation -->
+        <div class="question-card" data-question="2">
+            <div class="question-number">Question 2 of 5</div>
+
+            <div class="question-text">
+                A manufacturing company has a cost function C(x) = 15x + 8,000, where x is the number of units produced. What does the coefficient 15 represent?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label"><strong>A)</strong> Total cost when producing 15 units</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label"><strong>B)</strong> Variable cost per unit produced</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label"><strong>C)</strong> Fixed costs of $15</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label"><strong>D)</strong> The number of units that can be produced</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn2" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn2">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <!-- Question 3: Intercept Interpretation -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Question 3 of 5</div>
+
+            <div class="question-text">
+                For the same cost function C(x) = 15x + 8,000, what does 8,000 represent?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label"><strong>A)</strong> The variable cost per unit</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label"><strong>B)</strong> The total cost of producing 8,000 units</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label"><strong>C)</strong> Fixed costs that exist even at zero production</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label"><strong>D)</strong> Maximum production capacity</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn3" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn3">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Question 4: Word Problem Application -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Question 4 of 5</div>
+
+            <div class="question-text">
+                A taxi charges $3.50 base fare plus $0.75 per kilometer. Which function models the total cost C for k kilometers?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label"><strong>A)</strong> C = 3.50k + 0.75</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label"><strong>B)</strong> C = 0.75k + 3.50</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label"><strong>C)</strong> C = 3.50 + 0.75 + k</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label"><strong>D)</strong> C = (3.50)(0.75)k</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn4" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn4">Next Question →</button>
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <!-- Question 5: Table Recognition -->
+        <div class="question-card" data-question="5">
+            <div class="question-number">Question 5 of 5</div>
+
+            <div class="scenario">
+                <h3>Look at this input-output table:</h3>
+                <table style="margin: 16px auto; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">x</th>
+                            <th style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">0</td>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">5</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">1</td>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">8</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">2</td>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">11</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">3</td>
+                            <td style="border: 1px solid var(--color-neutral-300); padding: 8px; text-align: center;">14</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="question-text">
+                Is this a linear function?
+            </div>
+
+            <div class="options" data-correct="a">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q5" value="a">
+                    <span class="option-label"><strong>A)</strong> Yes, because y increases by 3 each time x increases by 1</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q5" value="b">
+                    <span class="option-label"><strong>B)</strong> No, because the y-values are not equal</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q5" value="c">
+                    <span class="option-label"><strong>C)</strong> No, because x and y are different numbers</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q5" value="d">
+                    <span class="option-label"><strong>D)</strong> Yes, because there are 4 data points</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn5" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn5">View Results →</button>
+            </div>
+
+            <div class="feedback" id="feedback5"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-score" id="scoreDisplay">0/5</div>
+            <div class="results-message" id="resultsMessage"></div>
+
+            <div class="results-details">
+                <h3>Your Answers:</h3>
+                <div id="resultsList"></div>
+            </div>
+
+            <button class="btn btn-retry" onclick="location.reload()">Retry Knowledge Check</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+        let answers = {};
+        let results = {};
+
+        const questions = [
+            {
+                num: 1,
+                correct: 'b',
+                correctFeedback: 'Correct! y = 12x + 200 is a linear function in the form y = mx + b, where m = 12 and b = 200. The variable x has an exponent of 1 (not written).',
+                incorrectFeedback: 'A linear function has the form y = mx + b where x has an exponent of 1 (not squared, not in a denominator, not an exponent). Only y = 12x + 200 fits this pattern.',
+                title: 'Identifying Linear Functions'
+            },
+            {
+                num: 2,
+                correct: 'b',
+                correctFeedback: 'Correct! The coefficient 15 (the slope m) represents the variable cost per unit. For every additional unit produced, costs increase by $15.',
+                incorrectFeedback: 'The coefficient 15 is the slope (m) in the linear function. In business contexts, slope represents the rate of change—how much costs increase per unit produced. This is the variable cost per unit.',
+                title: 'Interpreting Slope'
+            },
+            {
+                num: 3,
+                correct: 'c',
+                correctFeedback: 'Exactly! The 8,000 (the intercept b) represents fixed costs—expenses that exist even when x = 0 (no production). These might include rent, salaries, equipment leases, etc.',
+                incorrectFeedback: 'The 8,000 is the intercept (b) in y = mx + b. The intercept is the value of y when x = 0. In this cost function, it\'s the costs that exist even when producing zero units—these are fixed costs.',
+                title: 'Interpreting Intercept'
+            },
+            {
+                num: 4,
+                correct: 'b',
+                correctFeedback: 'Perfect! The base fare ($3.50) is the fixed cost (intercept), and $0.75 per kilometer is the variable rate (slope). So C = 0.75k + 3.50.',
+                incorrectFeedback: 'In a linear cost function, the fixed cost is the intercept and the rate per unit is the slope. Base fare = $3.50 (happens regardless of distance), and $0.75 per km means multiply 0.75 by k. The function is C = 0.75k + 3.50.',
+                title: 'Word Problem Application'
+            },
+            {
+                num: 5,
+                correct: 'a',
+                correctFeedback: 'Exactly! The y-values increase by a constant amount (3) for each unit increase in x. This constant rate of change confirms it\'s linear with slope m = 3.',
+                incorrectFeedback: 'A linear function has a constant rate of change. Check how much y changes each time x increases by 1: 5→8 (+3), 8→11 (+3), 11→14 (+3). The change is constant, so it\'s linear.',
+                title: 'Table Recognition'
+            }
+        ];
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (Object.keys(answers).length / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Setup event listeners for each question
+        questions.forEach(q => {
+            const questionNum = q.num;
+            const card = document.querySelector(`.question-card[data-question="${questionNum}"]`);
+            const options = card.querySelectorAll('.option');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById(`checkBtn${questionNum}`);
+            const nextBtn = document.getElementById(`nextBtn${questionNum}`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const optionsContainer = card.querySelector('.options');
+            const correctAnswer = optionsContainer.dataset.correct;
+
+            // Enable check button when option selected
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = card.querySelector(`.option[data-value="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            // Option click handler
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            // Check answer
+            checkBtn.addEventListener('click', () => {
+                const selectedValue = card.querySelector(`input[name="q${questionNum}"]:checked`)?.value;
+                if (!selectedValue) return;
+
+                const isCorrect = selectedValue === correctAnswer;
+                answers[questionNum] = selectedValue;
+                results[questionNum] = isCorrect;
+
+                // Show visual feedback
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    option.style.pointerEvents = 'none';
+
+                    if (value === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (value === selectedValue && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Show feedback
+                if (isCorrect) {
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = `
+                        <h3>✓ Correct!</h3>
+                        <p>${q.correctFeedback}</p>
+                    `;
+                } else {
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `
+                        <h3>✗ Not quite</h3>
+                        <p>${q.incorrectFeedback}</p>
+                    `;
+                }
+
+                checkBtn.style.display = 'none';
+                nextBtn.classList.add('show');
+                updateProgress();
+            });
+
+            // Next button
+            nextBtn.addEventListener('click', () => {
+                if (questionNum < totalQuestions) {
+                    // Go to next question
+                    card.classList.remove('active');
+                    const nextCard = document.querySelector(`.question-card[data-question="${questionNum + 1}"]`);
+                    nextCard.classList.add('active');
+                    currentQuestion++;
+                } else {
+                    // Show results
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const correctCount = Object.values(results).filter(r => r === true).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalQuestions}`;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You have mastered linear functions.';
+            } else if (percentage >= 50) {
+                message = 'Good work! Review the concepts you missed.';
+            } else {
+                message = 'Keep practicing! Review the module content and try again.';
+            }
+            document.getElementById('resultsMessage').textContent = message;
+
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = questions.map(q => {
+                const isCorrect = results[q.num];
+                const icon = isCorrect ? '✓' : '✗';
+                const className = isCorrect ? 'correct' : 'incorrect';
+                return `
+                    <div class="result-item ${className}">
+                        <span class="result-icon">${icon}</span>
+                        <span>Question ${q.num}: ${q.title}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsScreen').classList.add('show');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

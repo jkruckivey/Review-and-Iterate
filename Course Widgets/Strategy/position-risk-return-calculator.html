@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Position Risk-Return Calculator - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* Subtle Accent Colors */
+            --color-turquoise: #bfe5e7;
+            --color-sage: #c0d1cd;
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Border Radius */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+        }
+
+        .context-box {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-800);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .context-box p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .position-selector {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .selector-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .position-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .position-btn {
+            background: var(--color-neutral-50);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .position-btn:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .position-btn.selected {
+            border-color: var(--color-turquoise);
+            background: var(--color-neutral-50);
+            box-shadow: inset 0 0 0 2px var(--color-turquoise);
+        }
+
+        .position-btn-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .position-btn-description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-description {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+        }
+
+        .scenario-section {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-btn {
+            background: var(--color-neutral-700);
+            color: white;
+            border: 1px solid var(--color-neutral-700);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .scenario-btn:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        .scenario-result {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-turquoise);
+            padding: 1.25rem;
+            border-radius: var(--border-radius-sm);
+            display: none;
+        }
+
+        .scenario-result.show {
+            display: block;
+        }
+
+        .scenario-result-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-result-text {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        .comparison-section {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .comparison-table th {
+            background: var(--color-neutral-100);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-neutral-900);
+            border-bottom: 2px solid var(--color-neutral-300);
+        }
+
+        .comparison-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .risk-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .risk-low {
+            background: var(--color-sage);
+            color: var(--color-neutral-800);
+        }
+
+        .risk-medium {
+            background: var(--color-sand);
+            color: var(--color-neutral-900);
+        }
+
+        .risk-high {
+            background: var(--color-purple);
+            color: var(--color-neutral-900);
+        }
+
+        .insight-box {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-turquoise);
+            padding: 1rem 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .insight-box p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .position-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Position Risk-Return Calculator</h1>
+            <p>Explore the tradeoffs and challenges of each strategic position</p>
+        </div>
+
+        <div class="context-box">
+            <p>Select a strategic position below to view its key metrics, then test competitive scenarios to understand how each position responds to market challenges.</p>
+        </div>
+
+        <div class="position-selector">
+            <div class="selector-title">Select a Strategic Position</div>
+            <div class="position-buttons">
+                <button class="position-btn selected" onclick="selectPosition('high-end')">
+                    <div class="position-btn-title">High-End</div>
+                    <div class="position-btn-description">Premium performance, differentiation</div>
+                </button>
+                <button class="position-btn" onclick="selectPosition('mid-market')">
+                    <div class="position-btn-title">Mid-Market</div>
+                    <div class="position-btn-description">Balanced value, broad appeal</div>
+                </button>
+                <button class="position-btn" onclick="selectPosition('price-sensitive')">
+                    <div class="position-btn-title">Price-Sensitive</div>
+                    <div class="position-btn-description">Low cost, operational efficiency</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="metrics-grid" id="metrics-grid">
+            <!-- Metrics will be inserted here -->
+        </div>
+
+        <div class="scenario-section">
+            <div class="scenario-title">Test Competitive Scenarios</div>
+            <p style="color: var(--color-neutral-600); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                See how your selected position responds to competitive challenges:
+            </p>
+            <div class="scenario-buttons" id="scenario-buttons">
+                <!-- Scenario buttons will be inserted here -->
+            </div>
+            <div class="scenario-result" id="scenario-result">
+                <div class="scenario-result-title" id="scenario-result-title"></div>
+                <div class="scenario-result-text" id="scenario-result-text"></div>
+            </div>
+        </div>
+
+        <div class="comparison-section">
+            <div class="scenario-title">Compare All Positions</div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Market Frequency</th>
+                        <th>Avg Profit Margin</th>
+                        <th>Exit Rate (5yr)</th>
+                        <th>Risk Profile</th>
+                        <th>Key Challenge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600;">High-End</td>
+                        <td>15%</td>
+                        <td>22%</td>
+                        <td>18%</td>
+                        <td><span class="risk-indicator risk-medium">Medium</span></td>
+                        <td>Fickle customers, endless differentiation</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Mid-Market</td>
+                        <td>55%</td>
+                        <td>12%</td>
+                        <td>25%</td>
+                        <td><span class="risk-indicator risk-high">High</span></td>
+                        <td>Strategic drift, stuck in middle</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Price-Sensitive</td>
+                        <td>30%</td>
+                        <td>8%</td>
+                        <td>32%</td>
+                        <td><span class="risk-indicator risk-high">High</span></td>
+                        <td>Nowhere to hide, suffer or die</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <p>
+                    <strong>Key Insight:</strong> Mid-market is the most common position (55% of firms) but has the highest exit rate (25% fail within 5 years).
+                    High-end offers the highest margins but serves only 15% of the market. Price-sensitive positions are extremely competitive with the highest exit rate (32%).
+                    The "best" position depends on your firm's capabilities and the industry structure.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const positionData = {
+            'high-end': {
+                name: 'High-End / Differentiator',
+                frequency: '15%',
+                margin: '22%',
+                exitRate: '18%',
+                customerChurn: '25%',
+                metrics: [
+                    { label: 'Market Frequency', value: '15%', description: 'Smaller segment, selective customers' },
+                    { label: 'Avg Profit Margin', value: '22%', description: 'Premium pricing enables higher margins' },
+                    { label: 'Customer Churn', value: '25%', description: 'Fickle customers switch for novelty' },
+                    { label: '5-Year Exit Rate', value: '18%', description: 'Moderate failure rate' }
+                ],
+                scenarios: [
+                    {
+                        title: 'Mid-market competitor improves quality',
+                        impact: 'Moderate Threat',
+                        description: 'High-end positions are vulnerable when mid-market firms climb the quality ladder. You must continuously innovate and differentiate to justify premium prices. If the mid-market competitor closes 70% of the quality gap while charging 40% less, some of your price-sensitive customers will defect. However, your core luxury customers may remain loyal if you maintain clear differentiation in service, brand prestige, or unique features.'
+                    },
+                    {
+                        title: 'New luxury competitor enters market',
+                        impact: 'High Threat',
+                        description: 'High-end positions face intense competition from new luxury entrants because there are limited customers willing to pay premium prices. Your customer base is small (15% of market) and these customers actively seek novelty and status. A well-funded new entrant with innovative features or better brand story can quickly steal market share. You must invest heavily in brand defense, customer relationships, and continued innovation to maintain position.'
+                    },
+                    {
+                        title: 'Economic downturn reduces discretionary spending',
+                        impact: 'High Threat',
+                        description: 'High-end positions are extremely vulnerable to economic downturns. Premium customers may trade down to mid-market alternatives when budgets tighten. Your revenue can drop 30-50% in severe recessions as "nice-to-have" premium features become harder to justify. To survive, you may need to: (1) introduce "accessible luxury" sub-brands, (2) emphasize value retention and quality, or (3) target recession-resistant customer segments (e.g., ultra-wealthy).'
+                    }
+                ],
+                challenges: ['Endless differentiation race', 'Fickle customer base', 'High R&D and marketing costs', 'Vulnerable to economic cycles']
+            },
+            'mid-market': {
+                name: 'Mid-Market / Broad Appeal',
+                frequency: '55%',
+                margin: '12%',
+                exitRate: '25%',
+                customerChurn: '20%',
+                metrics: [
+                    { label: 'Market Frequency', value: '55%', description: 'Most common position, mainstream market' },
+                    { label: 'Avg Profit Margin', value: '12%', description: 'Moderate margins, good value positioning' },
+                    { label: 'Customer Churn', value: '20%', description: 'Customers have many alternatives' },
+                    { label: '5-Year Exit Rate', value: '25%', description: 'Highest exit rate - strategic drift' }
+                ],
+                scenarios: [
+                    {
+                        title: 'Price-sensitive competitor drops prices 20%',
+                        impact: 'Moderate Threat',
+                        description: 'Mid-market positions face pressure from below when price-sensitive competitors cut prices. You risk "strategic drift" - trying to match lower prices erodes your value proposition and margins. If you drop prices to compete, you may still lose because cost leaders have structural advantages (scale, efficiency). Better strategy: emphasize your superior features and service that justify higher prices. Focus on customers who value quality over lowest price.'
+                    },
+                    {
+                        title: 'High-end features become affordable',
+                        impact: 'High Threat',
+                        description: 'Mid-market positions are squeezed when technology makes premium features affordable. Example: When backup cameras became standard in all cars, mid-market vehicles lost a key differentiation point. You face intense pressure from both above (high-end features trickling down) and below (cost leaders improving quality). To survive, you must: (1) continuously find new dimensions of value, (2) build strong brand loyalty, or (3) pursue operational efficiency to compete on cost.'
+                    },
+                    {
+                        title: 'Market polarizes toward extremes',
+                        impact: 'High Threat',
+                        description: 'Mid-market positions are devastated when markets polarize into luxury vs. budget segments. This happened in airlines (business class vs. low-cost), retail (luxury vs. discount), and many other industries. Customers increasingly want either "best quality" or "best price" - not the middle. Your moderate pricing and features appeal to fewer customers. You must choose: move up-market (invest in differentiation) or down-market (cut costs and prices). Staying in the middle often leads to failure.'
+                    }
+                ],
+                challenges: ['Strategic drift toward stuck-in-middle', 'Pressure from both above and below', 'Hardest to defend position', 'Constant competitive threats']
+            },
+            'price-sensitive': {
+                name: 'Price-Sensitive / Cost Leader',
+                frequency: '30%',
+                margin: '8%',
+                exitRate: '32%',
+                customerChurn: '15%',
+                metrics: [
+                    { label: 'Market Frequency', value: '30%', description: 'Substantial market, value seekers' },
+                    { label: 'Avg Profit Margin', value: '8%', description: 'Thin margins from low pricing' },
+                    { label: 'Customer Churn', value: '15%', description: 'Lowest churn - price loyalty' },
+                    { label: '5-Year Exit Rate', value: '32%', description: 'Highest exit rate - brutal competition' }
+                ],
+                scenarios: [
+                    {
+                        title: 'Competitor achieves lower costs through scale',
+                        impact: 'Critical Threat',
+                        description: 'Price-sensitive positions are devastated when a competitor achieves superior scale economics. This is "nowhere to hide" - if they have lower costs, they can undercut your prices and still make profit while you suffer losses. Example: Walmart drove hundreds of retailers out of business through superior logistics and scale. Your only options: (1) Exit the market, (2) Find a niche where scale matters less, or (3) Consolidate with competitors to build scale. There is no middle ground in cost competition.'
+                    },
+                    {
+                        title: 'Input costs rise (e.g., labor, materials)',
+                        impact: 'High Threat',
+                        description: 'Price-sensitive positions have nowhere to hide when costs rise. Your customers chose you for price - they will switch to whoever offers the lowest price. You cannot raise prices to cover costs without losing customers. You cannot absorb costs because your margins are already thin (8%). Result: Profits evaporate. You must: (1) Find cost offsets through efficiency, (2) Pass costs to customers and accept volume loss, or (3) Exit the market if margins become unsustainable.'
+                    },
+                    {
+                        title: 'New technology disrupts cost structure',
+                        impact: 'Mixed - Opportunity or Threat',
+                        description: 'Price-sensitive positions face existential risk from technology that changes cost structures. If you adopt the technology FIRST, you can undercut competitors and gain share. If competitors adopt FIRST, you face extinction. Examples: Online retailers vs. brick-and-mortar (Amazon), digital photography vs. film (Kodak). Success requires: (1) Constant technology scanning, (2) Willingness to cannibalize existing business, (3) Speed to implement cost innovations before competitors.'
+                    }
+                ],
+                challenges: ['Nowhere to hide from cost pressure', 'Extremely thin margins', 'Must constantly find cost reductions', 'Vulnerable to scale competitors']
+            }
+        };
+
+        let currentPosition = 'high-end';
+
+        function selectPosition(position) {
+            currentPosition = position;
+
+            // Update button selection
+            document.querySelectorAll('.position-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.position-btn').classList.add('selected');
+
+            // Update metrics
+            updateMetrics();
+
+            // Update scenarios
+            updateScenarios();
+
+            // Hide previous scenario result
+            document.getElementById('scenario-result').classList.remove('show');
+        }
+
+        function updateMetrics() {
+            const data = positionData[currentPosition];
+            const metricsGrid = document.getElementById('metrics-grid');
+
+            metricsGrid.innerHTML = data.metrics.map(metric => `
+                <div class="metric-card">
+                    <div class="metric-label">${metric.label}</div>
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-description">${metric.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateScenarios() {
+            const data = positionData[currentPosition];
+            const scenarioButtons = document.getElementById('scenario-buttons');
+
+            scenarioButtons.innerHTML = data.scenarios.map((scenario, index) => `
+                <button class="scenario-btn" onclick="runScenario(${index})">
+                    ${scenario.title}
+                </button>
+            `).join('');
+        }
+
+        function runScenario(index) {
+            const data = positionData[currentPosition];
+            const scenario = data.scenarios[index];
+
+            const resultDiv = document.getElementById('scenario-result');
+            const titleDiv = document.getElementById('scenario-result-title');
+            const textDiv = document.getElementById('scenario-result-text');
+
+            titleDiv.textContent = `${scenario.title} → ${scenario.impact}`;
+            textDiv.textContent = scenario.description;
+
+            resultDiv.classList.add('show');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMetrics();
+            updateScenarios();
+        });
+    </script>
+</body>
+</html>

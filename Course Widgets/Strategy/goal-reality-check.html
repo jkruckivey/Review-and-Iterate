@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Reality Check - Industry Structure Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-neutral-300);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1rem;
+        }
+
+        .scenario-card {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-number {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--color-neutral-500);
+            margin-bottom: 0.75rem;
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
+        }
+
+        .scenario-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .industry-tag {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            color: var(--color-neutral-700);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .scenario-description {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .goal-statement {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+        }
+
+        .goal-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .rating-btn {
+            flex: 1;
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Geist', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .rating-btn:hover:not(.selected):not(:disabled) {
+            border-color: var(--color-neutral-400);
+            background: white;
+        }
+
+        .rating-btn.selected {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+        }
+
+        .rating-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .rating-btn.correct {
+            border-color: var(--color-neutral-700);
+            background: var(--color-neutral-100);
+        }
+
+        .rating-btn.incorrect {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+            opacity: 0.5;
+        }
+
+        .feedback-box {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-header {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .feedback-text {
+            font-size: 0.95rem;
+            color: var(--color-neutral-700);
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-analysis {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+        }
+
+        .analysis-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis-item {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .analysis-item:last-child {
+            border-bottom: none;
+        }
+
+        .progress-bar {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-fill-container {
+            flex: 1;
+            margin: 0 1rem;
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .results-card {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .results-card.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-label {
+            font-size: 1.1rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .results-message {
+            font-size: 1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: var(--color-neutral-700);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--color-neutral-700);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Geist', sans-serif;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-800);
+            border-color: var(--color-neutral-800);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .scenario-card {
+                padding: 1.5rem;
+            }
+
+            .rating-buttons {
+                flex-direction: column;
+            }
+
+            .scenario-header {
+                flex-direction: column;
+            }
+
+            .industry-tag {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Goal Reality Check</h1>
+            <p class="subtitle">Test Whether Business Goals Are Realistic Given Industry Structure</p>
+            <p class="subtitle" style="font-size: 0.85rem; margin-top: 0.5rem;">5 scenarios • ~8-12 minutes</p>
+        </header>
+
+        <div class="progress-bar">
+            <span class="progress-label">Progress:</span>
+            <div class="progress-fill-container">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-label" id="progress-text">0/5</span>
+        </div>
+
+        <div id="scenarios-container"></div>
+
+        <div class="results-card" id="results-card">
+            <div class="results-score" id="final-score">0/5</div>
+            <div class="results-label">Correct Assessments</div>
+            <div class="results-message" id="results-message"></div>
+            <button class="btn" onclick="restart()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                id: 1,
+                industry: "Commercial Airlines",
+                company: "SkyHigh Airlines",
+                description: "SkyHigh is a mid-sized carrier operating domestic routes in North America. The industry faces intense rivalry (many competitors, undifferentiated service), strong buyer power (price-sensitive travelers, easy comparison shopping), low barriers to entry (aircraft can be leased), and substitutes (trains, buses, driving).",
+                goal: "Achieve 18% operating margin within 3 years while maintaining current service levels and pricing.",
+                correctRating: "implausible",
+                feedback: {
+                    header: "This goal is IMPLAUSIBLE given airline industry structure.",
+                    explanation: "The commercial airline industry has among the lowest structural profitability of any major industry. Industry average operating margins are typically 2-5% (and often negative during downturns). The combination of intense rivalry, strong buyer power, and low switching costs makes 18% margins virtually impossible without radical differentiation (Southwest achieved this through a fundamentally different business model, not incremental improvements).",
+                    forces: [
+                        "✗ Intense rivalry - too many competitors, undifferentiated product",
+                        "✗ Strong buyer power - customers extremely price sensitive",
+                        "✗ Low switching costs - easy to compare and switch airlines",
+                        "✗ Commodity service - hard to differentiate beyond price",
+                        "✓ More realistic goal: 5-8% operating margin (still above industry average)"
+                    ]
+                }
+            },
+            {
+                id: 2,
+                industry: "Pharmaceutical R&D",
+                company: "BioNova Therapeutics",
+                description: "BioNova develops novel cancer treatments. The pharmaceutical industry enjoys high barriers to entry (patents, FDA approval process taking 10+ years), weak buyer power (patients need medicine, insurance pays), limited substitutes for breakthrough drugs, and low rivalry for patent-protected molecules.",
+                goal: "Achieve 25% ROA on successful drug launches within the patent protection window.",
+                correctRating: "realistic",
+                feedback: {
+                    header: "This goal is REALISTIC given pharmaceutical industry structure.",
+                    explanation: "The pharmaceutical industry is one of the most structurally attractive industries. Patents create temporary monopolies, regulatory barriers prevent competition for years, and customers (patients) have weak bargaining power when they need lifesaving drugs. Industry average ROA for pharma is around 15-20%, and successful drugs routinely achieve 25%+ ROA during patent protection. This goal aligns well with industry structure.",
+                    forces: [
+                        "✓ Very high barriers to entry - patents + FDA approval",
+                        "✓ Weak buyer power - patients need medicine, insurance intermediary",
+                        "✓ Limited substitutes - especially for novel treatments",
+                        "✓ Low rivalry during patent window - legal monopoly",
+                        "✓ Industry average ROA: 15-20%, top performers: 25-30%"
+                    ]
+                }
+            },
+            {
+                id: 3,
+                industry: "Medical Device Manufacturing",
+                company: "Canary Medical",
+                description: "Canary develops smart orthopedic implants with embedded sensors. The medical device industry has moderate barriers to entry (FDA clearance required but faster than drug approval), moderate buyer power (hospitals negotiate but need quality devices), some substitutes (traditional implants, alternative treatments), and growing rivalry as technology improves.",
+                goal: "Achieve 12-15% operating margin as the company scales from startup to commercial production.",
+                correctRating: "challenging",
+                feedback: {
+                    header: "This goal is CHALLENGING but achievable with strong execution.",
+                    explanation: "Medical device industry profitability is moderate - better than airlines, worse than pharma. Industry average operating margins are 10-18% for established players. For a startup like Canary, achieving the mid-range (12-15%) is challenging because: (1) hospitals have negotiating power, (2) competing against established brands (Stryker, Smith and Nephew, Johnson & Johnson) requires proving value, (3) R&D and FDA costs are significant. However, if Canary can demonstrate superior outcomes (fewer revisions through predictive monitoring), this margin is achievable.",
+                    forces: [
+                        "◐ Moderate barriers to entry - FDA 510(k) clearance required",
+                        "◐ Moderate buyer power - hospitals negotiate but need innovation",
+                        "◐ Some substitutes - traditional implants still viable",
+                        "◐ Growing rivalry - established players (Stryker, Smith and Nephew, J&J) + new entrants",
+                        "✓ Requires clear differentiation: Canary's sensors must prove value (predictive monitoring, fewer revisions)"
+                    ]
+                }
+            },
+            {
+                id: 4,
+                industry: "Retail Grocery",
+                company: "FreshMart Regional Grocers",
+                description: "FreshMart operates 30 stores in the Midwest. Grocery retail faces intense rivalry (Walmart, Kroger, regional chains), very strong buyer power (price-sensitive consumers, easy to compare prices), low barriers to entry (can lease space and stock shelves), many substitutes (online grocery, meal kits, restaurants), and supplier power varies (CPG brands have some power).",
+                goal: "Achieve 8-10% net profit margin across all store locations.",
+                correctRating: "implausible",
+                feedback: {
+                    header: "This goal is IMPLAUSIBLE given grocery retail structure.",
+                    explanation: "Grocery retail is one of the lowest-margin businesses. Industry average net profit margins are 1-3% for most grocers, with even highly efficient operators like Kroger achieving only 3-4%. Walmart's grocery margins are around 2-3%. The combination of intense price competition, extreme buyer price sensitivity, and low switching costs makes 8-10% net margins virtually impossible. Even Whole Foods (premium positioning) only achieved 5-6% before being acquired by Amazon.",
+                    forces: [
+                        "✗ Intense rivalry - Walmart, Kroger, Costco, Aldi all compete on price",
+                        "✗ Extreme buyer power - consumers highly price sensitive, easy comparison",
+                        "✗ Low switching costs - customers will drive to save 5%",
+                        "✗ Thin margins baked into industry structure",
+                        "✓ More realistic goal: 2-4% net margin (Kroger benchmark: 3%)"
+                    ]
+                }
+            },
+            {
+                id: 5,
+                industry: "Enterprise SaaS",
+                company: "DataFlow Analytics",
+                description: "DataFlow provides cloud-based data analytics for large enterprises. The SaaS industry has moderate barriers to entry (technical complexity, sales relationships), moderate buyer power (enterprises have budgets but need solutions), some substitutes (build in-house, open-source tools), and growing rivalry (many vendors, but each niche can support multiple players due to differentiation).",
+                goal: "Achieve 75-80% gross margin and 20% operating margin at scale (>$100M ARR).",
+                correctRating: "realistic",
+                feedback: {
+                    header: "This goal is REALISTIC and aligns with SaaS industry benchmarks.",
+                    explanation: "Enterprise SaaS economics are highly attractive at scale. Industry benchmarks for successful SaaS companies show: 70-85% gross margins (low marginal cost to serve additional customers), and 15-25% operating margins at scale (>$100M ARR). Companies like Salesforce, Workday, and ServiceNow routinely achieve these metrics. The key is reaching scale to amortize customer acquisition costs (CAC) and spread fixed costs across a large customer base. DataFlow's targets fall squarely within industry norms.",
+                    forces: [
+                        "✓ High gross margins - software has very low marginal cost",
+                        "✓ Recurring revenue - annual contracts create predictability",
+                        "✓ Moderate buyer power - enterprises budget for software but need ROI",
+                        "◐ Growing rivalry - many vendors, but niches support multiple winners",
+                        "✓ Industry benchmarks: 70-85% gross margin, 15-25% operating margin at scale"
+                    ]
+                }
+            }
+        ];
+
+        let userRatings = {};
+        let completedCount = 0;
+
+        function initScenarios() {
+            const container = document.getElementById('scenarios-container');
+
+            scenarios.forEach(scenario => {
+                const scenarioHTML = `
+                    <div class="scenario-card" id="scenario-${scenario.id}">
+                        <div class="scenario-number">Scenario ${scenario.id} of ${scenarios.length}</div>
+                        <div class="scenario-header">
+                            <h2 class="scenario-title">${scenario.company}</h2>
+                            <div class="industry-tag">${scenario.industry}</div>
+                        </div>
+                        <div class="scenario-description">${scenario.description}</div>
+                        <div class="goal-statement">
+                            <div class="goal-label">STATED GOAL:</div>
+                            ${scenario.goal}
+                        </div>
+                        <div class="rating-buttons" id="buttons-${scenario.id}">
+                            <button class="rating-btn" onclick="rateGoal(${scenario.id}, 'implausible')">
+                                Implausible<br>
+                                <small style="font-size: 0.8rem; font-weight: 400; color: var(--color-neutral-600);">Violates industry constraints</small>
+                            </button>
+                            <button class="rating-btn" onclick="rateGoal(${scenario.id}, 'challenging')">
+                                Challenging<br>
+                                <small style="font-size: 0.8rem; font-weight: 400; color: var(--color-neutral-600);">Difficult but achievable</small>
+                            </button>
+                            <button class="rating-btn" onclick="rateGoal(${scenario.id}, 'realistic')">
+                                Realistic<br>
+                                <small style="font-size: 0.8rem; font-weight: 400; color: var(--color-neutral-600);">Achievable with execution</small>
+                            </button>
+                        </div>
+                        <div class="feedback-box" id="feedback-${scenario.id}"></div>
+                    </div>
+                `;
+
+                container.innerHTML += scenarioHTML;
+            });
+
+            updateProgress();
+        }
+
+        function rateGoal(scenarioId, rating) {
+            const scenario = scenarios.find(s => s.id === scenarioId);
+            const isCorrect = rating === scenario.correctRating;
+
+            // Record rating if not already rated
+            if (!userRatings[scenarioId]) {
+                userRatings[scenarioId] = {
+                    selected: rating,
+                    correct: isCorrect
+                };
+                completedCount++;
+            }
+
+            // Update button states
+            const buttons = document.querySelectorAll(`#buttons-${scenarioId} .rating-btn`);
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const btnRating = btn.onclick.toString().match(/'(\w+)'/)[1];
+
+                if (btnRating === rating) {
+                    btn.classList.add('selected');
+                }
+
+                if (btnRating === scenario.correctRating) {
+                    btn.classList.add('correct');
+                } else {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            // Show feedback
+            showFeedback(scenarioId, isCorrect);
+
+            // Update progress
+            updateProgress();
+
+            // Check if all completed
+            if (completedCount === scenarios.length) {
+                setTimeout(showResults, 500);
+            }
+        }
+
+        function showFeedback(scenarioId, isCorrect) {
+            const scenario = scenarios.find(s => s.id === scenarioId);
+            const feedbackBox = document.getElementById(`feedback-${scenarioId}`);
+
+            const statusEmoji = isCorrect ? '✓' : '✗';
+            const statusText = isCorrect ? 'Correct!' : 'Incorrect';
+
+            const forcesHTML = scenario.feedback.forces.map(f => `
+                <div class="analysis-item">${f}</div>
+            `).join('');
+
+            feedbackBox.innerHTML = `
+                <div class="feedback-header">${statusEmoji} ${statusText}</div>
+                <div class="feedback-text"><strong>${scenario.feedback.header}</strong></div>
+                <div class="feedback-text">${scenario.feedback.explanation}</div>
+                <div class="feedback-analysis">
+                    <div class="analysis-title">Industry Structure Analysis:</div>
+                    ${forcesHTML}
+                </div>
+            `;
+
+            feedbackBox.classList.add('show');
+        }
+
+        function updateProgress() {
+            const percentage = (completedCount / scenarios.length) * 100;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-text').textContent = `${completedCount}/${scenarios.length}`;
+        }
+
+        function showResults() {
+            const correctCount = Object.values(userRatings).filter(r => r.correct).length;
+            const percentage = Math.round((correctCount / scenarios.length) * 100);
+
+            document.getElementById('scenarios-container').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.classList.add('show');
+
+            document.getElementById('final-score').textContent = `${correctCount}/${scenarios.length}`;
+
+            let message = '';
+            if (percentage >= 80) {
+                message = 'Excellent! You have a strong grasp of how industry structure constrains realistic goal-setting. You can identify when goals violate structural constraints vs. requiring strong execution.';
+            } else if (percentage >= 60) {
+                message = 'Good work! You understand the basics, but reviewing the Five Forces analysis for each scenario will help you better calibrate realistic vs. implausible goals.';
+            } else {
+                message = 'This is challenging! Consider reviewing the feedback for each scenario to see how industry forces (rivalry, buyer power, barriers to entry, substitutes, supplier power) create profitability ceilings. Understanding these constraints is essential for setting achievable goals.';
+            }
+
+            document.getElementById('results-message').textContent = message;
+        }
+
+        function restart() {
+            userRatings = {};
+            completedCount = 0;
+
+            document.getElementById('scenarios-container').innerHTML = '';
+            document.getElementById('scenarios-container').style.display = 'block';
+            document.querySelector('.progress-bar').style.display = 'flex';
+            document.getElementById('results-card').classList.remove('show');
+
+            initScenarios();
+        }
+
+        // Initialize on page load
+        initScenarios();
+    </script>
+</body>
+</html>

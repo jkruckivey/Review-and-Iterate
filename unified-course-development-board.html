@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unified Course Development Pipeline (Swimlanes)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f3f2f1; color: #323130; padding: 24px; }
+
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #605e5c; margin-bottom: 20px; }
+
+  /* SWIMLANE BOARD ARCHITECTURE */
+  .board-container { display: flex; flex-direction: column; overflow-x: auto; padding-bottom: 16px; }
+
+  /* Sticky Phase Headers */
+  .phases-row { display: flex; margin-left: 212px; gap: 12px; margin-bottom: 12px; }
+  .phase-group { display: flex; flex-direction: column; align-items: center; }
+  
+  .phase-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #fff; padding: 3px 10px; border-radius: 3px; margin-bottom: 8px; width: 100%; text-align: center;
+  }
+  .phase-storyboard { background: #f57f17; }
+  .phase-build { background: #1565c0; }
+  .phase-qa { background: #6a1b9a; }
+  .phase-done { background: #2e7d32; }
+
+  .columns-row { display: flex; gap: 12px; }
+  
+  .column-header-box {
+    width: 250px; flex-shrink: 0; background: #fff; border-radius: 8px;
+    border: 1px solid #edebe9; display: flex; flex-direction: column;
+  }
+  .column-header {
+    padding: 12px 14px 8px; border-bottom: 1px solid #edebe9;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .column-title { font-size: 13px; font-weight: 600; }
+  
+  /* WIP Limits */
+  .wip-count {
+    font-size: 11px; color: #323130; background: #edebe9; border-radius: 10px;
+    padding: 1px 7px; min-width: 32px; text-align: center; font-weight: 600;
+  }
+  .wip-warning { background: #fce4ec; color: #c62828; border: 1px solid #c62828; }
+  .column-header-box.over-limit { border-color: #c62828; background: #fffafb; }
+
+  .column-desc { font-size: 10px; color: #8a8886; padding: 6px 14px; line-height: 1.4; }
+
+  /* Individual Swimlanes */
+  .swimlane { display: flex; margin-bottom: 16px; align-items: stretch; }
+  .lane-title-card {
+    width: 200px; flex-shrink: 0; background: #fff; border-radius: 8px; padding: 16px;
+    border: 1px solid #edebe9; border-left: 6px solid #605e5c; margin-right: 12px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .lane-course-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .lane-lead { font-size: 11px; color: #8a8886; }
+
+  /* Specifically colored course lanes */
+  .lane-analytics { border-left-color: #0078d4; }
+  .lane-sports { border-left-color: #d83b01; }
+  .lane-ai { border-left-color: #107c10; }
+
+  .lane-cells { display: flex; gap: 12px; }
+  .lane-cell {
+    width: 250px; flex-shrink: 0; background: rgba(255,255,255,0.4); border: 1px dashed #c8c6c4;
+    border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 6px;
+  }
+  /* Remove dashed border for empty look */
+  .lane-cell:empty { border-color: transparent; }
+
+  /* CARDS */
+  .card {
+    background: #fff; border: 1px solid #edebe9; border-radius: 5px; padding: 10px;
+    cursor: pointer; transition: box-shadow 0.15s; border-left: 4px solid #1565c0;
+    position: relative;
+  }
+  .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+  /* Blocked Card Styling */
+  .card.blocked {
+    border: 2px solid #c62828; border-left-width: 6px;
+    background: repeating-linear-gradient(45deg, #fffafb, #fffafb 10px, #fce4ec 10px, #fce4ec 20px);
+  }
+  .card.blocked .card-title { color: #c62828; }
+
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .card-title { font-size: 12px; font-weight: 600; }
+  
+  /* Complexity Badges */
+  .complexity { font-size: 12px; background: #f3f2f1; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; transform: translateY(-2px); }
+
+  .card-labels { display: flex; gap: 3px; flex-wrap: wrap; margin-bottom: 8px; }
+  .label { font-size: 9px; padding: 1px 6px; border-radius: 3px; font-weight: 500; }
+  .label-priority-high { background: #fce4ec; color: #c62828; }
+  .label-a11y { background: #f3e5f5; color: #6a1b9a; }
+  .label-video { background: #e0f7fa; color: #00838f; }
+  .label-design { background: #fff8e1; color: #f57f17; }
+  
+  .card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  .card-assignee { font-size: 10px; color: #605e5c; }
+  .card-bugs { font-size: 9px; color: #605e5c; background: #f3f2f1; border-radius: 3px; padding: 2px 6px; }
+
+  .card.done-card { border-left-color: #2e7d32; opacity: 0.85; }
+
+  .remediation-box {
+    margin-top: 8px; background: #fff3e0; padding: 6px; border-radius: 4px; border-left: 2px solid #e65100; font-size: 10px;
+  }
+  .remediation-box p { color: #e65100; font-weight: 600; margin-bottom: 2px; }
+  .remediation-box ul { list-style: none; padding: 0; }
+  .remediation-box li { color: #323130; padding-left: 8px; position: relative; }
+  .remediation-box li:before { content: "•"; position: absolute; left: 0; color: #e65100; }
+
+  /* Misc components */
+  .arrow { display: flex; align-items: center; justify-content: center; min-width: 16px; color: #c8c6c4; font-size: 16px; }
+  .notes { margin-top: 32px; padding: 16px; background: #fff; border-radius: 8px; border: 1px solid #edebe9; max-width: 100%; }
+  .notes h2 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .notes p, .notes ul { font-size: 12px; line-height: 1.6; color: #323130; margin-bottom: 8px; }
+  .notes li { margin-left: 20px; }
+  .notes strong { font-weight: 600; }
+
+</style>
+</head>
+<body>
+
+<h1>Ivey Online: Course Development Pipeline (Swimlanes & WIP Config)</h1>
+<p class="subtitle">Standardized Pipeline · Phase 3 Integration · <span style="color:#8a8886">Showing Complexity Badges & Blocked Parking</span></p>
+
+<!-- THE BOARD -->
+<div class="board-container">
+
+  <!-- 1. PHASE HEADERS (TOP ROW) -->
+  <div class="phases-row">
+    
+    <!-- Storyboard -->
+    <div class="phase-group">
+      <div class="phase-label phase-storyboard">Storyboard / Design</div>
+      <div class="columns-row">
+        <!-- Col: Source Material -->
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Source Material</span>
+            <span class="wip-count" title="WIP Limit: 6">2/6</span>
+          </div>
+          <div class="column-desc">Author drafts scripts, widget specs.</div>
+        </div>
+        <!-- Col: Pre-Build Review -->
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Pre-Build Review</span>
+            <span class="wip-count" title="WIP Limit: 4">1/4</span>
+          </div>
+          <div class="column-desc">Style check BEFORE build begins.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Build -->
+    <div class="phase-group" style="margin-left: 12px;">
+      <div class="phase-label phase-build">Platform Build</div>
+      <div class="columns-row">
+        <!-- Col: Development -->
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Development</span>
+            <span class="wip-count" title="WIP Limit: 4">2/4</span>
+          </div>
+          <div class="column-desc">Building on Uplimit. HeyGen rendering.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QA -->
+    <div class="phase-group" style="margin-left: 12px;">
+      <div class="phase-label phase-qa">Review & Iterate</div>
+      <div class="columns-row">
+        <!-- Col: Platform QA -->
+        <!-- OVERSUBSCRIBED COLUMN EXAMPLE -->
+        <div class="column-header-box over-limit">
+          <div class="column-header">
+            <span class="column-title" style="color:#c62828;">Platform QA (QA 2)</span>
+            <span class="wip-count wip-warning" title="WIP Limit: 2">3/2!</span>
+          </div>
+          <div class="column-desc" style="color:#c62828;">Holistic review (Avatar, A11y, Styles).</div>
+        </div>
+        <!-- Col: Iterate -->
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Iterate / Fix</span>
+            <span class="wip-count" title="WIP Limit: 4">1/4</span>
+          </div>
+          <div class="column-desc">Implement dev fixes. Link BugHerd.</div>
+        </div>
+        <!-- Col: Verification -->
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Code Verification</span>
+            <span class="wip-count" title="WIP Limit: 3">0/3</span>
+          </div>
+          <div class="column-desc">Confirm bugs closed & folders clean.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Done -->
+    <div class="phase-group" style="margin-left: 12px;">
+      <div class="phase-label phase-done">Verified</div>
+      <div class="columns-row">
+        <div class="column-header-box">
+          <div class="column-header">
+            <span class="column-title">Deployment</span>
+            <span class="wip-count">1</span>
+          </div>
+          <div class="column-desc">Ready for live cohort.</div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End Phase Headers -->
+
+
+  <!-- 2. SWIMLANES -->
+
+  <!-- Swimlane: Sports Marketing -->
+  <div class="swimlane">
+    <div class="lane-title-card lane-sports">
+      <div class="lane-course-name">Business of Sports Marketing</div>
+      <div class="lane-lead">Lead: James K. · Cohort</div>
+    </div>
+    
+    <div class="lane-cells">
+      <!-- Source Material -->
+      <div class="lane-cell"></div>
+      
+      <!-- Pre-Build Review -->
+      <div class="lane-cell">
+        <!-- BLOCKED CARD -->
+        <div class="card blocked">
+          <div class="card-header">
+            <div class="card-title">Week 2: Sports Mktg</div>
+            <div class="complexity" title="Text/Widget Heavy">📄</div>
+          </div>
+          <div class="card-labels">
+            <span class="label label-priority-high">BLOCKED SME</span>
+            <span class="label label-design">Design Standard</span>
+          </div>
+          <div class="remediation-box">
+            <p>Wait on SME:</p>
+            <ul>
+              <li>Missing answer keys for M2</li>
+              <li>Needs clarification on pricing model</li>
+            </ul>
+          </div>
+          <div class="card-meta">
+            <span class="card-assignee">Rev: Luiza</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow" style="color:transparent">→</div> <!-- Spacer -->
+
+      <!-- Development -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div> <!-- Spacer -->
+
+      <!-- Platform QA -->
+      <div class="lane-cell">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Week 3: Sponsorships</div>
+            <div class="complexity" title="HeyGen Video Heavy">🎥</div>
+          </div>
+          <div class="card-labels">
+            <span class="label label-video">Video QA</span>
+          </div>
+           <div class="card-meta">
+            <span class="card-assignee">Yuvika</span>
+            <span class="card-bugs">In Review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Iterate -->
+      <div class="lane-cell"></div>
+
+      <!-- Verification -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div> <!-- Spacer -->
+
+      <!-- Deployment -->
+      <div class="lane-cell">
+        <div class="card done-card">
+          <div class="card-header">
+            <div class="card-title">Week 1: Marketing Intro</div>
+            <div class="complexity">📄</div>
+          </div>
+          <div class="card-meta"><span class="card-assignee">✓ Platform Live</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Swimlane: Fundamentals of Analytics -->
+  <div class="swimlane">
+    <div class="lane-title-card lane-analytics">
+      <div class="lane-course-name">Fundamentals of Analytics</div>
+      <div class="lane-lead">Lead: Mehmet · Self-Paced</div>
+    </div>
+    
+    <div class="lane-cells">
+      <!-- Source Material -->
+      <div class="lane-cell">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">M1: Predictive Analytics</div>
+            <div class="complexity" title="Equation Heavy">🔢</div>
+          </div>
+          <div class="card-meta"><span class="card-assignee">Mehmet</span></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">M2: Data Processing</div>
+            <div class="complexity" title="HeyGen Video Heavy">🎥</div>
+          </div>
+          <div class="card-meta"><span class="card-assignee">Mehmet</span></div>
+        </div>
+      </div>
+      
+      <!-- Pre-Build Review -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Development -->
+      <div class="lane-cell">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">M3: Output Visuals</div>
+            <div class="complexity">📄</div>
+          </div>
+          <div class="card-meta"><span class="card-assignee">James K.</span></div>
+        </div>
+      </div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Platform QA -->
+      <div class="lane-cell">
+        <div class="card priority-med">
+          <div class="card-header">
+            <div class="card-title">M4: Financial Analysis</div>
+            <div class="complexity">🎥</div>
+          </div>
+          <div class="card-labels">
+            <span class="label label-a11y">A11y</span>
+          </div>
+          <div class="remediation-box" style="border-left-color: #6a1b9a; background: #f3e5f5;">
+            <p style="color: #6a1b9a;">QA Findings:</p>
+            <ul>
+              <li>Flipcards missing keyboard nav</li>
+              <li>Slide 4 text blocking</li>
+            </ul>
+          </div>
+          <div class="card-meta">
+            <span class="card-assignee">Rev: Yuvika</span>
+            <span class="card-bugs">Logged in BugHerd</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Iterate -->
+      <div class="lane-cell"></div>
+
+      <!-- Verification -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Deployment -->
+      <div class="lane-cell"></div>
+    </div>
+  </div>
+
+
+  <!-- Swimlane: AI Prototyping -->
+  <div class="swimlane">
+    <div class="lane-title-card lane-ai">
+      <div class="lane-course-name">AI Prototyping</div>
+      <div class="lane-lead">Lead: Yuvika · Cohort</div>
+    </div>
+    
+    <div class="lane-cells">
+      <!-- Source Material -->
+      <div class="lane-cell"></div>
+      
+      <!-- Pre-Build Review -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Development -->
+      <div class="lane-cell">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Week 4: AI Prototyping</div>
+            <div class="complexity">📄</div>
+          </div>
+          <div class="card-meta"><span class="card-assignee">James K.</span></div>
+        </div>
+      </div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Platform QA -->
+      <div class="lane-cell">
+         <div class="card priority-med">
+          <div class="card-header">
+            <div class="card-title">Week 2: ML Basics</div>
+            <div class="complexity">🎥</div>
+          </div>
+          <div class="card-labels">
+            <span class="label label-video">HeyGen Glitch</span>
+          </div>
+          <div class="card-meta"><span class="card-assignee">Majid</span></div>
+        </div>
+      </div>
+
+      <!-- Iterate -->
+      <div class="lane-cell">
+         <div class="card priority-high">
+          <div class="card-header">
+            <div class="card-title">Week 1: AI Transform</div>
+            <div class="complexity">📄</div>
+          </div>
+          <div class="card-labels">
+            <span class="label label-a11y">Reduce Motion (CSS)</span>
+          </div>
+          <div class="card-meta">
+            <span class="card-assignee">James K.</span>
+            <span class="card-bugs">5 bugs left</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verification -->
+      <div class="lane-cell"></div>
+
+      <div class="arrow" style="color:transparent">→</div>
+
+      <!-- Deployment -->
+      <div class="lane-cell"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Agile Enhancements Notes -->
+<div class="notes">
+  <h2>The "Agile" Enhancements</h2>
+  <p>To support running six concurrent courses using the standardized review integration from Phase 3, we've updated the traditional Kanban board into a specialized Agile layout:</p>
+  
+  <h2 style="margin-top: 16px;">1. Horizontal Swimlanes (Macro-Visibility)</h2>
+  <p>Instead of burying *Fundamentals of Analytics* units inside a massive 20-card "Development" column, swimlanes give Course Leads immediate clarity on exactly where their specific course is stuck. The board is now read <strong>Left-to-Right for flow</strong>, and <strong>Top-to-Bottom for cross-team resource allocation</strong>.</p>
+  
+  <h2 style="margin-top: 16px;">2. WIP Limits (Forcing Resolution)</h2>
+  <p>Notice the <strong>Platform QA (QA 2)</strong> column header is red. It has a Work-In-Progress limit of <code>2</code>, but currently holds <code>3</code> items. This visually signals to the entire production team that QA is the bottleneck. The rule is: <em>Developers stop pulling cards from "Source Material" and instead swarm the QA column to help clear the backlog.</em></p>
+
+  <h2 style="margin-top: 16px;">3. The "Blocked" Parking Lot (Hatched Red Stylization)</h2>
+  <p>Look at <em>Week 2: Sports Mktg</em>. It is blocked waiting on an SME for answer keys. Instead of just blending in with a purple label, the hatched red background acts as a warning beacon during project stand-ups. It cannot be ignored.</p>
+  
+  <h2 style="margin-top: 16px;">4. Complexity Badges (Triage Indicators)</h2>
+  <p>On the top right of each card, there is an icon (🎥 for HeyGen Video heavy, 📄 for Text/Widget heavy, 🔢 for Equation formatting). This solves the QA triage problem: A reviewer searching for a task can see that the 🎥 card will require 30 minutes of deep audio/visual synchronization checking, whereas the 📄 card is a quick CSS accessibility review.</p>
+
+</div>
+
+</body>
+</html>

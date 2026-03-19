@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mid-Market Squeeze: Department Store Collapse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        /* Squeeze Diagram - Clean Version */
+        .squeeze-section {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .squeeze-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            justify-items: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .attacker {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            width: 100%;
+            max-width: 160px;
+        }
+
+        .attacker h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .attacker p {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .attacker .examples {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+        }
+
+        .arrow {
+            color: var(--color-neutral-400);
+            font-size: 1.25rem;
+        }
+
+        .center-victim {
+            grid-column: 2;
+            grid-row: 2;
+            background: white;
+            border: 2px solid var(--color-neutral-700);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            width: 180px;
+        }
+
+        .center-victim h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .center-victim .companies {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .center-victim .status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grid positioning */
+        .attacker-top { grid-column: 2; grid-row: 1; }
+        .arrow-down { grid-column: 2; grid-row: 1; align-self: end; margin-bottom: -0.5rem; }
+        .attacker-left { grid-column: 1; grid-row: 2; justify-self: end; }
+        .arrow-right { grid-column: 1; grid-row: 2; justify-self: end; margin-right: -0.5rem; }
+        .attacker-right { grid-column: 3; grid-row: 2; justify-self: start; }
+        .arrow-left { grid-column: 3; grid-row: 2; justify-self: start; margin-left: -0.5rem; }
+
+        /* Timeline */
+        .timeline {
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-header {
+            background: var(--color-neutral-50);
+            padding: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .timeline-events {
+            padding: 0.5rem 1rem;
+        }
+
+        .timeline-event {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-neutral-100);
+        }
+
+        .timeline-event:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-year {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            width: 50px;
+            flex-shrink: 0;
+        }
+
+        .timeline-marker {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-neutral-400);
+            margin-top: 0.35rem;
+            flex-shrink: 0;
+        }
+
+        .timeline-marker.negative {
+            background: var(--color-neutral-700);
+        }
+
+        .timeline-content {
+            flex-grow: 1;
+        }
+
+        .timeline-content strong {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-content p {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+            line-height: 1.5;
+        }
+
+        /* Lessons */
+        .lessons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .lesson h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson p {
+            font-size: 0.8rem;
+            color: var(--color-neutral-600);
+            line-height: 1.5;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-700);
+            padding: 1rem 1.25rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .key-insight strong {
+            font-size: 0.85rem;
+            color: var(--color-neutral-900);
+        }
+
+        .key-insight p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .squeeze-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 0.75rem;
+            }
+
+            .attacker, .center-victim {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .attacker-top, .attacker-left, .attacker-right {
+                grid-column: 1;
+                grid-row: auto;
+            }
+
+            .center-victim {
+                grid-column: 1;
+                grid-row: auto;
+                order: -1;
+            }
+
+            .arrow { display: none; }
+
+            .lessons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mid-Market Squeeze</h1>
+            <p>How department stores were attacked from all directions</p>
+        </div>
+
+        <div class="squeeze-section">
+            <div class="squeeze-grid" role="img" aria-label="Diagram showing mid-market department stores being squeezed by specialty retailers from above, discount retailers from the left, and online retailers from the right">
+
+                <!-- Top: Specialty Retailers -->
+                <div class="attacker attacker-top">
+                    <h4>Specialty Retailers</h4>
+                    <p>Better fashion, focused selection</p>
+                    <div class="examples">H&M, Zara, Gap, Nike</div>
+                </div>
+
+                <!-- Left: Discount Retailers -->
+                <div class="attacker attacker-left">
+                    <h4>Discount Retailers</h4>
+                    <p>Same quality, lower prices</p>
+                    <div class="examples">Walmart, Target, Costco</div>
+                </div>
+
+                <!-- Center: The Victim -->
+                <div class="center-victim">
+                    <h3>Mid-Market Department Stores</h3>
+                    <div class="companies">Sears, JCPenney, Macy's, Kohl's</div>
+                    <div class="status">Strategic Drift</div>
+                </div>
+
+                <!-- Right: Online Retailers -->
+                <div class="attacker attacker-right">
+                    <h4>Online Retailers</h4>
+                    <p>Infinite selection, convenience</p>
+                    <div class="examples">Amazon, eBay, Direct-to-Consumer</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-header">Timeline: The Department Store Collapse</div>
+            <div class="timeline-events">
+                <div class="timeline-event">
+                    <div class="timeline-year">1990s</div>
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <strong>Peak Dominance</strong>
+                        <p>Sears was America's largest retailer. Department stores anchored every mall.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-year">2000s</div>
+                    <div class="timeline-marker negative"></div>
+                    <div class="timeline-content">
+                        <strong>Walmart Rises</strong>
+                        <p>Discount retailers improve quality while maintaining price advantage. Middle-market customers defect.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-year">2010s</div>
+                    <div class="timeline-marker negative"></div>
+                    <div class="timeline-content">
+                        <strong>Amazon & Fast Fashion</strong>
+                        <p>Online shopping offers infinite selection. H&M/Zara offer trendy fashion at mid-market prices.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-year">2018</div>
+                    <div class="timeline-marker negative"></div>
+                    <div class="timeline-content">
+                        <strong>Sears Bankruptcy</strong>
+                        <p>132-year-old retailer files Chapter 11. At its peak, employed around 350,000 in its retail operations.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-marker negative"></div>
+                    <div class="timeline-content">
+                        <strong>JCPenney Bankruptcy</strong>
+                        <p>118-year-old retailer files Chapter 11. COVID accelerates long decline.</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-marker negative"></div>
+                    <div class="timeline-content">
+                        <strong>Survivors Still Struggling</strong>
+                        <p>Macy's and Kohl's remain in business but continue closing stores and fighting for relevance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lessons">
+            <div class="lesson">
+                <h4>The Problem</h4>
+                <p>Customers couldn't articulate WHY they'd shop at Sears. Not cheapest, not trendiest, not most convenient.</p>
+            </div>
+            <div class="lesson">
+                <h4>The Cause</h4>
+                <p>Strategic drift: gradual loss of distinctiveness as competitors improved from all directions.</p>
+            </div>
+            <div class="lesson">
+                <h4>The Lesson</h4>
+                <p>Mid-market positions require constant vigilance. Pick a direction or get squeezed.</p>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <strong>Key Insight</strong>
+            <p>Without clear differentiation, mid-market companies drift toward irrelevance. Customers defect to whoever offers the best value—whether that's better fashion, lower prices, or greater convenience.</p>
+        </div>
+    </div>
+</body>
+</html>

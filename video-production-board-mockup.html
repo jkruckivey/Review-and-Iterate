@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Design Framework Project Board — Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f3f2f1; color: #323130; padding: 24px; }
+
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #605e5c; margin-bottom: 20px; }
+
+  .board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; }
+
+  .column {
+    min-width: 240px; max-width: 240px; background: #fff; border-radius: 8px;
+    border: 1px solid #edebe9; display: flex; flex-direction: column;
+  }
+  .column-header {
+    padding: 12px 14px 8px; border-bottom: 1px solid #edebe9;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .column-title { font-size: 13px; font-weight: 600; }
+  .column-count {
+    font-size: 11px; color: #fff; background: #605e5c; border-radius: 10px;
+    padding: 1px 7px; min-width: 20px; text-align: center;
+  }
+  .column-desc { font-size: 10px; color: #8a8886; padding: 6px 14px; border-bottom: 1px solid #f3f2f1; line-height: 1.4; }
+  .column-cards { padding: 6px; flex: 1; min-height: 80px; }
+
+  .card {
+    background: #fff; border: 1px solid #edebe9; border-radius: 5px; padding: 10px;
+    margin-bottom: 6px; cursor: pointer; transition: box-shadow 0.15s;
+    border-left: 4px solid transparent;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+  .card-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .card-course { font-size: 10px; color: #605e5c; margin-bottom: 6px; }
+
+  .card-labels { display: flex; gap: 3px; flex-wrap: wrap; margin-bottom: 6px; }
+  .label { font-size: 9px; padding: 1px 6px; border-radius: 3px; font-weight: 500; }
+  .label-cb { background: #e3f2fd; color: #1565c0; }
+  .label-sp { background: #e8f5e9; color: #2e7d32; }
+  .label-priority-high { background: #fce4ec; color: #c62828; }
+  .label-priority-med { background: #fff3e0; color: #e65100; }
+  .label-ai { background: #e0f2f1; color: #00695c; }
+  .label-blocked { background: #f3e5f5; color: #6a1b9a; }
+  .label-script { background: #fff8e1; color: #f57f17; }
+
+  .card-meta { display: flex; justify-content: space-between; align-items: center; }
+  .card-assignee { font-size: 10px; color: #605e5c; }
+  .card-bugs { font-size: 9px; color: #605e5c; background: #f3f2f1; border-radius: 3px; padding: 1px 5px; }
+
+  .card.priority-high { border-left-color: #c62828; }
+  .card.priority-med { border-left-color: #e65100; }
+  .card.priority-normal { border-left-color: #1565c0; }
+  .card.script { border-left-color: #f57f17; }
+  .card.done-card { border-left-color: #2e7d32; opacity: 0.85; }
+
+  .arrow { display: flex; align-items: center; justify-content: center; min-width: 16px; color: #c8c6c4; font-size: 16px; }
+
+  .phase-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #fff; padding: 3px 10px; border-radius: 3px; margin-bottom: 8px; text-align: center;
+  }
+  .phase-preprod { background: #f57f17; }
+  .phase-prod { background: #1565c0; }
+  .phase-qa { background: #6a1b9a; }
+
+  .section-wrapper { display: flex; flex-direction: column; align-items: center; }
+
+  .flow-diagram {
+    margin-top: 20px; padding: 16px; background: #fff; border-radius: 8px;
+    border: 1px solid #edebe9; max-width: 100%;
+  }
+  .flow-diagram h2 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .flow-box { padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 500; border: 1px solid #edebe9; }
+  .flow-arrow { color: #8a8886; font-size: 14px; }
+  .flow-return { color: #c62828; font-size: 11px; font-style: italic; margin-left: 8px; }
+  .flow-phase { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-top: 4px; text-align: center; }
+
+  .notes {
+    margin-top: 16px; padding: 16px; background: #fff; border-radius: 8px;
+    border: 1px solid #edebe9; max-width: 100%;
+  }
+  .notes h2 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .notes p { font-size: 12px; line-height: 1.6; color: #323130; margin-bottom: 8px; }
+  .notes ul { font-size: 12px; line-height: 1.6; padding-left: 20px; margin-bottom: 8px; }
+  .notes strong { font-weight: 600; }
+  .notes code { background: #f3f2f1; padding: 1px 4px; border-radius: 2px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>Video Production & Design — Project Board</h1>
+<p class="subtitle">Video Asset Pipeline · Cross-Course Production · <span style="color:#8a8886">Mockup v1 — Ivey Video Framework Workflow</span></p>
+
+<div class="board">
+
+  <!-- PRE-PRODUCTION PHASE -->
+  <div class="section-wrapper">
+    <div class="phase-label phase-preprod">Pre-Production</div>
+    <div style="display:flex; gap:12px;">
+
+      <!-- Script & Outline -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Script & Outline</span>
+          <span class="column-count">3</span>
+        </div>
+        <div class="column-desc">Author drafts narration script, single-concept mappings, and slide requests.</div>
+        <div class="column-cards">
+          <div class="card script">
+            <div class="card-title">M7: AI Automation Tools</div>
+            <div class="card-course">AI Transformation</div>
+            <div class="card-labels"><span class="label label-cb">Cohort</span></div>
+            <div class="card-meta"><span class="card-assignee">Mehmet</span></div>
+          </div>
+          <div class="card script">
+            <div class="card-title">M2: Intro to Financial Mod.</div>
+            <div class="card-course">Financial Analysis</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">Luiza</span></div>
+          </div>
+          <div class="card script">
+            <div class="card-title">M3: Valuation Basics</div>
+            <div class="card-course">Financial Analysis</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">Luiza</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <!-- Outline Review -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Outline Review</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Verify script alignment: Single concept per slide, concise phrasing.</div>
+        <div class="column-cards">
+          <div class="card script">
+            <div class="card-title">M1: Purpose of Marketing</div>
+            <div class="card-course">Sports Marketing</div>
+            <div class="card-labels">
+              <span class="label label-cb">Cohort</span>
+              <span class="label label-script">Editing</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Reviewer: Yuvika</span>
+              <span class="card-bugs">In Review</span>
+            </div>
+          </div>
+          <div class="card script">
+            <div class="card-title">M4: Predictive Analytics</div>
+            <div class="card-course">Analytics & Excel</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Reviewer: Majid</span>
+              <span class="card-bugs">Approved ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow" style="font-size:20px; margin-top: 24px;">→</div>
+
+  <!-- PRODUCTION PHASE -->
+  <div class="section-wrapper">
+    <div class="phase-label phase-prod">Production</div>
+    <div style="display:flex; gap:12px;">
+
+      <!-- Slide Design & Assets -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Slide Design & Assets</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Apply Ivey templates and typography. Generate 4K AI Images, format equations.</div>
+        <div class="column-cards">
+          <div class="card priority-med">
+            <div class="card-title">M8: The Marketing Mix</div>
+            <div class="card-course">Sports Marketing</div>
+            <div class="card-labels">
+              <span class="label label-cb">Cohort</span>
+              <span class="label label-ai">B-Roll Needs</span>
+            </div>
+            <div class="card-meta"><span class="card-assignee">Designer: James K.</span></div>
+          </div>
+          <div class="card priority-normal">
+            <div class="card-title">M5: Optimization Models</div>
+            <div class="card-course">Analytics & Excel</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Designer: James K.</span>
+              <span class="card-bugs">Design ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">→</div>
+
+      <!-- Video Assembly -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Video Assembly</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Sync audio and visuals, animate progressive bullets, add intro/outro music.</div>
+        <div class="column-cards">
+          <div class="card priority-high">
+            <div class="card-title">M6: Machine Learning</div>
+            <div class="card-course">Analytics & Excel</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-priority-high">Rush</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Editor: Video Team</span>
+              <span class="card-bugs">In Progress</span>
+            </div>
+          </div>
+          <div class="card priority-normal">
+            <div class="card-title">M2: Branding Strategies</div>
+            <div class="card-course">Sports Marketing</div>
+            <div class="card-labels">
+              <span class="label label-cb">Cohort</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">Editor: Video Team</span>
+              <span class="card-bugs">Waiting on Assets</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow" style="font-size:20px; margin-top: 24px;">→</div>
+
+  <!-- QA PHASE -->
+  <div class="section-wrapper">
+    <div class="phase-label phase-qa">Review & QA</div>
+    <div style="display:flex; gap:12px;">
+
+      <!-- Technical QA -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Technical QA</span>
+          <span class="column-count">1</span>
+        </div>
+        <div class="column-desc">Check against framework Non-Negotiables: pacing, text blocking, synchronization.</div>
+        <div class="column-cards">
+          <div class="card priority-med">
+            <div class="card-title">M3: Pricing Dynamics</div>
+            <div class="card-course">Sports Marketing</div>
+            <div class="card-labels">
+              <span class="label label-cb">Cohort</span>
+              <span class="label label-priority-med">VEO Watermark</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">QA: Yuvika</span>
+              <span class="card-bugs">Revisions Req.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="arrow">→</div>
+
+      <!-- Final Review -->
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Final Review</span>
+          <span class="column-count">1</span>
+        </div>
+        <div class="column-desc">Learning Designer confirms visuals match script and all revisions applied.</div>
+        <div class="column-cards">
+          <div class="card priority-normal">
+            <div class="card-title">M5: Prototyping Mindset</div>
+            <div class="card-course">AI Prototyping</div>
+            <div class="card-labels">
+              <span class="label label-sp">Self-Paced</span>
+              <span class="label label-blocked">Avatar Glitches</span>
+            </div>
+            <div class="card-meta">
+              <span class="card-assignee">QA: Majid</span>
+              <span class="card-bugs">1 Flagged</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arrow" style="font-size:20px; margin-top: 24px;">→</div>
+
+  <!-- DONE -->
+  <div class="section-wrapper">
+    <div class="phase-label" style="background:#2e7d32;">Done</div>
+    <div>
+      <div class="column">
+        <div class="column-header">
+          <span class="column-title">Done</span>
+          <span class="column-count">2</span>
+        </div>
+        <div class="column-desc">Video approved, thumbnail created, ready for platform upload.</div>
+        <div class="column-cards">
+          <div class="card done-card">
+            <div class="card-title">M1: The ROI of AI</div>
+            <div class="card-course">AI Prototyping</div>
+            <div class="card-labels"><span class="label label-sp">Self-Paced</span></div>
+            <div class="card-meta"><span class="card-assignee">✓ Rendering Complete</span></div>
+          </div>
+          <div class="card done-card">
+            <div class="card-title">M2: Ethics and Safety</div>
+            <div class="card-course">AI Transformation</div>
+            <div class="card-labels"><span class="label label-cb">Cohort</span></div>
+            <div class="card-meta"><span class="card-assignee">✓ Platform Ready</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Flow diagram -->
+<div class="flow-diagram">
+  <h2>Video Production Flow</h2>
+  <div class="flow-row">
+    <div class="flow-box" style="background:#fff8e1">Script & Outline</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#fff8e1">Outline Review</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#e3f2fd">Slide Design & Assets</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#e3f2fd">Video Assembly</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#f3e5f5">Technical QA</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#f3e5f5">Final Review</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-box" style="background:#e8f5e9">Done</div>
+  </div>
+  <div style="margin-top: 8px; display: flex; gap: 24px; flex-wrap: wrap;">
+    <span class="flow-return">↩ Outline Review can return cards to Script & Outline if there's text duplication from narration.</span>
+    <span class="flow-return">↩ Technical QA can return cards to Video Assembly on audio/visual sync issues.</span>
+  </div>
+</div>
+
+<!-- Notes -->
+<div class="notes">
+  <h2>Board Structure (Based on Ivey Video Design Framework)</h2>
+  <p><strong>Seven columns across three phases:</strong></p>
+  <ul>
+    <li><strong>Pre-Production phase (2 columns):</strong> Script & Outline → Outline Review</li>
+    <li><strong>Production phase (2 columns):</strong> Slide Design & Assets → Video Assembly</li>
+    <li><strong>Review & QA phase (2 columns):</strong> Technical QA → Final Review</li>
+    <li><strong>Done (1 column)</strong></li>
+  </ul>
+
+  <h2 style="margin-top: 16px;">How It Works</h2>
+  <p><strong>Script & Outline:</strong> Author drafts the video script, strictly adhering to the "single concept per slide" mapping rule from the framework.</p>
+  <p><strong>Outline Review:</strong> Reviewer checks that the on-screen text does not duplicate the spoken narrative and confirms proper logical branching / slide organization. <em>This prevents building heavy assets for flawed scripts.</em></p>
+  <p><strong>Slide Design & Assets:</strong> Designers apply the Ivey template styles, fonts, and boundaries. Technical visuals (equations/data) are drafted, and any 4K AI-generated images or B-roll are sourced here.</p>
+  <p><strong>Video Assembly:</strong> The editor brings together the slides, narration/HeyGen footage, applies logical progressive bullet animation (syncing with speech pacing), and standardizes background/music.</p>
+  <p><strong>Technical QA:</strong> A strict check against bugs: Are audio and visuals synchronized? Are progress bars blocking text? Is the VEO watermark removed? Is pacing appropriate at the end?</p>
+  <p><strong>Final Review:</strong> The Learning Designer validates the finished video holistically against the framework goals. Thumbnails (with Ivey logo) are confirmed.</p>
+  <p><strong>Done:</strong> Everything is ready for platform integration.</p>
+  
+  <h2 style="margin-top: 16px;">Quality Non-Negotiables Built In</h2>
+  <p>By enforcing an Outline Review before Slide Design begins, we prevent the "all content appearing at once" or "script paragraphs on slide" mistakes identified in the consistency audits. Separating Technical QA from Final Review catches formatting/glitches distinct from pedagogy issues.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Films, One Summer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 24px 40px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 36px 40px 40px;
+  }
+
+  /* Screen count cards */
+  .screen-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .screen-card {
+    border-radius: 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .screen-card-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .screen-card.haunting .screen-card-label { color: var(--ivey-green); }
+  .screen-card.sixth .screen-card-label { color: var(--ivey-green); }
+  .screen-card.blair .screen-card-label { color: var(--ivey-green); }
+
+  .screen-card-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--mid);
+    margin-bottom: 10px;
+  }
+
+  .screen-count {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .screen-card.haunting .screen-count { color: var(--ivey-green); }
+  .screen-card.sixth .screen-count { color: var(--light); }
+  .screen-card.blair .screen-count { color: var(--ivey-green); }
+
+  .screen-sublabel {
+    font-size: 0.75rem;
+    color: var(--light);
+  }
+
+  .screen-note {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--light);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* Chart */
+  .chart-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px 20px;
+    margin-bottom: 28px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 340px;
+  }
+
+  /* Outcome cards */
+  .outcome-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .outcome-card {
+    border-radius: 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .outcome-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .outcome-card.haunting .outcome-label { color: var(--ivey-green); }
+  .outcome-card.sixth .outcome-label { color: var(--ivey-green); }
+  .outcome-card.blair .outcome-label { color: var(--ivey-green); }
+
+  .outcome-gross {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--mid);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .outcome-roi {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .outcome-card.haunting .outcome-roi { color: var(--light); }
+  .outcome-card.sixth .outcome-roi { color: var(--ivey-green); }
+  .outcome-card.blair .outcome-roi { color: var(--ivey-green); }
+
+  .outcome-note {
+    font-size: 0.78rem;
+    color: var(--light);
+    line-height: 1.45;
+  }
+
+  /* Insight bar */
+  .insight-bar {
+    background: var(--pale-purple);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .ib-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .insight-bar p {
+    font-size: 0.93rem;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="inf-header">
+    <p>Gross ticket sales by week — three horror films, summer 1999</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Screen count cards -->
+    <div class="screen-cards">
+      <div class="screen-card haunting">
+        <div class="screen-card-label">The Haunting</div>
+        <div class="screen-card-title">Catherine Zeta-Jones / Based on 1963 film</div>
+        <div class="screen-count">2,808</div>
+        <div class="screen-sublabel">opening screens</div>
+        <div class="screen-note">Based on a successful early 1960s film. Studio confidence reflected in the opening: more than 2,800 screens and the largest marketing budget of the three.</div>
+      </div>
+      <div class="screen-card sixth">
+        <div class="screen-card-label">The Sixth Sense</div>
+        <div class="screen-card-title">Bruce Willis / M. Night Shyamalan</div>
+        <div class="screen-count">2,161</div>
+        <div class="screen-sublabel">opening screens</div>
+        <div class="screen-note">Bruce Willis in the lead, but director M. Night Shyamalan was a relative unknown. Studio was more careful: 2,161 screens.</div>
+      </div>
+      <div class="screen-card blair">
+        <div class="screen-card-label">The Blair Witch Project</div>
+        <div class="screen-card-title">No known stars / $60,000 budget</div>
+        <div class="screen-count">27</div>
+        <div class="screen-sublabel">opening screens</div>
+        <div class="screen-note">No known stars. $60,000 production budget. An unconventional online marketing campaign listed the actors as either deceased or missing. Studio executives did not know what to make of it: 27 screens.</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-wrap">
+      <div class="chart-container">
+        <canvas id="ticketChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Outcome cards -->
+    <div class="outcome-cards">
+      <div class="outcome-card haunting">
+        <div class="outcome-label">The Haunting</div>
+        <div class="outcome-gross">$177M worldwide</div>
+        <div class="outcome-roi">Financial disappointment</div>
+        <div class="outcome-note">Crashed within three weeks. Marketing and distribution costs consumed most returns. Ranks roughly 40th to 50th highest grossing horror film ever.</div>
+      </div>
+      <div class="outcome-card sixth">
+        <div class="outcome-label">The Sixth Sense</div>
+        <div class="outcome-gross">$673M worldwide</div>
+        <div class="outcome-roi">ROI approximately 16 to 17x</div>
+        <div class="outcome-note">Second highest grossing horror film of all time as of 2025. Strong word of mouth and award nominations sustained it for months.</div>
+      </div>
+      <div class="outcome-card blair">
+        <div class="outcome-label">The Blair Witch Project</div>
+        <div class="outcome-gross">$278M worldwide</div>
+        <div class="outcome-roi">ROI 1,200 to 4,000x</div>
+        <div class="outcome-note">Most profitable film of any genre ever made. Production budget of $60,000 against $278M worldwide gross.</div>
+      </div>
+    </div>
+
+    <!-- Insight bar -->
+    <div class="insight-bar">
+      <div class="ib-label">The pattern</div>
+      <p>The Sixth Sense and The Haunting looked very similar on any category comparison template. One boomed, the other failed. Blair Witch looked like nothing else at all — and became the most profitable film ever made. Truly original ideas look strange and unfamiliar. That is not a bug. It is the point.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('ticketChart').getContext('2d');
+
+  // Data approximated from the faculty's graph image
+  // Weeks 1-16, gross ticket sales
+  const weeks = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+
+  const hauntingData = [48000000, 18000000, 8000000, 3000000, 1500000, 800000, 400000, 200000, 100000, 80000, 60000, 50000, 40000, 30000, 20000, 10000];
+  const sixthSenseData = [40000000, 28000000, 22000000, 18000000, 15000000, 12000000, 10000000, 8500000, 7000000, 6000000, 5000000, 4500000, 4000000, 3500000, 3000000, 2500000];
+  const blairData = [1000000, 2000000, 4500000, 28000000, 50000000, 35000000, 20000000, 12000000, 7000000, 4000000, 2500000, 1500000, 800000, 400000, 200000, 100000];
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        {
+          label: 'The Haunting',
+          data: hauntingData,
+          borderColor: '#034638',
+          backgroundColor: 'rgba(3,70,56,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: '#034638',
+          tension: 0.4,
+          fill: false
+        },
+        {
+          label: 'The Sixth Sense',
+          data: sixthSenseData,
+          borderColor: '#5a6a68',
+          backgroundColor: 'rgba(90,106,104,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: '#5a6a68',
+          tension: 0.4,
+          fill: false
+        },
+        {
+          label: 'The Blair Witch Project',
+          data: blairData,
+          borderColor: '#c0d1cd',
+          backgroundColor: 'rgba(192,209,205,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: '#c0d1cd',
+          tension: 0.4,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 },
+            color: '#3a3a3a',
+            padding: 20,
+            usePointStyle: true,
+            pointStyleWidth: 16
+          }
+        },
+        tooltip: {
+          backgroundColor: 'white',
+          borderColor: '#dde8e6',
+          borderWidth: 1,
+          titleColor: '#034638',
+          bodyColor: '#3a3a3a',
+          titleFont: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12, weight: 'bold' },
+          bodyFont: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 },
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed.y;
+              if (val >= 1000000) return context.dataset.label + ': $' + (val / 1000000).toFixed(1) + 'M';
+              if (val >= 1000) return context.dataset.label + ': $' + (val / 1000).toFixed(0) + 'K';
+              return context.dataset.label + ': $' + val;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Week',
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 }
+          },
+          grid: { color: '#eef3f2' },
+          ticks: {
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 }
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Gross Ticket Sales',
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 }
+          },
+          grid: { color: '#eef3f2' },
+          ticks: {
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 },
+            callback: function(value) {
+              if (value >= 1000000) return '$' + (value / 1000000).toFixed(0) + 'M';
+              if (value >= 1000) return '$' + (value / 1000).toFixed(0) + 'K';
+              return '$' + value;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: IEC Expected Value</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #c0d1cd;
+            --color-error: #ef4444;
+            --color-info: #bfe5e7;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        h1 { font-size: 1.8rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: var(--color-neutral-600); margin-bottom: 24px; font-size: 0.95rem; }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            text-align: center;
+        }
+
+        .formula-box {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .progress-indicator { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .progress-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--color-neutral-300); transition: all 0.3s; }
+        .progress-dot.completed { background: #bfe5e7; }
+        .progress-dot.active { background: var(--color-neutral-800); transform: scale(1.2); }
+
+        .question-container { display: none; animation: slideIn 0.3s ease; }
+        .question-container.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .question-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .question-number { background: var(--color-neutral-800); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .question-type { font-size: 0.75rem; color: var(--color-neutral-500); text-transform: uppercase; letter-spacing: 0.5px; }
+        .question-text { font-size: 1.05rem; font-weight: 500; margin-bottom: 1.5rem; line-height: 1.6; }
+        .hint { font-size: 0.85rem; color: var(--color-neutral-500); font-style: italic; margin-bottom: 1rem; padding-left: 12px; border-left: 2px solid var(--color-neutral-300); }
+
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option {
+            padding: 1rem 1.25rem;
+            background: white;
+            border: 2px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .option:hover { border-color: var(--color-neutral-500); background: var(--color-neutral-50); }
+        .option:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        .option.selected { border-color: var(--color-neutral-800); background: var(--color-neutral-100); }
+        .option.correct { border-color: #c0d1cd; background: #f0f5f4; }
+        .option.incorrect { border-color: #f0ede0; background: #faf9f5; }
+        .option.disabled { cursor: not-allowed; opacity: 0.6; }
+
+        .option-letter { width: 24px; height: 24px; border-radius: 50%; background: var(--color-neutral-300); color: white; text-align: center; line-height: 24px; font-size: 0.85rem; font-weight: 600; flex-shrink: 0; }
+        .option.selected .option-letter { background: var(--color-neutral-800); }
+        .option.correct .option-letter { background: var(--color-success); }
+        .option.incorrect .option-letter { background: var(--color-error); }
+        .option-text { flex-grow: 1; }
+
+        .feedback { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: var(--border-radius); font-size: 0.95rem; line-height: 1.6; display: none; }
+        .feedback.show { display: block; animation: slideIn 0.3s ease; }
+        .feedback.correct { background: #f0f5f4; border-left: 4px solid #c0d1cd; }
+        .feedback.incorrect { background: #faf9f5; border-left: 4px solid #f0ede0; }
+        .feedback strong { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+
+        .btn { padding: 10px 24px; background: var(--color-neutral-900); color: white; border: none; border-radius: var(--border-radius); font-family: var(--font-family-primary); font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .btn:hover { background: var(--color-neutral-700); }
+        .btn:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+        .btn:disabled { background: var(--color-neutral-400); cursor: not-allowed; }
+        .button-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+
+        .results-container { text-align: center; padding: 2rem 1rem; }
+        .score-circle { width: 150px; height: 150px; margin: 0 auto 1.5rem; border-radius: 50%; border: 8px solid var(--color-neutral-200); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .score-number { font-size: 2.5rem; font-weight: 700; }
+        .score-label { font-size: 0.85rem; color: var(--color-neutral-600); margin-top: 0.25rem; }
+        .results-container h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .results-message { background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--border-radius); padding: 1.25rem; margin: 1.5rem 0; text-align: left; color: var(--color-neutral-700); line-height: 1.6; }
+        .results-message p { margin-bottom: 0.75rem; }
+        .results-message p:last-child { margin-bottom: 0; }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .question-card { padding: 1rem; }
+            .option { padding: 0.75rem 1rem; }
+            .score-circle { width: 120px; height: 120px; }
+            .score-number { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="quiz-screen" class="screen active">
+            <h1>Knowledge Check: Expected Value Calculations</h1>
+            <p class="subtitle">5 questions | Part 2 of IEC Case Analysis</p>
+
+            <div class="info-box"><strong>Purpose:</strong> Verify your expected value calculations using the two-stage probability formula.</div>
+            <div class="formula-box">EV = (Renewal_Prob x Renewal_Fee) + ((1 - Renewal_Prob) x Backup_Prob x Backup_Fee)</div>
+
+            <div class="progress-indicator" id="progress-dots">
+                <div class="progress-dot active" data-question="1"></div>
+                <div class="progress-dot" data-question="2"></div>
+                <div class="progress-dot" data-question="3"></div>
+                <div class="progress-dot" data-question="4"></div>
+                <div class="progress-dot" data-question="5"></div>
+            </div>
+
+            <div class="question-container active" id="question-1">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 1 of 5</span>
+                        <span class="question-type">Calculation</span>
+                    </div>
+                    <div class="question-text">What is the expected value for Territory B?</div>
+                    <div class="hint">Territory B: Renewal Prob = 0.50, Renewal Fee = 720,000, Backup Prob = 0.70, Backup Fee = 450,000</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(1, 'a')" onkeydown="handleKey(event, 1, 'a')"><span class="option-letter">A</span><span class="option-text">360,000</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(1, 'b')" onkeydown="handleKey(event, 1, 'b')"><span class="option-letter">B</span><span class="option-text">455,000</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(1, 'c')" onkeydown="handleKey(event, 1, 'c')"><span class="option-letter">C</span><span class="option-text">517,500</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(1, 'd')" onkeydown="handleKey(event, 1, 'd')"><span class="option-letter">D</span><span class="option-text">562,500</span></div>
+                    </div>
+                    <div class="feedback" id="feedback-1" role="alert"></div>
+                </div>
+                <div class="button-group"><button class="btn" id="submit-1" onclick="submitAnswer(1)" disabled>Submit Answer</button></div>
+            </div>
+
+            <div class="question-container" id="question-2">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 2 of 5</span>
+                        <span class="question-type">Calculation</span>
+                    </div>
+                    <div class="question-text">What is the expected value for Territory C (which has NO backup option)?</div>
+                    <div class="hint">Territory C: Renewal Prob = 0.80, Renewal Fee = 525,000, Backup Prob = 0, Backup Fee = 0</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(2, 'a')" onkeydown="handleKey(event, 2, 'a')"><span class="option-letter">A</span><span class="option-text">262,500</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(2, 'b')" onkeydown="handleKey(event, 2, 'b')"><span class="option-letter">B</span><span class="option-text">420,000</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(2, 'c')" onkeydown="handleKey(event, 2, 'c')"><span class="option-letter">C</span><span class="option-text">472,500</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(2, 'd')" onkeydown="handleKey(event, 2, 'd')"><span class="option-letter">D</span><span class="option-text">525,000</span></div>
+                    </div>
+                    <div class="feedback" id="feedback-2" role="alert"></div>
+                </div>
+                <div class="button-group"><button class="btn" id="submit-2" onclick="submitAnswer(2)" disabled>Submit Answer</button></div>
+            </div>
+
+            <div class="question-container" id="question-3">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 3 of 5</span>
+                        <span class="question-type">Calculation</span>
+                    </div>
+                    <div class="question-text">What is the expected value for Territory K (which has NO primary client)?</div>
+                    <div class="hint">Territory K: Renewal Prob = 0, Renewal Fee = 0, Backup Prob = 0.60, Backup Fee = 80,000</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(3, 'a')" onkeydown="handleKey(event, 3, 'a')"><span class="option-letter">A</span><span class="option-text">0 (no primary client means no revenue)</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(3, 'b')" onkeydown="handleKey(event, 3, 'b')"><span class="option-letter">B</span><span class="option-text">32,000</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(3, 'c')" onkeydown="handleKey(event, 3, 'c')"><span class="option-letter">C</span><span class="option-text">48,000</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(3, 'd')" onkeydown="handleKey(event, 3, 'd')"><span class="option-letter">D</span><span class="option-text">80,000</span></div>
+                    </div>
+                    <div class="feedback" id="feedback-3" role="alert"></div>
+                </div>
+                <div class="button-group"><button class="btn" id="submit-3" onclick="submitAnswer(3)" disabled>Submit Answer</button></div>
+            </div>
+
+            <div class="question-container" id="question-4">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 4 of 5</span>
+                        <span class="question-type">Calculation</span>
+                    </div>
+                    <div class="question-text">What is the TOTAL expected value from all 11 uncertain territories?</div>
+                    <div class="hint">Sum your Expected_Value column for all 11 territories.</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(4, 'a')" onkeydown="handleKey(event, 4, 'a')"><span class="option-letter">A</span><span class="option-text">2,458,250</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(4, 'b')" onkeydown="handleKey(event, 4, 'b')"><span class="option-letter">B</span><span class="option-text">2,620,750</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(4, 'c')" onkeydown="handleKey(event, 4, 'c')"><span class="option-letter">C</span><span class="option-text">2,780,250</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(4, 'd')" onkeydown="handleKey(event, 4, 'd')"><span class="option-letter">D</span><span class="option-text">2,891,500</span></div>
+                    </div>
+                    <div class="feedback" id="feedback-4" role="alert"></div>
+                </div>
+                <div class="button-group"><button class="btn" id="submit-4" onclick="submitAnswer(4)" disabled>Submit Answer</button></div>
+            </div>
+
+            <div class="question-container" id="question-5">
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">Question 5 of 5</span>
+                        <span class="question-type">Calculation</span>
+                    </div>
+                    <div class="question-text">Adding the 8M in confirmed pre-sales, what is the total expected revenue?</div>
+                    <div class="hint">Total Expected Revenue = Confirmed Sales + Expected Value from Uncertain Territories</div>
+                    <div class="options" role="radiogroup" aria-label="Answer options">
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(5, 'a')" onkeydown="handleKey(event, 5, 'a')"><span class="option-letter">A</span><span class="option-text">10,458,250</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(5, 'b')" onkeydown="handleKey(event, 5, 'b')"><span class="option-letter">B</span><span class="option-text">10,620,750</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(5, 'c')" onkeydown="handleKey(event, 5, 'c')"><span class="option-letter">C</span><span class="option-text">10,780,250</span></div>
+                        <div class="option" tabindex="0" role="radio" aria-checked="false" onclick="selectOption(5, 'd')" onkeydown="handleKey(event, 5, 'd')"><span class="option-letter">D</span><span class="option-text">10,891,500</span></div>
+                    </div>
+                    <div class="feedback" id="feedback-5" role="alert"></div>
+                </div>
+                <div class="button-group"><button class="btn" id="submit-5" onclick="submitAnswer(5)" disabled>Submit Answer</button></div>
+            </div>
+        </div>
+
+        <div id="results-screen" class="screen">
+            <div class="results-container">
+                <div class="score-circle">
+                    <div>
+                        <span class="score-number" id="final-score">0</span><span style="font-size: 1.5rem; color: var(--color-neutral-600);">/5</span>
+                        <div class="score-label">Your Score</div>
+                    </div>
+                </div>
+                <h2>Expected Value Calculations Complete</h2>
+                <div class="results-message" id="results-message"></div>
+                <div class="info-box"><strong>Next Step:</strong> Proceed to Part 3 to analyze best case and worst case scenarios.</div>
+                <div class="button-group"><button class="btn" onclick="restartQuiz()">Retake Quiz</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            1: { correct: 'c', feedback: { correct: '<strong>Correct!</strong> EV(B) = (0.50 x 720,000) + ((1-0.50) x 0.70 x 450,000) = 360,000 + 157,500 = 517,500', incorrect: '<strong>Not quite.</strong> Apply the formula: EV = (0.50 x 720,000) + (0.50 x 0.70 x 450,000) = 360,000 + 157,500 = 517,500.' } },
+            2: { correct: 'b', feedback: { correct: '<strong>Correct!</strong> When there\'s no backup, EV = Renewal_Prob x Renewal_Fee = 0.80 x 525,000 = 420,000.', incorrect: '<strong>Not quite.</strong> Territory C has no backup, so: EV = 0.80 x 525,000 = 420,000. The second term is zero.' } },
+            3: { correct: 'c', feedback: { correct: '<strong>Correct!</strong> Territory K: EV = (0 x 0) + (1.0 x 0.60 x 80,000) = 48,000. All revenue comes from backup.', incorrect: '<strong>Not quite.</strong> Since Renewal_Prob = 0, (1-0) = 1.0, so backup term = 1.0 x 0.60 x 80,000 = 48,000.' } },
+            4: { correct: 'c', feedback: { correct: '<strong>Correct!</strong> Sum of all 11 expected values is 2,780,250.', incorrect: '<strong>Not quite.</strong> Check your EV calculations for each territory. Total should be 2,780,250.' } },
+            5: { correct: 'c', feedback: { correct: '<strong>Correct!</strong> Total = 8,000,000 + 2,780,250 = 10,780,250 (approximately 10.78M).', incorrect: '<strong>Not quite.</strong> Add confirmed (8,000,000) + uncertain EV (2,780,250) = 10,780,250.' } }
+        };
+
+        let currentQuestion = 1, selectedAnswers = {}, score = 0;
+        const totalQuestions = 5;
+
+        function handleKey(event, q, opt) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectOption(q, opt); } }
+
+        function selectOption(questionNum, option) {
+            document.querySelectorAll(`#question-${questionNum} .option`).forEach(opt => { opt.classList.remove('selected'); opt.setAttribute('aria-checked', 'false'); });
+            event.currentTarget.classList.add('selected');
+            event.currentTarget.setAttribute('aria-checked', 'true');
+            selectedAnswers[questionNum] = option;
+            document.getElementById(`submit-${questionNum}`).disabled = false;
+            announceToScreenReader(`Option ${option.toUpperCase()} selected`);
+        }
+
+        function submitAnswer(questionNum) {
+            const selectedAnswer = selectedAnswers[questionNum];
+            const correctAnswer = questions[questionNum].correct;
+            const isCorrect = selectedAnswer === correctAnswer;
+            if (isCorrect) score++;
+
+            const feedback = document.getElementById(`feedback-${questionNum}`);
+            feedback.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = isCorrect ? questions[questionNum].feedback.correct : questions[questionNum].feedback.incorrect;
+
+            document.querySelectorAll(`#question-${questionNum} .option`).forEach((opt, i) => {
+                opt.classList.add('disabled'); opt.style.pointerEvents = 'none';
+                const letter = String.fromCharCode(97 + i);
+                if (letter === correctAnswer) opt.classList.add('correct');
+                else if (letter === selectedAnswer && !isCorrect) opt.classList.add('incorrect');
+            });
+
+            document.getElementById(`submit-${questionNum}`).style.display = 'none';
+            const buttonGroup = document.querySelector(`#question-${questionNum} .button-group`);
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'btn';
+            nextBtn.textContent = questionNum === totalQuestions ? 'View Results' : 'Next Question';
+            nextBtn.onclick = () => questionNum === totalQuestions ? showResults() : nextQuestion();
+            buttonGroup.appendChild(nextBtn);
+
+            document.querySelector(`.progress-dot[data-question="${questionNum}"]`).classList.remove('active');
+            document.querySelector(`.progress-dot[data-question="${questionNum}"]`).classList.add('completed');
+            announceToScreenReader(isCorrect ? 'Correct' : 'Incorrect');
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question-${currentQuestion}`).classList.remove('active');
+            currentQuestion++;
+            document.getElementById(`question-${currentQuestion}`).classList.add('active');
+            document.querySelector(`.progress-dot[data-question="${currentQuestion}"]`).classList.add('active');
+            window.scrollTo(0, 0);
+            announceToScreenReader(`Question ${currentQuestion} of ${totalQuestions}`);
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('results-screen').classList.add('active');
+            document.getElementById('final-score').textContent = score;
+
+            let message = score === 5 ? `<p><strong>Excellent!</strong> You've mastered the two-stage expected value formula.</p><p>Key results: Total EV = 2,780,250; Total expected revenue = 10.78M</p><p>Ready for scenario analysis in Part 3!</p>`
+                : score >= 3 ? `<p><strong>Good progress!</strong> Review the feedback to strengthen your understanding of the formula.</p><p>Proceed to Part 3 when ready.</p>`
+                : `<p><strong>Review the formula carefully.</strong> Key: EV = (Prob x Fee) + ((1-Prob) x Backup_Prob x Backup_Fee)</p><p>Retake before proceeding.</p>`;
+            document.getElementById('results-message').innerHTML = message;
+            window.scrollTo(0, 0);
+            announceToScreenReader(`Quiz complete. Score: ${score} of ${totalQuestions}`);
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1; selectedAnswers = {}; score = 0;
+            document.querySelectorAll('.question-container').forEach((q, i) => {
+                q.classList.remove('active'); if (i === 0) q.classList.add('active');
+                q.querySelectorAll('.option').forEach(opt => { opt.classList.remove('selected', 'correct', 'incorrect', 'disabled'); opt.style.pointerEvents = 'auto'; opt.setAttribute('aria-checked', 'false'); });
+                const fb = q.querySelector('.feedback'); fb.classList.remove('show', 'correct', 'incorrect'); fb.innerHTML = '';
+                const bg = q.querySelector('.button-group'); const sb = bg.querySelector('.btn'); sb.disabled = true; sb.style.display = 'inline-block';
+                const nb = bg.querySelector('.btn:nth-child(2)'); if (nb) nb.remove();
+            });
+            document.querySelectorAll('.progress-dot').forEach((d, i) => { d.classList.remove('active', 'completed'); if (i === 0) d.classList.add('active'); });
+            document.getElementById('results-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            window.scrollTo(0, 0);
+            announceToScreenReader('Quiz restarted');
+        }
+
+        function announceToScreenReader(message) {
+            const ann = document.createElement('div');
+            ann.setAttribute('role', 'status'); ann.setAttribute('aria-live', 'polite'); ann.className = 'sr-only'; ann.textContent = message;
+            document.body.appendChild(ann);
+            setTimeout(() => ann.remove(), 1000);
+        }
+    </script>
+</body>
+</html>

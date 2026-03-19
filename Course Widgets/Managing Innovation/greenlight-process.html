@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Greenlight Process</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 24px 40px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 32px 40px 36px;
+  }
+
+  /* Progress track */
+  .progress-track {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .progress-line {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .progress-line-fill {
+    height: 100%;
+    background: var(--ivey-green);
+    transition: width 0.4s ease;
+  }
+
+  .phase-dots {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phase-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .phase-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--light);
+    transition: all 0.3s ease;
+  }
+
+  .phase-dot-wrap.active .phase-dot {
+    background: var(--ivey-green);
+    border-color: var(--ivey-green);
+    color: var(--cream);
+  }
+
+  .phase-dot-wrap.completed .phase-dot {
+    background: var(--pale-sage);
+    border-color: var(--pale-sage);
+    color: var(--ivey-green);
+  }
+
+  .phase-dot-wrap:hover .phase-dot {
+    border-color: var(--ivey-green);
+  }
+
+  .phase-dot-label {
+    font-size: 0.7rem;
+    color: var(--light);
+    text-align: center;
+    max-width: 70px;
+    line-height: 1.3;
+  }
+
+  .phase-dot-wrap.active .phase-dot-label {
+    color: var(--ivey-green);
+    font-weight: 600;
+  }
+
+  /* Phase content panel */
+  .phase-panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    min-height: 240px;
+  }
+
+  .phase-panel-header {
+    background: var(--ivey-green);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .phase-number-badge {
+    background: rgba(255,255,255,0.15);
+    color: var(--cream);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .phase-title {
+    color: var(--cream);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .phase-panel-body {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .phase-col-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 12px;
+  }
+
+  .phase-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+
+  .phase-item-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--pale-sage);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .phase-transition {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f0f6f5;
+    border-radius: 6px;
+    border-left: 3px solid var(--pale-sage);
+    font-size: 0.85rem;
+    color: var(--light);
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
+
+  .phase-transition.final {
+    border-left-color: var(--ivey-green);
+    background: var(--pale-purple);
+    color: var(--ivey-green);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* Nav buttons */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .nav-btn {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--ivey-green);
+    color: var(--ivey-green);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .nav-btn.primary {
+    background: var(--ivey-green);
+    border-color: var(--ivey-green);
+    color: var(--cream);
+  }
+
+  .nav-btn.primary:hover {
+    opacity: 0.88;
+    color: var(--cream);
+  }
+
+  .phase-counter {
+    font-size: 0.82rem;
+    color: var(--light);
+  }
+
+  /* Insight bar */
+  .insight-bar {
+    background: var(--pale-purple);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .insight-bar.visible { display: flex; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ib-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .insight-bar p {
+    font-size: 0.93rem;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="inf-header">
+    <p>Activision's go/no-go process for videogame titles, late 1990s</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Progress track -->
+    <div class="progress-track">
+      <div class="progress-line">
+        <div class="progress-line-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <div class="phase-dots">
+        <div class="phase-dot-wrap active" onclick="goToPhase(0)">
+          <div class="phase-dot">1</div>
+          <div class="phase-dot-label">Concept Review</div>
+        </div>
+        <div class="phase-dot-wrap" onclick="goToPhase(1)">
+          <div class="phase-dot">2</div>
+          <div class="phase-dot-label">Assessment</div>
+        </div>
+        <div class="phase-dot-wrap" onclick="goToPhase(2)">
+          <div class="phase-dot">3</div>
+          <div class="phase-dot-label">Prototype</div>
+        </div>
+        <div class="phase-dot-wrap" onclick="goToPhase(3)">
+          <div class="phase-dot">4</div>
+          <div class="phase-dot-label">First Playable</div>
+        </div>
+        <div class="phase-dot-wrap" onclick="goToPhase(4)">
+          <div class="phase-dot">5</div>
+          <div class="phase-dot-label">Alpha</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase panel -->
+    <div class="phase-panel" id="phasePanel"></div>
+
+    <!-- Nav -->
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn" onclick="prevPhase()" disabled>← Previous</button>
+      <span class="phase-counter" id="phaseCounter">Phase 1 of 5</span>
+      <button class="nav-btn primary" id="nextBtn" onclick="nextPhase()">Next Phase →</button>
+    </div>
+
+    <!-- Insight bar — revealed after all phases -->
+    <div class="insight-bar" id="insightBar">
+      <div class="ib-label">The problem</div>
+      <p>This all looks logical and reasonable. But every phase of the process relies on the same flawed assumption: that reviewers can identify which projects are likely to succeed based on comparisons to what has worked before. As MechWarrior 2 showed, the process is as likely to kill a future hit as to protect against a future turkey.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const phases = [
+    {
+      title: "Concept Review",
+      developers: [
+        "Storyboards describing the game concept",
+        "Cost estimates for full development",
+        "Sketch of a profit and loss statement based on estimated sales"
+      ],
+      marketers: [
+        "Sales data from titles considered comparable",
+        "Initial assessment of commercial viability"
+      ],
+      transition: "If the concept looked promising to reviewers, the project moved to Phase 2…"
+    },
+    {
+      title: "Assessment",
+      developers: [
+        "Full game design document",
+        "Artwork giving reviewers a feel for gameplay and visual style"
+      ],
+      marketers: [
+        "Market research: consumer interest surveys",
+        "Competitive analysis of similar titles in development or already released"
+      ],
+      transition: "If reviewers approved, the project moved to Phase 3…"
+    },
+    {
+      title: "Prototype",
+      developers: [
+        "A limited but functional prototype",
+        "Enough to convey look, feel, and core gameplay"
+      ],
+      marketers: [
+        "Positioning and advertising strategy",
+        "Initial marketing plan"
+      ],
+      transition: "With a working prototype in hand, the project moved to Phase 4 if approved…"
+    },
+    {
+      title: "First Playable",
+      developers: [
+        "First working version of the game — not finished, but fully playable",
+        "All major systems functional"
+      ],
+      marketers: [
+        "Detailed marketing plans",
+        "Early test marketing of advertising concepts"
+      ],
+      transition: "With so much already invested at this stage, approval usually happened. The project moved to Phase 5…",
+      note: true
+    },
+    {
+      title: "Alpha",
+      developers: [
+        "First version with all features implemented",
+        "Bugs present but functionality complete"
+      ],
+      marketers: [
+        "Updated forecasts and profit and loss projections",
+        "Finalized marketing and launch plans"
+      ],
+      transition: "After Alpha came beta, then official launch. The process was nearly complete.",
+      final: true
+    }
+  ];
+
+  let current = 0;
+
+  function renderPhase(index) {
+    const p = phases[index];
+    const panel = document.getElementById('phasePanel');
+
+    panel.innerHTML = `
+      <div class="phase-panel-header">
+        <span class="phase-number-badge">Phase ${index + 1}</span>
+        <span class="phase-title">${p.title}</span>
+      </div>
+      <div class="phase-panel-body">
+        <div>
+          <div class="phase-col-label">Development deliverables</div>
+          ${p.developers.map(d => `<div class="phase-item"><div class="phase-item-dot"></div><span>${d}</span></div>`).join('')}
+        </div>
+        <div>
+          <div class="phase-col-label">Marketing deliverables</div>
+          ${p.marketers.map(m => `<div class="phase-item"><div class="phase-item-dot"></div><span>${m}</span></div>`).join('')}
+        </div>
+        <div class="phase-transition ${p.final ? 'final' : ''}">${p.transition}</div>
+      </div>
+    `;
+
+    // Update dots
+    const dots = document.querySelectorAll('.phase-dot-wrap');
+    dots.forEach((dot, i) => {
+      dot.classList.remove('active', 'completed');
+      if (i === index) dot.classList.add('active');
+      if (i < index) dot.classList.add('completed');
+    });
+
+    // Update progress line
+    const fill = document.getElementById('progressFill');
+    fill.style.width = (index / (phases.length - 1) * 100) + '%';
+
+    // Update counter
+    document.getElementById('phaseCounter').textContent = `Phase ${index + 1} of ${phases.length}`;
+
+    // Update buttons
+    document.getElementById('prevBtn').disabled = index === 0;
+    const nextBtn = document.getElementById('nextBtn');
+    if (index === phases.length - 1) {
+      nextBtn.textContent = 'See the problem →';
+      nextBtn.onclick = showInsight;
+    } else {
+      nextBtn.textContent = 'Next Phase →';
+      nextBtn.onclick = nextPhase;
+    }
+
+    // Insight bar
+    if (index < phases.length - 1) {
+      document.getElementById('insightBar').classList.remove('visible');
+    }
+  }
+
+  function nextPhase() {
+    if (current < phases.length - 1) {
+      current++;
+      renderPhase(current);
+    }
+  }
+
+  function prevPhase() {
+    if (current > 0) {
+      current--;
+      renderPhase(current);
+    }
+  }
+
+  function goToPhase(index) {
+    current = index;
+    renderPhase(current);
+  }
+
+  function showInsight() {
+    document.getElementById('insightBar').classList.add('visible');
+    document.getElementById('insightBar').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.disabled = true;
+  }
+
+  // Init
+  renderPhase(0);
+</script>
+
+</body>
+</html>

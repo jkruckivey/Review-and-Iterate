@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5 Concept Map - Legacy, Culture & Future</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-green: #c0d1cd;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #525252;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .search-box:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .reset-btn {
+            padding: 10px 24px;
+            background: #171717;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #404040;
+        }
+
+        .reset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        #graph-container {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            position: relative;
+            height: 700px;
+        }
+
+        #definition-panel {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            height: 700px;
+        }
+
+        .panel-empty {
+            color: #a3a3a3;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .panel-content {
+            display: none;
+        }
+
+        .panel-content.active {
+            display: block;
+        }
+
+        .panel-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 12px;
+        }
+
+        .panel-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            color: #525252;
+        }
+
+        .panel-section {
+            margin-bottom: 16px;
+        }
+
+        .panel-section-title {
+            font-weight: 600;
+            color: #404040;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .panel-section-content {
+            color: #525252;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .connected-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .connected-list li {
+            padding: 8px 12px;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .connected-list li:hover {
+            background: #f5f5f5;
+            border-color: #d4d4d4;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: #fafafa;
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: #f5f5f5;
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #171717;
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: #525252;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 2000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke: white;
+            stroke-width: 2px;
+        }
+
+        .node.dimmed circle {
+            opacity: 0.2;
+        }
+
+        .node.dimmed text {
+            opacity: 0.2;
+        }
+
+        .node text {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            pointer-events: none;
+            text-anchor: middle;
+        }
+
+        .link {
+            stroke: #e2e8f0;
+            stroke-width: 2px;
+            stroke-opacity: 0.3;
+        }
+
+        .link.dimmed {
+            stroke-opacity: 0.1;
+        }
+
+        .link.highlighted {
+            stroke-opacity: 0.8;
+            stroke-width: 3px;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            #definition-panel {
+                height: auto;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            #graph-container { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Week 5 Concept Map</h1>
+        <p class="subtitle">Interactive visualization of Legacy, Culture & Future frameworks</p>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('legend')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('legend');}" tabindex="0" role="button" aria-expanded="true" aria-controls="legend-content">
+                <h2>Legend</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="legend-content">
+                <div class="section-inner">
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #4A5568;"></div>
+                            <span>Learning Outcomes</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #718096;"></div>
+                            <span>Key Concepts</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #A0AEC0;"></div>
+                            <span>Strategic Frameworks</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #CBD5E0;"></div>
+                            <span>Real Examples</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('controls')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('controls');}" tabindex="0" role="button" aria-expanded="true" aria-controls="controls-content">
+                <h2>Search & Controls</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="controls-content">
+                <div class="section-inner">
+                    <div class="controls">
+                        <input type="text" class="search-box" id="search" placeholder="Search concepts, heritage properties, future trends...">
+                        <button class="reset-btn" id="reset">Reset View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header" onclick="toggleSection('visualization')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('visualization');}" tabindex="0" role="button" aria-expanded="true" aria-controls="visualization-content">
+                <h2>Interactive Concept Map</h2>
+                <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+            </div>
+            <div class="section-content expanded" id="visualization-content">
+                <div class="section-inner">
+                    <div class="layout">
+                        <div id="graph-container"></div>
+
+                        <div id="definition-panel">
+                            <div class="panel-empty" id="panel-empty">
+                                Click any node to explore concepts and connections
+                            </div>
+
+                            <div class="panel-content" id="panel-content">
+                                <div class="panel-label" id="panel-label"></div>
+                                <div class="panel-type" id="panel-type"></div>
+
+                                <div class="panel-section">
+                                    <div class="panel-section-title">Definition</div>
+                                    <div class="panel-section-content" id="panel-definition"></div>
+                                </div>
+
+                                <div class="panel-section" id="panel-extra" style="display: none;">
+                                    <div class="panel-section-title" id="panel-extra-title"></div>
+                                    <div class="panel-section-content" id="panel-extra-content"></div>
+                                </div>
+
+                                <div class="panel-section">
+                                    <div class="panel-section-title">Connected To</div>
+                                    <ul class="connected-list" id="panel-connected"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const nodes = [
+            // Layer 1: Learning Outcomes
+            { id: 'mlo-5-1', label: 'MLO 5.1: Heritage as Revenue Asset', type: 'learning_outcome', definition: 'Evaluate how heritage properties monetize nostalgia, memorabilia, and historical significance while maintaining authenticity. Trade-off between commercial exploitation and cultural preservation.', example: 'HHOF generates $15M revenue from museum admissions, licensing, and events', color: '#4A5568' },
+            { id: 'mlo-5-2', label: 'MLO 5.2: Tradition vs Innovation', type: 'learning_outcome', definition: 'Design strategies that honor sports heritage while embracing digital transformation, AI integration, and emerging technologies. Balance respect for tradition with need for relevance to Gen Z audiences.', example: 'Wimbledon: Maintains grass courts and white dress code while deploying AI analytics', color: '#4A5568' },
+            { id: 'mlo-5-3', label: 'MLO 5.3: Future Trends Assessment', type: 'learning_outcome', definition: 'Assess impact of AI, VR/AR, women\'s sports growth, and Gen Z preferences on sports business models. Identify which trends are temporary fads vs sustainable shifts.', example: 'Women\'s sports revenue growth 25% annually vs men\'s 3-5%', color: '#4A5568' },
+            { id: 'mlo-5-4', label: 'MLO 5.4: 5-Year Strategic Vision', type: 'learning_outcome', definition: 'Create comprehensive roadmap balancing heritage preservation, technology adoption, audience development, and revenue diversification. Align stakeholder interests across multiple time horizons.', example: 'HHOF 2025-2030: Digital archive, VR experiences, Gen Z engagement, $25M revenue target', color: '#4A5568' },
+
+            // Layer 2: Key Concepts
+            { id: 'heritage-monetization', label: 'Heritage Monetization', type: 'concept', definition: 'Converting historical assets (archives, memorabilia, legends) into revenue streams through museums, licensing, media rights, and experiential events. Authenticity is core value proposition.', math: 'HHOF revenue mix: Admissions 40%, Licensing 30%, Events 20%, Donations 10%', color: '#718096' },
+            { id: 'digital-transformation', label: 'Digital Transformation', type: 'concept', definition: 'Leveraging AI, VR/AR, blockchain, and streaming to enhance fan experience, create new revenue streams, and reach younger audiences. Must integrate without losing heritage authenticity.', math: 'VR experiences increase engagement 3x and willingness-to-pay 2x vs traditional exhibits', color: '#718096' },
+            { id: 'authenticity-constraint', label: 'Authenticity Constraint', type: 'concept', definition: 'Heritage properties must maintain credibility and respect for tradition. Over-commercialization ("Disneyfication") risks alienating core fans and devaluing brand equity.', example: 'FIFA Museum struggled with 50% fewer visitors than projected due to perceived commercialization', color: '#718096' },
+            { id: 'sweet-spot', label: 'Sweet Spot Strategy', type: 'concept', definition: 'Optimal balance between tradition and innovation. Too traditional = irrelevant to Gen Z. Too innovative = alienates core fans. Sweet spot creates bridges between generations.', example: 'Augusta National: Maintains exclusivity while adding women\'s tournament and digital content', color: '#718096' },
+            { id: 'disneyfication-risk', label: 'Disneyfication Risk', type: 'concept', definition: 'Over-commercialization that transforms authentic heritage into sanitized entertainment. Prioritizes revenue over cultural significance, leading to loss of credibility and brand dilution.', example: 'NFL Hall of Fame criticized for excessive sponsor integration in exhibits', color: '#718096' },
+            { id: 'museum-trap', label: 'Museum Trap', type: 'concept', definition: 'Heritage properties becoming static archives that only appeal to aging demographics. Failure to innovate leads to declining relevance, reduced revenue, and eventual closure.', math: 'Traditional sports museums: -15% attendance (2015-2023) vs +25% for interactive/digital venues', color: '#718096' },
+            { id: 'ai-integration', label: 'AI Integration', type: 'concept', definition: 'Using AI for personalized content, predictive analytics, fan engagement, and operational efficiency. Enables scale without losing personalization. Key trend for next 5 years.', example: 'AI-powered virtual museum guides provide personalized tours based on user interests', color: '#718096' },
+            { id: 'vr-ar', label: 'VR/AR Experiences', type: 'concept', definition: 'Immersive technologies that recreate historical moments, allow fans to "meet" legends, and experience sports heritage beyond physical limitations. Creates premium revenue opportunities.', example: 'HHOF VR: "Skate with Gretzky" experience commands $50 premium vs $25 base admission', color: '#718096' },
+            { id: 'gen-z-demographics', label: 'Gen Z Demographics', type: 'concept', definition: 'Born 1997-2012. Values authenticity, diversity, social causes, digital-first experiences. 60% prefer streaming over linear TV. Heritage properties must adapt to retain relevance.', math: 'Gen Z sports consumption: 70% digital highlights, 15% full games, 15% in-person', color: '#718096' },
+            { id: 'womens-sports-growth', label: 'Women\'s Sports Growth', type: 'concept', definition: 'Women\'s sports viewership +25% annually, sponsorship +35%, investment +400% (2020-2024). Heritage institutions must expand archives and programming to capture this growth.', math: 'WNBA viewership 2024: +170% vs 2020. NWSL attendance: +48% annually', color: '#718096' },
+            { id: 'strategic-tradeoffs', label: 'Strategic Trade-offs', type: 'concept', definition: 'Every innovation creates risks. Must weigh short-term revenue vs long-term brand equity, mass appeal vs authenticity, digital reach vs in-person premium experiences.', example: 'HHOF debate: Digital archive free (reach) vs paywall (revenue)', color: '#718096' },
+            { id: 'stakeholder-management', label: 'Stakeholder Management', type: 'concept', definition: 'Balancing interests of legends, fans, sponsors, donors, and staff. Legends value legacy protection. Sponsors want activation. Fans want access. Staff need resources.', example: 'HHOF manages 470 inductees, 50+ corporate partners, 300K annual visitors', color: '#718096' },
+            { id: '5year-roadmap', label: '5-Year Roadmap', type: 'concept', definition: 'Strategic plan with clear milestones, KPIs, resource allocation, and contingencies. Must anticipate technological change, demographic shifts, and competitive landscape evolution.', example: 'Year 1: Digital archive. Year 2: VR experiences. Year 3: AI personalization. Year 4: Gen Z programs. Year 5: Revenue $25M', color: '#718096' },
+
+            // Layer 3: Real Examples
+            { id: 'hhof', label: 'Hockey Hall of Fame', type: 'real_example', definition: 'Heritage property case study. Challenge: Aging demographic, declining attendance, competition from digital entertainment. Opportunity: Monetize 120-year archive, create VR experiences, expand women\'s hockey programming.', stats: '300K visitors, $15M revenue, 470 inductees, 10M archive items', color: '#CBD5E0' },
+            { id: 'olympics', label: 'Olympics Legacy', type: 'real_example', definition: 'IOC manages heritage across 130+ years and 200+ nations. Balances tradition (Olympic rings, torch relay) with innovation (esports, youth engagement, sustainability mandates).', stats: 'Olympics broadcast rights: $7.7B (2021-2032). Heritage brand value: $47B', color: '#CBD5E0' },
+            { id: 'fifa-museum', label: 'FIFA Museum', type: 'real_example', definition: 'Cautionary tale of Disneyfication. Opened 2016 in Zurich. Over-commercialized, lacked authenticity. Attendance 50% below projections. High operating costs led to $50M+ losses.', stats: 'Projected: 250K visitors. Actual: 120K. Operating loss: $8M annually', color: '#CBD5E0' },
+            { id: 'wimbledon', label: 'Wimbledon', type: 'real_example', definition: 'Sweet spot exemplar. Maintains strict traditions (grass courts, white attire, strawberries/cream) while deploying AI analytics, digital streaming, and global social media engagement.', stats: 'Digital views 2024: 86M hours (+40% vs 2023). Maintains premium ticket pricing', color: '#CBD5E0' },
+            { id: 'augusta', label: 'Augusta National', type: 'real_example', definition: 'Heritage brand that evolves slowly. Added women\'s tournament (2019) after decades of exclusion. Balances exclusivity with digital accessibility. Minimal sponsor visibility maintains premium positioning.', stats: 'Masters TV rights: $165M annually. Ticket resale value: $5K-$30K', color: '#CBD5E0' },
+            { id: 'jamie-dinsmore', label: 'Jamie Dinsmore', type: 'real_example', definition: 'HHOF CEO. Leading digital transformation: VR experiences, AI-powered archive search, Gen Z programming. Must balance innovation with respect for 470 inductees and 120-year tradition.', role: 'Challenge: Increase revenue $15M → $25M while maintaining authenticity', color: '#CBD5E0' },
+            { id: 'keith-pelley', label: 'Keith Pelley', type: 'real_example', definition: 'MLSE CEO. Manages Maple Leafs, Raptors, TFC, Argos. Balances heritage (Maple Leafs 100+ years) with innovation (sports betting, streaming, real estate development). Revenue diversification expert.', role: 'MLSE revenue: $500M+ from 4 teams, real estate, media rights', color: '#CBD5E0' }
+        ];
+
+        const edges = [
+            // MLO 5.1 connections
+            { source: 'heritage-monetization', target: 'mlo-5-1' },
+            { source: 'authenticity-constraint', target: 'mlo-5-1' },
+            { source: 'disneyfication-risk', target: 'mlo-5-1' },
+            { source: 'hhof', target: 'mlo-5-1' },
+            { source: 'olympics', target: 'mlo-5-1' },
+
+            // MLO 5.2 connections
+            { source: 'digital-transformation', target: 'mlo-5-2' },
+            { source: 'sweet-spot', target: 'mlo-5-2' },
+            { source: 'museum-trap', target: 'mlo-5-2' },
+            { source: 'wimbledon', target: 'mlo-5-2' },
+            { source: 'augusta', target: 'mlo-5-2' },
+
+            // MLO 5.3 connections
+            { source: 'ai-integration', target: 'mlo-5-3' },
+            { source: 'vr-ar', target: 'mlo-5-3' },
+            { source: 'gen-z-demographics', target: 'mlo-5-3' },
+            { source: 'womens-sports-growth', target: 'mlo-5-3' },
+
+            // MLO 5.4 connections
+            { source: 'strategic-tradeoffs', target: 'mlo-5-4' },
+            { source: 'stakeholder-management', target: 'mlo-5-4' },
+            { source: '5year-roadmap', target: 'mlo-5-4' },
+            { source: 'jamie-dinsmore', target: 'mlo-5-4' },
+            { source: 'keith-pelley', target: 'mlo-5-4' },
+
+            // Concept interconnections
+            { source: 'heritage-monetization', target: 'digital-transformation' },
+            { source: 'authenticity-constraint', target: 'sweet-spot' },
+            { source: 'disneyfication-risk', target: 'authenticity-constraint' },
+            { source: 'museum-trap', target: 'digital-transformation' },
+            { source: 'ai-integration', target: 'digital-transformation' },
+            { source: 'vr-ar', target: 'digital-transformation' },
+            { source: 'gen-z-demographics', target: 'sweet-spot' },
+            { source: 'womens-sports-growth', target: 'strategic-tradeoffs' },
+
+            // Example interconnections
+            { source: 'hhof', target: 'jamie-dinsmore' },
+            { source: 'fifa-museum', target: 'disneyfication-risk' },
+            { source: 'wimbledon', target: 'sweet-spot' },
+            { source: 'augusta', target: 'authenticity-constraint' },
+            { source: 'olympics', target: 'stakeholder-management' }
+        ];
+
+        // Visualization
+        const width = document.getElementById('graph-container').clientWidth;
+        const height = 700;
+
+        const svg = d3.select('#graph-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(edges).id(d => d.id).distance(150))
+            .force('charge', d3.forceManyBody().strength(-300))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(50));
+
+        const link = svg.append('g')
+            .selectAll('line')
+            .data(edges)
+            .join('line')
+            .attr('class', 'link');
+
+        const node = svg.append('g')
+            .selectAll('g')
+            .data(nodes)
+            .join('g')
+            .attr('class', 'node')
+            .call(d3.drag()
+                .on('start', dragStarted)
+                .on('drag', dragged)
+                .on('end', dragEnded));
+
+        node.append('circle')
+            .attr('r', d => d.type === 'learning_outcome' ? 30 : d.type === 'concept' ? 20 : 18)
+            .attr('fill', d => d.color);
+
+        node.append('text')
+            .text(d => d.label.split(':')[1] || d.label)
+            .attr('dy', 40)
+            .style('fill', '#171717');
+
+        node.on('click', (event, d) => {
+            showDefinition(d);
+            highlightConnections(d);
+        });
+
+        simulation.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showDefinition(d) {
+            document.getElementById('panel-empty').style.display = 'none';
+            document.getElementById('panel-content').classList.add('active');
+
+            document.getElementById('panel-label').textContent = d.label;
+            document.getElementById('panel-type').textContent = d.type.replace('_', ' ');
+            document.getElementById('panel-definition').textContent = d.definition;
+
+            const extraSection = document.getElementById('panel-extra');
+            const extraTitle = document.getElementById('panel-extra-title');
+            const extraContent = document.getElementById('panel-extra-content');
+
+            if (d.math) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Math Example';
+                extraContent.textContent = d.math;
+            } else if (d.stats) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Key Stats';
+                extraContent.textContent = d.stats;
+            } else if (d.role) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Role';
+                extraContent.textContent = d.role;
+            } else if (d.example) {
+                extraSection.style.display = 'block';
+                extraTitle.textContent = 'Example';
+                extraContent.textContent = d.example;
+            } else {
+                extraSection.style.display = 'none';
+            }
+
+            const connected = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .map(e => e.source.id === d.id ? e.target : e.source);
+
+            const connectedList = document.getElementById('panel-connected');
+            connectedList.innerHTML = '';
+            connected.forEach(n => {
+                const li = document.createElement('li');
+                li.textContent = n.label;
+                li.onclick = () => {
+                    showDefinition(n);
+                    highlightConnections(n);
+                };
+                connectedList.appendChild(li);
+            });
+        }
+
+        function highlightConnections(d) {
+            const connectedIds = edges.filter(e => e.source.id === d.id || e.target.id === d.id)
+                .flatMap(e => [e.source.id, e.target.id]);
+
+            connectedIds.push(d.id);
+
+            node.classed('dimmed', n => !connectedIds.includes(n.id));
+            link.classed('dimmed', true);
+            link.classed('highlighted', e => e.source.id === d.id || e.target.id === d.id);
+        }
+
+        document.getElementById('reset').addEventListener('click', () => {
+            node.classed('dimmed', false);
+            link.classed('dimmed', false);
+            link.classed('highlighted', false);
+
+            document.getElementById('panel-empty').style.display = 'block';
+            document.getElementById('panel-content').classList.remove('active');
+
+            document.getElementById('search').value = '';
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+
+            if (!query) {
+                node.classed('dimmed', false);
+                link.classed('dimmed', false);
+                return;
+            }
+
+            const matches = nodes.filter(n =>
+                n.label.toLowerCase().includes(query) ||
+                n.definition.toLowerCase().includes(query)
+            ).map(n => n.id);
+
+            node.classed('dimmed', n => !matches.includes(n.id));
+            link.classed('dimmed', true);
+        });
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+    </script>
+</body>
+</html>

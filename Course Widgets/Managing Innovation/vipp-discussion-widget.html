@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vipp Discussion Activity</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 940px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 28px 40px;
+  }
+
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 6px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  .question-block {
+    padding: 36px 40px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .question-block p {
+    color: var(--mid);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .question-block strong {
+    color: var(--ivey-green);
+  }
+
+  .options-label {
+    padding: 24px 40px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .options-grid {
+    padding: 0 40px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .option-btn {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95rem;
+    color: var(--mid);
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .option-btn:hover {
+    border-color: var(--ivey-green);
+    background: #f0f6f5;
+    color: var(--ivey-green);
+  }
+
+  .option-btn.selected {
+    border-color: var(--ivey-green);
+    background: var(--ivey-green);
+    color: var(--cream);
+  }
+
+  .option-btn.dimmed {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* Response panel */
+  .response-panel {
+    margin: 0 40px 32px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+    animation: fadeSlide 0.35s ease;
+  }
+
+  .response-panel.visible {
+    display: block;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .response-header {
+    background: var(--pale-purple);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .response-header .tag {
+    background: var(--ivey-green);
+    color: var(--cream);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .response-header .answer-label {
+    color: var(--ivey-green);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .response-body {
+    background: white;
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 20px 22px;
+  }
+
+  .response-body p {
+    color: var(--mid);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .response-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .probe {
+    background: #f0f6f5;
+    border-left: 3px solid var(--ivey-green);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 14px 0;
+    color: var(--ivey-green);
+    font-style: italic;
+    font-size: 0.93rem;
+    line-height: 1.6;
+  }
+
+  .go-deeper-btn {
+    display: inline-block;
+    margin-top: 16px;
+    background: var(--ivey-green);
+    color: var(--cream);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .go-deeper-btn:hover { opacity: 0.85; }
+
+  .deeper-content {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    animation: fadeSlide 0.3s ease;
+  }
+
+  .deeper-content.visible { display: block; }
+
+  .deeper-content p {
+    color: var(--mid);
+    font-size: 0.93rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  /* Synthesis section */
+  .synthesis {
+    background: var(--pale-purple);
+    margin: 0 40px 40px;
+    border-radius: 8px;
+    padding: 28px 30px;
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .synthesis.visible { display: block; }
+
+  .synthesis-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    margin-bottom: 14px;
+  }
+
+  .synthesis h3 {
+    color: var(--ivey-green);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+
+  .synthesis p {
+    color: var(--mid);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .answer-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  .chip {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.83rem;
+    color: var(--ivey-green);
+    font-weight: 500;
+  }
+
+  .reset-btn {
+    display: inline-block;
+    margin-top: 18px;
+    background: transparent;
+    color: var(--ivey-green);
+    border: 1.5px solid var(--ivey-green);
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    background: var(--ivey-green);
+    color: var(--cream);
+  }
+
+  .explore-more {
+    padding: 6px 40px 20px;
+    font-size: 0.85rem;
+    color: var(--light);
+    font-style: italic;
+    display: none;
+  }
+
+  .explore-more.visible { display: block; }
+
+  @media (max-width: 600px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .inf-header, .question-block, .options-label, .options-grid,
+    .response-panel, .synthesis { padding-left: 20px; padding-right: 20px; }
+    .response-panel, .synthesis { margin-left: 20px; margin-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="inf-header">
+    <h1>What Is Vipp Actually Selling?</h1>
+    <p>A guided reflection on beyond-rational attachment</p>
+  </div>
+
+  <div class="question-block">
+    <p>This bin is not made of precious metal. It does not connect to the Internet. A functional equivalent is available at Walmart for around $15. <strong>So when people pay $500 for a Vipp trash bin, what do you think they are buying? What is Vipp actually selling?</strong></p>
+    <p style="margin-top:12px; color: var(--light); font-size:0.9rem;">Select the answer that comes closest to your thinking. You can explore more than one.</p>
+  </div>
+
+  <div class="options-label">Choose your answer</div>
+
+  <div class="options-grid" id="optionsGrid">
+    <button class="option-btn" onclick="selectOption('status')">Status and social signalling — showing others they can afford to spend $500 on a trash bin</button>
+    <button class="option-btn" onclick="selectOption('aesthetics')">Aesthetics and beauty — they genuinely find it beautiful and want to live with beautiful things</button>
+    <button class="option-btn" onclick="selectOption('identity')">Identity and self-expression — it says something about the kind of person they are or want to be</button>
+    <button class="option-btn" onclick="selectOption('sustainability')">Sustainability and longevity — a well-made object that lasts a lifetime and won't end up in a landfill</button>
+  </div>
+
+  <!-- Response panels -->
+  <div class="response-panel" id="response-status">
+    <div class="response-header">
+      <span class="tag">Your answer</span>
+      <span class="answer-label">Status and social signalling</span>
+    </div>
+    <div class="response-body">
+      <p>This is the most common first answer — and it's not wrong. There's clearly something about owning a Vipp bin that sets you apart, that signals a certain kind of taste and affluence.</p>
+      <div class="probe">But here's a question worth sitting with: if you're spending $500 to impress other people, is a trash bin really the best vehicle for that? A watch goes everywhere with you. A Hermès tie is visible at every meeting. A Vipp bin mostly hides behind your toilet.</div>
+      <p>Unless you have a great deal of traffic past your bathroom, the signalling argument has some limits. Which raises a more interesting question.</p>
+      <button class="go-deeper-btn" onclick="showDeeper('status-deeper')">Push further</button>
+      <div class="deeper-content" id="status-deeper">
+        <p>What if the signal isn't primarily directed outward, at others, but inward, at yourself? The bin might be a way of telling yourself something about who you are — your taste, your values, your relationship to the objects around you.</p>
+        <p>Vipp sometimes describes their bins as "family heirlooms" — objects passed down through generations. That framing isn't about status. It's about identity, continuity, and the kind of person who chooses to surround themselves with things made well.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="response-panel" id="response-aesthetics">
+    <div class="response-header">
+      <span class="tag">Your answer</span>
+      <span class="answer-label">Aesthetics and beauty</span>
+    </div>
+    <div class="response-body">
+      <p>This gets closer to something real. The Vipp bin has been in MOMA's permanent design collection since 2009. People who work in design or architecture often respond to it immediately — they recognize a kind of rigour in its construction, the way the form and function feel resolved together.</p>
+      <div class="probe">But if it's purely about beauty, why not display it in a glass case in the living room? Most people put it in the bathroom. So there's something else going on alongside the aesthetics.</div>
+      <p>The most honest answer might be that aesthetics and function aren't really separate categories for people who love objects like this. The bin is beautiful <em>and</em> it works perfectly <em>and</em> it will outlast everything else in the bathroom. All of that is part of the same thing.</p>
+      <button class="go-deeper-btn" onclick="showDeeper('aesthetics-deeper')">Push further</button>
+      <div class="deeper-content" id="aesthetics-deeper">
+        <p>There's a concept the course will return to: aesthetic coherence. The idea that a thing can feel "complete in itself" — where every part reinforces every other part, and nothing is out of place. Objects like the Vipp bin have this quality. You don't need to be able to name it to feel it.</p>
+        <p>And when people find something that has this quality, they often want more of it. Remember the student in Denmark who owned five.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="response-panel" id="response-identity">
+    <div class="response-header">
+      <span class="tag">Your answer</span>
+      <span class="answer-label">Identity and self-expression</span>
+    </div>
+    <div class="response-body">
+      <p>This is one of the more interesting answers, and one that often comes up later in the conversation once the obvious answers have been tested. The objects we choose to live with say something — to ourselves, not just to others — about who we are and what we care about.</p>
+      <div class="probe">But what exactly is Vipp saying about the kind of person who buys one? And how does the company cultivate that sense of identity around what is, on the surface, a trash bin?</div>
+      <p>Vipp has worked hard at this. Their bins appear in the windows of high fashion department stores alongside Prada and Chanel. They have been displayed at the Louvre. The company publishes the history of how the original bin was designed — a story of craft, precision, and care.</p>
+      <button class="go-deeper-btn" onclick="showDeeper('identity-deeper')">Push further</button>
+      <div class="deeper-content" id="identity-deeper">
+        <p>Each of these moves is doing the same thing: repositioning the object in a different category of meaning. Not "trash bin" but "design icon." Not "household product" but "object worth caring about."</p>
+        <p>When people buy the bin, they are in some sense joining that story — affiliating themselves with a particular set of values about craft, quality, and the way objects should be made. That's identity, not just aesthetics.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="response-panel" id="response-sustainability">
+    <div class="response-header">
+      <span class="tag">Your answer</span>
+      <span class="answer-label">Sustainability and longevity</span>
+    </div>
+    <div class="response-body">
+      <p>This answer doesn't come up as often, but it's worth taking seriously. Vipp explicitly frames their products as "family heirlooms" — objects made to last decades and be passed down rather than discarded. In an era of disposable goods, there's a genuine argument that paying more for something made well is the more sustainable choice.</p>
+      <div class="probe">But is sustainability really driving the purchasing decision, or is it a way of rationalizing a purchase that is driven by something else — something harder to articulate?</div>
+      <p>Probably both are true for different buyers. For some, the longevity argument is genuinely important. For others, it might provide a satisfying justification for an attachment that is, at root, emotional and aesthetic.</p>
+      <button class="go-deeper-btn" onclick="showDeeper('sustainability-deeper')">Push further</button>
+      <div class="deeper-content" id="sustainability-deeper">
+        <p>What's interesting about this answer is what it reveals about how people talk about purchases they feel slightly self-conscious about. "Beyond rational" doesn't mean people won't reach for rational-sounding explanations. The sustainability framing is real, but it might also be doing some work to make the emotional attachment feel more defensible.</p>
+        <p>Jette Egelund, the former CEO, wasn't especially worried about explaining the attachment. She knew that the seven or eight percent of people who simply wanted the bin would find their own reasons. Her job was to make sure those people knew the bin existed.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="explore-more" id="exploreMore">Select another answer to keep exploring, or read the synthesis below.</div>
+
+  <!-- Synthesis -->
+  <div class="synthesis" id="synthesis">
+    <div class="synthesis-label">Putting it together</div>
+    <h3>What is Vipp actually selling?</h3>
+    <p>Probably all of these things, in different proportions for different buyers. Status, aesthetics, identity, sustainability — none of these answers is wrong, and none is complete on its own.</p>
+    <div class="answer-chips">
+      <span class="chip">Status</span>
+      <span class="chip">Beauty</span>
+      <span class="chip">Identity</span>
+      <span class="chip">Sustainability</span>
+      <span class="chip">Belonging</span>
+      <span class="chip">Craft</span>
+    </div>
+    <p>What they share is that none of them is about the bin's function as a receptacle for trash. People are paying $500 for something that has nothing to do with what the object literally does. That gap — between functional value and perceived value — is what Vipp has built its business on.</p>
+    <p>The harder question, and the one this week will keep returning to, is whether that gap can be deliberately cultivated — or whether it simply happens, mysteriously, to certain objects and not others.</p>
+    <button class="reset-btn" onclick="resetWidget()">Start over</button>
+  </div>
+
+</div>
+
+<script>
+  const selected = new Set();
+  let synthesisShown = false;
+
+  function selectOption(key) {
+    const btn = document.querySelectorAll('.option-btn')[['status','aesthetics','identity','sustainability'].indexOf(key)];
+
+    if (selected.has(key)) return;
+
+    selected.add(key);
+    btn.classList.add('selected');
+
+    // Show response
+    const panel = document.getElementById('response-' + key);
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // After 2 selections, show explore more prompt
+    if (selected.size >= 2 && !synthesisShown) {
+      document.getElementById('exploreMore').classList.add('visible');
+    }
+
+    // After 3 selections, show synthesis
+    if (selected.size >= 3 && !synthesisShown) {
+      synthesisShown = true;
+      setTimeout(() => {
+        document.getElementById('synthesis').classList.add('visible');
+        document.getElementById('synthesis').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 600);
+    }
+  }
+
+  function showDeeper(id) {
+    const el = document.getElementById(id);
+    el.classList.add('visible');
+    const btn = el.previousElementSibling;
+    if (btn && btn.classList.contains('go-deeper-btn')) {
+      btn.style.display = 'none';
+    }
+  }
+
+  function resetWidget() {
+    selected.clear();
+    synthesisShown = false;
+
+    document.querySelectorAll('.option-btn').forEach(b => {
+      b.classList.remove('selected', 'dimmed');
+    });
+
+    document.querySelectorAll('.response-panel').forEach(p => {
+      p.classList.remove('visible');
+    });
+
+    document.querySelectorAll('.deeper-content').forEach(d => {
+      d.classList.remove('visible');
+    });
+
+    document.querySelectorAll('.go-deeper-btn').forEach(b => {
+      b.style.display = 'inline-block';
+    });
+
+    document.getElementById('exploreMore').classList.remove('visible');
+    document.getElementById('synthesis').classList.remove('visible');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

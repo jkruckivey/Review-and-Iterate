@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Transformation Strategist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-error: #ef4444;
+            --color-success: #c0d1cd;
+            --color-warning: #f0ede0;
+            --color-info: #bfe5e7;
+            --color-purple: #d5cae0;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+            --color-blue: #3182ce;
+            --color-green: #38a169;
+            --color-orange: #dd6b20;
+            --color-red: #e53e3e;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .phase {
+            display: none;
+        }
+
+        .phase.active {
+            display: block;
+        }
+
+        .progress-bar {
+            background: var(--color-neutral-200);
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--color-neutral-900);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .phase-indicator {
+            text-align: center;
+            color: var(--color-neutral-600);
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .radio-option strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .slider-group {
+            margin-bottom: 24px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .slider-label {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-neutral-200);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-900);
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neutral-900);
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider:focus {
+            outline: 2px solid var(--color-blue);
+            outline-offset: 2px;
+        }
+
+        .budget-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+            background: var(--color-neutral-50);
+            border-radius: var(--border-radius);
+            margin-top: 24px;
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-item.total {
+            grid-column: 1 / -1;
+            padding-top: 12px;
+            border-top: 1px solid var(--color-neutral-300);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .budget-item.error {
+            color: var(--color-red);
+        }
+
+        .budget-item.success {
+            color: var(--color-green);
+        }
+
+        .validation-message {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+
+        .validation-message.error {
+            background: #fee;
+            border: 1px solid var(--color-red);
+            color: var(--color-red);
+        }
+
+        .validation-message.success {
+            background: #efe;
+            border: 1px solid var(--color-green);
+            color: var(--color-green);
+        }
+
+        .scenario-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .scenario-year {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+        }
+
+        .scenario-text {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: var(--color-neutral-900);
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .scenario-choice {
+            padding: 12px 16px;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .scenario-choice:hover {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .scenario-choice.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .dashboard {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            margin-bottom: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .metric-bar {
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .metric-bar-fill.high {
+            background: var(--color-green);
+        }
+
+        .metric-bar-fill.medium {
+            background: var(--color-orange);
+        }
+
+        .metric-bar-fill.low {
+            background: var(--color-red);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-blue);
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-900);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .result-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+
+        .result-card h4 {
+            font-size: 0.875rem;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .result-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .grade {
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .grade.a-plus { color: var(--color-green); }
+        .grade.a { color: var(--color-green); }
+        .grade.b { color: var(--color-blue); }
+        .grade.c { color: var(--color-orange); }
+        .grade.d, .grade.f { color: var(--color-red); }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 24px 0;
+        }
+
+        .impact-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .impact-list li {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-900);
+            border-radius: 4px;
+        }
+
+        .impact-list li strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .budget-summary {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 16px;
+            }
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            background: white;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: var(--color-neutral-50);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin: 0;
+        }
+
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--color-neutral-600);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.expanded {
+            max-height: 5000px;
+        }
+
+        .section-inner {
+            padding: 1.5rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Heritage Transformation Strategist</h1>
+        <p class="subtitle">Design a 5-year transformation strategy balancing tradition and innovation</p>
+
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="phase-indicator" id="phaseIndicator">Phase 1 of 5</div>
+
+        <!-- Phase 1: Setup -->
+        <div class="phase active" id="phase1">
+            <div class="section">
+                <div class="section-header" onclick="toggleSection('phase1-inputs')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('phase1-inputs');}" tabindex="0" role="button" aria-expanded="true" aria-controls="phase1-inputs-content">
+                    <h2>Phase 1: Strategic Foundation</h2>
+                    <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+                </div>
+                <div class="section-content expanded" id="phase1-inputs-content">
+                    <div class="section-inner">
+                <p style="margin-bottom: 24px;">Select your heritage property type and assess its current state. These choices will affect your constraints and opportunities throughout the simulation.</p>
+
+                <h3>Property Type</h3>
+                <div class="radio-group" role="radiogroup" aria-labelledby="propertyTypeLabel">
+                    <span id="propertyTypeLabel" class="sr-only">Select property type</span>
+                    <div class="radio-option">
+                        <input type="radio" id="hof" name="propertyType" value="hof" checked>
+                        <label for="hof">
+                            <strong>Hall of Fame</strong>
+                            Traditional institution with deep heritage collection and established membership base
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="olympic" name="propertyType" value="olympic">
+                        <label for="olympic">
+                            <strong>Olympic Legacy Property</strong>
+                            Post-event venue with modern facilities but emerging heritage narrative
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="venue" name="propertyType" value="venue">
+                        <label for="venue">
+                            <strong>Historic Venue</strong>
+                            Active competition space with significant historical moments and ongoing events
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="museum" name="propertyType" value="museum">
+                        <label for="museum">
+                            <strong>Sports Museum</strong>
+                            Comprehensive sports history collection with educational mission
+                        </label>
+                    </div>
+                </div>
+
+                <h3>Current State</h3>
+                <div class="radio-group" role="radiogroup" aria-labelledby="currentStateLabel">
+                    <span id="currentStateLabel" class="sr-only">Select current state</span>
+                    <div class="radio-option">
+                        <input type="radio" id="stable" name="currentState" value="stable" checked>
+                        <label for="stable">
+                            <strong>Stable</strong>
+                            Consistent revenue, loyal base, but facing demographic shift and technology disruption
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="declining" name="currentState" value="declining">
+                        <label for="declining">
+                            <strong>Declining</strong>
+                            Revenue down 15-20%, visitor traffic trending negative, board pressuring for change
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="crisis" name="currentState" value="crisis">
+                        <label for="crisis">
+                            <strong>Crisis</strong>
+                            Revenue down 30%+, existential threat, major stakeholder conflict, limited runway
+                        </label>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn" onclick="startPhase2()" aria-label="Continue to Phase 2: Budget Allocation">
+                        Continue to Budget Allocation
+                    </button>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 2: Budget Allocation -->
+        <div class="phase" id="phase2">
+            <div class="two-column">
+                <div>
+                    <div class="section">
+                        <div class="section-header" onclick="toggleSection('phase2-budget')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('phase2-budget');}" tabindex="0" role="button" aria-expanded="true" aria-controls="phase2-budget-content">
+                            <h2>Phase 2: Budget Allocation</h2>
+                            <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="section-content expanded" id="phase2-budget-content">
+                            <div class="section-inner">
+                        <p style="margin-bottom: 24px;">Allocate your $25M transformation budget across five strategic categories. Heritage Preservation must be at least 20% of the total budget.</p>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="experienceSlider" class="slider-label">Experience Innovation</label>
+                                <span class="slider-value" id="experienceValue">20%</span>
+                            </div>
+                            <input type="range" min="0" max="40" value="20" class="slider" id="experienceSlider"
+                                   aria-label="Experience Innovation allocation percentage" aria-valuemin="0" aria-valuemax="40">
+                            <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-top: 4px;">VR/AR exhibits, interactive installations, immersive events (Max: 40%)</p>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="digitalSlider" class="slider-label">Digital Transformation</label>
+                                <span class="slider-value" id="digitalValue">20%</span>
+                            </div>
+                            <input type="range" min="0" max="35" value="20" class="slider" id="digitalSlider"
+                                   aria-label="Digital Transformation allocation percentage" aria-valuemin="0" aria-valuemax="35">
+                            <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-top: 4px;">Streaming platforms, digital memberships, online community (Max: 35%)</p>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="audienceSlider" class="slider-label">Audience Expansion</label>
+                                <span class="slider-value" id="audienceValue">20%</span>
+                            </div>
+                            <input type="range" min="0" max="30" value="20" class="slider" id="audienceSlider"
+                                   aria-label="Audience Expansion allocation percentage" aria-valuemin="0" aria-valuemax="30">
+                            <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-top: 4px;">International marketing, youth engagement, new partnerships (Max: 30%)</p>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="revenueSlider" class="slider-label">Revenue Optimization</label>
+                                <span class="slider-value" id="revenueValue">20%</span>
+                            </div>
+                            <input type="range" min="0" max="25" value="20" class="slider" id="revenueSlider"
+                                   aria-label="Revenue Optimization allocation percentage" aria-valuemin="0" aria-valuemax="25">
+                            <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-top: 4px;">Premium pricing, dynamic ticketing, merchandise expansion (Max: 25%)</p>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="heritageSlider" class="slider-label">Heritage Preservation</label>
+                                <span class="slider-value" id="heritageValue">20%</span>
+                            </div>
+                            <input type="range" min="20" max="100" value="20" class="slider" id="heritageSlider"
+                                   aria-label="Heritage Preservation allocation percentage" aria-valuemin="20" aria-valuemax="100">
+                            <p style="font-size: 0.875rem; color: var(--color-neutral-600); margin-top: 4px;">Archival digitization, curator hiring, institutional legacy (Min: 20%)</p>
+                        </div>
+
+                        <div class="budget-summary">
+                            <div class="budget-item">
+                                <span>Experience Innovation:</span>
+                                <span id="experienceDollar">$5.0M</span>
+                            </div>
+                            <div class="budget-item">
+                                <span>Digital Transformation:</span>
+                                <span id="digitalDollar">$5.0M</span>
+                            </div>
+                            <div class="budget-item">
+                                <span>Audience Expansion:</span>
+                                <span id="audienceDollar">$5.0M</span>
+                            </div>
+                            <div class="budget-item">
+                                <span>Revenue Optimization:</span>
+                                <span id="revenueDollar">$5.0M</span>
+                            </div>
+                            <div class="budget-item">
+                                <span>Heritage Preservation:</span>
+                                <span id="heritageDollar">$5.0M</span>
+                            </div>
+                            <div class="budget-item total" id="totalBudget">
+                                <span>Total Allocated:</span>
+                                <span>$25.0M (100%)</span>
+                            </div>
+                        </div>
+
+                        <div id="budgetValidation"></div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="goToPhase(1)" aria-label="Go back to Phase 1">
+                                Back
+                            </button>
+                            <button class="btn" id="continueToScenarios" onclick="startPhase3()" disabled aria-label="Continue to Phase 3: Stakeholder Scenarios">
+                                Continue to Scenarios
+                            </button>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard" id="dashboardPhase2">
+                    <h3>Strategy Dashboard</h3>
+
+                    <div class="metric">
+                        <div class="metric-label">Projected Revenue Growth</div>
+                        <div class="metric-value" id="revenueGrowth">+0%</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="revenueBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Authenticity Score</div>
+                        <div class="metric-value" id="authenticityScore">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="authenticityBar" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Traditionalist Satisfaction</div>
+                        <div class="metric-value" id="traditionalistScore">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="traditionalistBar" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Growth Advocate Satisfaction</div>
+                        <div class="metric-value" id="growthScore">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="growthBar" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Strategy Balance</div>
+                        <div class="metric-value" id="balanceScore">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="balanceBar" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 3: Stakeholder Scenarios -->
+        <div class="phase" id="phase3">
+            <div class="two-column">
+                <div>
+                    <div class="section">
+                        <div class="section-header" onclick="toggleSection('phase3-scenarios')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('phase3-scenarios');}" tabindex="0" role="button" aria-expanded="true" aria-controls="phase3-scenarios-content">
+                            <h2>Phase 3: Navigate Stakeholder Scenarios</h2>
+                            <span class="toggle-icon expanded" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="section-content expanded" id="phase3-scenarios-content">
+                            <div class="section-inner">
+                        <p style="margin-bottom: 24px;">Over five years, you'll face critical decisions that test your strategy. Each choice affects revenue, authenticity, and stakeholder satisfaction.</p>
+
+                        <div id="scenariosContainer"></div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="goToPhase(2)" aria-label="Go back to Phase 2">
+                                Back
+                            </button>
+                            <button class="btn" id="continueToResults" onclick="startPhase4()" disabled aria-label="Continue to Phase 4: Results">
+                                View Results
+                            </button>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard">
+                    <h3>Live Strategy Dashboard</h3>
+
+                    <div class="metric">
+                        <div class="metric-label">Revenue Growth Trajectory</div>
+                        <div class="metric-value" id="revenueGrowthLive">+0%</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="revenueBarLive" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Authenticity Score</div>
+                        <div class="metric-value" id="authenticityScoreLive">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="authenticityBarLive" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Traditionalist Satisfaction</div>
+                        <div class="metric-value" id="traditionalistScoreLive">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="traditionalistBarLive" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric">
+                        <div class="metric-label">Growth Advocate Satisfaction</div>
+                        <div class="metric-value" id="growthScoreLive">50</div>
+                        <div class="metric-bar">
+                            <div class="metric-bar-fill medium" id="growthBarLive" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase 4: Results -->
+        <div class="phase" id="phase4">
+            <div class="section">
+                <div class="section-header" onclick="toggleSection('phase4-outcomes')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('phase4-outcomes');}" tabindex="0" role="button" aria-expanded="false" aria-controls="phase4-outcomes-content">
+                    <h2>Phase 4: Final Outcomes</h2>
+                    <span class="toggle-icon" aria-hidden="true">▼</span>
+                </div>
+                <div class="section-content" id="phase4-outcomes-content">
+                    <div class="section-inner">
+
+                <div class="grade" id="gradeDisplay">B+</div>
+                <p style="text-align: center; color: var(--color-neutral-600); margin-bottom: 32px;" id="gradeDescription">
+                    Your strategy achieved solid growth while maintaining institutional credibility.
+                </p>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h4>Final Revenue Growth</h4>
+                        <div class="value" id="finalRevenue">+15%</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Authenticity Score</h4>
+                        <div class="value" id="finalAuthenticity">72</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Traditionalist Satisfaction</h4>
+                        <div class="value" id="finalTraditionalist">68</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Growth Advocate Satisfaction</h4>
+                        <div class="value" id="finalGrowth">75</div>
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" onclick="toggleSection('phase4-analysis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSection('phase4-analysis');}" tabindex="0" role="button" aria-expanded="false" aria-controls="phase4-analysis-content">
+                    <h2>Impact Analysis & Risk Assessment</h2>
+                    <span class="toggle-icon" aria-hidden="true">▼</span>
+                </div>
+                <div class="section-content" id="phase4-analysis-content">
+                    <div class="section-inner">
+
+                <h3>Revenue Trajectory (5 Years)</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+
+                <h3>Impact Analysis</h3>
+                <p style="margin-bottom: 16px; color: var(--color-neutral-600);">Which strategic decisions had the greatest impact on your outcomes:</p>
+                <ul class="impact-list" id="impactList"></ul>
+
+                <h3>Risk Assessment</h3>
+                <div id="riskAssessment"></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToPhase(3)" aria-label="Go back to Phase 3">
+                    Back
+                </button>
+                <button class="btn" onclick="exportToPDF()" aria-label="Export strategy summary to PDF">
+                    Export to PDF
+                </button>
+                <button class="btn" onclick="resetSimulation()" aria-label="Start new simulation">
+                    Start New Simulation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        const state = {
+            currentPhase: 1,
+            propertyType: 'hof',
+            currentState: 'stable',
+            allocations: {
+                experience: 20,
+                digital: 20,
+                audience: 20,
+                revenue: 20,
+                heritage: 20
+            },
+            scenarios: [],
+            metrics: {
+                revenueGrowth: 0,
+                authenticity: 50,
+                traditionalist: 50,
+                growth: 50,
+                balance: 50
+            },
+            revenueHistory: [0]
+        };
+
+        // Scenarios data
+        const scenarios = [
+            {
+                year: 1,
+                text: "The Board wants aggressive VR investment to attract younger audiences. Traditionalists worry this will turn the heritage experience into a theme park. What's your approach?",
+                options: [
+                    {
+                        text: "A) Launch full VR zone with immersive experiences ($5M additional investment)",
+                        impact: { revenue: 8, authenticity: -10, traditionalist: -15, growth: 20 }
+                    },
+                    {
+                        text: "B) Pilot conservative VR program focused on archival access ($1M investment)",
+                        impact: { revenue: 3, authenticity: 5, traditionalist: 10, growth: -5 }
+                    },
+                    {
+                        text: "C) Delay VR decision, focus on core experience improvements first",
+                        impact: { revenue: -2, authenticity: 8, traditionalist: 15, growth: -15 }
+                    }
+                ]
+            },
+            {
+                year: 2,
+                text: "Economic downturn forces a 15% budget cut across all initiatives. Which strategic priority do you protect?",
+                options: [
+                    {
+                        text: "A) Cut Heritage Preservation to maintain growth initiatives",
+                        impact: { revenue: 5, authenticity: -15, traditionalist: -25, growth: 15 }
+                    },
+                    {
+                        text: "B) Cut Digital Transformation to preserve heritage investments",
+                        impact: { revenue: -8, authenticity: 10, traditionalist: 20, growth: -20 }
+                    },
+                    {
+                        text: "C) Spread cuts equally across all categories (3% each)",
+                        impact: { revenue: -3, authenticity: 0, traditionalist: 5, growth: -5 }
+                    }
+                ]
+            },
+            {
+                year: 3,
+                text: "A tech company opens a competing interactive sports museum with cutting-edge technology but no authentic artifacts. How do you differentiate?",
+                options: [
+                    {
+                        text: "A) Double down on authenticity—unique artifacts, intimate storytelling, curator-led tours",
+                        impact: { revenue: 2, authenticity: 15, traditionalist: 20, growth: -10 }
+                    },
+                    {
+                        text: "B) Match their technology—heavy investment in interactive digital experiences",
+                        impact: { revenue: 10, authenticity: -12, traditionalist: -15, growth: 18 }
+                    },
+                    {
+                        text: "C) Hybrid approach—technology that enhances (not replaces) authentic artifacts",
+                        impact: { revenue: 6, authenticity: 8, traditionalist: 5, growth: 8 }
+                    }
+                ]
+            },
+            {
+                year: 4,
+                text: "International expansion opportunity emerges: a Middle East partner wants to license your brand for $8M over 3 years. Heritage purists see this as commercialization.",
+                options: [
+                    {
+                        text: "A) Accept full partnership—prioritize international revenue and global brand reach",
+                        impact: { revenue: 12, authenticity: -8, traditionalist: -18, growth: 22 }
+                    },
+                    {
+                        text: "B) Decline partnership—stay focused on domestic heritage mission",
+                        impact: { revenue: -3, authenticity: 10, traditionalist: 18, growth: -15 }
+                    },
+                    {
+                        text: "C) Limited pilot—traveling exhibit only, maintain brand control",
+                        impact: { revenue: 5, authenticity: 3, traditionalist: 0, growth: 5 }
+                    }
+                ]
+            },
+            {
+                year: 5,
+                text: "Crisis: Heritage preservation fund is depleting faster than expected. Major artifact restoration needed. You must choose:",
+                options: [
+                    {
+                        text: "A) Increase ticket prices 20% to fund heritage preservation",
+                        impact: { revenue: -5, authenticity: 12, traditionalist: 15, growth: -12 }
+                    },
+                    {
+                        text: "B) Reduce curatorial spending, focus on revenue-generating experiences",
+                        impact: { revenue: 8, authenticity: -15, traditionalist: -20, growth: 15 }
+                    },
+                    {
+                        text: "C) Launch emergency donor campaign with heritage matching fund",
+                        impact: { revenue: 3, authenticity: 10, traditionalist: 12, growth: 0 }
+                    }
+                ]
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBudgetDisplay();
+            initializeSliders();
+        });
+
+        function initializeSliders() {
+            const sliders = ['experience', 'digital', 'audience', 'revenue', 'heritage'];
+            sliders.forEach(category => {
+                const slider = document.getElementById(`${category}Slider`);
+                slider.addEventListener('input', (e) => {
+                    state.allocations[category] = parseInt(e.target.value);
+                    updateBudgetDisplay();
+                    updateDashboard();
+                });
+            });
+        }
+
+        function updateBudgetDisplay() {
+            const total = Object.values(state.allocations).reduce((sum, val) => sum + val, 0);
+            const totalMoney = (total / 100 * 25).toFixed(1);
+
+            // Update percentage displays
+            Object.keys(state.allocations).forEach(category => {
+                document.getElementById(`${category}Value`).textContent = `${state.allocations[category]}%`;
+                document.getElementById(`${category}Dollar`).textContent = `$${(state.allocations[category] / 100 * 25).toFixed(1)}M`;
+            });
+
+            // Update total
+            const totalElement = document.getElementById('totalBudget');
+            const isValid = total === 100 && state.allocations.heritage >= 20;
+
+            if (total === 100) {
+                totalElement.className = 'budget-item total success';
+                totalElement.querySelector('span:last-child').textContent = `$${totalMoney}M (${total}%)`;
+            } else {
+                totalElement.className = 'budget-item total error';
+                totalElement.querySelector('span:last-child').textContent = `$${totalMoney}M (${total}%) - Must equal 100%`;
+            }
+
+            // Validation message
+            const validationDiv = document.getElementById('budgetValidation');
+            if (!isValid) {
+                if (total !== 100) {
+                    validationDiv.innerHTML = '<div class="validation-message error" role="alert">Budget must total exactly 100%. Currently at ' + total + '%.</div>';
+                } else if (state.allocations.heritage < 20) {
+                    validationDiv.innerHTML = '<div class="validation-message error" role="alert">Heritage Preservation must be at least 20%.</div>';
+                }
+                document.getElementById('continueToScenarios').disabled = true;
+            } else {
+                validationDiv.innerHTML = '<div class="validation-message success" role="status">Budget allocation valid! Ready to proceed.</div>';
+                document.getElementById('continueToScenarios').disabled = false;
+            }
+        }
+
+        function updateDashboard() {
+            // Calculate metrics based on allocations
+            const metrics = calculateMetrics();
+
+            // Update all dashboard displays
+            updateMetricDisplay('revenueGrowth', metrics.revenueGrowth, '%', 'revenueBar');
+            updateMetricDisplay('authenticityScore', metrics.authenticity, '', 'authenticityBar');
+            updateMetricDisplay('traditionalistScore', metrics.traditionalist, '', 'traditionalistBar');
+            updateMetricDisplay('growthScore', metrics.growth, '', 'growthBar');
+            updateMetricDisplay('balanceScore', metrics.balance, '', 'balanceBar');
+        }
+
+        function calculateMetrics() {
+            const { experience, digital, audience, revenue, heritage } = state.allocations;
+
+            // Revenue growth calculation
+            const innovationScore = (experience + digital + audience + revenue) / 4;
+            let revenueGrowth = Math.round(innovationScore * 0.4);
+
+            // State modifier
+            if (state.currentState === 'declining') revenueGrowth -= 5;
+            if (state.currentState === 'crisis') revenueGrowth -= 10;
+
+            // Authenticity score (heritage investment is key)
+            const authenticityScore = Math.min(100, Math.round(heritage * 1.2 + (100 - innovationScore) * 0.3));
+
+            // Traditionalist satisfaction (likes heritage, moderate on innovation)
+            const traditionalistScore = Math.min(100, Math.round(heritage * 1.5 + (50 - innovationScore) * 0.5));
+
+            // Growth advocate satisfaction (likes innovation)
+            const growthScore = Math.min(100, Math.round(innovationScore * 1.2 + (50 - heritage) * 0.3));
+
+            // Balance score (rewards balanced approach)
+            const balanceScore = 100 - Math.abs(traditionalistScore - growthScore);
+
+            state.metrics = {
+                revenueGrowth,
+                authenticity: Math.max(0, authenticityScore),
+                traditionalist: Math.max(0, traditionalistScore),
+                growth: Math.max(0, growthScore),
+                balance: Math.max(0, balanceScore)
+            };
+
+            return state.metrics;
+        }
+
+        function updateMetricDisplay(metricId, value, suffix = '', barId) {
+            const displayValue = suffix === '%' ? `+${value}${suffix}` : value;
+            document.getElementById(metricId).textContent = displayValue;
+
+            if (barId) {
+                const bar = document.getElementById(barId);
+                const percentage = suffix === '%' ? Math.min(100, Math.max(0, value * 2.5)) : value;
+                bar.style.width = percentage + '%';
+
+                // Color coding
+                bar.className = 'metric-bar-fill';
+                if (percentage >= 70) bar.classList.add('high');
+                else if (percentage >= 40) bar.classList.add('medium');
+                else bar.classList.add('low');
+            }
+        }
+
+        function startPhase2() {
+            state.propertyType = document.querySelector('input[name="propertyType"]:checked').value;
+            state.currentState = document.querySelector('input[name="currentState"]:checked').value;
+            goToPhase(2);
+            updateDashboard();
+        }
+
+        function startPhase3() {
+            goToPhase(3);
+            renderScenarios();
+            updateLiveDashboard();
+        }
+
+        function renderScenarios() {
+            const container = document.getElementById('scenariosContainer');
+            container.innerHTML = '';
+
+            scenarios.forEach((scenario, index) => {
+                const scenarioCard = document.createElement('div');
+                scenarioCard.className = 'scenario-card';
+                scenarioCard.id = `scenario-${index}`;
+
+                scenarioCard.innerHTML = `
+                    <div class="scenario-year">Year ${scenario.year}</div>
+                    <div class="scenario-text">${scenario.text}</div>
+                    <div class="scenario-options">
+                        ${scenario.options.map((option, optIndex) => `
+                            <div class="scenario-choice" onclick="selectScenario(${index}, ${optIndex})"
+                                 role="button" tabindex="0"
+                                 onkeypress="if(event.key==='Enter') selectScenario(${index}, ${optIndex})"
+                                 aria-label="${option.text}">
+                                ${option.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.appendChild(scenarioCard);
+            });
+        }
+
+        function selectScenario(scenarioIndex, optionIndex) {
+            // Clear previous selections for this scenario
+            const scenarioCard = document.getElementById(`scenario-${scenarioIndex}`);
+            scenarioCard.querySelectorAll('.scenario-choice').forEach(choice => {
+                choice.classList.remove('selected');
+            });
+
+            // Mark selected
+            scenarioCard.querySelectorAll('.scenario-choice')[optionIndex].classList.add('selected');
+
+            // Store choice
+            state.scenarios[scenarioIndex] = {
+                scenarioIndex,
+                optionIndex,
+                impact: scenarios[scenarioIndex].options[optionIndex].impact
+            };
+
+            // Apply impact to metrics
+            applyScenarioImpact(scenarios[scenarioIndex].options[optionIndex].impact);
+            updateLiveDashboard();
+
+            // Enable continue button if all scenarios answered
+            if (state.scenarios.length === scenarios.length) {
+                document.getElementById('continueToResults').disabled = false;
+            }
+
+            // Announce to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = `Year ${scenarios[scenarioIndex].year} decision recorded. Dashboard metrics updated.`;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        function applyScenarioImpact(impact) {
+            state.metrics.revenueGrowth += impact.revenue;
+            state.metrics.authenticity = Math.max(0, Math.min(100, state.metrics.authenticity + impact.authenticity));
+            state.metrics.traditionalist = Math.max(0, Math.min(100, state.metrics.traditionalist + impact.traditionalist));
+            state.metrics.growth = Math.max(0, Math.min(100, state.metrics.growth + impact.growth));
+
+            // Track revenue history
+            state.revenueHistory.push(state.metrics.revenueGrowth);
+        }
+
+        function updateLiveDashboard() {
+            updateMetricDisplay('revenueGrowthLive', state.metrics.revenueGrowth, '%', 'revenueBarLive');
+            updateMetricDisplay('authenticityScoreLive', state.metrics.authenticity, '', 'authenticityBarLive');
+            updateMetricDisplay('traditionalistScoreLive', state.metrics.traditionalist, '', 'traditionalistBarLive');
+            updateMetricDisplay('growthScoreLive', state.metrics.growth, '', 'growthBarLive');
+        }
+
+        function startPhase4() {
+            goToPhase(4);
+            calculateFinalResults();
+        }
+
+        function calculateFinalResults() {
+            // Calculate final grade
+            const avgScore = (
+                (state.metrics.revenueGrowth * 2) + // Revenue weighted higher
+                state.metrics.authenticity +
+                state.metrics.traditionalist +
+                state.metrics.growth +
+                state.metrics.balance
+            ) / 6;
+
+            let grade, gradeClass, description;
+            if (avgScore >= 90) {
+                grade = 'A+';
+                gradeClass = 'a-plus';
+                description = 'Outstanding transformation strategy! You achieved exceptional growth while strengthening institutional authenticity.';
+            } else if (avgScore >= 80) {
+                grade = 'A';
+                gradeClass = 'a';
+                description = 'Excellent transformation strategy. Strong balance between innovation and heritage preservation.';
+            } else if (avgScore >= 70) {
+                grade = 'B';
+                gradeClass = 'b';
+                description = 'Good transformation strategy. Solid growth achieved with manageable stakeholder tensions.';
+            } else if (avgScore >= 60) {
+                grade = 'C';
+                gradeClass = 'c';
+                description = 'Acceptable transformation strategy. Some growth achieved but significant stakeholder concerns remain.';
+            } else if (avgScore >= 50) {
+                grade = 'D';
+                gradeClass = 'd';
+                description = 'Weak transformation strategy. Limited growth or significant authenticity/stakeholder issues.';
+            } else {
+                grade = 'F';
+                gradeClass = 'f';
+                description = 'Failed transformation strategy. Strategy not viable—either no growth or institutional credibility lost.';
+            }
+
+            // Display grade
+            const gradeDisplay = document.getElementById('gradeDisplay');
+            gradeDisplay.textContent = grade;
+            gradeDisplay.className = `grade ${gradeClass}`;
+            document.getElementById('gradeDescription').textContent = description;
+
+            // Display final metrics
+            document.getElementById('finalRevenue').textContent = `+${state.metrics.revenueGrowth}%`;
+            document.getElementById('finalAuthenticity').textContent = state.metrics.authenticity;
+            document.getElementById('finalTraditionalist').textContent = state.metrics.traditionalist;
+            document.getElementById('finalGrowth').textContent = state.metrics.growth;
+
+            // Render revenue chart
+            renderRevenueChart();
+
+            // Generate impact analysis
+            generateImpactAnalysis();
+
+            // Generate risk assessment
+            generateRiskAssessment();
+        }
+
+        function renderRevenueChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                    datasets: [{
+                        label: 'Revenue Growth %',
+                        data: state.revenueHistory,
+                        borderColor: '#171717',
+                        backgroundColor: 'rgba(23, 23, 23, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Revenue Growth %'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateImpactAnalysis() {
+            const impacts = [];
+
+            // Budget allocation impacts
+            if (state.allocations.heritage >= 35) {
+                impacts.push({
+                    title: 'High Heritage Investment',
+                    description: 'Your substantial heritage preservation budget maintained institutional credibility and traditionalist support.'
+                });
+            }
+            if (state.allocations.experience >= 30) {
+                impacts.push({
+                    title: 'Experience Innovation Focus',
+                    description: 'Heavy investment in immersive experiences drove visitor engagement and revenue growth.'
+                });
+            }
+            if (state.allocations.digital >= 25) {
+                impacts.push({
+                    title: 'Digital Transformation',
+                    description: 'Digital investments expanded reach beyond physical visitors and created new revenue streams.'
+                });
+            }
+
+            // Scenario decision impacts
+            state.scenarios.forEach((choice, index) => {
+                const impact = choice.impact;
+                if (Math.abs(impact.revenue) >= 8 || Math.abs(impact.authenticity) >= 10) {
+                    impacts.push({
+                        title: `Year ${index + 1} Decision`,
+                        description: scenarios[index].options[choice.optionIndex].text.substring(0, 80) + '...'
+                    });
+                }
+            });
+
+            const impactList = document.getElementById('impactList');
+            impactList.innerHTML = impacts.slice(0, 5).map(impact => `
+                <li>
+                    <strong>${impact.title}</strong>
+                    ${impact.description}
+                </li>
+            `).join('');
+        }
+
+        function generateRiskAssessment() {
+            const risks = [];
+
+            if (state.metrics.authenticity < 50) {
+                risks.push('⚠️ <strong>Critical:</strong> Authenticity score below 50 threatens institutional credibility and long-term brand value.');
+            }
+            if (state.metrics.traditionalist < 40) {
+                risks.push('⚠️ <strong>High Risk:</strong> Traditionalist constituency highly dissatisfied—potential board conflict and donor loss.');
+            }
+            if (state.metrics.growth < 40) {
+                risks.push('⚠️ <strong>High Risk:</strong> Growth advocates frustrated—pressure for leadership change or aggressive pivots.');
+            }
+            if (state.metrics.revenueGrowth < 5) {
+                risks.push('⚠️ <strong>Financial Risk:</strong> Revenue growth insufficient to sustain operations and fund future initiatives.');
+            }
+            if (Math.abs(state.metrics.traditionalist - state.metrics.growth) > 40) {
+                risks.push('⚠️ <strong>Stakeholder Conflict:</strong> Extreme gap between traditionalist and growth satisfaction creates governance crisis.');
+            }
+
+            if (risks.length === 0) {
+                risks.push('✓ <strong>Low Risk:</strong> Strategy is balanced and sustainable with manageable stakeholder tensions.');
+            }
+
+            document.getElementById('riskAssessment').innerHTML = `
+                <ul class="impact-list">
+                    ${risks.map(risk => `<li>${risk}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Title
+            doc.setFontSize(18);
+            doc.text('Heritage Transformation Strategy Summary', 20, 20);
+
+            // Property Info
+            doc.setFontSize(12);
+            doc.text(`Property Type: ${state.propertyType.toUpperCase()}`, 20, 35);
+            doc.text(`Starting State: ${state.currentState.toUpperCase()}`, 20, 42);
+
+            // Budget Allocation
+            doc.setFontSize(14);
+            doc.text('Budget Allocation ($25M)', 20, 55);
+            doc.setFontSize(11);
+            let y = 62;
+            Object.keys(state.allocations).forEach(category => {
+                const label = category.charAt(0).toUpperCase() + category.slice(1);
+                const amount = (state.allocations[category] / 100 * 25).toFixed(1);
+                doc.text(`${label}: ${state.allocations[category]}% ($${amount}M)`, 25, y);
+                y += 7;
+            });
+
+            // Final Metrics
+            doc.setFontSize(14);
+            doc.text('Final Outcomes', 20, y + 10);
+            doc.setFontSize(11);
+            y += 17;
+            doc.text(`Revenue Growth: +${state.metrics.revenueGrowth}%`, 25, y);
+            doc.text(`Authenticity Score: ${state.metrics.authenticity}/100`, 25, y + 7);
+            doc.text(`Traditionalist Satisfaction: ${state.metrics.traditionalist}/100`, 25, y + 14);
+            doc.text(`Growth Advocate Satisfaction: ${state.metrics.growth}/100`, 25, y + 21);
+
+            // Save
+            doc.save('heritage-transformation-strategy.pdf');
+
+            // Announce to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'PDF export complete. File downloaded.';
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 2000);
+        }
+
+        function resetSimulation() {
+            if (confirm('Are you sure you want to start a new simulation? Your current progress will be lost.')) {
+                // Reset state
+                state.currentPhase = 1;
+                state.propertyType = 'hof';
+                state.currentState = 'stable';
+                state.allocations = {
+                    experience: 20,
+                    digital: 20,
+                    audience: 20,
+                    revenue: 20,
+                    heritage: 20
+                };
+                state.scenarios = [];
+                state.metrics = {
+                    revenueGrowth: 0,
+                    authenticity: 50,
+                    traditionalist: 50,
+                    growth: 50,
+                    balance: 50
+                };
+                state.revenueHistory = [0];
+
+                // Reset UI
+                goToPhase(1);
+                updateBudgetDisplay();
+
+                // Reset radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                });
+                document.getElementById('hof').checked = true;
+                document.getElementById('stable').checked = true;
+
+                // Reset sliders
+                Object.keys(state.allocations).forEach(category => {
+                    document.getElementById(`${category}Slider`).value = 20;
+                });
+            }
+        }
+
+        function goToPhase(phaseNumber) {
+            // Hide all phases
+            document.querySelectorAll('.phase').forEach(phase => {
+                phase.classList.remove('active');
+            });
+
+            // Show target phase
+            document.getElementById(`phase${phaseNumber}`).classList.add('active');
+            state.currentPhase = phaseNumber;
+
+            // Update progress bar
+            const progress = (phaseNumber / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressFill').parentElement.setAttribute('aria-valuenow', progress);
+
+            // Update phase indicator
+            document.getElementById('phaseIndicator').textContent = `Phase ${phaseNumber} of 4`;
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Announce phase change to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = `Navigated to Phase ${phaseNumber}`;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            const isExpanded = content.classList.contains('expanded');
+
+            content.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+            header.setAttribute('aria-expanded', !isExpanded);
+        }
+    </script>
+</body>
+</html>

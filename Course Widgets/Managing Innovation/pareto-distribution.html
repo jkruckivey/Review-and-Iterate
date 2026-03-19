@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pareto Distribution — Videogame Industry</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 24px 40px;
+  }
+
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 36px 40px;
+  }
+
+  /* Top stat row */
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-card .number {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--ivey-green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-card .number span {
+    font-size: 1.4rem;
+  }
+
+  .stat-card .label {
+    font-size: 0.82rem;
+    color: var(--light);
+    line-height: 1.4;
+  }
+
+  /* Chart area */
+  .chart-section {
+    margin-bottom: 32px;
+  }
+
+  .chart-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 16px;
+  }
+
+  .chart-container {
+    position: relative;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 28px 20px;
+  }
+
+  .bars-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 180px;
+    margin-bottom: 12px;
+  }
+
+  .bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    transition: opacity 0.2s;
+    position: relative;
+  }
+
+  .bar.hit { background: var(--ivey-green); }
+  .bar.mid { background: var(--pale-sage); }
+  .bar.turkey { background: #dde8e6; }
+
+  .bar-tick {
+    font-size: 0.65rem;
+    color: var(--light);
+    margin-top: 6px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Horizontal axis label */
+  .axis-label {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--light);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.82rem;
+    color: var(--mid);
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Annotation */
+  .annotation {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--pale-purple);
+    border-radius: 6px;
+    padding: 10px 14px;
+    max-width: 180px;
+  }
+
+  .annotation p {
+    font-size: 0.78rem;
+    color: var(--ivey-green);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  /* Two column takeaway */
+  .takeaway-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .takeaway-card {
+    border-radius: 8px;
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+  }
+
+  .takeaway-card.hits {
+    background: #f0f6f5;
+    border-color: var(--pale-sage);
+  }
+
+  .takeaway-card.turkeys {
+    background: white;
+  }
+
+  .takeaway-card .tc-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .takeaway-card.hits .tc-label { color: var(--ivey-green); }
+  .takeaway-card.turkeys .tc-label { color: var(--light); }
+
+  .takeaway-card .tc-stat {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ivey-green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .takeaway-card.turkeys .tc-stat { color: var(--light); }
+
+  .takeaway-card .tc-desc {
+    font-size: 0.85rem;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+
+  /* Insight bar */
+  .insight-bar {
+    background: var(--pale-purple);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .insight-bar .ib-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .insight-bar p {
+    font-size: 0.93rem;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="inf-header">
+    <h1>The Pareto Distribution in Creative Markets</h1>
+    <p>Videogame industry returns, late 1990s to early 2000s</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Stat row -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="number">90<span>%</span></div>
+        <div class="label">of videogame titles failed to make money</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">~10<span>%</span></div>
+        <div class="label">of titles captured the majority of industry profits</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" style="font-size:1.6rem; padding-top:4px;">"Nobody<br>knows<br>anything"</div>
+        <div class="label" style="margin-top:6px;">William Goldman, screenwriter</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-section">
+      <div class="chart-label">Profit distribution across titles (illustrative)</div>
+      <div class="chart-container">
+        <div class="annotation">
+          <p>A small number of hits capture nearly all profits</p>
+        </div>
+        <div class="bars-area" id="barsArea"></div>
+        <div class="axis-label">Titles ranked by profitability (left = highest earners)</div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--ivey-green);"></div>
+            <span>Hits (few titles, most profit)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--pale-sage);"></div>
+            <span>Modest performers</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background: #dde8e6;"></div>
+            <span>Turkeys (unprofitable)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Takeaway grid -->
+    <div class="takeaway-grid">
+      <div class="takeaway-card hits">
+        <div class="tc-label">The Hits</div>
+        <div class="tc-stat">~10%</div>
+        <div class="tc-desc">A handful of titles generate returns large enough to fund an entire studio. The upside is extraordinary — but access to it is rare.</div>
+      </div>
+      <div class="takeaway-card turkeys">
+        <div class="tc-label">The Turkeys</div>
+        <div class="tc-stat">~90%</div>
+        <div class="tc-desc">The vast majority of titles fail to recoup their production costs. High costs are certain. Profits are not. Most bets lose.</div>
+      </div>
+    </div>
+
+    <!-- Insight bar -->
+    <div class="insight-bar">
+      <div class="ib-label">The implication</div>
+      <p>To survive in a creative market, you need resources enough to place a portfolio of bets. A single bet — or a small number of bets — is most likely to leave you a loser, regardless of how confident you are in your ability to pick winners.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Generate Pareto-shaped bar chart
+  const barsArea = document.getElementById('barsArea');
+  const totalBars = 40;
+
+  for (let i = 0; i < totalBars; i++) {
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+
+    // Pareto curve: steep drop-off
+    let height;
+    if (i < 4) {
+      height = 160 - (i * 18);
+      bar.classList.add('hit');
+    } else if (i < 10) {
+      height = 90 - ((i - 4) * 8);
+      bar.classList.add('mid');
+    } else {
+      height = Math.max(4, 42 - ((i - 10) * 1.3));
+      bar.classList.add('turkey');
+    }
+
+    bar.style.height = height + 'px';
+    group.appendChild(bar);
+    barsArea.appendChild(group);
+  }
+</script>
+
+</body>
+</html>

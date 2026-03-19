@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis ToolPak Setup - Interactive Demo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #171717;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            color: #171717;
+            padding: 24px 32px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #525252;
+        }
+
+        .demo-content {
+            padding: 32px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e5e5;
+            border-radius: 2px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #bfe5e7;
+            transition: width 0.3s ease;
+        }
+
+        .step-counter {
+            text-align: center;
+            font-size: 14px;
+            color: #737373;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .demo-step {
+            display: none;
+        }
+
+        .demo-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #171717;
+            margin-bottom: 16px;
+        }
+
+        .step-description {
+            font-size: 15px;
+            color: #525252;
+            margin-bottom: 24px;
+        }
+
+        .screenshot {
+            border: 2px solid #d4d4d4;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: white;
+        }
+
+        .screenshot-header {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-bottom: 1px solid #d4d4d4;
+            font-size: 12px;
+            color: #737373;
+            font-weight: 500;
+        }
+
+        .screenshot-content {
+            padding: 24px;
+            background: #fafafa;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .menu-item {
+            background: white;
+            border: 1px solid #d4d4d4;
+            border-radius: 6px;
+            padding: 12px 16px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+            border-color: #bfe5e7;
+        }
+
+        .menu-item.highlighted {
+            background: #e8f5f5;
+            border: 2px solid #bfe5e7;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { background: #e8f5f5; }
+            50% { background: #d5eded; }
+        }
+
+        .dialog-box {
+            background: white;
+            border: 2px solid #d4d4d4;
+            border-radius: 8px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dialog-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #171717;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #f5f5f5;
+        }
+
+        .checkbox-item.highlighted {
+            background: #e8f5f5;
+            border: 2px solid #bfe5e7;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d4d4d4;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .checkbox.checked {
+            background: #c0d1cd;
+            border-color: #c0d1cd;
+            color: white;
+        }
+
+        .checkbox.checked::after {
+            content: "✓";
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .dialog-btn {
+            padding: 8px 16px;
+            border: 1px solid #d4d4d4;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .dialog-btn.primary {
+            background: #404040;
+            color: white;
+            border-color: #404040;
+        }
+
+        .dialog-btn.primary.highlighted {
+            animation: pulse-button 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-button {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .callout {
+            background: #f5fafa;
+            border-left: 4px solid #bfe5e7;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: #404040;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .callout-text {
+            color: #525252;
+            font-size: 14px;
+        }
+
+        .callout.success {
+            background: #f0f5f4;
+            border-color: #c0d1cd;
+        }
+
+        .callout.success .callout-title {
+            color: #404040;
+        }
+
+        .callout.success .callout-text {
+            color: #525252;
+        }
+
+        .ribbon-menu {
+            background: white;
+            border: 2px solid #d4d4d4;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .ribbon-tab {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 4px;
+            border-radius: 4px 4px 0 0;
+            background: #f5f5f5;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .ribbon-tab.active {
+            background: white;
+            border: 2px solid #d4d4d4;
+            border-bottom: none;
+        }
+
+        .ribbon-tab.highlighted {
+            background: #e8f5f5;
+            border: 2px solid #bfe5e7;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .ribbon-button {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 1px solid #d4d4d4;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .ribbon-button.highlighted {
+            background: #e8f5f5;
+            border: 2px solid #bfe5e7;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Geist', sans-serif;
+        }
+
+        button:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #404040;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #525252;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #171717;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e5e5e5;
+        }
+
+        .btn-restart {
+            padding: 8px 16px;
+            font-size: 14px;
+            background: transparent;
+            color: #737373;
+            border: 1px solid #d4d4d4;
+        }
+
+        .btn-restart:hover {
+            background: #f5f5f5;
+            color: #171717;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 32px;
+        }
+
+        .completion-message h2 {
+            font-size: 24px;
+            color: #171717;
+            margin-bottom: 12px;
+        }
+
+        .completion-message p {
+            font-size: 15px;
+            color: #525252;
+            margin-bottom: 24px;
+        }
+
+        .key-takeaway {
+            background: #f0f5f4;
+            border: 2px solid #c0d1cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .key-takeaway h3 {
+            color: #404040;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .key-takeaway ul {
+            list-style: none;
+            color: #525252;
+        }
+
+        .key-takeaway li {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .key-takeaway li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #c0d1cd;
+        }
+
+        .numbered-step {
+            display: inline-block;
+            background: #404040;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .demo-content {
+                padding: 20px;
+            }
+
+            .dialog-box {
+                padding: 16px;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" role="main">
+        <div class="header">
+            <h1>Setting Up Analysis ToolPak</h1>
+            <p>Enable Excel's powerful statistical analysis tools in 6 easy steps</p>
+        </div>
+
+        <div class="demo-content">
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="step-counter" id="stepCounter" aria-live="polite">Step 1 of 6</div>
+
+            <!-- Step 1: Introduction -->
+            <div class="demo-step active" data-step="1">
+                <h2 class="step-title">What is Analysis ToolPak?</h2>
+                <p class="step-description">
+                    Analysis ToolPak is a powerful Excel add-in that provides advanced statistical analysis tools like regression, correlation, descriptive statistics, and more.
+                </p>
+
+                <div class="callout">
+                    <div class="callout-title">Why You Need It</div>
+                    <div class="callout-text">
+                        Instead of building complex formulas manually, ToolPak provides one-click access to sophisticated statistical analyses. It's essential for MBA-level data analysis.
+                    </div>
+                </div>
+
+                <div class="callout success">
+                    <div class="callout-title">What You'll Learn</div>
+                    <div class="callout-text">
+                        By the end of this demo, you'll know exactly how to enable Analysis ToolPak in Excel and where to find it after installation.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Open File Menu -->
+            <div class="demo-step" data-step="2">
+                <h2 class="step-title"><span class="numbered-step">1</span>Open the File Menu</h2>
+                <p class="step-description">
+                    Click on the <strong>File</strong> tab in the top-left corner of Excel.
+                </p>
+
+                <div class="screenshot">
+                    <div class="screenshot-header">Excel Ribbon</div>
+                    <div class="screenshot-content">
+                        <div style="width: 100%; max-width: 500px;">
+                            <div class="ribbon-tab highlighted" style="margin-bottom: 16px;">File</div>
+                            <div class="ribbon-tab">Home</div>
+                            <div class="ribbon-tab">Insert</div>
+                            <div class="ribbon-tab">Data</div>
+                            <div class="ribbon-tab">Review</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Where to Look</div>
+                    <div class="callout-text">
+                        The <strong>File</strong> tab is always in the top-left corner, just above the ribbon. It opens the "backstage" view with settings and options.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Click Options -->
+            <div class="demo-step" data-step="3">
+                <h2 class="step-title"><span class="numbered-step">2</span>Navigate to Options</h2>
+                <p class="step-description">
+                    In the File menu (backstage view), click <strong>Options</strong> at the bottom of the left sidebar.
+                </p>
+
+                <div class="screenshot">
+                    <div class="screenshot-header">File Menu</div>
+                    <div class="screenshot-content">
+                        <div style="width: 100%; max-width: 300px; text-align: left;">
+                            <div class="menu-item">Info</div>
+                            <div class="menu-item">New</div>
+                            <div class="menu-item">Open</div>
+                            <div class="menu-item">Save As</div>
+                            <div class="menu-item">Print</div>
+                            <div class="menu-item">Share</div>
+                            <div class="menu-item highlighted">Options</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Note</div>
+                    <div class="callout-text">
+                        <strong>Options</strong> is always at the bottom of the File menu. This is where you configure Excel settings and add-ins.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Select Add-ins -->
+            <div class="demo-step" data-step="4">
+                <h2 class="step-title"><span class="numbered-step">3</span>Open Add-ins Settings</h2>
+                <p class="step-description">
+                    In the Excel Options dialog, click <strong>Add-ins</strong> in the left sidebar.
+                </p>
+
+                <div class="screenshot">
+                    <div class="screenshot-header">Excel Options Dialog</div>
+                    <div class="screenshot-content">
+                        <div class="dialog-box">
+                            <div style="display: flex; gap: 24px;">
+                                <div style="width: 150px; border-right: 1px solid #e5e5e5; padding-right: 16px;">
+                                    <div class="menu-item" style="padding: 8px; margin-bottom: 4px;">General</div>
+                                    <div class="menu-item" style="padding: 8px; margin-bottom: 4px;">Formulas</div>
+                                    <div class="menu-item highlighted" style="padding: 8px; margin-bottom: 4px;">Add-ins</div>
+                                    <div class="menu-item" style="padding: 8px; margin-bottom: 4px;">Advanced</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 13px; color: #737373; padding: 16px;">
+                                        Manage Excel add-ins and COM add-ins
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Enable Analysis ToolPak -->
+            <div class="demo-step" data-step="5">
+                <h2 class="step-title"><span class="numbered-step">4</span>Enable Analysis ToolPak</h2>
+                <p class="step-description">
+                    At the bottom of the Add-ins page, find the <strong>Manage</strong> dropdown, select <strong>Excel Add-ins</strong>, then click <strong>Go...</strong>
+                </p>
+
+                <div class="screenshot">
+                    <div class="screenshot-header">Add-ins Manager</div>
+                    <div class="screenshot-content">
+                        <div class="dialog-box">
+                            <div class="dialog-title">Add-ins</div>
+                            <div class="checkbox-item highlighted">
+                                <div class="checkbox checked"></div>
+                                <div>Analysis ToolPak</div>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox"></div>
+                                <div>Euro Currency Tools</div>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox"></div>
+                                <div>Solver Add-in</div>
+                            </div>
+                            <div class="button-group">
+                                <button class="dialog-btn">Cancel</button>
+                                <button class="dialog-btn primary highlighted">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Action Required</div>
+                    <div class="callout-text">
+                        <strong>Check the box</strong> next to "Analysis ToolPak", then click <strong>OK</strong>. Excel will enable the add-in (this takes just a few seconds).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Find in Data Tab -->
+            <div class="demo-step" data-step="6">
+                <h2 class="step-title"><span class="numbered-step">5</span>Access Analysis ToolPak</h2>
+                <p class="step-description">
+                    Once enabled, you'll find <strong>Data Analysis</strong> in the <strong>Data</strong> tab, in the <strong>Analysis</strong> group on the far right.
+                </p>
+
+                <div class="screenshot">
+                    <div class="screenshot-header">Excel Data Tab</div>
+                    <div class="screenshot-content">
+                        <div class="ribbon-menu" style="width: 100%; max-width: 600px;">
+                            <div style="margin-bottom: 12px;">
+                                <div class="ribbon-tab">Home</div>
+                                <div class="ribbon-tab">Insert</div>
+                                <div class="ribbon-tab active highlighted">Data</div>
+                                <div class="ribbon-tab">Review</div>
+                            </div>
+                            <div style="border-top: 2px solid #d4d4d4; padding-top: 12px; display: flex; justify-content: flex-end;">
+                                <div style="text-align: center;">
+                                    <div class="ribbon-button highlighted">Data Analysis</div>
+                                    <div style="font-size: 11px; color: #737373; margin-top: 4px;">Analysis</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout success">
+                    <div class="callout-title">You're All Set!</div>
+                    <div class="callout-text">
+                        Click <strong>Data Analysis</strong> to see 19 statistical tools including Descriptive Statistics, Correlation, Regression, Histogram, and more.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7: Completion -->
+            <div class="demo-step" data-step="7">
+                <div class="completion-message">
+                    <h2>Analysis ToolPak is Ready! 🎉</h2>
+                    <p>You've successfully enabled Excel's most powerful statistical analysis tools.</p>
+
+                    <div class="key-takeaway">
+                        <h3>Quick Reference:</h3>
+                        <ul>
+                            <li><strong>File → Options → Add-ins</strong></li>
+                            <li><strong>Manage: Excel Add-ins → Go</strong></li>
+                            <li><strong>Check "Analysis ToolPak" → OK</strong></li>
+                            <li><strong>Find it: Data tab → Analysis group → Data Analysis</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="callout">
+                        <div class="callout-title">Most-Used Tools</div>
+                        <div class="callout-text">
+                            <strong>Descriptive Statistics</strong> (mean, median, mode, SD), <strong>Correlation</strong> (relationships between variables), <strong>Regression</strong> (predictive modeling), and <strong>Histogram</strong> (data distribution).
+                        </div>
+                    </div>
+
+                    <div class="callout success">
+                        <div class="callout-title">Try It Now</div>
+                        <div class="callout-text">
+                            Open Excel and follow these steps to enable Analysis ToolPak on your own computer. Once installed, it stays enabled permanently.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="controls">
+                <button class="btn-restart" id="restartBtn" onclick="restartDemo()" aria-label="Restart demo from beginning">
+                    ↻ Restart
+                </button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-secondary" id="prevBtn" onclick="previousStep()" disabled aria-label="Go to previous step">
+                        ← Previous
+                    </button>
+                    <button class="btn-primary" id="nextBtn" onclick="nextStep()" aria-label="Go to next step">
+                        Next →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 7;
+
+        function updateUI() {
+            document.querySelectorAll('.demo-step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
+
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.querySelector('.progress-bar').setAttribute('aria-valuenow', progress);
+
+            document.getElementById('stepCounter').textContent = `Step ${currentStep} of ${totalSteps}`;
+
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentStep === totalSteps) {
+                nextBtn.textContent = '✓ Complete';
+                nextBtn.onclick = restartDemo;
+            } else {
+                nextBtn.textContent = 'Next →';
+                nextBtn.onclick = nextStep;
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+                document.querySelector('.demo-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+                document.querySelector('.demo-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function restartDemo() {
+            currentStep = 1;
+            updateUI();
+            document.querySelector('.demo-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentStep < totalSteps) {
+                nextStep();
+            } else if (e.key === 'ArrowLeft' && currentStep > 1) {
+                previousStep();
+            }
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>

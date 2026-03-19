@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Position Matcher - Strategy Course Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+
+            /* Accent Colors (Subtle Palette) */
+            --color-turquoise: #bfe5e7;
+            --color-sage: #c0d1cd;
+            --color-purple: #d5cae0;
+            --color-sand: #f0ede0;
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+
+            /* Border radius */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        *:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-800);
+            line-height: 1.6;
+            padding: 1.5rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        /* Context box */
+        .context-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-neutral-800);
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .context-box strong {
+            color: var(--color-neutral-900);
+        }
+
+        /* Instruction banner */
+        .instruction-banner {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            transition: all 0.3s ease;
+        }
+
+        .instruction-banner.selecting {
+            background: var(--color-turquoise);
+            border-color: var(--color-accent-dark);
+            color: var(--color-neutral-800);
+        }
+
+        .instruction-banner strong { color: var(--color-neutral-900); }
+
+        /* Company pool */
+        .company-pool {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .pool-header h2 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+        }
+
+        .progress-badge {
+            background: var(--color-neutral-100);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-neutral-600);
+        }
+
+        .companies-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 50px;
+        }
+
+        .company-chip {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            cursor: grab;
+            transition: all 0.2s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .company-chip:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-100);
+        }
+
+        .company-chip.selected {
+            border-color: var(--color-accent-dark);
+            background: var(--color-turquoise);
+        }
+
+        .company-chip.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .chip-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--color-neutral-900);
+        }
+
+        .chip-industry {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Position buckets */
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .position-bucket {
+            background: white;
+            border: 2px dashed var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            min-height: 250px;
+            transition: all 0.2s;
+        }
+
+        .position-bucket.drag-over {
+            border-color: var(--color-accent-dark);
+            border-style: solid;
+            background: var(--color-neutral-50);
+        }
+
+        .position-bucket.highlight {
+            border-color: var(--color-neutral-500);
+            border-style: solid;
+        }
+
+        .bucket-header {
+            text-align: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .bucket-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .bucket-description {
+            font-size: 0.75rem;
+            color: var(--color-neutral-600);
+        }
+
+        .bucket-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .placed-item {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: grab;
+        }
+
+        .placed-item:hover { background: var(--color-neutral-50); }
+
+        .placed-item.correct {
+            background: var(--color-success-light);
+            border-color: var(--color-success);
+        }
+
+        .placed-item.incorrect {
+            background: var(--color-error-light);
+            border-color: var(--color-error);
+        }
+
+        .placed-item-name {
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: var(--color-neutral-900);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--color-neutral-400);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 0.25rem;
+            line-height: 1;
+        }
+
+        .remove-btn:hover { color: var(--color-neutral-600); }
+
+        .status-icon {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-icon.correct { color: var(--color-success); }
+        .status-icon.incorrect { color: var(--color-error); }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background: var(--color-neutral-800);
+            color: white;
+            border: 1px solid var(--color-neutral-800);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Geist', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--color-neutral-900);
+            border-color: var(--color-neutral-900);
+        }
+
+        .btn:disabled {
+            background: var(--color-neutral-300);
+            border-color: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-700);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+            border-color: var(--color-neutral-300);
+        }
+
+        /* Feedback panel */
+        .feedback-panel {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            display: none;
+        }
+
+        .feedback-panel.show { display: block; }
+
+        .score-summary {
+            text-align: center;
+            padding: 1.25rem;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1rem;
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-message {
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .feedback-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+        .feedback-item {
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius-sm);
+            border-left: 3px solid var(--color-neutral-300);
+            background: white;
+        }
+
+        .feedback-item.correct { border-left-color: var(--color-sage); }
+        .feedback-item.incorrect { border-left-color: var(--color-error); }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .feedback-company {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-neutral-900);
+        }
+
+        .feedback-text {
+            font-size: 0.8rem;
+            color: var(--color-neutral-700);
+            line-height: 1.5;
+        }
+
+        .feedback-text strong {
+            color: var(--color-neutral-900);
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .position-grid { grid-template-columns: 1fr; }
+            .position-bucket { min-height: 120px; }
+            h1 { font-size: 1.25rem; }
+            .company-chip { padding: 0.4rem 0.6rem; }
+            .chip-name { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Strategic Position Matcher</h1>
+            <p class="subtitle">Match companies to their strategic positions on the productivity frontier</p>
+        </header>
+
+        <div class="context-box">
+            <p><strong>Your task:</strong> Place each company in the strategic position that best describes their competitive approach. Consider their pricing strategy, target market, and how they create value for customers.</p>
+        </div>
+
+        <div class="instruction-banner" id="instruction-banner">
+            <strong>Drag</strong> companies to a position bucket, or <strong>click</strong> a company then click a bucket
+        </div>
+
+        <div class="company-pool">
+            <div class="pool-header">
+                <h2>Companies to Position</h2>
+                <span class="progress-badge" id="progress-badge">0 / 10 placed</span>
+            </div>
+            <div class="companies-container" id="companies-container" role="list" aria-label="Companies to place">
+            </div>
+        </div>
+
+        <div class="position-grid">
+            <div class="position-bucket" data-position="high-end" id="bucket-high-end">
+                <div class="bucket-header">
+                    <div class="bucket-title">High-End / Differentiator</div>
+                    <div class="bucket-description">Premium price, superior performance</div>
+                </div>
+                <div class="bucket-items" id="items-high-end"></div>
+            </div>
+
+            <div class="position-bucket" data-position="mid-market" id="bucket-mid-market">
+                <div class="bucket-header">
+                    <div class="bucket-title">Mid-Market / Broad Appeal</div>
+                    <div class="bucket-description">Balanced value for mainstream</div>
+                </div>
+                <div class="bucket-items" id="items-mid-market"></div>
+            </div>
+
+            <div class="position-bucket" data-position="price-sensitive" id="bucket-price-sensitive">
+                <div class="bucket-header">
+                    <div class="bucket-title">Price-Sensitive / Cost Leader</div>
+                    <div class="bucket-description">Low price through efficiency</div>
+                </div>
+                <div class="bucket-items" id="items-price-sensitive"></div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn" id="check-btn" onclick="checkAnswers()" disabled>Check Answers</button>
+            <button class="btn btn-secondary" onclick="resetWidget()">Reset</button>
+        </div>
+
+        <div class="feedback-panel" id="feedback-panel">
+            <div class="score-summary" id="score-summary"></div>
+            <div class="feedback-list" id="feedback-list"></div>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcer"></div>
+
+    <script>
+        const companies = [
+            { id: 1, name: "Four Seasons Hotels", industry: "Hospitality", position: "high-end", explanation: "Four Seasons competes on exceptional service, luxury amenities, and premium locations. Customers pay significantly higher prices for superior experiences." },
+            { id: 2, name: "Motel 6", industry: "Hospitality", position: "price-sensitive", explanation: "Motel 6 focuses on basic, clean accommodations at the lowest price. Their slogan 'We'll leave the light on for you' emphasizes simplicity and value." },
+            { id: 3, name: "Rolex", industry: "Watches", position: "high-end", explanation: "Rolex competes on craftsmanship, brand prestige, and status symbol value. Customers pay premium prices for luxury and exclusivity." },
+            { id: 4, name: "Walmart", industry: "Retail", position: "price-sensitive", explanation: "Walmart's strategy is 'Everyday Low Prices' achieved through operational efficiency, massive scale, and supply chain optimization." },
+            { id: 5, name: "Olive Garden", industry: "Restaurants", position: "mid-market", explanation: "Olive Garden offers moderate prices with decent quality Italian-American food, appealing to families and mainstream diners." },
+            { id: 6, name: "Ritz-Carlton", industry: "Hospitality", position: "high-end", explanation: "Ritz-Carlton's motto is 'We are ladies and gentlemen serving ladies and gentlemen.' They compete on personalized luxury service." },
+            { id: 7, name: "Southwest Airlines", industry: "Airlines", position: "price-sensitive", explanation: "Southwest focuses on low fares through point-to-point routes, single aircraft type, and no-frills service." },
+            { id: 8, name: "Toyota Camry", industry: "Automobiles", position: "mid-market", explanation: "Camry balances reliability, fuel efficiency, and features at moderate prices, targeting mainstream car buyers." },
+            { id: 9, name: "Tesla Model S", industry: "Automobiles", position: "high-end", explanation: "Tesla Model S competes on cutting-edge electric technology, performance, and brand innovation at premium prices." },
+            { id: 10, name: "IKEA", industry: "Furniture", position: "price-sensitive", explanation: "IKEA keeps costs low through flat-pack design, self-service model, and efficient manufacturing." }
+        ];
+
+        let selectedCompany = null;
+        let placements = {}; // { companyId: position }
+        let checked = false;
+
+        function init() {
+            const container = document.getElementById('companies-container');
+            const shuffled = [...companies].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(company => {
+                const chip = createCompanyChip(company);
+                container.appendChild(chip);
+            });
+
+            // Setup bucket drop zones
+            document.querySelectorAll('.position-bucket').forEach(bucket => {
+                bucket.addEventListener('dragover', handleDragOver);
+                bucket.addEventListener('dragleave', handleDragLeave);
+                bucket.addEventListener('drop', handleDrop);
+                bucket.addEventListener('click', handleBucketClick);
+            });
+        }
+
+        function createCompanyChip(company, inBucket = false) {
+            const chip = document.createElement('div');
+            chip.className = inBucket ? 'placed-item' : 'company-chip';
+            chip.dataset.companyId = company.id;
+            chip.draggable = true;
+            chip.tabIndex = 0;
+            chip.setAttribute('role', 'listitem');
+            chip.setAttribute('aria-label', `${company.name}, ${company.industry}`);
+
+            if (inBucket) {
+                chip.innerHTML = `
+                    <span class="placed-item-name">${company.name}</span>
+                    <button class="remove-btn" onclick="removeFromBucket(${company.id})" aria-label="Remove ${company.name}">×</button>
+                `;
+            } else {
+                chip.innerHTML = `
+                    <span class="chip-name">${company.name}</span>
+                    <span class="chip-industry">${company.industry}</span>
+                `;
+            }
+
+            chip.addEventListener('dragstart', handleDragStart);
+            chip.addEventListener('dragend', handleDragEnd);
+            chip.addEventListener('click', (e) => handleChipClick(e, company));
+            chip.addEventListener('keydown', (e) => handleChipKeydown(e, company));
+
+            return chip;
+        }
+
+        function handleChipClick(e, company) {
+            if (checked) return;
+            e.stopPropagation();
+
+            // If clicking a placed item, just select it for moving
+            const isPlaced = placements[company.id] !== undefined;
+
+            // Deselect previous
+            document.querySelectorAll('.company-chip.selected, .placed-item.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Select this one
+            const el = document.querySelector(`[data-company-id="${company.id}"]`);
+            el.classList.add('selected');
+            selectedCompany = company;
+
+            // Update instruction
+            updateInstruction(`<strong>${company.name}</strong> selected. Click a position bucket to place it.`);
+
+            // Highlight buckets
+            document.querySelectorAll('.position-bucket').forEach(b => b.classList.add('highlight'));
+        }
+
+        function handleChipKeydown(e, company) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleChipClick(e, company);
+            }
+        }
+
+        function handleBucketClick(e) {
+            if (checked || !selectedCompany) return;
+
+            const bucket = e.currentTarget;
+            const position = bucket.dataset.position;
+            placeCompany(selectedCompany.id, position);
+        }
+
+        function handleDragStart(e) {
+            if (checked) { e.preventDefault(); return; }
+            const companyId = parseInt(e.target.dataset.companyId);
+            e.dataTransfer.setData('text/plain', companyId);
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            document.querySelectorAll('.position-bucket').forEach(b => b.classList.remove('drag-over'));
+        }
+
+        function handleDragOver(e) {
+            if (checked) return;
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (checked) return;
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            const companyId = parseInt(e.dataTransfer.getData('text/plain'));
+            const position = e.currentTarget.dataset.position;
+            placeCompany(companyId, position);
+        }
+
+        function placeCompany(companyId, position) {
+            const company = companies.find(c => c.id === companyId);
+
+            // Remove from previous location
+            removeFromBucket(companyId, false);
+
+            // Add to new bucket
+            placements[companyId] = position;
+            const itemsContainer = document.getElementById(`items-${position}`);
+            const placedItem = createCompanyChip(company, true);
+            itemsContainer.appendChild(placedItem);
+
+            // Clear selection
+            clearSelection();
+            updateProgress();
+            announce(`${company.name} placed in ${formatPosition(position)}`);
+        }
+
+        function removeFromBucket(companyId, announce_removal = true) {
+            const company = companies.find(c => c.id === companyId);
+
+            // Remove from DOM (could be in pool or bucket)
+            const existing = document.querySelector(`[data-company-id="${companyId}"]`);
+            if (existing) existing.remove();
+
+            // Remove from placements
+            delete placements[companyId];
+
+            // Add back to pool if it was placed
+            const pool = document.getElementById('companies-container');
+            const chip = createCompanyChip(company, false);
+            pool.appendChild(chip);
+
+            clearSelection();
+            updateProgress();
+            if (announce_removal) announce(`${company.name} returned to company pool`);
+        }
+
+        function clearSelection() {
+            selectedCompany = null;
+            document.querySelectorAll('.company-chip.selected, .placed-item.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelectorAll('.position-bucket').forEach(b => b.classList.remove('highlight'));
+            updateInstruction('<strong>Drag</strong> companies to a position bucket, or <strong>click</strong> a company then click a bucket');
+        }
+
+        function updateInstruction(html) {
+            const banner = document.getElementById('instruction-banner');
+            banner.innerHTML = html;
+            banner.classList.toggle('selecting', selectedCompany !== null);
+        }
+
+        function updateProgress() {
+            const placed = Object.keys(placements).length;
+            document.getElementById('progress-badge').textContent = `${placed} / 10 placed`;
+            document.getElementById('check-btn').disabled = placed < 10;
+        }
+
+        function formatPosition(pos) {
+            const names = {
+                'high-end': 'High-End',
+                'mid-market': 'Mid-Market',
+                'price-sensitive': 'Price-Sensitive'
+            };
+            return names[pos] || pos;
+        }
+
+        function checkAnswers() {
+            checked = true;
+            let correct = 0;
+            const feedbackList = document.getElementById('feedback-list');
+            feedbackList.innerHTML = '';
+
+            companies.forEach(company => {
+                const placed = placements[company.id];
+                const isCorrect = placed === company.position;
+                if (isCorrect) correct++;
+
+                // Update item visual
+                const item = document.querySelector(`[data-company-id="${company.id}"]`);
+                if (item) {
+                    item.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    item.draggable = false;
+                    // Replace remove button with status icon
+                    const removeBtn = item.querySelector('.remove-btn');
+                    if (removeBtn) {
+                        removeBtn.outerHTML = `<span class="status-icon ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓' : '✗'}</span>`;
+                    }
+                }
+
+                // Create feedback item
+                const feedbackItem = document.createElement('div');
+                feedbackItem.className = `feedback-item ${isCorrect ? 'correct' : 'incorrect'}`;
+
+                let feedbackHTML = `
+                    <div class="feedback-header">
+                        <span class="feedback-company">${company.name}</span>
+                        <span class="status-icon ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓' : '✗'}</span>
+                    </div>
+                `;
+
+                if (!isCorrect) {
+                    feedbackHTML += `<div class="feedback-text"><strong>Your answer:</strong> ${formatPosition(placed)}<br><strong>Correct:</strong> ${formatPosition(company.position)}</div>`;
+                }
+                feedbackHTML += `<div class="feedback-text">${company.explanation}</div>`;
+
+                feedbackItem.innerHTML = feedbackHTML;
+                feedbackList.appendChild(feedbackItem);
+            });
+
+            // Score summary
+            const pct = (correct / 10) * 100;
+            let message = '';
+            if (pct === 100) message = 'Perfect! You have a strong grasp of strategic positioning.';
+            else if (pct >= 70) message = 'Well done! Review the explanations to strengthen your understanding.';
+            else if (pct >= 50) message = 'Good effort! Study the distinctions between positions.';
+            else message = 'Keep learning! Strategic positioning has subtle nuances.';
+
+            document.getElementById('score-summary').innerHTML = `
+                <div class="score-number">${correct} / 10</div>
+                <div class="score-message">${message}</div>
+            `;
+
+            document.getElementById('feedback-panel').classList.add('show');
+            document.getElementById('check-btn').disabled = true;
+            updateInstruction('Review your results below. Click <strong>Reset</strong> to try again.');
+            announce(`Results: ${correct} out of 10 correct. ${message}`);
+        }
+
+        function resetWidget() {
+            checked = false;
+            placements = {};
+            selectedCompany = null;
+
+            // Clear buckets
+            document.querySelectorAll('.bucket-items').forEach(b => b.innerHTML = '');
+
+            // Reset pool
+            document.getElementById('companies-container').innerHTML = '';
+
+            // Reinitialize
+            init();
+
+            // Reset UI
+            document.getElementById('feedback-panel').classList.remove('show');
+            document.getElementById('check-btn').disabled = true;
+            updateProgress();
+            clearSelection();
+            announce('Widget reset. Start placing companies.');
+        }
+
+        function announce(message) {
+            const announcer = document.getElementById('announcer');
+            announcer.textContent = message;
+            setTimeout(() => announcer.textContent = '', 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

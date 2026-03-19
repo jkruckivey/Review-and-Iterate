@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Excel Fundamentals</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --color-neutral-900: #171717;
+            --color-neutral-700: #404040;
+            --color-neutral-600: #525252;
+            --color-neutral-500: #737373;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-200: #dddddd;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-50: #f7f7f7;
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #bfe5e7;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .question-header {
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .code-snippet {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--color-neutral-900);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 2px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option-label code {
+            background: var(--color-neutral-100);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .check-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .check-btn:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .check-btn:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #171717;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #171717;
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .next-btn {
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .next-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .completion {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .completion h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .completion .score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin: 24px 0;
+        }
+
+        .completion p {
+            font-size: 1.05rem;
+            color: var(--color-neutral-600);
+            line-height: 1.7;
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
+
+        .restart-btn {
+            padding: 14px 32px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Knowledge Check</h1>
+            <p>Excel Fundamentals - 5 Questions</p>
+        </div>
+
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div id="questionContainer"></div>
+        <div id="completionScreen" class="hidden"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                number: 1,
+                text: "What is the correct formula to calculate total revenue if price is in B2 and quantity is in C2?",
+                options: [
+                    { letter: 'A', text: '<code>B2 * C2</code>', isCorrect: false },
+                    { letter: 'B', text: '<code>=B2 * C2</code>', isCorrect: true },
+                    { letter: 'C', text: '<code>SUM(B2, C2)</code>', isCorrect: false },
+                    { letter: 'D', text: '<code>=B2 + C2</code>', isCorrect: false }
+                ],
+                feedback: {
+                    correct: "All Excel formulas must start with <code>=</code>. Multiplication uses the <code>*</code> operator.",
+                    incorrect: "Remember: All Excel formulas must start with <code>=</code>. Multiplication uses the <code>*</code> operator, not addition or SUM."
+                }
+            },
+            {
+                number: 2,
+                text: "You have a tax rate in cell B1 (7%) that applies to 100 transactions in column D. What reference type should you use for B1 when writing the formula in E2?",
+                options: [
+                    { letter: 'A', text: 'Relative reference: <code>B1</code>', isCorrect: false },
+                    { letter: 'B', text: 'Absolute reference: <code>$B$1</code>', isCorrect: true },
+                    { letter: 'C', text: 'Mixed reference: <code>$B1</code>', isCorrect: false },
+                    { letter: 'D', text: 'No reference needed', isCorrect: false }
+                ],
+                feedback: {
+                    correct: "Use absolute references ($B$1) when you want the reference to stay locked when copying the formula down. The tax rate should remain constant for all transactions.",
+                    incorrect: "Use absolute references ($B$1) when you want the reference to stay locked when copying the formula down. Relative references would change to B2, B3, etc., which is incorrect for a constant tax rate."
+                }
+            },
+            {
+                number: 3,
+                text: 'Which IF statement correctly assigns "Pass" for scores ≥70 and "Fail" for scores <70?',
+                options: [
+                    { letter: 'A', text: '<code>=IF(A1>=70, "Pass", "Fail")</code>', isCorrect: true },
+                    { letter: 'B', text: '<code>=IF(A1>70, "Pass", "Fail")</code>', isCorrect: false },
+                    { letter: 'C', text: '<code>=IF("Pass", A1>=70, "Fail")</code>', isCorrect: false },
+                    { letter: 'D', text: '<code>=IF(A1=70, "Pass", "Fail")</code>', isCorrect: false }
+                ],
+                feedback: {
+                    correct: "The logical test comes first, followed by value_if_true, then value_if_false. Use <code>>=</code> to include 70 as passing.",
+                    incorrect: "The syntax is <code>=IF(logical_test, value_if_true, value_if_false)</code>. Use <code>>=</code> (greater than or equal to) to include 70 as a passing score."
+                }
+            },
+            {
+                number: 4,
+                text: "Which chart type is BEST for showing how monthly website traffic changed over the past year?",
+                options: [
+                    { letter: 'A', text: 'Pie chart', isCorrect: false },
+                    { letter: 'B', text: 'Column chart', isCorrect: false },
+                    { letter: 'C', text: 'Line chart', isCorrect: true },
+                    { letter: 'D', text: 'Scatter plot', isCorrect: false }
+                ],
+                feedback: {
+                    correct: "Line charts are ideal for showing trends over time. Each data point represents a month, and the line helps visualize the trajectory.",
+                    incorrect: "Line charts are best for trends over time. Pie charts show parts of a whole, column charts compare categories, and scatter plots show relationships between two variables."
+                }
+            },
+            {
+                number: 5,
+                text: "You want to extract the first 5 characters from a product code in cell A2. Which function should you use?",
+                options: [
+                    { letter: 'A', text: '<code>=RIGHT(A2, 5)</code>', isCorrect: false },
+                    { letter: 'B', text: '<code>=LEFT(A2, 5)</code>', isCorrect: true },
+                    { letter: 'C', text: '<code>=MID(A2, 5)</code>', isCorrect: false },
+                    { letter: 'D', text: '<code>=EXTRACT(A2, 5)</code>', isCorrect: false }
+                ],
+                feedback: {
+                    correct: "LEFT extracts characters from the left side. RIGHT extracts from the right. MID extracts from the middle at a specified position.",
+                    incorrect: "LEFT extracts characters from the left side, RIGHT from the right, and MID from the middle. EXTRACT is not a valid Excel function."
+                }
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        function renderQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('questionContainer');
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Question ${question.number} of ${questions.length}</div>
+
+                    <div class="question-text">${question.text}</div>
+
+                    <div class="options" id="optionsContainer" role="radiogroup">
+                        ${question.options.map((opt, idx) => `
+                            <label class="option" data-index="${idx}">
+                                <input type="radio" name="answer" value="${idx}"
+                                       aria-label="Option ${opt.letter}: ${opt.text.replace(/<[^>]*>/g, '')}">
+                                <span class="option-label"><strong>${opt.letter})</strong> ${opt.text}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+
+                    <button class="check-btn" id="checkBtn" disabled>Check Answer</button>
+                    <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+                </div>
+            `;
+
+            answered = false;
+            updateProgress();
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            const options = document.querySelectorAll('.option');
+            const radios = document.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById('checkBtn');
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = document.querySelector(`.option[data-index="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            checkBtn.addEventListener('click', checkAnswer);
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+
+            const selectedValue = document.querySelector('input[name="answer"]:checked')?.value;
+            if (!selectedValue) return;
+
+            answered = true;
+            const selectedIndex = parseInt(selectedValue);
+            const question = questions[currentQuestion];
+            const isCorrect = question.options[selectedIndex].isCorrect;
+
+            if (isCorrect) score++;
+
+            const options = document.querySelectorAll('.option');
+            const checkBtn = document.getElementById('checkBtn');
+            const feedback = document.getElementById('feedback');
+
+            options.forEach((option, idx) => {
+                option.classList.add('disabled');
+                option.style.pointerEvents = 'none';
+
+                if (question.options[idx].isCorrect) {
+                    option.classList.add('correct');
+                } else if (idx === selectedIndex && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'} show`;
+            feedback.innerHTML = `
+                <strong>${isCorrect ? '✓ Correct!' : '✗ Not quite'}</strong>
+                ${isCorrect ? question.feedback.correct : question.feedback.incorrect}
+                ${currentQuestion < questions.length - 1
+                    ? '<button class="next-btn" onclick="nextQuestion()">Next Question →</button>'
+                    : '<button class="next-btn" onclick="showCompletion()">See Results →</button>'
+                }
+            `;
+
+            checkBtn.disabled = true;
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuestion(currentQuestion);
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / questions.length) * 100);
+            const container = document.getElementById('questionContainer');
+            const completion = document.getElementById('completionScreen');
+
+            container.classList.add('hidden');
+            completion.classList.remove('hidden');
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect score! You have mastered Excel fundamentals and are ready to apply these skills in your assessments.';
+            } else if (percentage >= 80) {
+                message = 'Great work! You have a strong understanding of Excel fundamentals. Review any missed questions to solidify your knowledge.';
+            } else if (percentage >= 60) {
+                message = 'Good effort! Review the concepts you missed, especially cell references and formula syntax, before moving forward.';
+            } else {
+                message = 'Consider reviewing the module content before proceeding. Excel fundamentals are essential for success in this course.';
+            }
+
+            completion.innerHTML = `
+                <div class="completion">
+                    <h2>Knowledge Check Complete!</h2>
+                    <div class="score">${score}/${questions.length}</div>
+                    <p>${message}</p>
+                    <button class="restart-btn" onclick="restart()">Review Questions</button>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('questionContainer').classList.remove('hidden');
+            document.getElementById('completionScreen').classList.add('hidden');
+            renderQuestion(0);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + (answered ? 1 : 0)) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.querySelector('.progress-bar').setAttribute('aria-valuenow', progress);
+        }
+
+        // Initialize
+        renderQuestion(0);
+    </script>
+</body>
+</html>

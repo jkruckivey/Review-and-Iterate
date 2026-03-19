@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Functions Practice Verification</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            --color-neutral-900: #171717;
+            --color-neutral-700: #404040;
+            --color-neutral-600: #525252;
+            --color-neutral-500: #737373;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-50: #fafafa;
+            --color-correct: #034638;
+            --color-correct-bg: #d4e8e3;
+            --color-incorrect: #f59e0b;
+            --color-incorrect-bg: #fef3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-neutral-900);
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            display: none;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .scenario {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-neutral-900);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .scenario h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .scenario p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .scenario ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 8px 0 0 0;
+        }
+
+        .scenario li {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            padding-left: 16px;
+            position: relative;
+            margin-bottom: 4px;
+        }
+
+        .scenario li:before {
+            content: "\2192";
+            position: absolute;
+            left: 0;
+            color: var(--color-neutral-500);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Geist', -apple-system, sans-serif;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-neutral-900);
+            outline-offset: 2px;
+        }
+
+        .btn-check {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-check:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: var(--color-neutral-900);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-next.show {
+            display: block;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #022f28;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #78350f;
+        }
+
+        .feedback h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .results-details {
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .results-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid var(--color-correct);
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid var(--color-incorrect);
+        }
+
+        .result-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-retry {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 14px 32px;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-neutral-700);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Functions Practice Verification</h1>
+            <p>Final Knowledge Check - 4 Questions</p>
+        </div>
+
+        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card active" data-question="1">
+            <div class="question-number">Question 1 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario: BizFlow Subscription Service</h3>
+                <ul>
+                    <li>Fixed costs: $8,000/month</li>
+                    <li>Variable cost: $15 per subscription</li>
+                </ul>
+            </div>
+
+            <div class="question-text">
+                Which function correctly represents their total cost C for x subscriptions?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label"><strong>A)</strong> C(x) = 15x</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label"><strong>B)</strong> C(x) = 8000x + 15</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label"><strong>C)</strong> C(x) = 8000 + 15x</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label"><strong>D)</strong> C(x) = 8000 - 15x</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn1" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn1">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" data-question="2">
+            <div class="question-number">Question 2 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario: BizFlow Break-Even Analysis</h3>
+                <ul>
+                    <li>Revenue function: R(x) = 50x - 0.05x\u00b2</li>
+                    <li>Cost function: C(x) = 8000 + 15x</li>
+                </ul>
+            </div>
+
+            <div class="question-text">
+                At approximately what quantity do they break even (where R(x) = C(x))?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label"><strong>A)</strong> x = 160 subscriptions</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label"><strong>B)</strong> x = 320 subscriptions (first break-even)</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label"><strong>C)</strong> x = 700 subscriptions</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label"><strong>D)</strong> There is no break-even point</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn2" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn2">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Question 3 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario: BizFlow Profit Optimization</h3>
+                <p>Profit function: P(x) = -0.05x\u00b2 + 35x - 8000</p>
+            </div>
+
+            <div class="question-text">
+                What quantity maximizes their profit?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label"><strong>A)</strong> x = 175 subscriptions</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label"><strong>B)</strong> x = 350 subscriptions</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label"><strong>C)</strong> x = 500 subscriptions</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label"><strong>D)</strong> x = 700 subscriptions</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn3" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn3">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Question 4 of 4</div>
+
+            <div class="scenario">
+                <h3>Scenario: Maximum Profit Calculation</h3>
+                <p>At the optimal quantity of 350 subscriptions, using P(x) = -0.05x\u00b2 + 35x - 8000</p>
+            </div>
+
+            <div class="question-text">
+                What is BizFlow's maximum profit?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label"><strong>A)</strong> $1,125</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label"><strong>B)</strong> $2,125</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label"><strong>C)</strong> $3,125</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label"><strong>D)</strong> $4,125</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn4" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn4">View Results</button>
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-score" id="scoreDisplay">0/4</div>
+            <div class="results-message" id="resultsMessage"></div>
+
+            <div class="results-details">
+                <h3>Your Answers:</h3>
+                <div id="resultsList"></div>
+            </div>
+
+            <button class="btn btn-retry" onclick="location.reload()">Retry Knowledge Check</button>
+        </div>
+    </div>
+
+    <script>
+        const totalQuestions = 4;
+        let answers = {};
+        let results = {};
+
+        const questions = [
+            {
+                num: 1,
+                correct: 'c',
+                correctFeedback: 'Total Cost = Fixed Costs + (Variable Cost \u00d7 Quantity). The $8,000 is fixed (doesn\'t change with subscriptions), and $15 is added for each subscription: C(x) = 8000 + 15x.',
+                incorrectFeedback: 'Total Cost = Fixed Costs + (Variable Cost \u00d7 Quantity). The $8,000 is fixed (doesn\'t change with subscriptions), and $15 is added for each subscription: C(x) = 8000 + 15x.',
+                title: 'Cost Function'
+            },
+            {
+                num: 2,
+                correct: 'b',
+                correctFeedback: 'Break-even occurs where Revenue = Cost. Solving the quadratic equation -0.05x\u00b2 + 35x - 8000 = 0 gives two break-even points\u2014the business is profitable between these quantities. The first break-even is around 320 subscriptions.',
+                incorrectFeedback: 'Break-even occurs where Revenue = Cost. Set 50x - 0.05x\u00b2 = 8000 + 15x, then solve -0.05x\u00b2 + 35x - 8000 = 0. This gives two break-even points, with the first around 320 subscriptions.',
+                title: 'Break-Even Analysis'
+            },
+            {
+                num: 3,
+                correct: 'b',
+                correctFeedback: 'The vertex of a parabola occurs at x = -b/(2a) = -35/(2\u00d7-0.05) = -35/-0.1 = 350 subscriptions. This is where profit reaches its maximum.',
+                incorrectFeedback: 'The vertex of a parabola occurs at x = -b/(2a) = -35/(2\u00d7-0.05) = -35/-0.1 = 350 subscriptions. This is where profit reaches its maximum.',
+                title: 'Profit Optimization'
+            },
+            {
+                num: 4,
+                correct: 'b',
+                correctFeedback: 'P(350) = -0.05(350)\u00b2 + 35(350) - 8000 = -6125 + 12250 - 8000 = $2,125. This is the maximum profit BizFlow can achieve.',
+                incorrectFeedback: 'P(350) = -0.05(350)\u00b2 + 35(350) - 8000 = -6125 + 12250 - 8000 = $2,125. This is the maximum profit BizFlow can achieve.',
+                title: 'Maximum Profit'
+            }
+        ];
+
+        function updateProgress() {
+            const progress = (Object.keys(answers).length / totalQuestions) * 100;
+            const progressBar = document.getElementById('progressFill');
+            progressBar.style.width = progress + '%';
+            progressBar.parentElement.setAttribute('aria-valuenow', progress);
+        }
+
+        questions.forEach(q => {
+            const questionNum = q.num;
+            const card = document.querySelector(`.question-card[data-question="${questionNum}"]`);
+            const options = card.querySelectorAll('.option');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById(`checkBtn${questionNum}`);
+            const nextBtn = document.getElementById(`nextBtn${questionNum}`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const optionsContainer = card.querySelector('.options');
+            const correctAnswer = optionsContainer.dataset.correct;
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = card.querySelector(`.option[data-value="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            checkBtn.addEventListener('click', () => {
+                const selectedValue = card.querySelector(`input[name="q${questionNum}"]:checked`)?.value;
+                if (!selectedValue) return;
+
+                const isCorrect = selectedValue === correctAnswer;
+                answers[questionNum] = selectedValue;
+                results[questionNum] = isCorrect;
+
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    option.style.pointerEvents = 'none';
+
+                    if (value === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (value === selectedValue && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (isCorrect) {
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = `<h3>\u2713 Correct!</h3><p>${q.correctFeedback}</p>`;
+                } else {
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `<h3>\u2717 Not quite</h3><p>${q.incorrectFeedback}</p>`;
+                }
+
+                checkBtn.style.display = 'none';
+                nextBtn.classList.add('show');
+                updateProgress();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (questionNum < totalQuestions) {
+                    card.classList.remove('active');
+                    const nextCard = document.querySelector(`.question-card[data-question="${questionNum + 1}"]`);
+                    nextCard.classList.add('active');
+                } else {
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const correctCount = Object.values(results).filter(r => r === true).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalQuestions}`;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You\'re ready for the Final Assessment.';
+            } else if (percentage >= 75) {
+                message = 'Great work! You have a strong grasp of function concepts.';
+            } else if (percentage >= 50) {
+                message = 'Good effort! Review the BizFlow case before the Final Assessment.';
+            } else {
+                message = 'Keep practicing! Return to the guided practice for more support.';
+            }
+            document.getElementById('resultsMessage').textContent = message;
+
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = questions.map(q => {
+                const isCorrect = results[q.num];
+                const icon = isCorrect ? '\u2713' : '\u2717';
+                const className = isCorrect ? 'correct' : 'incorrect';
+                return `
+                    <div class="result-item ${className}">
+                        <span class="result-icon">${icon}</span>
+                        <span>Question ${q.num}: ${q.title}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsScreen').classList.add('show');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

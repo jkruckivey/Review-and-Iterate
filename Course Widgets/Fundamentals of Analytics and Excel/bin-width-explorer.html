@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin Width Explorer - Histogram Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-green: #c0d1cd;
+            --color-green-dark: #7a9985;
+            --color-purple: #d5cae0;
+            --color-turquoise: #bfe5e7;
+            --color-sand: #f0ede0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .widget-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.95rem;
+        }
+
+        .scenario-box {
+            background: var(--color-sand);
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-box p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-section {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-card {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .control-card h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .bin-slider-container {
+            margin-bottom: 1rem;
+        }
+
+        .bin-slider-container label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bin-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: var(--color-neutral-200);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .bin-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--color-green-dark);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .bin-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .bin-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--color-green-dark);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .bin-slider:focus {
+            outline: 2px solid var(--color-green-dark);
+            outline-offset: 2px;
+        }
+
+        .bin-value {
+            min-width: 50px;
+            padding: 0.35rem 0.5rem;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--color-neutral-800);
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .preset-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--color-neutral-300);
+            background: white;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-neutral-700);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            background: var(--color-neutral-100);
+            border-color: var(--color-neutral-400);
+        }
+
+        .preset-btn:focus {
+            outline: 2px solid var(--color-green-dark);
+            outline-offset: 2px;
+        }
+
+        .preset-btn.active {
+            background: var(--color-green);
+            border-color: var(--color-green-dark);
+            color: var(--color-neutral-800);
+        }
+
+        .stats-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+        }
+
+        .insight-box {
+            background: var(--color-turquoise);
+            border: 1px solid #9dd5d8;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .insight-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .insight-box p {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+            line-height: 1.5;
+        }
+
+        .insight-box.warning {
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+
+        .insight-box.success {
+            background: var(--color-green);
+            border-color: var(--color-green-dark);
+        }
+
+        .key-concepts {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+        }
+
+        .key-concepts h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-800);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .concept-item {
+            text-align: center;
+        }
+
+        .concept-item .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .concept-item .description {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-section {
+                order: -1;
+            }
+
+            .concept-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container">
+        <div class="header">
+            <h2>Bin Width Explorer</h2>
+            <p>See how changing bin width affects histogram shape and interpretation</p>
+        </div>
+
+        <div class="scenario-box">
+            <h3>Dataset: Customer Order Values</h3>
+            <p>This histogram shows 200 customer orders from an e-commerce store. The same data can look very different depending on how you group it into bins. Use the slider to explore how bin width changes your interpretation of the distribution.</p>
+        </div>
+
+        <div class="main-content">
+            <div class="chart-section">
+                <div class="chart-container">
+                    <canvas id="histogramChart" aria-label="Histogram showing customer order value distribution"></canvas>
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <div class="control-card">
+                    <h4>Bin Width Control</h4>
+                    <div class="bin-slider-container">
+                        <label for="binSlider">Adjust bin width:</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="binSlider" class="bin-slider"
+                                   min="5" max="100" value="25" step="5"
+                                   aria-describedby="binDescription">
+                            <span class="bin-value" id="binValueDisplay">$25</span>
+                        </div>
+                        <span id="binDescription" class="sr-only">Slide to change histogram bin width from $5 to $100</span>
+                    </div>
+                    <div class="preset-buttons" role="group" aria-label="Preset bin widths">
+                        <button class="preset-btn" data-value="5">$5</button>
+                        <button class="preset-btn" data-value="10">$10</button>
+                        <button class="preset-btn active" data-value="25">$25</button>
+                        <button class="preset-btn" data-value="50">$50</button>
+                        <button class="preset-btn" data-value="100">$100</button>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <h4>Current View</h4>
+                    <div class="stats-display">
+                        <div class="stat-item">
+                            <div class="stat-label">Bins</div>
+                            <div class="stat-value" id="binCount">8</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Width</div>
+                            <div class="stat-value" id="binWidth">$25</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Mean</div>
+                            <div class="stat-value">$87</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Std Dev</div>
+                            <div class="stat-value">$42</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box" id="insightBox">
+                    <h4><span aria-hidden="true">&#128161;</span> Insight</h4>
+                    <p id="insightText">This bin width shows a clear right-skewed distribution with most orders between $50-$100.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="key-concepts">
+            <h3>Key Takeaways</h3>
+            <div class="concept-grid">
+                <div class="concept-item">
+                    <div class="label">Too Narrow</div>
+                    <div class="description">Creates noise and makes patterns hard to see. Each bar has few observations.</div>
+                </div>
+                <div class="concept-item">
+                    <div class="label">Just Right</div>
+                    <div class="description">Reveals the true shape of the distribution. Balance detail with clarity.</div>
+                </div>
+                <div class="concept-item">
+                    <div class="label">Too Wide</div>
+                    <div class="description">Hides important patterns. You lose detail about the distribution shape.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcements"></div>
+
+    <script>
+        // Generate realistic e-commerce order data (right-skewed distribution)
+        function generateOrderData() {
+            const data = [];
+            // Most orders are small to medium
+            for (let i = 0; i < 80; i++) {
+                data.push(Math.round(30 + Math.random() * 50)); // $30-$80
+            }
+            for (let i = 0; i < 60; i++) {
+                data.push(Math.round(50 + Math.random() * 60)); // $50-$110
+            }
+            for (let i = 0; i < 35; i++) {
+                data.push(Math.round(80 + Math.random() * 70)); // $80-$150
+            }
+            // Some larger orders
+            for (let i = 0; i < 15; i++) {
+                data.push(Math.round(120 + Math.random() * 80)); // $120-$200
+            }
+            // Few very large orders (outliers)
+            for (let i = 0; i < 10; i++) {
+                data.push(Math.round(180 + Math.random() * 70)); // $180-$250
+            }
+            return data;
+        }
+
+        const orderData = generateOrderData();
+        const dataMin = Math.min(...orderData);
+        const dataMax = Math.max(...orderData);
+        const dataMean = Math.round(orderData.reduce((a, b) => a + b, 0) / orderData.length);
+        const dataStdDev = Math.round(Math.sqrt(orderData.map(x => Math.pow(x - dataMean, 2)).reduce((a, b) => a + b) / orderData.length));
+
+        let chart;
+        const ctx = document.getElementById('histogramChart').getContext('2d');
+
+        function createHistogramData(binWidth) {
+            const bins = [];
+            const counts = [];
+
+            const start = Math.floor(dataMin / binWidth) * binWidth;
+            const end = Math.ceil(dataMax / binWidth) * binWidth;
+
+            for (let i = start; i < end; i += binWidth) {
+                bins.push(`$${i}-$${i + binWidth}`);
+                const count = orderData.filter(x => x >= i && x < i + binWidth).length;
+                counts.push(count);
+            }
+
+            return { bins, counts };
+        }
+
+        function getInsight(binWidth) {
+            if (binWidth <= 10) {
+                return {
+                    text: "With very narrow bins, the histogram appears noisy and jagged. It's hard to see the overall distribution shape. Individual bars may have very few observations, making the pattern unreliable.",
+                    class: "warning"
+                };
+            } else if (binWidth <= 30) {
+                return {
+                    text: "This bin width reveals a clear right-skewed distribution. Most customers place orders between $50-$100, with a tail of larger orders extending to $200+. This is typical for e-commerce data.",
+                    class: "success"
+                };
+            } else if (binWidth <= 60) {
+                return {
+                    text: "The distribution shape is still visible, but you're starting to lose detail. The right skew is less apparent, and you can't distinguish between the peak around $50-$80 vs $80-$110.",
+                    class: ""
+                };
+            } else {
+                return {
+                    text: "With very wide bins, you've lost important information. The histogram looks almost uniform, hiding the fact that most orders cluster around $50-$100. Always check if your bins are too wide!",
+                    class: "warning"
+                };
+            }
+        }
+
+        function updateChart(binWidth) {
+            const { bins, counts } = createHistogramData(binWidth);
+
+            if (chart) {
+                chart.data.labels = bins;
+                chart.data.datasets[0].data = counts;
+                chart.update('none');
+            } else {
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: bins,
+                        datasets: [{
+                            label: 'Number of Orders',
+                            data: counts,
+                            backgroundColor: 'rgba(122, 153, 133, 0.7)',
+                            borderColor: 'rgba(122, 153, 133, 1)',
+                            borderWidth: 1,
+                            borderRadius: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(23, 23, 23, 0.9)',
+                                titleFont: { family: 'Geist', size: 13 },
+                                bodyFont: { family: 'Geist', size: 12 },
+                                padding: 10,
+                                cornerRadius: 6,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.raw} orders`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Order Value Range',
+                                    font: { family: 'Geist', size: 12, weight: '500' },
+                                    color: '#525252'
+                                },
+                                ticks: {
+                                    font: { family: 'Geist', size: 10 },
+                                    color: '#737373',
+                                    maxRotation: 45,
+                                    minRotation: 0
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Frequency (Count)',
+                                    font: { family: 'Geist', size: 12, weight: '500' },
+                                    color: '#525252'
+                                },
+                                ticks: {
+                                    font: { family: 'Geist', size: 11 },
+                                    color: '#737373',
+                                    stepSize: 10
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Update stats
+            document.getElementById('binCount').textContent = bins.length;
+            document.getElementById('binWidth').textContent = `$${binWidth}`;
+            document.getElementById('binValueDisplay').textContent = `$${binWidth}`;
+
+            // Update insight
+            const insight = getInsight(binWidth);
+            const insightBox = document.getElementById('insightBox');
+            const insightText = document.getElementById('insightText');
+
+            insightBox.className = 'insight-box ' + insight.class;
+            insightText.textContent = insight.text;
+
+            // Update preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.value) === binWidth);
+            });
+
+            // Announce to screen readers
+            announce(`Bin width set to $${binWidth}. ${bins.length} bins displayed.`);
+        }
+
+        function announce(message) {
+            const announcer = document.getElementById('announcements');
+            announcer.textContent = message;
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+
+        // Event listeners
+        const slider = document.getElementById('binSlider');
+        slider.addEventListener('input', (e) => {
+            updateChart(parseInt(e.target.value));
+        });
+
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = parseInt(btn.dataset.value);
+                slider.value = value;
+                updateChart(value);
+            });
+        });
+
+        // Initialize
+        updateChart(25);
+    </script>
+</body>
+</html>

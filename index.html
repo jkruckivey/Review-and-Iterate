@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivey Online — Widget & Design Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :focus-visible { outline: 2px solid #171717; outline-offset: 2px; }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #171717;
+            min-height: 100vh;
+            padding: 64px 32px;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .header { margin-bottom: 56px; }
+        .header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .header p { color: #525252; font-size: 1rem; line-height: 1.6; }
+
+        .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .tool-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .tool-card:hover {
+            border-color: #a3a3a3;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+
+        .tool-tag {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #737373;
+            margin-bottom: 10px;
+        }
+        .tool-card h2 { font-size: 1.0625rem; font-weight: 600; margin-bottom: 6px; }
+        .tool-card p { font-size: 0.875rem; color: #525252; line-height: 1.55; }
+
+        .tool-card.featured {
+            grid-column: span 2;
+            background: #171717;
+            border-color: #171717;
+            color: white;
+        }
+        .tool-card.featured .tool-tag { color: #a3a3a3; }
+        .tool-card.featured p { color: #a3a3a3; }
+        .tool-card.featured:hover { border-color: #404040; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+
+        .arrow {
+            margin-top: 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #737373;
+        }
+        .tool-card.featured .arrow { color: #737373; }
+
+        @media (max-width: 600px) {
+            .tools { grid-template-columns: 1fr; }
+            .tool-card.featured { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ivey Online Widget Tools</h1>
+            <p>Design resources and widget libraries for the Ivey Online course development team.</p>
+        </div>
+
+        <div class="tools">
+
+            <a href="course-widget-compare.html" class="tool-card featured">
+                <div class="tool-tag">Widget Library</div>
+                <h2>Course Widget Comparison</h2>
+                <p>Browse and compare real widgets from 8 courses side-by-side. Useful for identifying reusable patterns, inconsistencies, and style decisions across disciplines.</p>
+                <div class="arrow">Open tool →</div>
+            </a>
+
+            <a href="widget-gallery.html" class="tool-card">
+                <div class="tool-tag">Design System</div>
+                <h2>Unified Design System</h2>
+                <p>The single source of truth for colors, typography, buttons, feedback states, and interaction standards across all Ivey Online widgets.</p>
+                <div class="arrow">View gallery →</div>
+            </a>
+
+            <a href="widget-showcase.html" class="tool-card">
+                <div class="tool-tag">Style Comparison</div>
+                <h2>Design Style Comparison</h2>
+                <p>Compare visual design options side-by-side — buttons, selection controls, feedback states, inputs, and color palettes — to inform system decisions.</p>
+                <div class="arrow">Compare styles →</div>
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

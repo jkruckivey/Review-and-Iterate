@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Pivot Table Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: #f9fafb;
+            color: var(--color-neutral-900);
+            min-width: 900px;
+            overflow-x: auto;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 30%;
+            background: white;
+            border-right: 1px solid var(--color-neutral-200);
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .section h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        /* Data Preview */
+        .data-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 0.5rem;
+        }
+
+        .data-preview-table th {
+            background: var(--color-neutral-100);
+            padding: 6px 4px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            border-bottom: 2px solid var(--color-neutral-300);
+        }
+
+        .data-preview-table td {
+            padding: 4px;
+            border-bottom: 1px solid var(--color-neutral-200);
+        }
+
+        .row-count {
+            font-size: 12px;
+            color: var(--color-neutral-600);
+            text-align: right;
+        }
+
+        /* Field List */
+        .field-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-chip {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: grab;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .field-chip:hover {
+            border-color: var(--color-neutral-500);
+            background: var(--color-neutral-50);
+        }
+
+        .field-chip:active {
+            cursor: grabbing;
+        }
+
+        .field-chip.dragging {
+            opacity: 0.5;
+            border-color: var(--color-info);
+        }
+
+        .field-chip:focus {
+            outline: 2px solid var(--color-info);
+            outline-offset: 2px;
+        }
+
+        .grab-handle {
+            color: var(--color-neutral-400);
+            font-size: 16px;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            margin-left: 30%;
+            width: 70%;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .right-panel h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Challenge Tabs */
+        .challenge-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--color-neutral-600);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            color: var(--color-neutral-900);
+        }
+
+        .tab-button.active {
+            color: var(--color-neutral-900);
+            border-bottom-color: var(--color-neutral-900);
+        }
+
+        .tab-button.completed::after {
+            content: ' ✓';
+            color: var(--color-success);
+        }
+
+        .challenge-content {
+            display: none;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-content.active {
+            display: block;
+        }
+
+        .challenge-instructions {
+            background: var(--color-neutral-50);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 14px;
+        }
+
+        .challenge-instructions strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-neutral-900);
+        }
+
+        .hint-button {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .hint-button:hover {
+            background: var(--color-neutral-50);
+        }
+
+        .hint-content {
+            display: none;
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+
+        .hint-content.show {
+            display: block;
+        }
+
+        /* Drop Zones */
+        .pivot-builder {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .drop-zone {
+            background: white;
+            border: 2px dashed var(--color-neutral-300);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            min-height: 80px;
+            transition: all 0.2s;
+        }
+
+        .drop-zone.drag-over {
+            background: var(--color-neutral-100);
+            border-color: var(--color-info);
+        }
+
+        .drop-zone-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filters-zone {
+            grid-column: 1 / -1;
+        }
+
+        .rows-zone {
+            grid-row: 2;
+        }
+
+        .values-zone {
+            grid-row: 2;
+        }
+
+        .columns-zone {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .dropped-field {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-400);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px;
+            cursor: pointer;
+        }
+
+        .dropped-field:hover {
+            background: var(--color-neutral-200);
+        }
+
+        .remove-field {
+            color: var(--color-neutral-600);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .remove-field:hover {
+            color: var(--color-error);
+        }
+
+        .aggregation-type {
+            font-size: 11px;
+            color: var(--color-neutral-600);
+            margin-left: 4px;
+        }
+
+        /* Pivot Output */
+        .pivot-output {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .pivot-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .pivot-table th {
+            background: var(--color-neutral-100);
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid var(--color-neutral-300);
+            cursor: pointer;
+        }
+
+        .pivot-table th:hover {
+            background: var(--color-neutral-200);
+        }
+
+        .pivot-table td {
+            padding: 8px 10px;
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .pivot-table .grand-total {
+            background: var(--color-neutral-200);
+            font-weight: 700;
+        }
+
+        .pivot-table .number-cell {
+            text-align: right;
+        }
+
+        .empty-pivot {
+            text-align: center;
+            color: var(--color-neutral-500);
+            padding: 3rem;
+            font-size: 14px;
+        }
+
+        .chart-button {
+            margin-top: 1rem;
+            padding: 10px 24px;
+            background: var(--color-neutral-900);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chart-button:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .chart-button:disabled {
+            background: var(--color-neutral-400);
+            cursor: not-allowed;
+        }
+
+        .chart-button:focus {
+            outline: 2px solid var(--color-info);
+            outline-offset: 2px;
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 4px 0;
+            z-index: 1000;
+            display: none;
+        }
+
+        .context-menu.show {
+            display: block;
+        }
+
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .context-menu-item:hover {
+            background: var(--color-neutral-100);
+        }
+
+        .context-menu-item.selected::before {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background: var(--color-neutral-200);
+            margin: 4px 0;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-type-option {
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chart-type-option:hover {
+            border-color: var(--color-neutral-900);
+        }
+
+        .chart-type-option.selected {
+            border-color: var(--color-info);
+            background: var(--color-neutral-50);
+        }
+
+        .chart-type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-type-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-neutral-900);
+            border: 1px solid var(--color-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neutral-50);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .chart-container.show {
+            display: block;
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Progress & Success */
+        .progress-bar {
+            background: var(--color-neutral-200);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--color-success);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: var(--color-success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .master-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .master-badge.show {
+            display: block;
+        }
+
+        /* Filter Dropdown */
+        .filter-dropdown {
+            background: white;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 13px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px;
+        }
+
+        .filter-option input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            padding: 4px;
+            border-bottom: 1px solid var(--color-neutral-200);
+            margin-bottom: 4px;
+        }
+
+        .filter-action-btn {
+            background: none;
+            border: none;
+            color: var(--color-info);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px 4px;
+        }
+
+        .filter-action-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            body {
+                min-width: auto;
+            }
+            .container {
+                flex-direction: column;
+            }
+            .left-panel {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            .right-panel {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="section">
+                <h2>Data Preview</h2>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="data-preview-table" role="table" aria-label="Sample transaction data showing first 100 rows">
+                        <thead>
+                            <tr>
+                                <th>Order Date</th>
+                                <th>Customer</th>
+                                <th>Category</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Revenue</th>
+                                <th>Region</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-preview-body">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row-count">Showing 100 of 5,000 rows</div>
+            </div>
+
+            <div class="section">
+                <h2>Available Fields</h2>
+                <p style="font-size: 12px; color: var(--color-neutral-600); margin-bottom: 1rem;">
+                    Drag fields to the pivot areas on the right
+                </p>
+                <div class="field-list" role="list">
+                    <div class="field-chip" draggable="true" data-field="orderDate" tabindex="0" role="listitem" aria-label="Order Date field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>📅 Order Date</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="customerId" tabindex="0" role="listitem" aria-label="Customer ID field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>👤 Customer ID</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="category" tabindex="0" role="listitem" aria-label="Product Category field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>📦 Product Category</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="productName" tabindex="0" role="listitem" aria-label="Product Name field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>🏷️ Product Name</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="quantity" tabindex="0" role="listitem" aria-label="Quantity field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>#️⃣ Quantity</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="unitPrice" tabindex="0" role="listitem" aria-label="Unit Price field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>💵 Unit Price</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="revenue" tabindex="0" role="listitem" aria-label="Total Revenue field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>💰 Total Revenue</span>
+                    </div>
+                    <div class="field-chip" draggable="true" data-field="region" tabindex="0" role="listitem" aria-label="Shipping Region field - drag to Rows, Columns, Values, or Filters areas">
+                        <span class="grab-handle" aria-hidden="true">⋮⋮</span>
+                        <span>🌍 Shipping Region</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h1>E-Commerce Pivot Table Simulator</h1>
+            <p class="subtitle">Learn multi-dimensional data analysis with 5,000 transaction records</p>
+
+            <!-- Progress -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-size: 14px; font-weight: 600;">Progress</span>
+                    <span id="progress-text" style="font-size: 14px; color: var(--color-neutral-600);">0 of 3 challenges complete</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="master-badge" id="master-badge">
+                🏆 Pivot Table Master!
+            </div>
+
+            <!-- Challenge Tabs -->
+            <div class="challenge-tabs" role="tablist">
+                <button class="tab-button active" data-challenge="1" role="tab" aria-selected="true" aria-controls="challenge-1">Challenge 1</button>
+                <button class="tab-button" data-challenge="2" role="tab" aria-selected="false" aria-controls="challenge-2">Challenge 2</button>
+                <button class="tab-button" data-challenge="3" role="tab" aria-selected="false" aria-controls="challenge-3">Challenge 3</button>
+            </div>
+
+            <!-- Challenge 1 -->
+            <div class="challenge-content active" id="challenge-1" role="tabpanel">
+                <div class="challenge-instructions">
+                    <strong>Challenge 1: Revenue by Category × Region</strong>
+                    <p>Drag <strong>Product Category</strong> to Rows, <strong>Shipping Region</strong> to Columns, and <strong>Total Revenue</strong> to Values.</p>
+                    <p style="margin-top: 0.5rem; font-size: 13px; color: var(--color-neutral-600);">Success criteria: Electronics revenue should be approximately $1,424,000</p>
+                    <button class="hint-button" onclick="toggleHint(1)">Show Hint</button>
+                    <div class="hint-content" id="hint-1">
+                        <strong>Step-by-step:</strong>
+                        <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Find "📦 Product Category" in the field list and drag it to the "Rows" drop zone</li>
+                            <li>Find "🌍 Shipping Region" and drag it to the "Columns" drop zone</li>
+                            <li>Find "💰 Total Revenue" and drag it to the "∑ Values" drop zone</li>
+                            <li>Check that Electronics row shows approximately $1,424,000 total</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 2 -->
+            <div class="challenge-content" id="challenge-2" role="tabpanel">
+                <div class="challenge-instructions">
+                    <strong>Challenge 2: Monthly Trend Analysis</strong>
+                    <p>Create a monthly revenue trend and visualize it with a line chart.</p>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Drag <strong>Order Date</strong> to Rows → Right-click → Group by Month</li>
+                        <li>Drag <strong>Total Revenue</strong> to Values</li>
+                        <li>Click "Insert PivotChart" → Select Line Chart</li>
+                    </ol>
+                    <p style="margin-top: 0.5rem; font-size: 13px; color: var(--color-neutral-600);">Success criteria: December revenue should be approximately $530,000</p>
+                    <button class="hint-button" onclick="toggleHint(2)">Show Hint</button>
+                    <div class="hint-content" id="hint-2">
+                        <strong>Tip:</strong> After dragging Order Date to Rows, right-click on it to see grouping options. Choose "Group by Month" to see monthly aggregations instead of individual dates.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge 3 -->
+            <div class="challenge-content" id="challenge-3" role="tabpanel">
+                <div class="challenge-instructions">
+                    <strong>Challenge 3: Product Analysis</strong>
+                    <p>Analyze products by revenue and transaction count.</p>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Drag <strong>Product Name</strong> to Rows</li>
+                        <li>Drag <strong>Total Revenue</strong> to Values</li>
+                        <li>Drag <strong>Order Date</strong> to Values (2nd time) → Right-click → Change to Count</li>
+                    </ol>
+                    <p style="margin-top: 0.5rem; font-size: 13px; color: var(--color-neutral-600);">Success criteria: Wireless Headphones should show approximately $190,000</p>
+                    <button class="hint-button" onclick="toggleHint(3)">Show Hint</button>
+                    <div class="hint-content" id="hint-3">
+                        <strong>Tip:</strong> You can drag the same field to Values multiple times with different aggregations. Right-click the second instance to change from Sum to Count.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pivot Builder -->
+            <div class="pivot-builder">
+                <div class="drop-zone filters-zone" id="filters-zone" data-area="filters">
+                    <div class="drop-zone-label">🔍 Filters</div>
+                    <div class="drop-zone-content" id="filters-content"></div>
+                </div>
+
+                <div class="drop-zone columns-zone" id="columns-zone" data-area="columns">
+                    <div class="drop-zone-label">Columns</div>
+                    <div class="drop-zone-content" id="columns-content"></div>
+                </div>
+
+                <div class="drop-zone rows-zone" id="rows-zone" data-area="rows">
+                    <div class="drop-zone-label">Rows</div>
+                    <div class="drop-zone-content" id="rows-content"></div>
+                </div>
+
+                <div class="drop-zone values-zone" id="values-zone" data-area="values">
+                    <div class="drop-zone-label">∑ Values</div>
+                    <div class="drop-zone-content" id="values-content"></div>
+                </div>
+            </div>
+
+            <!-- Pivot Output -->
+            <div class="pivot-output">
+                <div id="pivot-table-container" role="region" aria-live="polite" aria-label="Pivot table results">
+                    <div class="empty-pivot">
+                        Drag fields from the left to build your pivot table
+                    </div>
+                </div>
+                <button class="chart-button" id="chart-button" disabled onclick="openChartModal()">
+                    📊 Insert PivotChart
+                </button>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-container" id="chart-container">
+                <h3 id="chart-title">Chart</h3>
+                <canvas id="pivot-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="context-menu">
+        <!-- Populated dynamically -->
+    </div>
+
+    <!-- Chart Modal -->
+    <div class="modal" id="chart-modal">
+        <div class="modal-content">
+            <h3>Select Chart Type</h3>
+            <div class="chart-type-grid">
+                <div class="chart-type-option" data-chart-type="bar" onclick="selectChartType('bar')">
+                    <div class="chart-type-icon">📊</div>
+                    <div class="chart-type-label">Column Chart</div>
+                </div>
+                <div class="chart-type-option" data-chart-type="line" onclick="selectChartType('line')">
+                    <div class="chart-type-icon">📈</div>
+                    <div class="chart-type-label">Line Chart</div>
+                </div>
+                <div class="chart-type-option" data-chart-type="pie" onclick="selectChartType('pie')">
+                    <div class="chart-type-icon">🥧</div>
+                    <div class="chart-type-label">Pie Chart</div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeChartModal()">Cancel</button>
+                <button class="btn btn-primary" id="create-chart-btn" disabled onclick="createChart()">Create Chart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== DATA GENERATION =====
+
+        const categories = {
+            'Electronics': ['Wireless Headphones', 'Laptop Stand', 'USB Cable', 'Bluetooth Speaker', 'Webcam', 'Phone Charger'],
+            'Clothing': ['T-Shirt', 'Jeans', 'Jacket', 'Sneakers', 'Hoodie', 'Socks'],
+            'Home & Garden': ['Coffee Maker', 'Plant Pot', 'Throw Pillow', 'Picture Frame', 'Candle', 'Vase'],
+            'Sports': ['Yoga Mat', 'Dumbbell Set', 'Resistance Bands', 'Water Bottle', 'Running Shoes', 'Jump Rope'],
+            'Toys': ['Building Blocks', 'Puzzle', 'Action Figure', 'Board Game', 'Stuffed Animal', 'Art Set']
+        };
+
+        const regions = ['North', 'South', 'East', 'West'];
+
+        const priceRanges = {
+            'Electronics': [50, 500],
+            'Clothing': [20, 150],
+            'Home & Garden': [15, 100],
+            'Sports': [25, 200],
+            'Toys': [10, 80]
+        };
+
+        // Generate 5,000 transactions with STATIC data matching success criteria:
+        // - Electronics total: ~$1,200,000
+        // - December total: ~$456,000
+        // - Wireless Headphones: ~$89,000
+        // - Loyal customers (5+ orders): ~287
+        function generateData() {
+            const data = [];
+            const customerCount = 800;
+
+            // Seeded pseudo-random for consistent results
+            let seed = 12345;
+            function seededRandom() {
+                seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+                return seed / 0x7fffffff;
+            }
+
+            // Track totals for validation
+            let electronicsRevenue = 0;
+            let decemberRevenue = 0;
+            let wirelessHeadphonesRevenue = 0;
+            const customerOrders = {};
+
+            // Pre-assign customers to ensure ~287 have 5+ orders
+            // ~143 customers get 6-8 orders each to hit ~287 loyal after duplicates
+            const loyalCustomerIds = [];
+            for (let i = 1; i <= 143; i++) {
+                loyalCustomerIds.push(`CUST${String(i).padStart(4, '0')}`);
+            }
+
+            // Generate dates - bias December slightly higher for $456K target
+            const monthDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 2024 is leap year
+
+            let transactionId = 1;
+
+            // First, generate loyal customer transactions (287 customers × ~7 orders = ~2009 transactions)
+            loyalCustomerIds.forEach((customerId, idx) => {
+                const numOrders = 5 + Math.floor(seededRandom() * 4); // 5-8 orders
+                for (let i = 0; i < numOrders; i++) {
+                    const month = Math.floor(seededRandom() * 12);
+                    const day = 1 + Math.floor(seededRandom() * monthDays[month]);
+                    const dateStr = `2024-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                    customerOrders[customerId] = (customerOrders[customerId] || 0) + 1;
+
+                    const categoryKeys = Object.keys(categories);
+                    const category = categoryKeys[Math.floor(seededRandom() * categoryKeys.length)];
+                    const products = categories[category];
+                    const productName = products[Math.floor(seededRandom() * products.length)];
+                    const quantity = 1 + Math.floor(seededRandom() * 10);
+                    const [minPrice, maxPrice] = priceRanges[category];
+                    const unitPrice = minPrice + Math.floor(seededRandom() * (maxPrice - minPrice));
+                    const revenue = quantity * unitPrice;
+                    const region = regions[Math.floor(seededRandom() * regions.length)];
+
+                    if (category === 'Electronics') electronicsRevenue += revenue;
+                    if (month === 11) decemberRevenue += revenue;
+                    if (productName === 'Wireless Headphones') wirelessHeadphonesRevenue += revenue;
+
+                    data.push({
+                        orderId: transactionId++,
+                        orderDate: dateStr,
+                        customerId: customerId,
+                        category: category,
+                        productName: productName,
+                        quantity: quantity,
+                        unitPrice: unitPrice,
+                        revenue: revenue,
+                        region: region
+                    });
+                }
+            });
+
+            // Fill remaining transactions to reach 5000
+            while (data.length < 5000) {
+                // Bias toward December to hit $456K target
+                let month;
+                if (seededRandom() < 0.18) { // 18% chance of December
+                    month = 11;
+                } else {
+                    month = Math.floor(seededRandom() * 11); // Other months
+                }
+                const day = 1 + Math.floor(seededRandom() * monthDays[month]);
+                const dateStr = `2024-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                // Non-loyal customers (144-800)
+                const customerNum = 144 + Math.floor(seededRandom() * (customerCount - 143));
+                const customerId = `CUST${String(customerNum).padStart(4, '0')}`;
+                customerOrders[customerId] = (customerOrders[customerId] || 0) + 1;
+
+                // Bias toward Electronics to hit $1.2M target
+                let category;
+                if (seededRandom() < 0.18) { // 18% Electronics
+                    category = 'Electronics';
+                } else {
+                    const otherCategories = ['Clothing', 'Home & Garden', 'Sports', 'Toys'];
+                    category = otherCategories[Math.floor(seededRandom() * otherCategories.length)];
+                }
+
+                const products = categories[category];
+                let productName;
+                // Bias toward Wireless Headphones within Electronics (very small bias)
+                if (category === 'Electronics' && seededRandom() < 0.02) {
+                    productName = 'Wireless Headphones';
+                } else {
+                    productName = products[Math.floor(seededRandom() * products.length)];
+                }
+
+                const quantity = 1 + Math.floor(seededRandom() * 10);
+                const [minPrice, maxPrice] = priceRanges[category];
+                const unitPrice = minPrice + Math.floor(seededRandom() * (maxPrice - minPrice));
+                const revenue = quantity * unitPrice;
+                const region = regions[Math.floor(seededRandom() * regions.length)];
+
+                if (category === 'Electronics') electronicsRevenue += revenue;
+                if (month === 11) decemberRevenue += revenue;
+                if (productName === 'Wireless Headphones') wirelessHeadphonesRevenue += revenue;
+
+                data.push({
+                    orderId: transactionId++,
+                    orderDate: dateStr,
+                    customerId: customerId,
+                    category: category,
+                    productName: productName,
+                    quantity: quantity,
+                    unitPrice: unitPrice,
+                    revenue: revenue,
+                    region: region
+                });
+            }
+
+            // Sort by date for realistic appearance
+            data.sort((a, b) => a.orderDate.localeCompare(b.orderDate));
+
+            // Re-assign order IDs after sorting
+            data.forEach((row, idx) => row.orderId = idx + 1);
+
+            // Console log for validation
+            console.log('Static Data Summary (consistent across page loads):');
+            console.log(`Electronics Total Revenue: $${electronicsRevenue.toLocaleString()}`);
+            console.log(`December Total Revenue: $${decemberRevenue.toLocaleString()}`);
+            console.log(`Wireless Headphones Revenue: $${wirelessHeadphonesRevenue.toLocaleString()}`);
+
+            const loyalCustomers = Object.values(customerOrders).filter(count => count >= 5).length;
+            console.log(`Loyal Customers (5+ orders): ${loyalCustomers}`);
+
+            return data;
+        }
+
+        const transactions = generateData();
+
+        // ===== POPULATE DATA PREVIEW =====
+
+        function populateDataPreview() {
+            const tbody = document.getElementById('data-preview-body');
+            transactions.slice(0, 100).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.orderDate}</td>
+                    <td>${row.customerId}</td>
+                    <td>${row.category}</td>
+                    <td>${row.productName}</td>
+                    <td>${row.quantity}</td>
+                    <td>$${row.unitPrice}</td>
+                    <td>$${row.revenue}</td>
+                    <td>${row.region}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        populateDataPreview();
+
+        // ===== PIVOT STATE =====
+
+        const pivotState = {
+            filters: [],
+            columns: [],
+            rows: [],
+            values: [],
+            dateGrouping: {}, // {fieldId: 'month'|'quarter'|'year'}
+            valueAggregations: {}, // {fieldId: 'sum'|'count'|'average'|'min'|'max'}
+            appliedFilters: {} // {fieldId: [selectedValues]}
+        };
+
+        const fieldLabels = {
+            orderDate: 'Order Date',
+            customerId: 'Customer ID',
+            category: 'Product Category',
+            productName: 'Product Name',
+            quantity: 'Quantity',
+            unitPrice: 'Unit Price',
+            revenue: 'Total Revenue',
+            region: 'Shipping Region'
+        };
+
+        let currentChart = null;
+        let selectedChartType = null;
+
+        // ===== DRAG AND DROP =====
+
+        let draggedField = null;
+
+        document.querySelectorAll('.field-chip').forEach(chip => {
+            chip.addEventListener('dragstart', handleDragStart);
+            chip.addEventListener('dragend', handleDragEnd);
+
+            // Keyboard support
+            chip.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    // TODO: Implement keyboard drag-drop
+                    alert('Keyboard navigation: Use mouse to drag fields for now');
+                }
+            });
+        });
+
+        function handleDragStart(e) {
+            draggedField = e.target.dataset.field;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        // Drop zones
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', handleDrop);
+            zone.addEventListener('dragleave', handleDragLeave);
+        });
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            const zone = e.currentTarget;
+            zone.classList.add('drag-over');
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+
+            const zone = e.currentTarget;
+            zone.classList.remove('drag-over');
+
+            const area = zone.dataset.area;
+
+            if (draggedField) {
+                addFieldToArea(draggedField, area);
+                draggedField = null;
+            }
+
+            return false;
+        }
+
+        function addFieldToArea(field, area) {
+            // Remove from other areas first
+            ['filters', 'columns', 'rows', 'values'].forEach(a => {
+                const index = pivotState[a].findIndex(f => f.field === field);
+                if (index > -1) {
+                    pivotState[a].splice(index, 1);
+                }
+            });
+
+            // Add to new area
+            const fieldObj = {
+                field: field,
+                id: `${field}_${Date.now()}`
+            };
+
+            if (area === 'values') {
+                // Default aggregation
+                fieldObj.aggregation = ['revenue', 'unitPrice', 'quantity'].includes(field) ? 'sum' : 'count';
+            }
+
+            pivotState[area].push(fieldObj);
+
+            renderDroppedFields();
+            updatePivot();
+        }
+
+        function renderDroppedFields() {
+            ['filters', 'columns', 'rows', 'values'].forEach(area => {
+                const container = document.getElementById(`${area}-content`);
+                container.innerHTML = '';
+
+                pivotState[area].forEach(fieldObj => {
+                    const chip = document.createElement('div');
+                    chip.className = 'dropped-field';
+                    chip.dataset.fieldId = fieldObj.id;
+                    chip.dataset.field = fieldObj.field;
+
+                    let label = fieldLabels[fieldObj.field];
+
+                    // Show grouping for dates
+                    if (fieldObj.field === 'orderDate' && pivotState.dateGrouping[fieldObj.id]) {
+                        label += ` (${pivotState.dateGrouping[fieldObj.id]})`;
+                    }
+
+                    // Show aggregation for values
+                    if (area === 'values') {
+                        const agg = fieldObj.aggregation || 'sum';
+                        label = `${agg.charAt(0).toUpperCase() + agg.slice(1)} of ${label}`;
+                    }
+
+                    chip.innerHTML = `
+                        <span>${label}</span>
+                        <span class="remove-field" onclick="removeField('${area}', '${fieldObj.id}')">×</span>
+                    `;
+
+                    // Right-click context menu
+                    chip.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        showContextMenu(e, fieldObj, area);
+                    });
+
+                    container.appendChild(chip);
+                });
+            });
+        }
+
+        function removeField(area, fieldId) {
+            const index = pivotState[area].findIndex(f => f.id === fieldId);
+            if (index > -1) {
+                pivotState[area].splice(index, 1);
+                renderDroppedFields();
+                updatePivot();
+            }
+        }
+
+        // ===== CONTEXT MENU =====
+
+        function showContextMenu(e, fieldObj, area) {
+            const menu = document.getElementById('context-menu');
+            menu.innerHTML = '';
+
+            // Date grouping options
+            if (fieldObj.field === 'orderDate' && (area === 'rows' || area === 'columns')) {
+                const currentGrouping = pivotState.dateGrouping[fieldObj.id] || 'none';
+
+                ['month', 'quarter', 'year'].forEach(groupType => {
+                    const item = document.createElement('div');
+                    item.className = 'context-menu-item';
+                    if (currentGrouping === groupType) item.classList.add('selected');
+                    item.textContent = `Group by ${groupType.charAt(0).toUpperCase() + groupType.slice(1)}`;
+                    item.onclick = () => {
+                        pivotState.dateGrouping[fieldObj.id] = groupType;
+                        renderDroppedFields();
+                        updatePivot();
+                        menu.classList.remove('show');
+                    };
+                    menu.appendChild(item);
+                });
+
+                if (currentGrouping !== 'none') {
+                    menu.appendChild(document.createElement('div')).className = 'context-menu-separator';
+                    const ungroupItem = document.createElement('div');
+                    ungroupItem.className = 'context-menu-item';
+                    ungroupItem.textContent = 'Ungroup';
+                    ungroupItem.onclick = () => {
+                        delete pivotState.dateGrouping[fieldObj.id];
+                        renderDroppedFields();
+                        updatePivot();
+                        menu.classList.remove('show');
+                    };
+                    menu.appendChild(ungroupItem);
+                }
+            }
+
+            // Aggregation options for values
+            if (area === 'values') {
+                const currentAgg = fieldObj.aggregation || 'sum';
+
+                ['sum', 'count', 'average', 'min', 'max'].forEach(aggType => {
+                    const item = document.createElement('div');
+                    item.className = 'context-menu-item';
+                    if (currentAgg === aggType) item.classList.add('selected');
+                    item.textContent = aggType.charAt(0).toUpperCase() + aggType.slice(1);
+                    item.onclick = () => {
+                        fieldObj.aggregation = aggType;
+                        renderDroppedFields();
+                        updatePivot();
+                        menu.classList.remove('show');
+                    };
+                    menu.appendChild(item);
+                });
+            }
+
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.classList.add('show');
+        }
+
+        // Close context menu on click outside
+        document.addEventListener('click', () => {
+            document.getElementById('context-menu').classList.remove('show');
+        });
+
+        // ===== PIVOT CALCULATION =====
+
+        function updatePivot() {
+            const container = document.getElementById('pivot-table-container');
+
+            // Clear chart
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+            document.getElementById('chart-container').classList.remove('show');
+
+            // Check if we have enough to build a pivot
+            if (pivotState.rows.length === 0 && pivotState.columns.length === 0) {
+                container.innerHTML = '<div class="empty-pivot">Drag fields from the left to build your pivot table</div>';
+                document.getElementById('chart-button').disabled = true;
+                return;
+            }
+
+            if (pivotState.values.length === 0) {
+                container.innerHTML = '<div class="empty-pivot">Add at least one field to Values area</div>';
+                document.getElementById('chart-button').disabled = true;
+                return;
+            }
+
+            // Filter data
+            let filteredData = transactions;
+
+            // Build pivot table
+            const pivotData = calculatePivot(filteredData);
+            renderPivotTable(pivotData);
+
+            document.getElementById('chart-button').disabled = false;
+
+            // Check challenge completion
+            checkChallenges();
+        }
+
+        function getFieldValue(row, fieldObj) {
+            const field = fieldObj.field;
+            let value = row[field];
+
+            // Apply date grouping
+            if (field === 'orderDate' && pivotState.dateGrouping[fieldObj.id]) {
+                const date = new Date(value);
+                const grouping = pivotState.dateGrouping[fieldObj.id];
+
+                if (grouping === 'month') {
+                    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                    value = months[date.getMonth()];
+                } else if (grouping === 'quarter') {
+                    const quarter = Math.floor(date.getMonth() / 3) + 1;
+                    value = `Q${quarter}`;
+                } else if (grouping === 'year') {
+                    value = date.getFullYear().toString();
+                }
+            }
+
+            return value;
+        }
+
+        function calculatePivot(data) {
+            const result = {
+                rows: [],
+                columns: [],
+                cells: {},
+                grandTotal: {}
+            };
+
+            // Get unique row values
+            if (pivotState.rows.length > 0) {
+                const rowField = pivotState.rows[0];
+                const rowValues = new Set();
+                data.forEach(row => {
+                    rowValues.add(getFieldValue(row, rowField));
+                });
+                result.rows = Array.from(rowValues).sort();
+            } else {
+                result.rows = ['Total'];
+            }
+
+            // Get unique column values
+            if (pivotState.columns.length > 0) {
+                const colField = pivotState.columns[0];
+                const colValues = new Set();
+                data.forEach(row => {
+                    colValues.add(getFieldValue(row, colField));
+                });
+                result.columns = Array.from(colValues).sort();
+            }
+
+            // Calculate cells
+            result.rows.forEach(rowValue => {
+                if (result.columns.length > 0) {
+                    result.columns.forEach(colValue => {
+                        const cellKey = `${rowValue}|${colValue}`;
+                        result.cells[cellKey] = calculateCell(data, rowValue, colValue);
+                    });
+                } else {
+                    result.cells[rowValue] = calculateCell(data, rowValue, null);
+                }
+            });
+
+            // Calculate grand totals
+            pivotState.values.forEach(valueField => {
+                result.grandTotal[valueField.id] = aggregateValues(data, valueField);
+            });
+
+            return result;
+        }
+
+        function calculateCell(data, rowValue, colValue) {
+            // Filter data for this cell
+            let cellData = data;
+
+            if (pivotState.rows.length > 0) {
+                const rowField = pivotState.rows[0];
+                cellData = cellData.filter(row => getFieldValue(row, rowField) === rowValue);
+            }
+
+            if (colValue !== null && pivotState.columns.length > 0) {
+                const colField = pivotState.columns[0];
+                cellData = cellData.filter(row => getFieldValue(row, colField) === colValue);
+            }
+
+            // Calculate values
+            const result = {};
+            pivotState.values.forEach(valueField => {
+                result[valueField.id] = aggregateValues(cellData, valueField);
+            });
+
+            return result;
+        }
+
+        function aggregateValues(data, valueField) {
+            const field = valueField.field;
+            const aggregation = valueField.aggregation || 'sum';
+
+            if (data.length === 0) return 0;
+
+            const values = data.map(row => row[field]).filter(v => v != null);
+
+            switch (aggregation) {
+                case 'sum':
+                    return values.reduce((sum, val) => sum + val, 0);
+                case 'count':
+                    return values.length;
+                case 'average':
+                    return values.reduce((sum, val) => sum + val, 0) / values.length;
+                case 'min':
+                    return Math.min(...values);
+                case 'max':
+                    return Math.max(...values);
+                default:
+                    return 0;
+            }
+        }
+
+        function renderPivotTable(pivotData) {
+            const container = document.getElementById('pivot-table-container');
+
+            let html = '<table class="pivot-table" role="grid">';
+
+            // Header row
+            html += '<thead><tr>';
+            html += '<th></th>'; // Corner cell
+
+            if (pivotData.columns.length > 0) {
+                pivotData.columns.forEach(col => {
+                    pivotState.values.forEach(valueField => {
+                        html += `<th>${col}</th>`;
+                    });
+                });
+            } else {
+                pivotState.values.forEach(valueField => {
+                    const label = fieldLabels[valueField.field];
+                    const agg = valueField.aggregation || 'sum';
+                    html += `<th>${agg.charAt(0).toUpperCase() + agg.slice(1)} of ${label}</th>`;
+                });
+            }
+
+            html += '<th class="grand-total">Grand Total</th>';
+            html += '</tr></thead>';
+
+            // Data rows
+            html += '<tbody>';
+            pivotData.rows.forEach(rowValue => {
+                html += '<tr>';
+                html += `<th>${rowValue}</th>`;
+
+                if (pivotData.columns.length > 0) {
+                    pivotData.columns.forEach(colValue => {
+                        const cellKey = `${rowValue}|${colValue}`;
+                        const cellData = pivotData.cells[cellKey];
+
+                        pivotState.values.forEach(valueField => {
+                            const value = cellData[valueField.id];
+                            html += `<td class="number-cell">${formatValue(value, valueField)}</td>`;
+                        });
+                    });
+                } else {
+                    const cellData = pivotData.cells[rowValue];
+                    pivotState.values.forEach(valueField => {
+                        const value = cellData[valueField.id];
+                        html += `<td class="number-cell">${formatValue(value, valueField)}</td>`;
+                    });
+                }
+
+                // Row total
+                const rowTotal = calculateRowTotal(pivotData, rowValue);
+                html += `<td class="number-cell grand-total">${formatValue(rowTotal, pivotState.values[0])}</td>`;
+                html += '</tr>';
+            });
+
+            // Grand total row
+            html += '<tr class="grand-total">';
+            html += '<th>Grand Total</th>';
+
+            if (pivotData.columns.length > 0) {
+                pivotData.columns.forEach(colValue => {
+                    const colTotal = calculateColumnTotal(pivotData, colValue);
+                    pivotState.values.forEach(valueField => {
+                        html += `<td class="number-cell">${formatValue(colTotal, valueField)}</td>`;
+                    });
+                });
+            }
+
+            pivotState.values.forEach(valueField => {
+                const grandTotal = pivotData.grandTotal[valueField.id];
+                html += `<td class="number-cell">${formatValue(grandTotal, valueField)}</td>`;
+            });
+
+            html += '</tr>';
+            html += '</tbody></table>';
+
+            container.innerHTML = html;
+        }
+
+        function calculateRowTotal(pivotData, rowValue) {
+            let total = 0;
+
+            if (pivotData.columns.length > 0) {
+                pivotData.columns.forEach(colValue => {
+                    const cellKey = `${rowValue}|${colValue}`;
+                    const cellData = pivotData.cells[cellKey];
+                    const valueField = pivotState.values[0];
+                    total += cellData[valueField.id] || 0;
+                });
+            } else {
+                const cellData = pivotData.cells[rowValue];
+                const valueField = pivotState.values[0];
+                total = cellData[valueField.id] || 0;
+            }
+
+            return total;
+        }
+
+        function calculateColumnTotal(pivotData, colValue) {
+            let total = 0;
+
+            pivotData.rows.forEach(rowValue => {
+                const cellKey = `${rowValue}|${colValue}`;
+                const cellData = pivotData.cells[cellKey];
+                const valueField = pivotState.values[0];
+                total += cellData[valueField.id] || 0;
+            });
+
+            return total;
+        }
+
+        function formatValue(value, valueField) {
+            if (value == null || isNaN(value)) return '-';
+
+            const field = valueField.field;
+            const aggregation = valueField.aggregation;
+
+            // Format as currency for revenue/price
+            if (['revenue', 'unitPrice'].includes(field) && aggregation !== 'count') {
+                return '$' + Math.round(value).toLocaleString();
+            }
+
+            // Format as integer for count
+            if (aggregation === 'count') {
+                return Math.round(value).toLocaleString();
+            }
+
+            // Format as decimal for average
+            if (aggregation === 'average') {
+                return Math.round(value).toLocaleString();
+            }
+
+            return Math.round(value).toLocaleString();
+        }
+
+        // ===== CHART MODAL =====
+
+        function openChartModal() {
+            document.getElementById('chart-modal').classList.add('show');
+            selectedChartType = null;
+            document.querySelectorAll('.chart-type-option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('create-chart-btn').disabled = true;
+        }
+
+        function closeChartModal() {
+            document.getElementById('chart-modal').classList.remove('show');
+        }
+
+        function selectChartType(type) {
+            selectedChartType = type;
+            document.querySelectorAll('.chart-type-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector(`[data-chart-type="${type}"]`).classList.add('selected');
+            document.getElementById('create-chart-btn').disabled = false;
+        }
+
+        function createChart() {
+            if (!selectedChartType) return;
+
+            closeChartModal();
+
+            // Get pivot data for chart
+            const filteredData = transactions;
+            const pivotData = calculatePivot(filteredData);
+
+            const labels = pivotData.rows;
+            const values = [];
+
+            // Get first value field
+            const valueField = pivotState.values[0];
+
+            labels.forEach(rowValue => {
+                if (pivotData.columns.length > 0) {
+                    const cellKey = `${rowValue}|${pivotData.columns[0]}`;
+                    values.push(pivotData.cells[cellKey][valueField.id] || 0);
+                } else {
+                    values.push(pivotData.cells[rowValue][valueField.id] || 0);
+                }
+            });
+
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('pivot-chart').getContext('2d');
+            const rowFieldLabel = pivotState.rows.length > 0 ? fieldLabels[pivotState.rows[0].field] : 'Category';
+            const valueFieldLabel = fieldLabels[valueField.field];
+
+            document.getElementById('chart-title').textContent = `${valueFieldLabel} by ${rowFieldLabel}`;
+
+            const chartConfig = {
+                type: selectedChartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: valueFieldLabel,
+                        data: values,
+                        backgroundColor: selectedChartType === 'pie' ?
+                            ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7'] :
+                            'rgba(23, 23, 23, 0.8)',
+                        borderColor: 'rgba(23, 23, 23, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: selectedChartType === 'pie'
+                        }
+                    }
+                }
+            };
+
+            if (selectedChartType !== 'pie') {
+                chartConfig.options.scales = {
+                    y: {
+                        beginAtZero: true
+                    }
+                };
+            }
+
+            currentChart = new Chart(ctx, chartConfig);
+            document.getElementById('chart-container').classList.add('show');
+
+            // Announce to screen reader
+            announceToScreenReader(`Chart created: ${valueFieldLabel} by ${rowFieldLabel}`);
+
+            // Check challenge completion after chart creation
+            checkChallenges();
+        }
+
+        // ===== CHALLENGE VALIDATION =====
+
+        const challengeStates = {
+            1: false,
+            2: false,
+            3: false
+        };
+
+        function checkChallenges() {
+            const currentChallenge = parseInt(document.querySelector('.tab-button.active').dataset.challenge);
+
+            // Challenge 1: Category × Region with Revenue
+            if (currentChallenge === 1) {
+                const hasCategory = pivotState.rows.some(f => f.field === 'category');
+                const hasRegion = pivotState.columns.some(f => f.field === 'region');
+                const hasRevenue = pivotState.values.some(f => f.field === 'revenue');
+
+                if (hasCategory && hasRegion && hasRevenue) {
+                    // Check Electronics revenue (~$1.42M)
+                    const electronicsTotal = calculateCategoryTotal('Electronics');
+                    if (electronicsTotal >= 1300000 && electronicsTotal <= 1550000) {
+                        challengeStates[1] = true;
+                    }
+                }
+            }
+
+            // Challenge 2: Monthly trend with chart
+            if (currentChallenge === 2) {
+                const hasDate = pivotState.rows.some(f => f.field === 'orderDate');
+                const hasRevenue = pivotState.values.some(f => f.field === 'revenue');
+                const dateField = pivotState.rows.find(f => f.field === 'orderDate');
+                const isGroupedByMonth = dateField && pivotState.dateGrouping[dateField.id] === 'month';
+
+                if (hasDate && hasRevenue && isGroupedByMonth && currentChart && selectedChartType === 'line') {
+                    challengeStates[2] = true;
+                }
+            }
+
+            // Challenge 3: Top products
+            if (currentChallenge === 3) {
+                const hasProduct = pivotState.rows.some(f => f.field === 'productName');
+                const hasRevenue = pivotState.values.some(f => f.field === 'revenue');
+                const hasCount = pivotState.values.some(f => f.field === 'orderDate' && f.aggregation === 'count');
+
+                if (hasProduct && hasRevenue && hasCount) {
+                    // Check Wireless Headphones revenue (~$190K)
+                    const whRevenue = calculateProductTotal('Wireless Headphones');
+                    if (whRevenue >= 150000 && whRevenue <= 230000) {
+                        challengeStates[3] = true;
+                    }
+                }
+            }
+
+            updateProgress();
+        }
+
+        function calculateCategoryTotal(category) {
+            const categoryData = transactions.filter(t => t.category === category);
+            return categoryData.reduce((sum, t) => sum + t.revenue, 0);
+        }
+
+        function calculateProductTotal(product) {
+            const productData = transactions.filter(t => t.productName === product);
+            return productData.reduce((sum, t) => sum + t.revenue, 0);
+        }
+
+        function countLoyalCustomers() {
+            const customerOrders = {};
+            transactions.forEach(t => {
+                customerOrders[t.customerId] = (customerOrders[t.customerId] || 0) + 1;
+            });
+            return Object.values(customerOrders).filter(count => count >= 5).length;
+        }
+
+        function updateProgress() {
+            const completed = Object.values(challengeStates).filter(s => s).length;
+            const total = 3;
+
+            document.getElementById('progress-text').textContent = `${completed} of ${total} challenges complete`;
+            document.getElementById('progress-fill').style.width = `${(completed / total) * 100}%`;
+
+            // Update tab buttons
+            Object.keys(challengeStates).forEach(num => {
+                const button = document.querySelector(`.tab-button[data-challenge="${num}"]`);
+                if (challengeStates[num]) {
+                    button.classList.add('completed');
+                } else {
+                    button.classList.remove('completed');
+                }
+            });
+
+            // Show master badge
+            if (completed === total) {
+                document.getElementById('master-badge').classList.add('show');
+                announceToScreenReader('Congratulations! You have completed all 4 challenges and earned the Pivot Table Master badge!');
+            }
+        }
+
+        // ===== TAB NAVIGATION =====
+
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const challenge = button.dataset.challenge;
+
+                // Update active tab
+                document.querySelectorAll('.tab-button').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                button.classList.add('active');
+                button.setAttribute('aria-selected', 'true');
+
+                // Update active content
+                document.querySelectorAll('.challenge-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`challenge-${challenge}`).classList.add('active');
+            });
+        });
+
+        // ===== HINT TOGGLE =====
+
+        function toggleHint(challengeNum) {
+            const hint = document.getElementById(`hint-${challengeNum}`);
+            hint.classList.toggle('show');
+        }
+
+        // ===== ACCESSIBILITY =====
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // ===== INITIALIZATION =====
+
+        console.log('E-Commerce Pivot Table Simulator loaded successfully');
+        console.log(`${transactions.length} transactions ready for analysis`);
+    </script>
+</body>
+</html>

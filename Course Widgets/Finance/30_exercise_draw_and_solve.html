@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise: Draw and Solve</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple: #d5cae0; --purple-dark: #b8a9c7;
+            --green: #c0d1cd; --green-dark: #9bb5af;
+            --grey-bg: #f5f6f4; --grey-light: #eaebe8;
+            --text-primary: #2d3748; --text-secondary: #4a5568; --text-muted: #718096;
+            --white: #ffffff; --correct: #48825d; --incorrect: #c45a5a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--grey-bg); min-height: 100vh; padding: 40px 20px; color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 820px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 32px; background-color: var(--purple); padding: 32px 24px; border-radius: 12px; }
+        .header-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .header p { font-size: 0.95rem; color: var(--text-secondary); }
+        
+        .task-card { background-color: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .task-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .task-number { background-color: var(--purple); color: var(--text-primary); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+        .task-title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+        .task-description { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+        
+        .timeline-canvas { background-color: var(--grey-bg); border: 2px dashed var(--purple-dark); border-radius: 8px; padding: 30px 20px; margin-bottom: 20px; min-height: 180px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .timeline-container { width: 100%; }
+        .timeline-line { display: flex; align-items: center; justify-content: space-between; position: relative; margin: 20px 0; }
+        .timeline-bar { position: absolute; top: 50%; left: 0; right: 0; height: 3px; background-color: var(--purple-dark); z-index: 0; }
+        .timeline-point { width: 60px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+        .timeline-dot { width: 12px; height: 12px; border-radius: 50%; background-color: var(--purple-dark); border: 3px solid var(--white); }
+        .timeline-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-top: 8px; }
+        .timeline-value { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-top: 4px; background-color: var(--purple); padding: 4px 8px; border-radius: 4px; }
+        
+        .calculation-section { background-color: var(--grey-bg); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .calc-row { display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+        .calc-label { flex: 0 0 120px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); padding-top: 10px; }
+        .calc-input-group { flex: 1; }
+        .calc-input { width: 100%; padding: 10px 14px; border: 2px solid var(--grey-light); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: all 0.2s ease; }
+        .calc-input:focus { outline: none; border-color: var(--purple-dark); background-color: var(--white); }
+        .calc-input.correct { border-color: var(--correct); background-color: var(--green); }
+        .calc-input.incorrect { border-color: var(--incorrect); background-color: #f8e8e8; }
+        .calc-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+        
+        .formula-box { background-color: var(--white); border-left: 4px solid var(--purple-dark); padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; }
+        .formula { font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text-primary); }
+        
+        .reflection-section { background-color: var(--white); border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 2px solid var(--purple); }
+        .reflection-prompt { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-bottom: 12px; }
+        .reflection-textarea { width: 100%; min-height: 100px; padding: 12px; border: 2px solid var(--grey-light); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem; resize: vertical; }
+        .reflection-textarea:focus { outline: none; border-color: var(--purple-dark); }
+        
+        .check-btn { background-color: var(--purple-dark); color: var(--text-primary); border: none; padding: 12px 28px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; }
+        .check-btn:hover { background-color: var(--purple); transform: translateY(-1px); }
+        .check-btn:disabled { background-color: var(--grey-light); color: var(--text-muted); cursor: not-allowed; transform: none; }
+        
+        .feedback { padding: 12px 16px; border-radius: 6px; font-size: 0.85rem; margin-top: 12px; display: none; }
+        .feedback.show { display: block; }
+        .feedback.correct { background-color: var(--green); border-left: 3px solid var(--correct); color: var(--text-primary); }
+        .feedback.incorrect { background-color: #f8e8e8; border-left: 3px solid var(--incorrect); color: var(--text-primary); }
+        
+        .completion-card { background-color: var(--green); border-radius: 12px; padding: 28px; text-align: center; display: none; }
+        .completion-card.show { display: block; }
+        .completion-icon { font-size: 3rem; margin-bottom: 12px; }
+        .completion-title { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+        .completion-message { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+        
+        @media (max-width: 600px) { 
+            body { padding: 24px 16px; } 
+            .header h1 { font-size: 1.5rem; } 
+            .calc-row { flex-direction: column; gap: 8px; }
+            .calc-label { padding-top: 0; }
+            .timeline-point { width: 50px; }
+            .timeline-value { font-size: 0.75rem; padding: 3px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Section 4.2 Practice Activity</div>
+            <h1>Exercise: Draw and Solve</h1>
+            <p>Practice moving money through time with timelines and calculations</p>
+        </div>
+
+        <!-- Task 1: Timeline -->
+        <div class="task-card">
+            <div class="task-header">
+                <div class="task-number">1</div>
+                <div class="task-title">Draw a Timeline</div>
+            </div>
+            <div class="task-description">
+                Visualize an investment that pays $1,000 per year for 5 years. Each payment occurs at the end of the year.
+            </div>
+            <div class="timeline-canvas">
+                <div class="timeline-container">
+                    <div class="timeline-line">
+                        <div class="timeline-bar"></div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 0</div>
+                            <div class="timeline-value">Today</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 1</div>
+                            <div class="timeline-value">$1,000</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 2</div>
+                            <div class="timeline-value">$1,000</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 3</div>
+                            <div class="timeline-value">$1,000</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 4</div>
+                            <div class="timeline-value">$1,000</div>
+                        </div>
+                        <div class="timeline-point">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Year 5</div>
+                            <div class="timeline-value">$1,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 2: Calculations -->
+        <div class="task-card">
+            <div class="task-header">
+                <div class="task-number">2</div>
+                <div class="task-title">Calculate FV and PV at r = 7%</div>
+            </div>
+            <div class="task-description">
+                Use the annuity formulas to calculate both the future value and present value of this payment stream.
+            </div>
+            
+            <div class="calculation-section">
+                <div class="formula-box">
+                    <div class="formula">FV<sub>annuity</sub> = Payment × [(1 + r)<sup>n</sup> - 1] / r</div>
+                </div>
+                <div class="calc-row">
+                    <div class="calc-label">Future Value:</div>
+                    <div class="calc-input-group">
+                        <input type="text" id="fv-input" class="calc-input" placeholder="Your answer (e.g., 5750.74)">
+                        <div class="calc-hint">Calculate what all 5 payments grow to by Year 5</div>
+                    </div>
+                </div>
+                <button class="check-btn" onclick="checkFV()">Check FV Answer</button>
+                <div class="feedback" id="fv-feedback"></div>
+            </div>
+
+            <div class="calculation-section">
+                <div class="formula-box">
+                    <div class="formula">PV<sub>annuity</sub> = Payment × [1 - (1 + r)<sup>-n</sup>] / r</div>
+                </div>
+                <div class="calc-row">
+                    <div class="calc-label">Present Value:</div>
+                    <div class="calc-input-group">
+                        <input type="text" id="pv-input" class="calc-input" placeholder="Your answer (e.g., 4100.20)">
+                        <div class="calc-hint">Calculate what these payments are worth today</div>
+                    </div>
+                </div>
+                <button class="check-btn" onclick="checkPV()">Check PV Answer</button>
+                <div class="feedback" id="pv-feedback"></div>
+            </div>
+        </div>
+
+        <!-- Task 3: Reflection -->
+        <div class="task-card">
+            <div class="task-header">
+                <div class="task-number">3</div>
+                <div class="task-title">Compare and Reflect</div>
+            </div>
+            <div class="task-description">
+                The total cash received is $5,000 (5 payments × $1,000). Compare this to your PV calculation.
+            </div>
+            
+            <div class="reflection-section">
+                <div class="reflection-prompt">
+                    What does the difference between total cash received ($5,000) and present value represent? Why is PV lower than the nominal total?
+                </div>
+                <textarea id="reflection-text" class="reflection-textarea" placeholder="Type your thoughts here..."></textarea>
+            </div>
+            <button class="check-btn" onclick="saveReflection()" id="save-btn" disabled>Save Reflection</button>
+        </div>
+
+        <!-- Completion Card -->
+        <div class="completion-card" id="completion-card">
+            <div class="completion-icon">🎯</div>
+            <div class="completion-title">Amazing work!</div>
+            <div class="completion-message">
+                You now have the tools to move money through time. In the next section, we'll apply these principles to value real financial securities—bonds, preferred shares, and common stocks.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let fvCorrect = false;
+        let pvCorrect = false;
+        
+        // Enable save button when reflection has content
+        document.getElementById('reflection-text').addEventListener('input', function() {
+            const btn = document.getElementById('save-btn');
+            btn.disabled = this.value.trim().length < 20;
+        });
+
+        function checkFV() {
+            const input = document.getElementById('fv-input');
+            const feedback = document.getElementById('fv-feedback');
+            const value = parseFloat(input.value.replace(/[$,]/g, ''));
+            
+            // Correct answer: FV = 1000 × [(1.07^5 - 1) / 0.07] = 1000 × 5.7507 = 5750.74
+            const correct = 5750.74;
+            const tolerance = 1.0; // Allow $1 difference for rounding
+            
+            if (Math.abs(value - correct) <= tolerance) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.textContent = `Correct! The future value is $${correct.toFixed(2)}. Each payment compounds forward: the first payment grows for 4 years, the second for 3 years, and so on. The total FV exceeds $5,000 due to compound interest.`;
+                fvCorrect = true;
+                checkCompletion();
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = `Not quite. Use the formula: FV = $1,000 × [(1.07^5 - 1) / 0.07]. Calculate (1.07^5 - 1) = 0.40255, divide by 0.07 to get 5.7507, then multiply by $1,000.`;
+            }
+        }
+
+        function checkPV() {
+            const input = document.getElementById('pv-input');
+            const feedback = document.getElementById('pv-feedback');
+            const value = parseFloat(input.value.replace(/[$,]/g, ''));
+            
+            // Correct answer: PV = 1000 × [1 - (1.07^-5)] / 0.07 = 1000 × 4.1002 = 4100.20
+            const correct = 4100.20;
+            const tolerance = 1.0;
+            
+            if (Math.abs(value - correct) <= tolerance) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.textContent = `Correct! The present value is $${correct.toFixed(2)}. This is what you'd pay today to receive those 5 future payments. It's less than $5,000 because future dollars are worth less than today's dollars (time value of money).`;
+                pvCorrect = true;
+                checkCompletion();
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = `Not quite. Use the formula: PV = $1,000 × [1 - (1.07^-5)] / 0.07. Calculate (1.07^-5) = 0.7130, subtract from 1 to get 0.2870, divide by 0.07 to get 4.1002, then multiply by $1,000.`;
+            }
+        }
+
+        function saveReflection() {
+            const text = document.getElementById('reflection-text').value;
+            if (text.trim().length >= 20) {
+                localStorage.setItem('timeline_reflection', text);
+                localStorage.setItem('timeline_completed', 'true');
+                
+                const btn = document.getElementById('save-btn');
+                btn.textContent = '✓ Reflection Saved';
+                btn.style.backgroundColor = 'var(--correct)';
+                btn.disabled = true;
+                
+                checkCompletion();
+            }
+        }
+
+        function checkCompletion() {
+            const reflectionSaved = localStorage.getItem('timeline_completed') === 'true';
+            
+            if (fvCorrect && pvCorrect && reflectionSaved) {
+                document.getElementById('completion-card').classList.add('show');
+                document.getElementById('completion-card').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Load saved reflection on page load
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('timeline_reflection');
+            if (saved) {
+                document.getElementById('reflection-text').value = saved;
+                document.getElementById('save-btn').disabled = false;
+                document.getElementById('save-btn').textContent = '✓ Reflection Saved';
+                document.getElementById('save-btn').style.backgroundColor = 'var(--correct)';
+                document.getElementById('save-btn').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>

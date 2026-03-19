@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Check: Identify the Five Forces</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            line-height: 1.6;
+            padding: 32px 24px;
+        }
+
+        .widget-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-neutral-100);
+            border-radius: 3px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #bfe5e7;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            display: none;
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .scenario {
+            background: #f5fafa;
+            border-left: 3px solid #bfe5e7;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .scenario h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .scenario p {
+            font-size: 0.9rem;
+            color: var(--color-neutral-700);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-neutral-900);
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-neutral-400);
+            background: var(--color-neutral-50);
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option input[type="radio"]:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .option-label {
+            font-size: 0.95rem;
+            color: var(--color-neutral-900);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .option.selected {
+            border-color: var(--color-neutral-900);
+            background: var(--color-neutral-50);
+        }
+
+        .option.correct {
+            border-color: var(--color-correct);
+            background: var(--color-correct-bg);
+        }
+
+        .option.incorrect {
+            border-color: var(--color-incorrect);
+            background: var(--color-incorrect-bg);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .btn-check {
+            background: var(--color-neutral-900);
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-check:disabled {
+            background: var(--color-neutral-300);
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: var(--color-neutral-900);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            background: var(--color-neutral-700);
+        }
+
+        .btn-next.show {
+            display: block;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: var(--color-correct-bg);
+            border-color: var(--color-correct);
+            color: #171717;
+        }
+
+        .feedback.incorrect {
+            background: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect);
+            color: #171717;
+        }
+
+        .feedback h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 16px;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 32px;
+        }
+
+        .results-details {
+            background: var(--color-neutral-50);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .results-details h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .result-item.correct {
+            border-left: 3px solid var(--color-correct);
+        }
+
+        .result-item.incorrect {
+            border-left: 3px solid var(--color-incorrect);
+        }
+
+        .result-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-retry {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 14px 32px;
+        }
+
+        .btn-retry:hover {
+            background: var(--color-neutral-700);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container" role="main">
+        <div class="header">
+            <h1>Knowledge Check</h1>
+            <p>Identify the Five Forces - 4 Questions</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <!-- Question 1: Walmart/P&G - Bargaining Power of Customers -->
+        <div class="question-card active" data-question="1">
+            <div class="question-number">Question 1 of 4</div>
+
+            <div class="scenario">
+                <h3>Business Scenario</h3>
+                <p>Walmart negotiates aggressively with Procter & Gamble to secure lower prices on consumer goods like detergent, diapers, and shampoo. Due to its massive retail footprint, Walmart can demand favorable terms that smaller retailers cannot.</p>
+            </div>
+
+            <div class="question-text">
+                Which of Porter's Five Forces does this scenario primarily illustrate?
+            </div>
+
+            <div class="options" data-correct="c">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q1" value="a">
+                    <span class="option-label"><strong>A)</strong> Rivalry Among Existing Competitors</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q1" value="b">
+                    <span class="option-label"><strong>B)</strong> Threat of New Entrants</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q1" value="c">
+                    <span class="option-label"><strong>C)</strong> Bargaining Power of Customers</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q1" value="d">
+                    <span class="option-label"><strong>D)</strong> Threat of Substitutes</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn1" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn1">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback1"></div>
+        </div>
+
+        <!-- Question 2: Uber in Toronto - Threat of New Entrants -->
+        <div class="question-card" data-question="2">
+            <div class="question-number">Question 2 of 4</div>
+
+            <div class="scenario">
+                <h3>Business Scenario</h3>
+                <p>Uber enters the taxi market in Toronto, offering ride services through a smartphone app. The company initially operated in a regulatory gray zone, disrupting established taxi companies like Beck Taxi, Co-op Cabs, City Taxi, and Diamond Taxi.</p>
+            </div>
+
+            <div class="question-text">
+                Which of Porter's Five Forces does this scenario primarily illustrate?
+            </div>
+
+            <div class="options" data-correct="b">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q2" value="a">
+                    <span class="option-label"><strong>A)</strong> Rivalry Among Existing Competitors</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q2" value="b">
+                    <span class="option-label"><strong>B)</strong> Threat of New Entrants</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q2" value="c">
+                    <span class="option-label"><strong>C)</strong> Bargaining Power of Suppliers</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q2" value="d">
+                    <span class="option-label"><strong>D)</strong> Threat of Substitutes</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn2" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn2">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <!-- Question 3: Southwest vs United - Rivalry -->
+        <div class="question-card" data-question="3">
+            <div class="question-number">Question 3 of 4</div>
+
+            <div class="scenario">
+                <h3>Business Scenario</h3>
+                <p>Southwest Airlines and United compete head-to-head on routes between Chicago and Denver. Both airlines offer similar flight times, comparable prices, and frequent flyer programs. Each tries to win passengers from the other through pricing, scheduling, and service quality.</p>
+            </div>
+
+            <div class="question-text">
+                Which of Porter's Five Forces does this scenario primarily illustrate?
+            </div>
+
+            <div class="options" data-correct="a">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q3" value="a">
+                    <span class="option-label"><strong>A)</strong> Rivalry Among Existing Competitors</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q3" value="b">
+                    <span class="option-label"><strong>B)</strong> Threat of New Entrants</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q3" value="c">
+                    <span class="option-label"><strong>C)</strong> Bargaining Power of Customers</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q3" value="d">
+                    <span class="option-label"><strong>D)</strong> Threat of Substitutes</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn3" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn3">Next Question</button>
+            </div>
+
+            <div class="feedback" id="feedback3"></div>
+        </div>
+
+        <!-- Question 4: Netflix/TikTok - Threat of Substitutes -->
+        <div class="question-card" data-question="4">
+            <div class="question-number">Question 4 of 4</div>
+
+            <div class="scenario">
+                <h3>Business Scenario</h3>
+                <p>Netflix worries that customers might cancel subscriptions to spend more time on TikTok. While TikTok doesn't offer streaming TV shows or movies, it competes for the same leisure time that customers might spend watching Netflix content.</p>
+            </div>
+
+            <div class="question-text">
+                Which of Porter's Five Forces does this scenario primarily illustrate?
+            </div>
+
+            <div class="options" data-correct="d">
+                <label class="option" data-value="a">
+                    <input type="radio" name="q4" value="a">
+                    <span class="option-label"><strong>A)</strong> Rivalry Among Existing Competitors</span>
+                </label>
+                <label class="option" data-value="b">
+                    <input type="radio" name="q4" value="b">
+                    <span class="option-label"><strong>B)</strong> Threat of New Entrants</span>
+                </label>
+                <label class="option" data-value="c">
+                    <input type="radio" name="q4" value="c">
+                    <span class="option-label"><strong>C)</strong> Bargaining Power of Customers</span>
+                </label>
+                <label class="option" data-value="d">
+                    <input type="radio" name="q4" value="d">
+                    <span class="option-label"><strong>D)</strong> Threat of Substitutes</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-check" id="checkBtn4" disabled>Check Answer</button>
+                <button class="btn btn-next" id="nextBtn4">View Results</button>
+            </div>
+
+            <div class="feedback" id="feedback4"></div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-score" id="scoreDisplay">0/4</div>
+            <div class="results-message" id="resultsMessage"></div>
+
+            <div class="results-details">
+                <h3>Your Answers:</h3>
+                <div id="resultsList"></div>
+            </div>
+
+            <button class="btn btn-retry" onclick="location.reload()">Retry Knowledge Check</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 4;
+        let answers = {};
+        let results = {};
+
+        const questions = [
+            {
+                num: 1,
+                correct: 'c',
+                correctFeedback: 'Correct! Walmart is a <strong>customer</strong> of P&G. When customers can demand lower prices or better terms due to their size or importance, that\'s bargaining power of customers. Walmart\'s massive scale gives it leverage that smaller retailers lack.',
+                incorrectFeedback: 'This is <strong>Bargaining Power of Customers</strong>. Walmart is P&G\'s customer (buyer). Because Walmart accounts for a huge share of P&G\'s sales and could switch to other suppliers, it has significant bargaining power to demand lower prices.',
+                title: 'Walmart/P&G (Customer Power)'
+            },
+            {
+                num: 2,
+                correct: 'b',
+                correctFeedback: 'Correct! Uber is a <strong>new entrant</strong> entering the existing taxi/transportation market. Whether ride-sharing is classified as a "new entrant" or "substitute" can be debated, but Uber\'s entry disrupted incumbents by bringing a new business model into the market.',
+                incorrectFeedback: 'This is <strong>Threat of New Entrants</strong>. Uber entered the transportation market with a new business model. While some analysts view ride-sharing as a "substitute," the key insight is that new players can disrupt incumbents - especially when regulatory barriers are circumvented.',
+                title: 'Uber in Toronto (New Entrants)'
+            },
+            {
+                num: 3,
+                correct: 'a',
+                correctFeedback: 'Exactly! Both Southwest and United are established airlines competing directly for the same customers on the same routes. This head-to-head competition between existing players is classic <strong>rivalry</strong>.',
+                incorrectFeedback: 'This is <strong>Rivalry Among Existing Competitors</strong>. Southwest and United are both established airlines competing directly for the same customers. When existing firms fight for market share through pricing, service, or scheduling, that\'s rivalry.',
+                title: 'Southwest vs United (Rivalry)'
+            },
+            {
+                num: 4,
+                correct: 'd',
+                correctFeedback: 'Perfect! TikTok doesn\'t offer streaming TV/movies (so it\'s not direct rivalry), but it competes for the same leisure time. This is <strong>substitution</strong> - a different product meeting the same underlying need (entertainment/relaxation).',
+                incorrectFeedback: 'This is <strong>Threat of Substitutes</strong>. TikTok and Netflix are different products, but they compete for the same underlying customer need: entertainment and leisure time. Substitutes are different solutions that can fulfill similar customer jobs.',
+                title: 'Netflix/TikTok (Substitutes)'
+            }
+        ];
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (Object.keys(answers).length / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Setup event listeners for each question
+        questions.forEach(q => {
+            const questionNum = q.num;
+            const card = document.querySelector(`.question-card[data-question="${questionNum}"]`);
+            const options = card.querySelectorAll('.option');
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const checkBtn = document.getElementById(`checkBtn${questionNum}`);
+            const nextBtn = document.getElementById(`nextBtn${questionNum}`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            const optionsContainer = card.querySelector('.options');
+            const correctAnswer = optionsContainer.dataset.correct;
+
+            // Enable check button when option selected
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    const selectedOption = card.querySelector(`.option[data-value="${radio.value}"]`);
+                    selectedOption.classList.add('selected');
+                    checkBtn.disabled = false;
+                });
+            });
+
+            // Option click handler
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                });
+            });
+
+            // Check answer
+            checkBtn.addEventListener('click', () => {
+                const selectedValue = card.querySelector(`input[name="q${questionNum}"]:checked`)?.value;
+                if (!selectedValue) return;
+
+                const isCorrect = selectedValue === correctAnswer;
+                answers[questionNum] = selectedValue;
+                results[questionNum] = isCorrect;
+
+                // Show visual feedback
+                options.forEach(option => {
+                    const value = option.dataset.value;
+                    option.style.pointerEvents = 'none';
+
+                    if (value === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (value === selectedValue && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // Show feedback
+                if (isCorrect) {
+                    feedback.className = 'feedback correct show';
+                    feedback.innerHTML = `
+                        <h3>Correct!</h3>
+                        <p>${q.correctFeedback}</p>
+                    `;
+                } else {
+                    feedback.className = 'feedback incorrect show';
+                    feedback.innerHTML = `
+                        <h3>Not quite</h3>
+                        <p>${q.incorrectFeedback}</p>
+                    `;
+                }
+
+                checkBtn.style.display = 'none';
+                nextBtn.classList.add('show');
+                updateProgress();
+            });
+
+            // Next button
+            nextBtn.addEventListener('click', () => {
+                if (questionNum < totalQuestions) {
+                    // Go to next question
+                    card.classList.remove('active');
+                    const nextCard = document.querySelector(`.question-card[data-question="${questionNum + 1}"]`);
+                    nextCard.classList.add('active');
+                    currentQuestion++;
+                } else {
+                    // Show results
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const correctCount = Object.values(results).filter(r => r === true).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+            document.getElementById('scoreDisplay').textContent = `${correctCount}/${totalQuestions}`;
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Excellent! You can accurately identify all Five Forces. Ready for the interactive analyzer where you\'ll apply these skills to real industries.';
+            } else if (percentage >= 75) {
+                message = 'Good work! Review the forces you missed before using the industry analyzer.';
+            } else if (percentage >= 50) {
+                message = 'Review the Five Forces definitions before continuing. The key is understanding what each force represents.';
+            } else {
+                message = 'Review the Five Forces video content before continuing. Focus on how each force affects industry profitability.';
+            }
+            document.getElementById('resultsMessage').textContent = message;
+
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = questions.map(q => {
+                const isCorrect = results[q.num];
+                const icon = isCorrect ? '✓' : '✗';
+                const className = isCorrect ? 'correct' : 'incorrect';
+                return `
+                    <div class="result-item ${className}">
+                        <span class="result-icon">${icon}</span>
+                        <span>Question ${q.num}: ${q.title}</span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultsScreen').classList.add('show');
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

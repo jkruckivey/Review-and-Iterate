@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rivalry Intensity Framework</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #93c5fd;
+            --color-info-dark: #1d4ed8;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Focus State */
+            --color-focus: #3182ce;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Rivalry-specific colors (preserved) */
+            --color-low: #d4edda;
+            --color-low-badge: #28a745;
+            --color-medium: #fff3cd;
+            --color-medium-badge: #f59e0b;
+            --color-high: #f8d7da;
+            --color-high-badge: #ef4444;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--color-neutral-600);
+        }
+
+        .matrix-container {
+            position: relative;
+            margin: 2rem auto;
+            max-width: 700px;
+        }
+
+        .y-axis-label {
+            position: absolute;
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            white-space: nowrap;
+        }
+
+        .x-axis-label {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+        }
+
+        .matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 4px;
+            background: var(--color-neutral-300);
+            border: 2px solid var(--color-neutral-300);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-left: 40px;
+        }
+
+        .quadrant {
+            padding: 1.5rem;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .quadrant:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        .quadrant h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quadrant p {
+            font-size: 0.8rem;
+            color: var(--color-neutral-700);
+            flex-grow: 1;
+        }
+
+        .quadrant .intensity {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* Top-left: Expanding + Differentiation = LOW rivalry */
+        .q-tl {
+            background: var(--color-low);
+        }
+        .q-tl .intensity {
+            background: var(--color-low-badge);
+            color: white;
+        }
+
+        /* Top-right: Expanding + Price = MEDIUM rivalry */
+        .q-tr {
+            background: var(--color-medium);
+        }
+        .q-tr .intensity {
+            background: var(--color-medium-badge);
+            color: var(--color-neutral-900);
+        }
+
+        /* Bottom-left: Contracting + Differentiation = MEDIUM rivalry */
+        .q-bl {
+            background: var(--color-medium);
+        }
+        .q-bl .intensity {
+            background: var(--color-medium-badge);
+            color: var(--color-neutral-900);
+        }
+
+        /* Bottom-right: Contracting + Price = HIGH rivalry */
+        .q-br {
+            background: var(--color-high);
+        }
+        .q-br .intensity {
+            background: var(--color-high-badge);
+            color: white;
+        }
+
+        .axis-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 40px;
+            padding: 0.5rem 1rem;
+        }
+
+        .axis-markers span {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        .y-markers {
+            position: absolute;
+            right: calc(100% - 35px);
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .y-markers span {
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+        }
+
+        .example-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .example-box h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+        }
+
+        .factors {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .factor {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .factor-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--color-high);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .factor-text {
+            font-size: 0.85rem;
+            color: var(--color-neutral-700);
+        }
+
+        .factor-text strong {
+            display: block;
+            color: var(--color-neutral-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .y-axis-label {
+                position: static;
+                transform: none;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .matrix {
+                margin-left: 0;
+            }
+
+            .y-markers {
+                display: none;
+            }
+
+            .factors {
+                grid-template-columns: 1fr;
+            }
+
+            .quadrant {
+                min-height: 150px;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Rivalry Intensity Framework</h1>
+            <p>How market conditions and competition basis affect competitive intensity</p>
+        </div>
+
+        <div class="matrix-container">
+            <div class="y-axis-label">Market Growth</div>
+
+            <div class="y-markers">
+                <span>Expanding</span>
+                <span>Contracting</span>
+            </div>
+
+            <div class="matrix">
+                <!-- Top-left: Expanding + Differentiation -->
+                <div class="quadrant q-tl" tabindex="0" role="region" aria-label="Low rivalry quadrant: Expanding market with differentiation-based competition">
+                    <h3>Growth + Differentiation</h3>
+                    <p>New customers available. Companies compete on unique value, not price. Room for multiple winners.</p>
+                    <span class="intensity">Low Rivalry</span>
+                </div>
+
+                <!-- Top-right: Expanding + Price -->
+                <div class="quadrant q-tr" tabindex="0" role="region" aria-label="Medium rivalry quadrant: Expanding market with price-based competition">
+                    <h3>Growth + Price Competition</h3>
+                    <p>Growing market absorbs some pressure, but price focus erodes margins.</p>
+                    <span class="intensity">Medium Rivalry</span>
+                </div>
+
+                <!-- Bottom-left: Contracting + Differentiation -->
+                <div class="quadrant q-bl" tabindex="0" role="region" aria-label="Medium rivalry quadrant: Contracting market with differentiation-based competition">
+                    <h3>Decline + Differentiation</h3>
+                    <p>Shrinking pie, but differentiation protects margins. Winners take share from exits.</p>
+                    <span class="intensity">Medium Rivalry</span>
+                </div>
+
+                <!-- Bottom-right: Contracting + Price -->
+                <div class="quadrant q-br" tabindex="0" role="region" aria-label="High rivalry quadrant: Contracting market with price-based competition">
+                    <h3>Decline + Price Competition</h3>
+                    <p>Worst case: shrinking market + commoditized products = price wars and margin destruction.</p>
+                    <span class="intensity">High Rivalry</span>
+                </div>
+            </div>
+
+            <div class="axis-markers">
+                <span>Differentiation</span>
+                <span>Price-Based</span>
+            </div>
+            <div class="x-axis-label">Competition Basis</div>
+        </div>
+
+        <div class="example-box">
+            <h3>Example: US Airline Industry (High Rivalry)</h3>
+            <div class="factors">
+                <div class="factor">
+                    <div class="factor-icon">⚖</div>
+                    <div class="factor-text">
+                        <strong>Evenly Matched</strong>
+                        United, Delta, American, Southwest each hold ~15-20% share
+                    </div>
+                </div>
+                <div class="factor">
+                    <div class="factor-icon">$</div>
+                    <div class="factor-text">
+                        <strong>Price-Based</strong>
+                        Customers compare fares on aggregator sites
+                    </div>
+                </div>
+                <div class="factor">
+                    <div class="factor-icon">↓</div>
+                    <div class="factor-text">
+                        <strong>Cyclical Demand</strong>
+                        Economic downturns crush travel demand
+                    </div>
+                </div>
+                <div class="factor">
+                    <div class="factor-icon">🔒</div>
+                    <div class="factor-text">
+                        <strong>High Exit Barriers</strong>
+                        Expensive leases, valuable gates, union contracts
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="caption">
+            <strong>Key Insight:</strong> Rivalry is highest when markets contract AND competition focuses on price. Companies can reduce rivalry by differentiating, consolidating, or creating switching costs.
+        </div>
+    </div>
+</body>
+</html>

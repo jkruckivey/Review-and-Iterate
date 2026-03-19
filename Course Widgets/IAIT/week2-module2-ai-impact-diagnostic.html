@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Impact Diagnostic Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+            --color-accent: #6b9085;
+            --color-accent-dark: #5a7a6f;
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        *:focus { outline: 2px solid #3182ce; outline-offset: 2px; }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 4px solid var(--color-accent);
+            padding: 16px;
+            margin-bottom: 32px;
+            border-radius: var(--border-radius);
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+        }
+
+        .scoring-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .scoring-column h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .factor-item { margin-bottom: 24px; }
+        .factor-item:last-child { margin-bottom: 0; }
+
+        .factor-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .factor-label strong { font-size: 0.95rem; font-weight: 600; }
+
+        .factor-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            background: var(--color-accent);
+            color: white;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .factor-description {
+            color: var(--color-neutral-600);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--color-neutral-200);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover { background: var(--color-accent-dark); }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            border: none;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 0.75rem;
+            color: var(--color-neutral-500);
+        }
+
+        .subtotal {
+            background: var(--color-neutral-100);
+            padding: 14px 16px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--color-neutral-300);
+        }
+
+        .subtotal strong { font-size: 0.95rem; }
+
+        .subtotal-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        /* Result Card */
+        .result-card {
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .result-header {
+            background: var(--color-accent);
+            color: white;
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .result-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .result-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .result-body {
+            padding: 24px;
+        }
+
+        .result-body p {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .result-body p:last-child { margin-bottom: 0; }
+
+        .result-scores {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .score-badge {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: var(--color-neutral-50);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-neutral-200);
+        }
+
+        .score-badge .label {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .score-badge .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        /* Export */
+        .export-section {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 2px solid var(--color-neutral-200);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-family-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: var(--color-accent-dark); }
+
+        .export-note {
+            margin-top: 10px;
+            color: var(--color-neutral-500);
+            font-size: 0.85rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            h1 { font-size: 1.5rem; }
+            .scoring-grid { grid-template-columns: 1fr; gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Impact Diagnostic</h1>
+        <p class="subtitle">Where is AI hitting your industry -- supply side, demand side, or both?</p>
+
+        <div class="info-box">
+            Rate each factor from 1 (low impact) to 5 (transformative). Your scores map to one of four strategic quadrants from Julian's supply-demand framework.
+        </div>
+
+        <div class="scoring-grid">
+            <!-- Supply-Side -->
+            <div class="scoring-column">
+                <h2>Supply-Side Impact</h2>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>Process Automation</strong>
+                        <span class="factor-value" id="supply1-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How much can AI automate your core production or delivery?</p>
+                    <input type="range" id="supply1" min="1" max="5" value="3"
+                        aria-label="Process Automation score" oninput="update('supply1')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>Cost Reduction</strong>
+                        <span class="factor-value" id="supply2-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How significantly can AI reduce your operational costs?</p>
+                    <input type="range" id="supply2" min="1" max="5" value="3"
+                        aria-label="Cost Reduction score" oninput="update('supply2')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>New Capabilities</strong>
+                        <span class="factor-value" id="supply3-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How many entirely new capabilities does AI unlock for you?</p>
+                    <input type="range" id="supply3" min="1" max="5" value="3"
+                        aria-label="New Capabilities score" oninput="update('supply3')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="subtotal">
+                    <strong>Supply Total</strong>
+                    <span class="subtotal-value" id="supply-total" aria-live="polite">9 / 15</span>
+                </div>
+            </div>
+
+            <!-- Demand-Side -->
+            <div class="scoring-column">
+                <h2>Demand-Side Impact</h2>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>Customer Expectations</strong>
+                        <span class="factor-value" id="demand1-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How much are customers expecting AI-enhanced experiences?</p>
+                    <input type="range" id="demand1" min="1" max="5" value="3"
+                        aria-label="Customer Expectations score" oninput="update('demand1')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>Disintermediation Risk</strong>
+                        <span class="factor-value" id="demand2-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How likely are customers to bypass you using AI directly?</p>
+                    <input type="range" id="demand2" min="1" max="5" value="3"
+                        aria-label="Disintermediation Risk score" oninput="update('demand2')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="factor-item">
+                    <div class="factor-label">
+                        <strong>New Competitors</strong>
+                        <span class="factor-value" id="demand3-value" aria-live="polite">3</span>
+                    </div>
+                    <p class="factor-description">How many AI-native competitors are entering your market?</p>
+                    <input type="range" id="demand3" min="1" max="5" value="3"
+                        aria-label="New Competitors score" oninput="update('demand3')">
+                    <div class="scale-labels"><span>Low</span><span>Transformative</span></div>
+                </div>
+
+                <div class="subtotal">
+                    <strong>Demand Total</strong>
+                    <span class="subtotal-value" id="demand-total" aria-live="polite">9 / 15</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="result-card" aria-live="polite">
+            <div class="result-header">
+                <h2 id="result-title">Your Quadrant: Awaiting Input</h2>
+                <p id="result-subtitle">Adjust the sliders above to see your position</p>
+            </div>
+            <div class="result-body">
+                <div class="result-scores">
+                    <div class="score-badge">
+                        <div class="label">Supply</div>
+                        <div class="value" id="result-supply">9</div>
+                    </div>
+                    <div class="score-badge">
+                        <div class="label">Demand</div>
+                        <div class="value" id="result-demand">9</div>
+                    </div>
+                </div>
+                <p id="result-explanation">Move the sliders to generate your diagnostic result.</p>
+                <p id="result-implication" style="display:none;"></p>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <button class="btn" onclick="exportCSV()" aria-label="Export diagnostic results to CSV">Export Results to CSV</button>
+            <p class="export-note">Download your scores and quadrant result</p>
+        </div>
+    </div>
+
+    <script>
+        const state = { supply: [3, 3, 3], demand: [3, 3, 3] };
+        let touched = false;
+
+        const quadrants = {
+            limited: {
+                title: 'Limited Impact',
+                subtitle: 'AI is not yet reshaping your industry on either side',
+                explanation: 'Both supply-side and demand-side scores are low. AI is present but not yet a transformative force in your industry. This is a time to build foundational capabilities and monitor developments without urgent pressure.',
+                implication: 'Strategic implication: You have time to experiment and learn, but don\'t mistake low current impact for permanent safety -- watch for inflection points.'
+            },
+            efficiency: {
+                title: 'Efficiency Race',
+                subtitle: 'AI is changing how you produce, but customers haven\'t shifted yet',
+                explanation: 'Supply-side impact outpaces demand. AI is primarily an operational tool -- automating processes, cutting costs, and creating new production capabilities. Customer expectations and competitive dynamics remain relatively stable.',
+                implication: 'Strategic implication: Focus on internal AI adoption for competitive advantage. The risk is that competitors adopt faster and undercut you on cost or quality.'
+            },
+            market: {
+                title: 'Market Shift',
+                subtitle: 'Customers are changing faster than your operations',
+                explanation: 'Demand-side impact outpaces supply. Customers are expecting AI-enhanced experiences, new competitors are entering with AI-native models, or customers are beginning to bypass traditional providers entirely.',
+                implication: 'Strategic implication: Prioritize customer-facing AI initiatives. Internal efficiency matters less if customers are already moving toward AI-native alternatives.'
+            },
+            disruption: {
+                title: 'Full Disruption',
+                subtitle: 'AI is fundamentally restructuring both sides of your industry',
+                explanation: 'Both supply and demand scores are high. AI is simultaneously transforming how you produce and what customers expect. This is the most urgent scenario -- requiring comprehensive transformation across all dimensions of the business.',
+                implication: 'Strategic implication: Urgent, broad-based transformation is needed. Incremental moves are unlikely to be sufficient.'
+            }
+        };
+
+        function update(id) {
+            touched = true;
+            const val = parseInt(document.getElementById(id).value);
+            document.getElementById(id + '-value').textContent = val;
+
+            if (id.startsWith('supply')) {
+                state.supply[parseInt(id.replace('supply', '')) - 1] = val;
+            } else {
+                state.demand[parseInt(id.replace('demand', '')) - 1] = val;
+            }
+
+            const sTotal = state.supply.reduce((a, b) => a + b, 0);
+            const dTotal = state.demand.reduce((a, b) => a + b, 0);
+
+            document.getElementById('supply-total').textContent = sTotal + ' / 15';
+            document.getElementById('demand-total').textContent = dTotal + ' / 15';
+            document.getElementById('result-supply').textContent = sTotal;
+            document.getElementById('result-demand').textContent = dTotal;
+
+            // Threshold: midpoint of 3-15 range = 9
+            const sHigh = sTotal > 9;
+            const dHigh = dTotal > 9;
+
+            let key;
+            if (!sHigh && !dHigh) key = 'limited';
+            else if (sHigh && !dHigh) key = 'efficiency';
+            else if (!sHigh && dHigh) key = 'market';
+            else key = 'disruption';
+
+            const q = quadrants[key];
+            document.getElementById('result-title').textContent = 'Your Quadrant: ' + q.title;
+            document.getElementById('result-subtitle').textContent = q.subtitle;
+            document.getElementById('result-explanation').textContent = q.explanation;
+            document.getElementById('result-implication').textContent = q.implication;
+            document.getElementById('result-implication').style.display = 'block';
+        }
+
+        function exportCSV() {
+            const sNames = ['Process Automation', 'Cost Reduction', 'New Capabilities'];
+            const dNames = ['Customer Expectations', 'Disintermediation Risk', 'New Competitors'];
+            const sTotal = state.supply.reduce((a, b) => a + b, 0);
+            const dTotal = state.demand.reduce((a, b) => a + b, 0);
+
+            const sHigh = sTotal > 9;
+            const dHigh = dTotal > 9;
+            let qName;
+            if (!sHigh && !dHigh) qName = 'Limited Impact';
+            else if (sHigh && !dHigh) qName = 'Efficiency Race';
+            else if (!sHigh && dHigh) qName = 'Market Shift';
+            else qName = 'Full Disruption';
+
+            let csv = 'AI Impact Diagnostic - Results\n\nCategory,Factor,Score\n';
+            for (let i = 0; i < 3; i++) csv += `Supply-Side,${sNames[i]},${state.supply[i]}\n`;
+            csv += `Supply-Side,TOTAL,${sTotal}\n`;
+            for (let i = 0; i < 3; i++) csv += `Demand-Side,${dNames[i]},${state.demand[i]}\n`;
+            csv += `Demand-Side,TOTAL,${dTotal}\n\nStrategic Quadrant,${qName}\n`;
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ai-impact-diagnostic.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize result display
+        document.addEventListener('DOMContentLoaded', function() { update('supply1'); });
+    </script>
+</body>
+</html>

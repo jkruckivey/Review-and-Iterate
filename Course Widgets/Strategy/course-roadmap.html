@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Roadmap - Strategy Fundamentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Neutral Palette (Grays) */
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* Semantic Colors */
+            --color-success: #22c55e;
+            --color-success-light: #dcfce7;
+            --color-success-bg: #f0fdf4;
+            --color-success-dark: #15803d;
+            --color-error: #ef4444;
+            --color-error-light: #fee2e2;
+            --color-error-dark: #b91c1c;
+            --color-warning: #f59e0b;
+            --color-warning-light: #fcd34d;
+            --color-warning-dark: #d97706;
+            --color-info: #3b82f6;
+            --color-info-light: #dbeafe;
+            --color-info-bg: #eff6ff;
+            --color-info-dark: #1e40af;
+
+            /* Knowledge Check Feedback (Subtle) */
+            --color-correct: #c0d1cd;
+            --color-correct-bg: #f0f5f4;
+            --color-incorrect: #f0ede0;
+            --color-incorrect-bg: #faf9f5;
+
+            /* Accent Colors */
+            --color-accent: #bfe5e7;
+            --color-accent-dark: #5a9ea1;
+
+            /* 3 Elements */
+            --color-element-sage: #c0d1cd;
+            --color-element-purple: #d5cae0;
+            --color-element-blue: #bfe5e7;
+
+            /* Typography */
+            --font-family-primary: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Border */
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+
+            /* Focus state */
+            --color-focus: #3182ce;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-neutral-600);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Progress Header */
+        .progress-header {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .progress-text {
+            font-size: 1rem;
+            color: var(--color-neutral-700);
+            margin-bottom: 12px;
+        }
+
+        .progress-bar-container {
+            background: var(--color-neutral-200);
+            border-radius: 100px;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            background: var(--color-success);
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--color-neutral-500);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--color-neutral-600);
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .legend-icon.complete {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .legend-icon.current {
+            background: var(--color-info);
+            color: white;
+        }
+
+        .legend-icon.locked {
+            background: var(--color-neutral-300);
+            color: var(--color-neutral-600);
+        }
+
+        /* Module List */
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        /* Timeline Line */
+        .module-list::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background: var(--color-neutral-200);
+        }
+
+        /* Module Cards */
+        .module-card {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            padding-left: 60px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .module-card:hover:not(.locked) {
+            border-color: var(--color-neutral-400);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .module-card:focus {
+            outline: 2px solid var(--color-focus);
+            outline-offset: 2px;
+        }
+
+        .module-card.complete {
+            border-color: var(--color-success);
+            background: var(--color-success-bg);
+        }
+
+        .module-card.current {
+            border-color: var(--color-info);
+            background: var(--color-info-bg);
+        }
+
+        .module-card.locked {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        /* Status Icon */
+        .status-icon {
+            position: absolute;
+            left: 14px;
+            top: 20px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 1;
+            background: white;
+        }
+
+        .module-card.complete .status-icon {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .module-card.current .status-icon {
+            background: var(--color-info);
+            color: white;
+        }
+
+        .module-card.locked .status-icon {
+            background: var(--color-neutral-300);
+            color: var(--color-neutral-600);
+        }
+
+        /* Module Header */
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .module-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-badge {
+            background: var(--color-neutral-900);
+            color: white;
+            padding: 4px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .module-card.complete .module-badge {
+            background: var(--color-success);
+        }
+
+        .module-card.current .module-badge {
+            background: var(--color-info);
+        }
+
+        .module-card.locked .module-badge {
+            background: var(--color-neutral-400);
+        }
+
+        .module-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+        }
+
+        .time-badge {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-600);
+            padding: 4px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .expand-icon {
+            color: var(--color-neutral-500);
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+            margin-left: 12px;
+        }
+
+        .module-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .module-card.locked .expand-icon {
+            display: none;
+        }
+
+        /* Module Content (Expandable) */
+        .module-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .module-card.expanded .module-content {
+            max-height: 500px;
+        }
+
+        .module-description {
+            color: var(--color-neutral-700);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-neutral-200);
+            margin-top: 12px;
+        }
+
+        .module-details {
+            margin-top: 16px;
+        }
+
+        .detail-section {
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .detail-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .detail-item {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-700);
+            padding: 4px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.8rem;
+        }
+
+        /* Status Labels */
+        .status-label {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .status-label.complete {
+            background: var(--color-success-light);
+            color: var(--color-success-dark);
+        }
+
+        .status-label.current {
+            background: var(--color-info-light);
+            color: var(--color-info-dark);
+        }
+
+        .status-label.locked {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-500);
+        }
+
+        /* Course Summary */
+        .course-summary {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-neutral-900);
+            margin-bottom: 8px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--color-neutral-500);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .module-card {
+                padding: 16px;
+                padding-left: 50px;
+            }
+
+            .module-list::before {
+                left: 20px;
+            }
+
+            .status-icon {
+                left: 10px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .module-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .module-name {
+                font-size: 1rem;
+            }
+
+            .legend {
+                gap: 16px;
+            }
+
+            .summary-stats {
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Learning Journey</h1>
+        <p class="subtitle">Strategy Fundamentals: Putting the Pieces Together</p>
+
+        <!-- Progress Header -->
+        <div class="progress-header">
+            <p class="progress-text"><strong>Bridge-In Complete!</strong> You're ready to begin Module 1.</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 10%;" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <p class="progress-label">1 of 5 modules complete (10%)</p>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend" role="region" aria-label="Status legend">
+            <div class="legend-item">
+                <span class="legend-icon complete" aria-hidden="true">&#10003;</span>
+                <span>Complete</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon current" aria-hidden="true">&#9679;</span>
+                <span>Up Next</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon locked" aria-hidden="true">&#128274;</span>
+                <span>Locked</span>
+            </div>
+        </div>
+
+        <!-- Module List -->
+        <div class="module-list" role="list" aria-label="Course modules">
+
+            <!-- Module 0: Bridge-In (Complete) -->
+            <div class="module-card complete expanded"
+                 role="listitem"
+                 tabindex="0"
+                 onclick="toggleModule(this)"
+                 onkeydown="handleKeyPress(event, this)"
+                 aria-expanded="true">
+                <span class="status-icon" aria-hidden="true">&#10003;</span>
+                <div class="module-header">
+                    <div class="module-title-group">
+                        <span class="module-badge">Bridge-In</span>
+                        <span class="module-name">Course Introduction</span>
+                    </div>
+                    <div>
+                        <span class="time-badge">~35 min</span>
+                        <span class="expand-icon" aria-hidden="true">&#9660;</span>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">
+                        Welcome to Strategy Fundamentals! You've explored the course structure, learning outcomes, and concept map. You're now ready to dive into strategic analysis.
+                    </p>
+                    <div class="module-details">
+                        <div class="detail-section">
+                            <p class="detail-label">Completed</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Welcome Video</li>
+                                <li class="detail-item">Learning Outcomes Map</li>
+                                <li class="detail-item">Concept Map</li>
+                                <li class="detail-item">Background Diagnostic</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="status-label complete">You just completed this!</span>
+                </div>
+                <span class="sr-only">Click to collapse module details</span>
+            </div>
+
+            <!-- Module 1: Goal Setting (Current) -->
+            <div class="module-card current"
+                 role="listitem"
+                 tabindex="0"
+                 onclick="toggleModule(this)"
+                 onkeydown="handleKeyPress(event, this)"
+                 aria-expanded="false">
+                <span class="status-icon" aria-hidden="true">&#9679;</span>
+                <div class="module-header">
+                    <div class="module-title-group">
+                        <span class="module-badge">Module 1</span>
+                        <span class="module-name">Goal Setting Through Industry Analysis</span>
+                    </div>
+                    <div>
+                        <span class="time-badge">~60-75 min</span>
+                        <span class="expand-icon" aria-hidden="true">&#9660;</span>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">
+                        Learn Porter's Five Forces framework to analyze industry attractiveness and set realistic strategic goals. Apply the framework to Canary Medical's medical device industry.
+                    </p>
+                    <div class="module-details">
+                        <div class="detail-section">
+                            <p class="detail-label">Key Topics</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Porter's Five Forces</li>
+                                <li class="detail-item">Industry Attractiveness</li>
+                                <li class="detail-item">Realistic Goal Setting</li>
+                            </ul>
+                        </div>
+                        <div class="detail-section">
+                            <p class="detail-label">Interactive Widgets</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Five Forces Analyzer</li>
+                                <li class="detail-item">Industry Performance Explorer</li>
+                                <li class="detail-item">Five Forces Identifier</li>
+                                <li class="detail-item">Goal Reality Check</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="status-label current">When you're ready, start here</span>
+                </div>
+                <span class="sr-only">Click to expand module details</span>
+            </div>
+
+            <!-- Module 2: Strategic Positioning (Locked) -->
+            <div class="module-card locked"
+                 role="listitem"
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-disabled="true">
+                <span class="status-icon" aria-hidden="true">&#128274;</span>
+                <div class="module-header">
+                    <div class="module-title-group">
+                        <span class="module-badge">Module 2</span>
+                        <span class="module-name">Strategic Positioning</span>
+                    </div>
+                    <div>
+                        <span class="time-badge">~60-70 min</span>
+                        <span class="expand-icon" aria-hidden="true">&#9660;</span>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">
+                        Map companies onto the productivity frontier and distinguish high-end, mid-market, and price-sensitive positions. Assess the risk/return tradeoffs of each position.
+                    </p>
+                    <div class="module-details">
+                        <div class="detail-section">
+                            <p class="detail-label">Key Topics</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Productivity Frontier</li>
+                                <li class="detail-item">Strategic Positions</li>
+                                <li class="detail-item">Risk/Return Tradeoffs</li>
+                            </ul>
+                        </div>
+                        <div class="detail-section">
+                            <p class="detail-label">Interactive Widgets</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Productivity Frontier Explorer</li>
+                                <li class="detail-item">Strategic Position Matcher</li>
+                                <li class="detail-item">Position Risk-Return Calculator</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="status-label locked">Unlocks after Module 1</span>
+                </div>
+                <span class="sr-only">Module locked. Complete Module 1 first.</span>
+            </div>
+
+            <!-- Module 3: Customer Connection Part 1 (Locked) -->
+            <div class="module-card locked"
+                 role="listitem"
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-disabled="true">
+                <span class="status-icon" aria-hidden="true">&#128274;</span>
+                <div class="module-header">
+                    <div class="module-title-group">
+                        <span class="module-badge">Module 3</span>
+                        <span class="module-name">Customer Connection: The Milkshake Story</span>
+                    </div>
+                    <div>
+                        <span class="time-badge">~60-70 min</span>
+                        <span class="expand-icon" aria-hidden="true">&#9660;</span>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">
+                        Learn to distinguish correlation from causation in customer research. Apply observation-based research methods to understand why customers "hire" products.
+                    </p>
+                    <div class="module-details">
+                        <div class="detail-section">
+                            <p class="detail-label">Key Topics</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Correlation vs Causation</li>
+                                <li class="detail-item">Observation Research</li>
+                                <li class="detail-item">Customer "Jobs"</li>
+                            </ul>
+                        </div>
+                        <div class="detail-section">
+                            <p class="detail-label">Interactive Widgets</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Correlation vs Causation Detective</li>
+                                <li class="detail-item">Jobs-to-Be-Done Explorer</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="status-label locked">Unlocks after Module 2</span>
+                </div>
+                <span class="sr-only">Module locked. Complete Module 2 first.</span>
+            </div>
+
+            <!-- Module 4: Customer Connection Part 2 (Locked) -->
+            <div class="module-card locked"
+                 role="listitem"
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-disabled="true">
+                <span class="status-icon" aria-hidden="true">&#128274;</span>
+                <div class="module-header">
+                    <div class="module-title-group">
+                        <span class="module-badge">Module 4</span>
+                        <span class="module-name">Customer Connection: Jobs-to-Be-Done</span>
+                    </div>
+                    <div>
+                        <span class="time-badge">~60-70 min</span>
+                        <span class="expand-icon" aria-hidden="true">&#9660;</span>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">
+                        Apply the Jobs-to-Be-Done framework to real business scenarios. Connect customer insights to strategic positioning and develop coherent strategic recommendations.
+                    </p>
+                    <div class="module-details">
+                        <div class="detail-section">
+                            <p class="detail-label">Key Topics</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">JTBD Framework</li>
+                                <li class="detail-item">Strategic Integration</li>
+                                <li class="detail-item">Canary Medical Analysis</li>
+                            </ul>
+                        </div>
+                        <div class="detail-section">
+                            <p class="detail-label">Interactive Widgets</p>
+                            <ul class="detail-list">
+                                <li class="detail-item">Jobs Discovery Workshop</li>
+                                <li class="detail-item">Strategic Positioning Integrator</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="status-label locked">Unlocks after Module 3</span>
+                </div>
+                <span class="sr-only">Module locked. Complete Module 3 first.</span>
+            </div>
+        </div>
+
+        <!-- Course Summary -->
+        <div class="course-summary">
+            <p class="summary-title">Course Overview</p>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <p class="stat-value">5</p>
+                    <p class="stat-label">Modules</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value">5-6</p>
+                    <p class="stat-label">Hours Total</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value">13</p>
+                    <p class="stat-label">Interactive Widgets</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-value">1</p>
+                    <p class="stat-label">Case Study</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleModule(element) {
+            // Don't toggle locked modules
+            if (element.classList.contains('locked')) {
+                announceToScreenReader('This module is locked. Complete the previous module first.');
+                return;
+            }
+
+            const wasExpanded = element.classList.contains('expanded');
+
+            // Close all other modules (accordion behavior)
+            document.querySelectorAll('.module-card:not(.locked)').forEach(card => {
+                card.classList.remove('expanded');
+                card.setAttribute('aria-expanded', 'false');
+            });
+
+            // Toggle current module
+            if (!wasExpanded) {
+                element.classList.add('expanded');
+                element.setAttribute('aria-expanded', 'true');
+                announceToScreenReader('Module details expanded');
+            } else {
+                announceToScreenReader('Module details collapsed');
+            }
+        }
+
+        function handleKeyPress(event, element) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleModule(element);
+            }
+        }
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 1000);
+        }
+
+        // Auto-expand current module on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentModule = document.querySelector('.module-card.current');
+            if (currentModule) {
+                setTimeout(() => {
+                    currentModule.classList.add('expanded');
+                    currentModule.setAttribute('aria-expanded', 'true');
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
