@@ -7,6 +7,7 @@
 
 # Python scripts (build tools, not served)
 *.py
+!build-manifest.py
 *.pyc
 __pycache__/
 
