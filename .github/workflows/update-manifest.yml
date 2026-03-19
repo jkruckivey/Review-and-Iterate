@@ -1,0 +1,39 @@
+name: Auto-Build Widget Manifest
+
+on:
+  push:
+    # Trigger on push to the main branch
+    branches: [ main, master ]
+    # Only run when HTML widgets or the generator script change
+    paths:
+      - 'Course Widgets/**/*.html'
+      - 'build-manifest.py'
+  # Allow manual triggering from the GitHub Actions tab
+  workflow_dispatch:
+
+# Grant write permissions so the bot can commit
+permissions:
+  contents: write
+
+jobs:
+  update-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Generator Script
+        run: python build-manifest.py
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-updated manifest.json [skip ci]"
+          file_pattern: "manifest.json"
