@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plotting AI on the S-Curve and Hype Cycle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       IVEY UNIFIED DESIGN SYSTEM TOKENS
+    ============================================================ */
+    :root {
+      --color-neutral-50:    #fafafa;
+      --color-neutral-100:   #f5f5f5;
+      --color-neutral-200:   #e5e5e5;
+      --color-neutral-300:   #d4d4d4;
+      --color-neutral-400:   #a3a3a3;
+      --color-neutral-500:   #737373;
+      --color-neutral-600:   #525252;
+      --color-neutral-700:   #404040;
+      --color-neutral-800:   #262626;
+      --color-neutral-900:   #171717;
+      --color-accent:        #262626;
+      --color-teal:          #6b9085;
+      --color-pastel-teal:   #c0d1cd;
+      --color-turquoise:     #bfe5e7;
+      --color-sand:          #f0ede0;
+      --color-purple:        #d5cae0;
+      --color-success:       #22c55e;
+      --color-success-light: #dcfce7;
+      --color-error:         #ef4444;
+      --color-error-light:   #fee2e2;
+      /* zone tints */
+      --zone-emergence:   #f0ede0;
+      --zone-growth:      #e8f0ee;
+      --zone-maturity:    #ede8f3;
+      --zone-peak:        #fee2e2;
+      --zone-trough:      #f0ede0;
+      --zone-slope:       #e8f0ee;
+      --zone-plateau:     #dcfce7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--color-neutral-100);
+      color: var(--color-neutral-900);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       WIDGET CONTAINER
+    ============================================================ */
+    .widget-container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       WIDGET HEADER
+    ============================================================ */
+    .mlo-tag {
+      display: inline-block;
+      background: var(--color-turquoise);
+      color: var(--color-neutral-800);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      width: fit-content;
+    }
+
+    .widget-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--color-neutral-200);
+    }
+
+    .widget-header h1 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--color-neutral-900);
+      line-height: 1.25;
+    }
+
+    .task-description {
+      font-size: 0.9375rem;
+      color: var(--color-neutral-600);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       ACTIVITY WRAPPER
+    ============================================================ */
+    .activity-wrapper { padding: 0; }
+
+    .activity-body {
+      padding: 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ============================================================
+       INDUSTRY INPUT
+    ============================================================ */
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-row label {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-neutral-800);
+    }
+
+    .field-row input[type="text"] {
+      padding: 10px 14px;
+      border: 1.5px solid var(--color-neutral-300);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      color: var(--color-neutral-900);
+      background: white;
+      max-width: 360px;
+      transition: border-color 0.15s;
+    }
+
+    .field-row input[type="text"]:focus {
+      outline: none;
+      border-color: var(--color-neutral-800);
+    }
+
+    /* ============================================================
+       CURVES GRID
+    ============================================================ */
+    .curves-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .curve-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .curve-panel h2 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-neutral-800);
+    }
+
+    .canvas-wrap {
+      background: var(--color-neutral-50);
+      border: 1.5px solid var(--color-neutral-200);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 200px;
+      cursor: crosshair;
+      border-radius: 4px;
+    }
+
+    canvas:focus-visible {
+      outline: 2px solid var(--color-neutral-800);
+      outline-offset: 2px;
+    }
+
+    .phase-label {
+      font-size: 0.8125rem;
+      color: var(--color-neutral-400);
+      min-height: 18px;
+      text-align: center;
+    }
+
+    .phase-label.selected {
+      color: var(--color-neutral-800);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       FORM FIELDS
+    ============================================================ */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-neutral-700);
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--color-neutral-300);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--color-neutral-900);
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 76px;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-neutral-800);
+    }
+
+    /* ============================================================
+       CONTEXT PANEL
+    ============================================================ */
+    .context-panel {
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.8125rem;
+    }
+
+    .context-panel[hidden] { display: none; }
+
+    .context-sublabel {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-neutral-500);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .context-list {
+      padding-left: 16px;
+      color: var(--color-neutral-700);
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .context-watchout {
+      background: var(--color-sand);
+      border-radius: 4px;
+      padding: 8px 10px;
+      color: var(--color-neutral-700);
+      line-height: 1.5;
+    }
+
+    .context-watchout .context-sublabel {
+      display: inline;
+      margin-right: 4px;
+      color: var(--color-neutral-600);
+    }
+
+    /* ============================================================
+       SYNTHESIS
+    ============================================================ */
+    .synthesis-section {
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .synthesis-section h2 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-neutral-800);
+    }
+
+    .synthesis-hint {
+      font-size: 0.875rem;
+      color: var(--color-neutral-500);
+    }
+
+    .synthesis-section .form-group label {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-neutral-800);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-primary {
+      background: var(--color-neutral-800);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: var(--color-neutral-900); }
+
+    .btn-primary:disabled {
+      background: var(--color-neutral-200);
+      color: var(--color-neutral-400);
+      cursor: not-allowed;
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid var(--color-neutral-800);
+      outline-offset: 2px;
+    }
+
+    .btn-secondary {
+      background: var(--color-neutral-100);
+      color: var(--color-neutral-700);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover { background: var(--color-neutral-200); }
+
+    .btn-secondary:focus-visible {
+      outline: 2px solid var(--color-neutral-800);
+      outline-offset: 2px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ============================================================
+       COMPLETION
+    ============================================================ */
+    .completion-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--color-success-light);
+      border: 1.5px solid var(--color-success);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 0.9375rem;
+      color: var(--color-neutral-800);
+    }
+
+    .completion-box svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--color-success);
+    }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 640px) {
+      .activity-body  { padding: 24px 20px; gap: 24px; }
+      .curves-grid    { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       ACTIVITY
+  ============================================================ -->
+  <div id="activityScreen" class="widget-container activity-wrapper">
+
+    <div class="activity-body">
+
+      <div class="widget-header">
+        <h1>Plotting AI on the S-Curve and Hype Cycle</h1>
+        <p class="task-description">Click a zone on each curve to see what typical signals look like at that stage — and what to watch out for.</p>
+      </div>
+
+      <!-- Curves -->
+      <div class="curves-grid">
+
+        <!-- S-Curve -->
+        <div class="curve-panel">
+          <h2>S-Curve: Actual Adoption</h2>
+          <div class="canvas-wrap">
+            <canvas id="scurveCanvas"
+                    role="slider"
+                    aria-label="S-Curve phase selector. Use left and right arrow keys to move between phases."
+                    aria-valuemin="0"
+                    aria-valuemax="2"
+                    aria-valuenow="-1"
+                    aria-valuetext="No phase selected"
+                    tabindex="0"></canvas>
+          </div>
+          <div class="phase-label" id="scurveLabel" aria-live="polite">
+            Click a zone — or focus and use ← → keys
+          </div>
+          <div class="context-panel" id="scurveContext" hidden>
+            <div>
+              <span class="context-sublabel">Typical signals at this stage</span>
+              <ul class="context-list" id="scurveContextSignals"></ul>
+            </div>
+            <div class="context-watchout">
+              <span class="context-sublabel">Watch out —</span><span id="scurveContextWatchout"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hype Cycle -->
+        <div class="curve-panel">
+          <h2>Hype Cycle: Market Perception</h2>
+          <div class="canvas-wrap">
+            <canvas id="hypeCanvas"
+                    role="slider"
+                    aria-label="Hype Cycle phase selector. Use left and right arrow keys to move between phases."
+                    aria-valuemin="0"
+                    aria-valuemax="3"
+                    aria-valuenow="-1"
+                    aria-valuetext="No phase selected"
+                    tabindex="0"></canvas>
+          </div>
+          <div class="phase-label" id="hypeLabel" aria-live="polite">
+            Click a zone — or focus and use ← → keys
+          </div>
+          <div class="context-panel" id="hypeContext" hidden>
+            <div>
+              <span class="context-sublabel">Typical signals at this stage</span>
+              <ul class="context-list" id="hypeContextSignals"></ul>
+            </div>
+            <div class="context-watchout">
+              <span class="context-sublabel">Watch out —</span><span id="hypeContextWatchout"></span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /curves-grid -->
+
+      <!-- Buttons -->
+      <div class="button-row">
+        <button class="btn-secondary" onclick="resetActivity()">Reset</button>
+      </div>
+
+    </div><!-- /activity-body -->
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" id="srAnnounce"></div>
+
+  <script>
+    /* ============================================================
+       STATE
+    ============================================================ */
+    let scurvePhase = -1;
+    let hypePhase   = -1;
+
+    const SCURVE_PHASES = ['Emergence', 'Growth', 'Maturity'];
+    const HYPE_PHASES   = ['Peak of Inflated Expectations', 'Trough of Disillusionment', 'Slope of Enlightenment', 'Plateau of Productivity'];
+    const HYPE_SHORT    = ['Peak', 'Trough', 'Slope', 'Plateau'];
+
+    const SCURVE_CONTEXT = [
+      {
+        signals: [
+          'Pilots and proofs-of-concept, but few production deployments',
+          'High implementation costs; talent scarce and expensive',
+          'No dominant standard — vendors fragmented, use cases unclear',
+        ],
+        watchout: 'Companies often overinvest expecting rapid scaling. Most early deployments take 2–3× longer than planned and require more integration work than anticipated.',
+      },
+      {
+        signals: [
+          'Vendor consolidation underway; clear leaders emerging',
+          'Implementation costs falling; off-the-shelf options multiplying',
+          'ROI case studies proliferating; talent market maturing',
+        ],
+        watchout: 'Moving too slowly is now the primary risk. Companies that wait for full certainty often find they\'ve ceded ground that\'s hard to recover — especially in talent and institutional knowledge.',
+      },
+      {
+        signals: [
+          'Technology is becoming infrastructure — expected, not differentiating',
+          'Competition has shifted to execution and proprietary data, not the technology itself',
+          'Price pressure on vendors; commoditization underway',
+        ],
+        watchout: 'Continuing to treat the technology as a source of competitive advantage when it\'s now table stakes. At maturity, differentiation comes from what you build on top of it — not the technology itself.',
+      },
+    ];
+
+    const HYPE_CONTEXT = [
+      {
+        signals: [
+          'Breathless press coverage; vendor claims outpace what\'s deliverable',
+          'Board-level pressure to "do something with AI" regardless of use case fit',
+          'Investment flowing to almost any AI-adjacent initiative',
+        ],
+        watchout: 'FOMO-driven decisions made at peak hype rarely survive contact with implementation. The discipline is to anchor every initiative to a specific problem — not to the technology.',
+      },
+      {
+        signals: [
+          'High-profile failures becoming public; skepticism rising sharply',
+          'Budget cuts and program freezes at early adopters',
+          '"AI winter" narratives appearing alongside "AI hype" ones',
+        ],
+        watchout: 'Overcorrecting. Some organisations dismantle genuinely valuable programs because first-generation results disappointed. The trough is often when serious, durable work actually begins.',
+      },
+      {
+        signals: [
+          'Specific use cases delivering measurable ROI — not AI broadly, but particular applications',
+          'More measured, practitioner-led coverage replacing breathless hype',
+          'Second-generation products addressing failure modes of first-generation deployments',
+        ],
+        watchout: 'Still treating it as too experimental. If your industry is on the Slope, the window for early-mover advantage is narrowing — organisations that move now are building the institutional capability that latecomers will struggle to replicate.',
+      },
+      {
+        signals: [
+          'Mainstream adoption; established implementation playbooks available',
+          'Off-the-shelf solutions with reliable vendor support',
+          'Technology appears in procurement checklists, not strategy decks',
+        ],
+        watchout: 'Starting now means catching up, not leading. The strategic question has shifted from "should we invest?" to "how do we differentiate given everyone has access to the same tools?"',
+      },
+    ];
+
+    // Zone fill tints per phase
+    const SCURVE_TINTS = ['#f0ede0', '#e8f0ee', '#ede8f3'];
+    const HYPE_TINTS   = ['#fee2e2', '#f0ede0', '#e8f0ee', '#dcfce7'];
+
+    /* ============================================================
+       DRAW — S-CURVE
+    ============================================================ */
+    function drawSCurve() {
+      const el  = document.getElementById('scurveCanvas');
+      const dpr = window.devicePixelRatio || 1;
+      const W   = el.clientWidth;
+      const H   = el.clientHeight;
+      el.width  = W * dpr;
+      el.height = H * dpr;
+      const ctx = el.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const pL = 42, pR = 14, pT = 14, pB = 30;
+      const cW = W - pL - pR;
+      const cH = H - pT - pB;
+
+      // Zone boundaries (x proportion): 0-35% Emergence, 35-65% Growth, 65-100% Maturity
+      const bounds = [0, 0.35, 0.65, 1.0];
+      bounds.slice(0,-1).forEach((s, i) => {
+        ctx.fillStyle = scurvePhase === i ? SCURVE_TINTS[i] : 'transparent';
+        ctx.fillRect(pL + cW * s, pT, cW * (bounds[i+1] - s), cH);
+      });
+
+      // Axes
+      ctx.strokeStyle = '#d4d4d4';
+      ctx.lineWidth   = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(pL, pT); ctx.lineTo(pL, pT + cH);
+      ctx.lineTo(pL + cW, pT + cH);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle  = '#a3a3a3';
+      ctx.font       = '10px Geist, sans-serif';
+      ctx.textAlign  = 'center';
+      ctx.fillText('Time →', pL + cW / 2, H - 4);
+      ctx.save();
+      ctx.translate(11, pT + cH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Adoption', 0, 0);
+      ctx.restore();
+
+      // S-curve
+      const sx = pL, ex = pL + cW;
+      const sy = pT + cH - 6, ey = pT + 10;
+      const mx = pL + cW * 0.5, my = (sy + ey) / 2;
+
+      ctx.strokeStyle = '#262626';
+      ctx.lineWidth   = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.bezierCurveTo(sx + cW * 0.22, sy - 6,  sx + cW * 0.36, sy - 18, mx, my);
+      ctx.bezierCurveTo(mx + cW * 0.14, my - (my - ey) * 0.7, ex - cW * 0.13, ey + 8, ex, ey);
+      ctx.stroke();
+
+      // Phase labels + zone dividers
+      const midXs = [pL + cW * 0.175, pL + cW * 0.5, pL + cW * 0.825];
+      SCURVE_PHASES.forEach((label, i) => {
+        // Divider
+        if (i > 0) {
+          ctx.strokeStyle = '#e5e5e5';
+          ctx.lineWidth   = 1;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(pL + cW * bounds[i], pT);
+          ctx.lineTo(pL + cW * bounds[i], pT + cH);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.fillStyle = scurvePhase === i ? '#171717' : '#737373';
+        ctx.font      = scurvePhase === i ? 'bold 10px Geist, sans-serif' : '10px Geist, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, midXs[i], pT + cH + 18);
+      });
+
+      // Marker
+      if (scurvePhase >= 0) {
+        const mx2 = midXs[scurvePhase];
+        const markerY = [pT + cH - 28, my, pT + 18][scurvePhase];
+        ctx.fillStyle   = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(mx2, markerY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth   = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    /* ============================================================
+       DRAW — HYPE CYCLE
+    ============================================================ */
+    function drawHypeCycle() {
+      const el  = document.getElementById('hypeCanvas');
+      const dpr = window.devicePixelRatio || 1;
+      const W   = el.clientWidth;
+      const H   = el.clientHeight;
+      el.width  = W * dpr;
+      el.height = H * dpr;
+      const ctx = el.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const pL = 42, pR = 14, pT = 14, pB = 30;
+      const cW = W - pL - pR;
+      const cH = H - pT - pB;
+
+      // Zone boundaries: Peak 0-28%, Trough 28-52%, Slope 52-76%, Plateau 76-100%
+      const bounds = [0, 0.28, 0.52, 0.76, 1.0];
+      bounds.slice(0,-1).forEach((s, i) => {
+        ctx.fillStyle = hypePhase === i ? HYPE_TINTS[i] : 'transparent';
+        ctx.fillRect(pL + cW * s, pT, cW * (bounds[i+1] - s), cH);
+      });
+
+      // Axes
+      ctx.strokeStyle = '#d4d4d4';
+      ctx.lineWidth   = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(pL, pT); ctx.lineTo(pL, pT + cH);
+      ctx.lineTo(pL + cW, pT + cH);
+      ctx.stroke();
+
+      ctx.fillStyle  = '#a3a3a3';
+      ctx.font       = '10px Geist, sans-serif';
+      ctx.textAlign  = 'center';
+      ctx.fillText('Time →', pL + cW / 2, H - 4);
+      ctx.save();
+      ctx.translate(11, pT + cH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Expectations', 0, 0);
+      ctx.restore();
+
+      // Curve key points
+      const baseY    = pT + cH - 6;
+      const peakY    = pT + 10;
+      const troughY  = pT + cH - 36;
+      const plateauY = pT + cH - 62;
+
+      const x0 = pL;
+      const xP = pL + cW * 0.25;
+      const xT = pL + cW * 0.50;
+      const xS = pL + cW * 0.76;
+      const x1 = pL + cW;
+
+      ctx.strokeStyle = '#262626';
+      ctx.lineWidth   = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(x0, baseY);
+      ctx.quadraticCurveTo(x0 + (xP - x0) * 0.6, peakY - 10, xP, peakY);
+      ctx.quadraticCurveTo(xP + (xT - xP) * 0.55, baseY + 8, xT, troughY);
+      ctx.quadraticCurveTo(xT + (xS - xT) * 0.5, troughY - 8, xS, plateauY);
+      ctx.lineTo(x1, plateauY);
+      ctx.stroke();
+
+      // Zone dividers + labels
+      const midXs = [
+        pL + cW * 0.14,
+        pL + cW * 0.40,
+        pL + cW * 0.64,
+        pL + cW * 0.88,
+      ];
+      bounds.slice(1,-1).forEach((b) => {
+        ctx.strokeStyle = '#e5e5e5';
+        ctx.lineWidth   = 1;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(pL + cW * b, pT);
+        ctx.lineTo(pL + cW * b, pT + cH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      HYPE_SHORT.forEach((label, i) => {
+        ctx.fillStyle = hypePhase === i ? '#171717' : '#737373';
+        ctx.font      = hypePhase === i ? 'bold 10px Geist, sans-serif' : '10px Geist, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, midXs[i], pT + cH + 18);
+      });
+
+      // Marker
+      if (hypePhase >= 0) {
+        const mx = midXs[hypePhase];
+        const slopeY = troughY - (troughY - plateauY) * 0.45;
+        const markerY = [peakY, troughY, slopeY, plateauY][hypePhase];
+        ctx.fillStyle   = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(mx, markerY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth   = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    /* ============================================================
+       CLICK HANDLERS
+    ============================================================ */
+    function onSCurveClick(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      scurvePhase = relX < 0.35 ? 0 : relX < 0.65 ? 1 : 2;
+      updateSCurveLabel();
+      drawSCurve();
+    }
+
+    function onHypeClick(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      hypePhase = relX < 0.28 ? 0 : relX < 0.52 ? 1 : relX < 0.76 ? 2 : 3;
+      updateHypeLabel();
+      drawHypeCycle();
+    }
+
+    /* ============================================================
+       KEYBOARD HANDLERS
+    ============================================================ */
+    function onSCurveKey(e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const delta = e.key === 'ArrowRight' ? 1 : -1;
+      scurvePhase = scurvePhase < 0
+        ? (delta > 0 ? 0 : 2)
+        : Math.max(0, Math.min(2, scurvePhase + delta));
+      updateSCurveLabel();
+      drawSCurve();
+    }
+
+    function onHypeKey(e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const delta = e.key === 'ArrowRight' ? 1 : -1;
+      hypePhase = hypePhase < 0
+        ? (delta > 0 ? 0 : 3)
+        : Math.max(0, Math.min(3, hypePhase + delta));
+      updateHypeLabel();
+      drawHypeCycle();
+    }
+
+    /* ============================================================
+       LABEL UPDATES + CONTEXT PANELS
+    ============================================================ */
+    function showContext(prefix, index, contextData) {
+      const panel    = document.getElementById(prefix + 'Context');
+      const sigsList = document.getElementById(prefix + 'ContextSignals');
+      const watchout = document.getElementById(prefix + 'ContextWatchout');
+      const ctx      = contextData[index];
+      sigsList.innerHTML = ctx.signals.map(s => `<li>${s}</li>`).join('');
+      watchout.textContent = ctx.watchout;
+      panel.hidden = false;
+    }
+
+    function updateSCurveLabel() {
+      const el = document.getElementById('scurveLabel');
+      const cv = document.getElementById('scurveCanvas');
+      el.textContent = 'Selected: ' + SCURVE_PHASES[scurvePhase];
+      el.classList.add('selected');
+      cv.setAttribute('aria-valuenow',  scurvePhase);
+      cv.setAttribute('aria-valuetext', SCURVE_PHASES[scurvePhase]);
+      showContext('scurve', scurvePhase, SCURVE_CONTEXT);
+      announce('S-Curve: ' + SCURVE_PHASES[scurvePhase] + ' selected');
+    }
+
+    function updateHypeLabel() {
+      const el = document.getElementById('hypeLabel');
+      const cv = document.getElementById('hypeCanvas');
+      el.textContent = 'Selected: ' + HYPE_PHASES[hypePhase];
+      el.classList.add('selected');
+      cv.setAttribute('aria-valuenow',  hypePhase);
+      cv.setAttribute('aria-valuetext', HYPE_PHASES[hypePhase]);
+      showContext('hype', hypePhase, HYPE_CONTEXT);
+      announce('Hype Cycle: ' + HYPE_PHASES[hypePhase] + ' selected');
+    }
+
+    /* ============================================================
+       RESET
+    ============================================================ */
+    function resetActivity() {
+      scurvePhase = -1;
+      hypePhase   = -1;
+
+      const sLabel = document.getElementById('scurveLabel');
+      sLabel.textContent = 'Click a zone — or focus and use ← → keys';
+      sLabel.classList.remove('selected');
+
+      const hLabel = document.getElementById('hypeLabel');
+      hLabel.textContent = 'Click a zone — or focus and use ← → keys';
+      hLabel.classList.remove('selected');
+
+      ['scurveCanvas','hypeCanvas'].forEach(id => {
+        const cv = document.getElementById(id);
+        cv.setAttribute('aria-valuenow',  '-1');
+        cv.setAttribute('aria-valuetext', 'No phase selected');
+      });
+
+      document.getElementById('scurveContext').hidden = true;
+      document.getElementById('hypeContext').hidden   = true;
+
+      drawSCurve();
+      drawHypeCycle();
+      announce('Activity reset.');
+    }
+
+    /* ============================================================
+       SCREEN READER ANNOUNCE
+    ============================================================ */
+    function announce(msg) {
+      const el = document.getElementById('srAnnounce');
+      el.textContent = '';
+      requestAnimationFrame(() => { el.textContent = msg; });
+    }
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    document.addEventListener('DOMContentLoaded', () => {
+      const sc = document.getElementById('scurveCanvas');
+      const hc = document.getElementById('hypeCanvas');
+
+      sc.addEventListener('click',   onSCurveClick);
+      sc.addEventListener('keydown', onSCurveKey);
+      hc.addEventListener('click',   onHypeClick);
+      hc.addEventListener('keydown', onHypeKey);
+
+      drawSCurve();
+      drawHypeCycle();
+    });
+
+    window.addEventListener('resize', () => {
+      drawSCurve();
+      drawHypeCycle();
+    });
+  </script>
+</body>
+</html>

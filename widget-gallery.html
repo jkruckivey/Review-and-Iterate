@@ -10,6 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- Design System CSS — v3.0 canonical implementation -->
+<link rel="stylesheet" href="widget-design-system.css">
+
 <style>
 /* ==========================================================================
    THE UNIFIED IVEY CSS STANDARD
@@ -93,16 +96,16 @@ body {
 
 .btn-primary {
   background: var(--color-neutral-800); color: white; padding: 12px 24px;
-  border: none; border-radius: 8px; font-family: 'Geist', sans-serif;
-  font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;
+  border: none; border-radius: 6px; font-family: 'Geist', sans-serif;
+  font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s ease;
 }
 .btn-primary:hover { background: var(--color-neutral-700); }
 .btn-primary:disabled { background: var(--color-neutral-400); opacity: 0.6; cursor: not-allowed; }
 
 .btn-secondary {
   background: var(--color-neutral-100); color: var(--color-neutral-800); padding: 12px 24px;
-  border: 1px solid var(--color-neutral-300); border-radius: 8px; font-family: 'Geist', sans-serif;
-  font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease;
+  border: 1px solid var(--color-neutral-300); border-radius: 6px; font-family: 'Geist', sans-serif;
+  font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s ease;
 }
 .btn-secondary:hover { background: var(--color-neutral-200); }
 
@@ -173,7 +176,21 @@ body {
   
   <div class="header">
     <h1>Ivey Unified Design System</h1>
-    <p>Phase 3 Standard — Converging formatting, accessibility, and interaction into a single source of truth.</p>
+    <p>Phase 3 Standard — v3.0. This document is the specification. The implementation is <code style="background: var(--color-neutral-100); padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 0.95em; border: 1px solid var(--color-neutral-200);">widget-design-system.css</code> — copy its contents into every new widget's <code style="background: var(--color-neutral-100); padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 0.95em; border: 1px solid var(--color-neutral-200);">&lt;style&gt;</code> block.</p>
+  </div>
+
+  <!-- VERSION BANNER -->
+  <div style="background: var(--color-neutral-900); color: white; border-radius: 8px; padding: 16px 24px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-neutral-400); margin-bottom: 4px;">Design System</div>
+      <div style="font-size: 1rem; font-weight: 600;">widget-design-system.css — v3.0</div>
+    </div>
+    <div style="display: flex; gap: 24px; font-size: 0.8125rem; color: var(--color-neutral-300);">
+      <div><span style="color: var(--color-neutral-500);">Updated</span> &nbsp;2026-03-20</div>
+      <div><span style="color: var(--color-neutral-500);">Accent</span> &nbsp;#262626 (dark/neutral)</div>
+      <div><span style="color: var(--color-neutral-500);">Focus</span> &nbsp;:focus-visible</div>
+      <div><span style="color: var(--color-neutral-500);">A11y</span> &nbsp;WCAG 2.2 AA</div>
+    </div>
   </div>
 
   <!-- SECTION 1: COLORS -->
@@ -554,9 +571,22 @@ body {
 
     </div>
 
-    <div style="background: var(--color-neutral-50); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+    <div style="background: var(--color-neutral-50); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200); margin-bottom: 16px;">
       <p style="font-size: 0.8125rem; color: var(--color-neutral-600);">
         <strong>Full exemplar library:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">exemplars/Widgets/</code> — 40 widgets across 6 categories (calculators, exercises, explorers, infographics, quizzes, simulators). See <code style="font-family: Consolas, monospace; font-size: 0.75rem;">INDEX.md</code> for the full catalogue, <code style="font-family: Consolas, monospace; font-size: 0.75rem;">QUALITY.md</code> for compliance scores, and <code style="font-family: Consolas, monospace; font-size: 0.75rem;">TIERS.md</code> for complexity-based selection.
+      </p>
+    </div>
+
+    <div style="background: var(--color-neutral-900); color: white; border-radius: 8px; padding: 16px 20px;">
+      <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-neutral-400); margin-bottom: 8px;">Starting a new widget</div>
+      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7; margin-bottom: 8px;">
+        1. Copy the full contents of <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">widget-design-system.css</code> into your widget's <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">&lt;style&gt;</code> block.
+      </p>
+      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7; margin-bottom: 8px;">
+        2. Wrap all content in <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">&lt;div class="widget-container"&gt;</code>.
+      </p>
+      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7;">
+        3. Pick the closest exemplar from the golden set as your structural template, then replace its content.
       </p>
     </div>
 
