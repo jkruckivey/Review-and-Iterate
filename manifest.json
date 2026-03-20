@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-20T13:54:17.610875+00:00",
-  "totalCount": 173,
+  "generated": "2026-03-20T16:44:14.119680+00:00",
+  "totalCount": 174,
   "courses": {
     "AI Prototyping": [
       {
@@ -1539,10 +1539,23 @@
         "filename": "interactive-definitions-demo.html",
         "traits": {
           "font": "Geist",
-          "color": "Neutral / Minimal",
+          "color": "Pastel Tints",
           "depth": "Heavy Shadows & Gradients",
           "mobile": "Desktop Only (Fixed)",
           "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week2-module1-s-curve-mapping.html",
+        "filename": "week2-module1-s-curve-mapping.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
           "tech": "Vanilla HTML/JS"
         },
         "course": "IAIT"
@@ -1590,7 +1603,7 @@
         "path": "Course Widgets/IAIT/week4-module1-hybrid-zones.html",
         "filename": "week4-module1-hybrid-zones.html",
         "traits": {
-          "font": "Inter",
+          "font": "Geist",
           "color": "Pastel Tints",
           "depth": "Heavy Shadows & Gradients",
           "mobile": "Mobile Ready (@media)",
@@ -1603,7 +1616,7 @@
         "path": "Course Widgets/IAIT/week5-module1-microsoft-vs-ge.html",
         "filename": "week5-module1-microsoft-vs-ge.html",
         "traits": {
-          "font": "Inter",
+          "font": "Geist",
           "color": "Pastel Tints",
           "depth": "Flat (No shadows)",
           "mobile": "Mobile Ready (@media)",
@@ -1616,7 +1629,7 @@
         "path": "Course Widgets/IAIT/week5-module2-stakeholder-coalition-map.html",
         "filename": "week5-module2-stakeholder-coalition-map.html",
         "traits": {
-          "font": "Inter",
+          "font": "Geist",
           "color": "Pastel Tints",
           "depth": "Heavy Shadows & Gradients",
           "mobile": "Mobile Ready (@media)",
@@ -1629,8 +1642,8 @@
         "path": "Course Widgets/IAIT/week5-module3-energy-curve.html",
         "filename": "week5-module3-energy-curve.html",
         "traits": {
-          "font": "Inter",
-          "color": "Neutral / Minimal",
+          "font": "Geist",
+          "color": "Pastel Tints",
           "depth": "Flat (No shadows)",
           "mobile": "Mobile Ready (@media)",
           "a11y": "A11y Partial (Keyboard only)",
