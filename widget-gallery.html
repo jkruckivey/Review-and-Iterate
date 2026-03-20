@@ -319,29 +319,29 @@ body {
       
       <!-- The quiz widget -->
       <fieldset style="border: none;">
-        <legend class="question-text">According to the unified design standard, which color should <strong>never</strong> be used to indicate an error state?</legend>
-        
+        <legend class="question-text">A firm has capabilities that are rare, valuable, and difficult for competitors to imitate. What does this describe?</legend>
+
         <label class="mcq-option" id="opt-1">
-          <input type="radio" name="quiz" value="red" tabindex="0">
+          <input type="radio" name="quiz" value="wrong1" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
-          <span>Red (#ef4444)</span>
+          <span>Operational efficiency</span>
         </label>
 
         <label class="mcq-option" id="opt-2">
-          <input type="radio" name="quiz" value="purple" tabindex="0">
+          <input type="radio" name="quiz" value="correct" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
-          <span>Purple (#5B2C6F)</span>
+          <span>A sustainable competitive advantage</span>
         </label>
 
         <label class="mcq-option" id="opt-3">
-          <input type="radio" name="quiz" value="orange" tabindex="0">
+          <input type="radio" name="quiz" value="wrong2" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
-          <span>Orange (#f59e0b)</span>
+          <span>Market leadership</span>
         </label>
       </fieldset>
 
-      <div style="margin-top: 24px;">
-        <button class="btn-primary" onclick="checkAnswer()">Submit Output</button>
+      <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+        <button class="btn-primary" onclick="checkAnswer()">Submit</button>
       </div>
 
       <!-- ARIA Live region for accessibility -->
@@ -537,60 +537,6 @@ body {
     </div>
   </div>
 
-  <!-- SECTION 7: REFERENCE EXEMPLARS -->
-  <div class="section">
-    <h2>7. Reference Exemplars</h2>
-    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">When building new widgets, start from the golden set exemplars. These have been audited for design system compliance and scored 7/7.</p>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-
-      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px; background: var(--color-neutral-50);">
-        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--color-neutral-800);">Golden Set (7/7 Compliance)</h3>
-        <p style="font-size: 0.8125rem; color: var(--color-neutral-600); margin-bottom: 12px;">Use these as starting templates for new widgets.</p>
-        <div style="font-size: 0.8125rem; line-height: 1.8; color: var(--color-neutral-700);">
-          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">simulators/streaming-wars-strategy.html</code></p>
-          <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-bottom: 8px;">Strategy games, multi-scenario simulations</p>
-          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">calculators/athlete-brand-calculator.html</code></p>
-          <p style="font-size: 0.75rem; color: var(--color-neutral-500); margin-bottom: 8px;">Complex multi-tab calculators</p>
-          <p style="margin-bottom: 4px;"><code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">calculators/sponsorship-roi-calculator.html</code></p>
-          <p style="font-size: 0.75rem; color: var(--color-neutral-500);">Financial modeling with ARIA live regions</p>
-        </div>
-      </div>
-
-      <div style="border: 1px solid var(--color-neutral-200); border-radius: 8px; padding: 20px; background: var(--color-neutral-50);">
-        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--color-neutral-800);">By Widget Type</h3>
-        <p style="font-size: 0.8125rem; color: var(--color-neutral-600); margin-bottom: 12px;">Best starting point for each category.</p>
-        <div style="font-size: 0.8125rem; line-height: 2; color: var(--color-neutral-700);">
-          <p><strong>Calculator:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">athlete-brand-calculator.html</code></p>
-          <p><strong>Simulator:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">streaming-wars-strategy.html</code></p>
-          <p><strong>Explorer:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">athlete-decision-tree.html</code></p>
-          <p><strong>Quiz:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">sponsorship-roi-pre-assessment.html</code></p>
-          <p><strong>Infographic:</strong> <em style="color: var(--color-neutral-500);">None passing — use explorer patterns</em></p>
-        </div>
-      </div>
-
-    </div>
-
-    <div style="background: var(--color-neutral-50); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200); margin-bottom: 16px;">
-      <p style="font-size: 0.8125rem; color: var(--color-neutral-600);">
-        <strong>Full exemplar library:</strong> <code style="background: var(--color-neutral-100); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">exemplars/Widgets/</code> — 40 widgets across 6 categories (calculators, exercises, explorers, infographics, quizzes, simulators). See <code style="font-family: Consolas, monospace; font-size: 0.75rem;">INDEX.md</code> for the full catalogue, <code style="font-family: Consolas, monospace; font-size: 0.75rem;">QUALITY.md</code> for compliance scores, and <code style="font-family: Consolas, monospace; font-size: 0.75rem;">TIERS.md</code> for complexity-based selection.
-      </p>
-    </div>
-
-    <div style="background: var(--color-neutral-900); color: white; border-radius: 8px; padding: 16px 20px;">
-      <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-neutral-400); margin-bottom: 8px;">Starting a new widget</div>
-      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7; margin-bottom: 8px;">
-        1. Copy the full contents of <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">widget-design-system.css</code> into your widget's <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">&lt;style&gt;</code> block.
-      </p>
-      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7; margin-bottom: 8px;">
-        2. Wrap all content in <code style="background: var(--color-neutral-700); padding: 1px 5px; border-radius: 3px; font-family: Consolas, monospace; font-size: 0.75rem;">&lt;div class="widget-container"&gt;</code>.
-      </p>
-      <p style="font-size: 0.8125rem; color: var(--color-neutral-300); line-height: 1.7;">
-        3. Pick the closest exemplar from the golden set as your structural template, then replace its content.
-      </p>
-    </div>
-
-  </div>
 
 </div>
 
@@ -622,13 +568,13 @@ body {
       return;
     }
 
-    if (currentSelection === 'purple') {
+    if (currentSelection === 'correct') {
       feedbackRegion.innerHTML = `
         <div class="feedback-correct">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
           <div>
             <strong style="display:block; margin-bottom: 4px;">Correct!</strong>
-            Prior versions of the Accounting course used Purple for incorrect states. This broke universal UX conventions. We have standardized on semantic Red/Green exclusively.
+            The VRIN framework (Valuable, Rare, Inimitable, Non-substitutable) identifies the conditions under which a resource or capability generates sustainable competitive advantage.
           </div>
         </div>
       `;
@@ -637,8 +583,8 @@ body {
         <div class="feedback-incorrect">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
           <div>
-            <strong style="display:block; margin-bottom: 4px;">Incorrect.</strong>
-            Review the "Current State" section of the Widget Style Guide regarding the Accounting courses' use of Ivey Brand colors.
+            <strong style="display:block; margin-bottom: 4px;">Not quite.</strong>
+            Efficiency and market position can be temporary. A sustainable advantage requires capabilities that competitors find rare and hard to replicate.
           </div>
         </div>
       `;
