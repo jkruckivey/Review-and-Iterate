@@ -1,192 +1,2271 @@
 {
-  "AI Prototyping": [
-    "agent-architectures-comparison2.html",
-    "agentplanningsimulation.html",
-    "agentreasoningchat.html",
-    "aip-course-learning-outcomes.html",
-    "aip-week-1-learning-outcomes.html",
-    "aip-week-2-learning-outcomes.html",
-    "aip-week-3-learning-outcomes.html",
-    "aip-week-4-learning-outcomes.html",
-    "aip-week-5-learning-outcomes.html",
-    "bolt-guide-1.html",
-    "chatbot-builder-guide.html",
-    "claude-code-web-guide-1.html",
-    "datascienceconversationscenario.html",
-    "governancegapactivity.html",
-    "guardraildiagnosticactivity.html",
-    "legal-ai-diagnosis-game1.html",
-    "lovable-guide-2-1.html",
-    "metric-calculator-fraud-detection-challenge-updated.html",
-    "monitoringdashboardactivity1.html",
-    "rag-troubleshooting-simulator.html"
-  ],
-  "Acounting": [
-    "acc-m-intro-accounting-foundations-assessment-test-your-knowledge-vocabulary.html",
-    "acc-m-intro-the-same-business-two-methods.html",
-    "acc-m-intro-why-accounting-matters-card-flip-quiz.html",
-    "acc-m2-build-an-income-statement-activity-1-income-statement-builder.html",
-    "acc-m2-build-an-income-statement-activity-2-advanced-income-statement-challenge.html",
-    "acc-m2-expense-classification-activity.html",
-    "acc-m2-expense-recognition-timing-activity-updated.html",
-    "acc-m2-financial-statements-final-challenge.html",
-    "acc-m3-arthur-rojas-matching-activity-v4.html",
-    "acc-m3-building-lunas-balance-sheet.html",
-    "acc-m3-financial-ratio-comparison-project-instructions.html",
-    "acc-m3-what-are-financial-ratios.html",
-    "acc-m4-cost-classification-matching-activity-v2.html",
-    "acc-m4-sailing-voyages-case-solution.html",
-    "acc-m5-case-healthtech-solutions-revenue-recognition-dilemma-scorm-v2.html",
-    "acc-m5-technology-impact-interactive-quiz-human-vs.ai-in-acc.html",
-    "accounting-equation-classifier.html",
-    "from-clerk-to-strategic-advisor-v2.html",
-    "integration-exercise-with-no-questions.html",
-    "intro-to-acc-financial-vs.managerial-accounting-dragdrop-activity.html",
-    "learning-outcomes-unit-0-course-overview.html",
-    "learning-outcomes-unit-1-getting-started.html",
-    "learning-outcomes-unit-3-financial-statements.html",
-    "learning-outcomes-unit-4-ratio-analysis.html",
-    "learning-outcomes-unit-5-understanding-managerial.html",
-    "learning-outcomes-unit-6-ethics-technology.html"
-  ],
-  "Business of Sports Marketing": [
-    "activation-budget-builder.html",
-    "athlete-brand-calculator.html",
-    "athlete-decision-tree.html",
-    "audience-size-calculator.html",
-    "betting-market-simulator.html",
-    "brand-package-creator.html",
-    "cfl-city-selector.html",
-    "cfl-project-tie-in.html",
-    "dynamic-pricing-simulator.html",
-    "ecosystem-cascade-simulator.html",
-    "emerging-sports-investment-tool.html",
-    "engagement-multiplier-calculator.html",
-    "ethical-sponsorship-decision-tool.html",
-    "exclusivity-bidding-simulator.html",
-    "future-trends-predictor.html",
-    "heritage-transformation-strategist.html",
-    "learning-outcomes-week.html",
-    "legacy-innovation-matrix.html",
-    "media-rights-explorer.html",
-    "partnership-valuation-tool.html",
-    "platform-economics-visualizer.html",
-    "post-career-wealth-simulator.html",
-    "revenue-streams-explorer.html",
-    "serena-brand-portfolio-analyzer.html",
-    "sponsorship-valuation-calculator.html",
-    "stadium-revenue-optimizer.html",
-    "streaming-wars-game.html",
-    "streaming-wars-strategy.html"
-  ],
-  "Finance": [
-    "05_quiz_finance_in_context.html",
-    "08updated_reflection_industry_analysis.html",
-    "09_reflection_connect_to_role.html",
-    "10_diagram_flow_of_funds.html",
-    "25_reflection_module3.html",
-    "27_exercise_sgr_calculation.html",
-    "30_exercise_draw_and_solve.html",
-    "31update_exercise_evergreen_proforma.html",
-    "32_interactive_timeline_approach.html",
-    "34_reflection_module4.html",
-    "learning-outcomes-module-1 1.html",
-    "learning-outcomes-module-2 1.html",
-    "learning-outcomes-module-3 1.html",
-    "learning-outcomes-module-4 1.html",
-    "m2_06_reflection_apply_to_role.html"
-  ],
-  "Fundamentals of Analytics and Excel": [
-    "analysis-toolpak-demo.html",
-    "bin-width-explorer.html",
-    "data-table-demo.html",
-    "decision-tree-demo.html",
-    "decision-tree-practice.html",
-    "ecommerce-pivot-table-simulator.html",
-    "excel-correl-function-practice.html",
-    "excel-formula-validator.html",
-    "excel-sandbox-statistics.html",
-    "kc-m3-quadratic-mastery.html",
-    "kc-m4-functions-verification.html",
-    "kc-m5-statistics-mastery.html",
-    "kc-m7-correlation-mastery.html",
-    "kc-module-1.html",
-    "kc-module-2.html",
-    "kc-module-3.html",
-    "kc-module-4.html",
-    "kc-module-5.html",
-    "kc-module-6.html",
-    "learning-outcomes-module-0.html",
-    "learning-outcomes-module-1.html",
-    "learning-outcomes-module-2.html",
-    "learning-outcomes-module-3.html",
-    "learning-outcomes-module-4.html",
-    "learning-outcomes-module-5.html",
-    "learning-outcomes-module-6.html",
-    "learning-outcomes-module-7.html"
-  ],
-  "IAIT": [
-    "advantage-audit.html",
-    "interactive-definitions-demo.html",
-    "week2-module1-s-curve-mapping.html",
-    "week2-module2-ai-impact-diagnostic.html",
-    "week2-module3-strategic-options-assessment.html",
-    "week2-module3-timing-decision-tree.html",
-    "week4-module1-hybrid-zones.html",
-    "week5-module1-microsoft-vs-ge.html",
-    "week5-module2-stakeholder-coalition-map.html",
-    "week5-module3-energy-curve.html"
-  ],
-  "Managing Innovation": [
-    "3m-sixsigma-timeline.html",
-    "ambidexterity-types1.html",
-    "blair-witch-comparison.html",
-    "bn-aftermath-timeline.html",
-    "coherence-scenario.html",
-    "costs-vs-uncertainty1.html",
-    "creative-ferment-consolidation.html",
-    "etypes-options.html",
-    "investor-pitches1.html",
-    "io-cb-mi-gs-weekly-recap-lighter-colors.html",
-    "io-cb-mi-w1-accidental-innovation-flip-cards-lighter-colors.html",
-    "io-cb-mi-w1-m1-podcast-player.html",
-    "io-cb-mi-w1-pre-assessment-v2-lighter-colors.html",
-    "io-cb-mi-w1-the-xerox-parc-story-v2-lighter-colors.html",
-    "io-cb-mi-w2-m1-challenges-in-managing-crowdsourcing-business-model-follow-up-activity-lighter-colors.html",
-    "io-cb-mi-w2-m1-pre-assessment-lighter-colors.html",
-    "io-cb-mi-w2-m1-user-centric-innovation-approaches-follow-up-activity-lighter-colors.html",
-    "io-cb-mi-w3-podcast-player.html",
-    "io-cb-mi-w3-pre-assessment-lighter-colors.html",
-    "jordan-timeline.html",
-    "pareto-distribution.html",
-    "patterns-trajectories-closure.html",
-    "portfolio-strategy.html",
-    "process-vs-innovation.html",
-    "scurve-placement-activity.html",
-    "shape-of-innovation2.html",
-    "standards-battle-infographic.html",
-    "three-films-chart.html",
-    "user-innovation-chart.html",
-    "vipp-discussion-widget.html",
-    "what-determines-winner2.html"
-  ],
-  "Strategy": [
-    "differentiation-analyzer.html",
-    "learning-outcomes-map.html",
-    "learning-outcomes-module-1.html",
-    "learning-outcomes-module-10.html",
-    "learning-outcomes-module-2.html",
-    "learning-outcomes-module-3.html",
-    "learning-outcomes-module-4.html",
-    "learning-outcomes-module-5.html",
-    "learning-outcomes-module-6.html",
-    "learning-outcomes-module-7.html",
-    "learning-outcomes-module-8.html",
-    "learning-outcomes-module-9.html",
-    "mid-market-squeeze.html",
-    "position-metrics.html",
-    "position-risk-return-calculator.html",
-    "strategy-concept-map.html",
-    "value-creation-analyzer.html"
-  ]
+  "generated": "2026-03-20T13:54:17.610875+00:00",
+  "totalCount": 173,
+  "courses": {
+    "AI Prototyping": [
+      {
+        "path": "Course Widgets/AI Prototyping/agent-architectures-comparison2.html",
+        "filename": "agent-architectures-comparison2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/agentplanningsimulation.html",
+        "filename": "agentplanningsimulation.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/agentreasoningchat.html",
+        "filename": "agentreasoningchat.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-course-learning-outcomes.html",
+        "filename": "aip-course-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-week-1-learning-outcomes.html",
+        "filename": "aip-week-1-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-week-2-learning-outcomes.html",
+        "filename": "aip-week-2-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-week-3-learning-outcomes.html",
+        "filename": "aip-week-3-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-week-4-learning-outcomes.html",
+        "filename": "aip-week-4-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/aip-week-5-learning-outcomes.html",
+        "filename": "aip-week-5-learning-outcomes.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/bolt-guide-1.html",
+        "filename": "bolt-guide-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/chatbot-builder-guide.html",
+        "filename": "chatbot-builder-guide.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/claude-code-web-guide-1.html",
+        "filename": "claude-code-web-guide-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/datascienceconversationscenario.html",
+        "filename": "datascienceconversationscenario.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/governancegapactivity.html",
+        "filename": "governancegapactivity.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/guardraildiagnosticactivity.html",
+        "filename": "guardraildiagnosticactivity.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/legal-ai-diagnosis-game1.html",
+        "filename": "legal-ai-diagnosis-game1.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/lovable-guide-2-1.html",
+        "filename": "lovable-guide-2-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/metric-calculator-fraud-detection-challenge-updated.html",
+        "filename": "metric-calculator-fraud-detection-challenge-updated.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/monitoringdashboardactivity1.html",
+        "filename": "monitoringdashboardactivity1.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      },
+      {
+        "path": "Course Widgets/AI Prototyping/rag-troubleshooting-simulator.html",
+        "filename": "rag-troubleshooting-simulator.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "AI Prototyping"
+      }
+    ],
+    "Acounting": [
+      {
+        "path": "Course Widgets/Acounting/acc-m-intro-accounting-foundations-assessment-test-your-knowledge-vocabulary.html",
+        "filename": "acc-m-intro-accounting-foundations-assessment-test-your-knowledge-vocabulary.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m-intro-the-same-business-two-methods.html",
+        "filename": "acc-m-intro-the-same-business-two-methods.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m-intro-why-accounting-matters-card-flip-quiz.html",
+        "filename": "acc-m-intro-why-accounting-matters-card-flip-quiz.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m2-build-an-income-statement-activity-1-income-statement-builder.html",
+        "filename": "acc-m2-build-an-income-statement-activity-1-income-statement-builder.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m2-build-an-income-statement-activity-2-advanced-income-statement-challenge.html",
+        "filename": "acc-m2-build-an-income-statement-activity-2-advanced-income-statement-challenge.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m2-expense-classification-activity.html",
+        "filename": "acc-m2-expense-classification-activity.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m2-expense-recognition-timing-activity-updated.html",
+        "filename": "acc-m2-expense-recognition-timing-activity-updated.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m2-financial-statements-final-challenge.html",
+        "filename": "acc-m2-financial-statements-final-challenge.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m3-arthur-rojas-matching-activity-v4.html",
+        "filename": "acc-m3-arthur-rojas-matching-activity-v4.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m3-building-lunas-balance-sheet.html",
+        "filename": "acc-m3-building-lunas-balance-sheet.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m3-financial-ratio-comparison-project-instructions.html",
+        "filename": "acc-m3-financial-ratio-comparison-project-instructions.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m3-what-are-financial-ratios.html",
+        "filename": "acc-m3-what-are-financial-ratios.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m4-cost-classification-matching-activity-v2.html",
+        "filename": "acc-m4-cost-classification-matching-activity-v2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m4-sailing-voyages-case-solution.html",
+        "filename": "acc-m4-sailing-voyages-case-solution.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m5-case-healthtech-solutions-revenue-recognition-dilemma-scorm-v2.html",
+        "filename": "acc-m5-case-healthtech-solutions-revenue-recognition-dilemma-scorm-v2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/acc-m5-technology-impact-interactive-quiz-human-vs.ai-in-acc.html",
+        "filename": "acc-m5-technology-impact-interactive-quiz-human-vs.ai-in-acc.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/accounting-equation-classifier.html",
+        "filename": "accounting-equation-classifier.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/from-clerk-to-strategic-advisor-v2.html",
+        "filename": "from-clerk-to-strategic-advisor-v2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/integration-exercise-with-no-questions.html",
+        "filename": "integration-exercise-with-no-questions.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/intro-to-acc-financial-vs.managerial-accounting-dragdrop-activity.html",
+        "filename": "intro-to-acc-financial-vs.managerial-accounting-dragdrop-activity.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-0-course-overview.html",
+        "filename": "learning-outcomes-unit-0-course-overview.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-1-getting-started.html",
+        "filename": "learning-outcomes-unit-1-getting-started.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-3-financial-statements.html",
+        "filename": "learning-outcomes-unit-3-financial-statements.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-4-ratio-analysis.html",
+        "filename": "learning-outcomes-unit-4-ratio-analysis.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-5-understanding-managerial.html",
+        "filename": "learning-outcomes-unit-5-understanding-managerial.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      },
+      {
+        "path": "Course Widgets/Acounting/learning-outcomes-unit-6-ethics-technology.html",
+        "filename": "learning-outcomes-unit-6-ethics-technology.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Acounting"
+      }
+    ],
+    "Business of Sports Marketing": [
+      {
+        "path": "Course Widgets/Business of Sports Marketing/activation-budget-builder.html",
+        "filename": "activation-budget-builder.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/athlete-brand-calculator.html",
+        "filename": "athlete-brand-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/athlete-decision-tree.html",
+        "filename": "athlete-decision-tree.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/audience-size-calculator.html",
+        "filename": "audience-size-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/betting-market-simulator.html",
+        "filename": "betting-market-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/brand-package-creator.html",
+        "filename": "brand-package-creator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/cfl-city-selector.html",
+        "filename": "cfl-city-selector.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/cfl-project-tie-in.html",
+        "filename": "cfl-project-tie-in.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/dynamic-pricing-simulator.html",
+        "filename": "dynamic-pricing-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/ecosystem-cascade-simulator.html",
+        "filename": "ecosystem-cascade-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/emerging-sports-investment-tool.html",
+        "filename": "emerging-sports-investment-tool.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/engagement-multiplier-calculator.html",
+        "filename": "engagement-multiplier-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/ethical-sponsorship-decision-tool.html",
+        "filename": "ethical-sponsorship-decision-tool.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/exclusivity-bidding-simulator.html",
+        "filename": "exclusivity-bidding-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/future-trends-predictor.html",
+        "filename": "future-trends-predictor.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/heritage-transformation-strategist.html",
+        "filename": "heritage-transformation-strategist.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/learning-outcomes-week.html",
+        "filename": "learning-outcomes-week.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/legacy-innovation-matrix.html",
+        "filename": "legacy-innovation-matrix.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/media-rights-explorer.html",
+        "filename": "media-rights-explorer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/partnership-valuation-tool.html",
+        "filename": "partnership-valuation-tool.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/platform-economics-visualizer.html",
+        "filename": "platform-economics-visualizer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/post-career-wealth-simulator.html",
+        "filename": "post-career-wealth-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/revenue-streams-explorer.html",
+        "filename": "revenue-streams-explorer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/serena-brand-portfolio-analyzer.html",
+        "filename": "serena-brand-portfolio-analyzer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/sponsorship-valuation-calculator.html",
+        "filename": "sponsorship-valuation-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/stadium-revenue-optimizer.html",
+        "filename": "stadium-revenue-optimizer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/streaming-wars-game.html",
+        "filename": "streaming-wars-game.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      },
+      {
+        "path": "Course Widgets/Business of Sports Marketing/streaming-wars-strategy.html",
+        "filename": "streaming-wars-strategy.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Business of Sports Marketing"
+      }
+    ],
+    "Finance": [
+      {
+        "path": "Course Widgets/Finance/05_quiz_finance_in_context.html",
+        "filename": "05_quiz_finance_in_context.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/08updated_reflection_industry_analysis.html",
+        "filename": "08updated_reflection_industry_analysis.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/09_reflection_connect_to_role.html",
+        "filename": "09_reflection_connect_to_role.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/10_diagram_flow_of_funds.html",
+        "filename": "10_diagram_flow_of_funds.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/25_reflection_module3.html",
+        "filename": "25_reflection_module3.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/27_exercise_sgr_calculation.html",
+        "filename": "27_exercise_sgr_calculation.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/30_exercise_draw_and_solve.html",
+        "filename": "30_exercise_draw_and_solve.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/31update_exercise_evergreen_proforma.html",
+        "filename": "31update_exercise_evergreen_proforma.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/32_interactive_timeline_approach.html",
+        "filename": "32_interactive_timeline_approach.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/34_reflection_module4.html",
+        "filename": "34_reflection_module4.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-1 1.html",
+        "filename": "learning-outcomes-module-1 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-2 1.html",
+        "filename": "learning-outcomes-module-2 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-3 1.html",
+        "filename": "learning-outcomes-module-3 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/learning-outcomes-module-4 1.html",
+        "filename": "learning-outcomes-module-4 1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      },
+      {
+        "path": "Course Widgets/Finance/m2_06_reflection_apply_to_role.html",
+        "filename": "m2_06_reflection_apply_to_role.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Finance"
+      }
+    ],
+    "Fundamentals of Analytics and Excel": [
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/analysis-toolpak-demo.html",
+        "filename": "analysis-toolpak-demo.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/bin-width-explorer.html",
+        "filename": "bin-width-explorer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/data-table-demo.html",
+        "filename": "data-table-demo.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/decision-tree-demo.html",
+        "filename": "decision-tree-demo.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/decision-tree-practice.html",
+        "filename": "decision-tree-practice.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/ecommerce-pivot-table-simulator.html",
+        "filename": "ecommerce-pivot-table-simulator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/excel-correl-function-practice.html",
+        "filename": "excel-correl-function-practice.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/excel-formula-validator.html",
+        "filename": "excel-formula-validator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/excel-sandbox-statistics.html",
+        "filename": "excel-sandbox-statistics.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-m3-quadratic-mastery.html",
+        "filename": "kc-m3-quadratic-mastery.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-m4-functions-verification.html",
+        "filename": "kc-m4-functions-verification.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-m5-statistics-mastery.html",
+        "filename": "kc-m5-statistics-mastery.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-m7-correlation-mastery.html",
+        "filename": "kc-m7-correlation-mastery.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-1.html",
+        "filename": "kc-module-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-2.html",
+        "filename": "kc-module-2.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-3.html",
+        "filename": "kc-module-3.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-4.html",
+        "filename": "kc-module-4.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-5.html",
+        "filename": "kc-module-5.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/kc-module-6.html",
+        "filename": "kc-module-6.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-0.html",
+        "filename": "learning-outcomes-module-0.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-1.html",
+        "filename": "learning-outcomes-module-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-2.html",
+        "filename": "learning-outcomes-module-2.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-3.html",
+        "filename": "learning-outcomes-module-3.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-4.html",
+        "filename": "learning-outcomes-module-4.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-5.html",
+        "filename": "learning-outcomes-module-5.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-6.html",
+        "filename": "learning-outcomes-module-6.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      },
+      {
+        "path": "Course Widgets/Fundamentals of Analytics and Excel/learning-outcomes-module-7.html",
+        "filename": "learning-outcomes-module-7.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Fundamentals of Analytics and Excel"
+      }
+    ],
+    "IAIT": [
+      {
+        "path": "Course Widgets/IAIT/advantage-audit.html",
+        "filename": "advantage-audit.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/interactive-definitions-demo.html",
+        "filename": "interactive-definitions-demo.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week2-module2-ai-impact-diagnostic.html",
+        "filename": "week2-module2-ai-impact-diagnostic.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week2-module3-strategic-options-assessment.html",
+        "filename": "week2-module3-strategic-options-assessment.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week2-module3-timing-decision-tree.html",
+        "filename": "week2-module3-timing-decision-tree.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week4-module1-hybrid-zones.html",
+        "filename": "week4-module1-hybrid-zones.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week5-module1-microsoft-vs-ge.html",
+        "filename": "week5-module1-microsoft-vs-ge.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week5-module2-stakeholder-coalition-map.html",
+        "filename": "week5-module2-stakeholder-coalition-map.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      },
+      {
+        "path": "Course Widgets/IAIT/week5-module3-energy-curve.html",
+        "filename": "week5-module3-energy-curve.html",
+        "traits": {
+          "font": "Inter",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "IAIT"
+      }
+    ],
+    "Managing Innovation": [
+      {
+        "path": "Course Widgets/Managing Innovation/3m-sixsigma-timeline.html",
+        "filename": "3m-sixsigma-timeline.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/ambidexterity-types1.html",
+        "filename": "ambidexterity-types1.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/blair-witch-comparison.html",
+        "filename": "blair-witch-comparison.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/bn-aftermath-timeline.html",
+        "filename": "bn-aftermath-timeline.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/coherence-scenario.html",
+        "filename": "coherence-scenario.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/costs-vs-uncertainty1.html",
+        "filename": "costs-vs-uncertainty1.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/creative-ferment-consolidation.html",
+        "filename": "creative-ferment-consolidation.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/etypes-options.html",
+        "filename": "etypes-options.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/investor-pitches1.html",
+        "filename": "investor-pitches1.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-gs-weekly-recap-lighter-colors.html",
+        "filename": "io-cb-mi-gs-weekly-recap-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w1-accidental-innovation-flip-cards-lighter-colors.html",
+        "filename": "io-cb-mi-w1-accidental-innovation-flip-cards-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w1-m1-podcast-player.html",
+        "filename": "io-cb-mi-w1-m1-podcast-player.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w1-pre-assessment-v2-lighter-colors.html",
+        "filename": "io-cb-mi-w1-pre-assessment-v2-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w1-the-xerox-parc-story-v2-lighter-colors.html",
+        "filename": "io-cb-mi-w1-the-xerox-parc-story-v2-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Light Drop Shadows",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w2-m1-challenges-in-managing-crowdsourcing-business-model-follow-up-activity-lighter-colors.html",
+        "filename": "io-cb-mi-w2-m1-challenges-in-managing-crowdsourcing-business-model-follow-up-activity-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w2-m1-pre-assessment-lighter-colors.html",
+        "filename": "io-cb-mi-w2-m1-pre-assessment-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w2-m1-user-centric-innovation-approaches-follow-up-activity-lighter-colors.html",
+        "filename": "io-cb-mi-w2-m1-user-centric-innovation-approaches-follow-up-activity-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w3-podcast-player.html",
+        "filename": "io-cb-mi-w3-podcast-player.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/io-cb-mi-w3-pre-assessment-lighter-colors.html",
+        "filename": "io-cb-mi-w3-pre-assessment-lighter-colors.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/jordan-timeline.html",
+        "filename": "jordan-timeline.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/pareto-distribution.html",
+        "filename": "pareto-distribution.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/patterns-trajectories-closure.html",
+        "filename": "patterns-trajectories-closure.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/portfolio-strategy.html",
+        "filename": "portfolio-strategy.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/process-vs-innovation.html",
+        "filename": "process-vs-innovation.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/scurve-placement-activity.html",
+        "filename": "scurve-placement-activity.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/shape-of-innovation2.html",
+        "filename": "shape-of-innovation2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/standards-battle-infographic.html",
+        "filename": "standards-battle-infographic.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/three-films-chart.html",
+        "filename": "three-films-chart.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/user-innovation-chart.html",
+        "filename": "user-innovation-chart.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/vipp-discussion-widget.html",
+        "filename": "vipp-discussion-widget.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      },
+      {
+        "path": "Course Widgets/Managing Innovation/what-determines-winner2.html",
+        "filename": "what-determines-winner2.html",
+        "traits": {
+          "font": "System UI",
+          "color": "Neutral / Minimal",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Desktop Only (Fixed)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Managing Innovation"
+      }
+    ],
+    "Strategy": [
+      {
+        "path": "Course Widgets/Strategy/differentiation-analyzer.html",
+        "filename": "differentiation-analyzer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-map.html",
+        "filename": "learning-outcomes-map.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-1.html",
+        "filename": "learning-outcomes-module-1.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-10.html",
+        "filename": "learning-outcomes-module-10.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-2.html",
+        "filename": "learning-outcomes-module-2.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-3.html",
+        "filename": "learning-outcomes-module-3.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-4.html",
+        "filename": "learning-outcomes-module-4.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-5.html",
+        "filename": "learning-outcomes-module-5.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-6.html",
+        "filename": "learning-outcomes-module-6.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-7.html",
+        "filename": "learning-outcomes-module-7.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-8.html",
+        "filename": "learning-outcomes-module-8.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/learning-outcomes-module-9.html",
+        "filename": "learning-outcomes-module-9.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/mid-market-squeeze.html",
+        "filename": "mid-market-squeeze.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Neutral / Minimal",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/position-metrics.html",
+        "filename": "position-metrics.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Heavy Shadows & Gradients",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/position-risk-return-calculator.html",
+        "filename": "position-risk-return-calculator.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Light Drop Shadows",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/strategy-concept-map.html",
+        "filename": "strategy-concept-map.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Partial (Keyboard only)",
+          "tech": "D3.js Visualization"
+        },
+        "course": "Strategy"
+      },
+      {
+        "path": "Course Widgets/Strategy/value-creation-analyzer.html",
+        "filename": "value-creation-analyzer.html",
+        "traits": {
+          "font": "Geist",
+          "color": "Pastel Tints",
+          "depth": "Flat (No shadows)",
+          "mobile": "Mobile Ready (@media)",
+          "a11y": "A11y Warning",
+          "tech": "Vanilla HTML/JS"
+        },
+        "course": "Strategy"
+      }
+    ]
+  }
 }
