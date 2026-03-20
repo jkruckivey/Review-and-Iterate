@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Troubleshooting Simulator</title>
+    <style>
+        :root {
+            --primary: #165c55;
+            --accent: #5b3a85;
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #f59e0b;
+            --bg-light: #f8fafa;
+            --bg-card: #ffffff;
+            --callout-bg: #d4e9e8;
+            --text-dark: #0f1419;
+            --text-medium: #475569;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: var(--text-medium);
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
+        .scenario {
+            background: var(--callout-bg);
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .scenario-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .chat-window {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem auto;
+            max-width: 700px;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 1.25rem;
+            align-items: flex-start;
+        }
+
+        .chat-message:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background: #3b82f6;
+            color: white;
+            margin-left: 0.75rem;
+            order: 2;
+        }
+
+        .bot-message .message-avatar {
+            background: var(--primary);
+            color: white;
+            margin-right: 0.75rem;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.875rem 1.125rem;
+            border-radius: 18px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .user-message .message-bubble {
+            background: #3b82f6;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message .message-bubble {
+            background: white;
+            color: var(--text-dark);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .message-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            opacity: 0.75;
+            margin-bottom: 0.375rem;
+        }
+
+        .user-message .message-label {
+            color: white;
+        }
+
+        .bot-message .message-label {
+            color: var(--text-medium);
+        }
+
+        .message-text {
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .user-message .message-text {
+            color: white;
+        }
+
+        .bot-message .message-text {
+            color: var(--text-dark);
+        }
+
+        .problem-indicator {
+            background: #fef3c7;
+            border-left: 3px solid var(--warning);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+
+        .problem-indicator strong {
+            color: #92400e;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .radio-option {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            background: var(--bg-light);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.875rem;
+            cursor: pointer;
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            margin-top: 0.2rem;
+        }
+
+        .radio-content {
+            flex: 1;
+        }
+
+        .radio-option strong {
+            display: block;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+        }
+
+        .radio-option span {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #114741;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset {
+            background: #6b7280;
+            margin-left: 1rem;
+        }
+
+        .btn-reset:hover {
+            background: #4b5563;
+        }
+
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            animation: slideIn 0.4s ease-out;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d1fae5;
+            border-left: 4px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            border-left: 4px solid var(--error);
+        }
+
+        .feedback h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .feedback.correct h3 {
+            color: var(--success);
+        }
+
+        .feedback.incorrect h3 {
+            color: var(--error);
+        }
+
+        .explanation {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .explanation h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .key-insight {
+            background: #fef3c7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .key-insight strong {
+            color: #92400e;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .btn-reset {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RAG Troubleshooting Simulator</h1>
+            <p class="subtitle">Diagnose problems in a RAG-powered chatbot and identify the right fixes</p>
+        </header>
+
+        <div class="card scenario">
+            <h2>The Situation</h2>
+            <p class="scenario-text">
+                Your team built an AI chatbot for HR that answers employee questions using company policy documents. 
+                The chatbot uses RAG (Retrieval Augmented Generation) to find relevant policies and generate answers.
+            </p>
+            <p class="scenario-text">
+                Employees are reporting problems with the chatbot's responses. Your job is to diagnose what's going wrong 
+                in the RAG pipeline and recommend the appropriate fix.
+            </p>
+
+            <div class="chat-window">
+                <div class="chat-message user-message">
+                    <div class="message-bubble">
+                        <div class="message-label">Employee</div>
+                        <div class="message-text">"What's our parental leave policy?"</div>
+                    </div>
+                    <div class="message-avatar">U</div>
+                </div>
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-bubble">
+                        <div class="message-label">HR Chatbot</div>
+                        <div class="message-text">
+                            "Employees are entitled to sick leave with doctor's note. Sick leave can be used for personal illness 
+                            or family emergencies. Please submit requests to your manager in advance when possible."
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-indicator">
+                <strong>Problem:</strong> The chatbot answered with information about sick leave instead of parental leave. 
+                You know the parental leave policy exists in the knowledge base - it's a detailed section in the HR manual.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 1: Which RAG component is failing?</h2>
+            <p class="scenario-text">
+                Based on the symptoms, which part of the RAG pipeline is most likely causing this problem?
+            </p>
+
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="component" value="embedding">
+                    <div class="radio-content">
+                        <strong>Embedding Model</strong>
+                        <span>The model isn't distinguishing between "parental leave" and "sick leave" queries</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="component" value="chunking">
+                    <div class="radio-content">
+                        <strong>Chunking Strategy</strong>
+                        <span>Parental and sick leave policies are combined in the same chunk</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="component" value="retrieval">
+                    <div class="radio-content">
+                        <strong>Vector Database Retrieval</strong>
+                        <span>The similarity search isn't finding the right document chunks</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="component" value="generation">
+                    <div class="radio-content">
+                        <strong>Language Model Generation</strong>
+                        <span>The model is ignoring the retrieved context and making up answers</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 2: What should you investigate first?</h2>
+            <p class="scenario-text">
+                To confirm your diagnosis, what should you check first?
+            </p>
+
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="investigate" value="retrieved">
+                    <div class="radio-content">
+                        <strong>Check what documents were actually retrieved</strong>
+                        <span>See if the parental leave policy was found by the vector search</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="investigate" value="structure">
+                    <div class="radio-content">
+                        <strong>Review the document structure and headings</strong>
+                        <span>Check if policies are clearly separated with distinct titles</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="investigate" value="prompt">
+                    <div class="radio-content">
+                        <strong>Review the system prompt</strong>
+                        <span>Check if the prompt instructs the model to use retrieved context</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="investigate" value="keywords">
+                    <div class="radio-content">
+                        <strong>Test with different query keywords</strong>
+                        <span>Try asking "maternity leave" or "paternity leave" instead</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 3: What's the most likely fix?</h2>
+            <p class="scenario-text">
+                Given this type of problem, which solution would most directly address the issue?
+            </p>
+
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="fix" value="restructure">
+                    <div class="radio-content">
+                        <strong>Restructure documents with clearer headings</strong>
+                        <span>Separate policies with distinct titles like "Parental Leave Policy" and "Sick Leave Policy"</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="fix" value="hybrid">
+                    <div class="radio-content">
+                        <strong>Implement hybrid search (semantic + keyword)</strong>
+                        <span>Combine embedding similarity with exact keyword matching</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="fix" value="rerank">
+                    <div class="radio-content">
+                        <strong>Add re-ranking after retrieval</strong>
+                        <span>Retrieve more chunks, then use a model to select the most relevant</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="fix" value="embedding">
+                    <div class="radio-content">
+                        <strong>Use a better embedding model</strong>
+                        <span>Switch to an embedding model that better captures policy differences</span>
+                    </div>
+                </label>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="checkAnswers()">Submit Answers</button>
+                <button class="btn btn-reset" onclick="resetActivity()">Reset Activity</button>
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback">
+            <!-- Feedback will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        function checkAnswers() {
+            const component = document.querySelector('input[name="component"]:checked');
+            const investigate = document.querySelector('input[name="investigate"]:checked');
+            const fix = document.querySelector('input[name="fix"]:checked');
+
+            // Validation
+            if (!component || !investigate || !fix) {
+                alert('Please answer all three questions before submitting.');
+                return;
+            }
+
+            // Correct answers
+            const correctComponent = 'embedding';
+            const correctInvestigate = 'retrieved';
+            const correctFix = 'restructure';
+
+            // Check if answers are correct
+            const componentCorrect = component.value === correctComponent;
+            const investigateCorrect = investigate.value === correctInvestigate;
+            const fixCorrect = fix.value === correctFix;
+
+            const allCorrect = componentCorrect && investigateCorrect && fixCorrect;
+
+            // Generate feedback
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback show ' + (allCorrect ? 'correct' : 'incorrect');
+
+            let feedbackHTML = '';
+
+            if (allCorrect) {
+                feedbackHTML = `
+                    <h3>Excellent Diagnosis!</h3>
+                    <p>You've correctly identified the problem in the RAG pipeline and recommended the right approach. Here's why your analysis is spot-on:</p>
+                    
+                    <div class="explanation">
+                        <h4>✓ Component: Embedding Model</h4>
+                        <p>The embedding model isn't distinguishing well between "parental leave" and "sick leave" queries. Both relate to "time off" and employee benefits, so their vector representations are too similar in the embedding space. This causes the vector database to return sick leave documents when searching for parental leave.</p>
+
+                        <h4 style="margin-top: 1rem;">✓ Investigation: Check Retrieved Documents</h4>
+                        <p>The most direct way to diagnose retrieval problems is to see what documents the system actually found. If the parental leave policy wasn't retrieved at all, or was retrieved with a lower similarity score than the sick leave policy, that confirms the embedding/retrieval issue.</p>
+
+                        <h4 style="margin-top: 1rem;">✓ Fix: Restructure Documents with Clearer Headings</h4>
+                        <p>When policies are clearly separated with distinct headings ("Parental Leave Policy" vs. "Sick Leave Policy"), the embeddings for each section become more distinct. The chunk containing "Parental Leave Policy" will have that phrase embedded in it, making it easier to retrieve when someone asks about parental leave.</p>
+
+                        <div class="key-insight" style="margin-top: 1rem;">
+                            <strong>Key Principle:</strong> RAG retrieval quality depends heavily on document structure. Clear headings, self-contained sections, and consistent terminology make it easier for embeddings to distinguish between different topics. When RAG gives wrong answers, the problem is often in document preparation, not the AI model itself.
+                        </div>
+                    </div>
+                `;
+            } else {
+                feedbackHTML = `
+                    <h3>Not Quite - Let's Work Through This</h3>
+                    <p>Review the hints below and think through the RAG pipeline step by step:</p>
+                    
+                    <div class="explanation">
+                        ${!componentCorrect ? `
+                            <h4>❌ Component Identification needs review</h4>
+                            <p><strong>Think about:</strong> The chatbot answered with sick leave instead of parental leave. This means it found the WRONG document, not that it ignored the documents it found.</p>
+                            <p><strong>Hint:</strong> Which RAG component is responsible for finding the right documents? When "parental leave" and "sick leave" seem too similar to the system, which component failed to distinguish them?</p>
+                            <p>Remember the RAG pipeline: Query → Embedding → Vector Search → Retrieved Docs → Generation</p>
+                        ` : `
+                            <h4>✓ Component: Correct!</h4>
+                        `}
+
+                        ${!investigateCorrect ? `
+                            <h4 style="margin-top: 1rem;">❌ Investigation approach needs rethinking</h4>
+                            <p><strong>Think about:</strong> To confirm your diagnosis about which documents were found, what's the most direct evidence you could look at?</p>
+                            <p><strong>Hint:</strong> Many RAG platforms let you see what chunks were retrieved for a given query. This shows you exactly what the vector search found, making it easy to confirm whether the right documents were retrieved.</p>
+                        ` : `
+                            <h4 style="margin-top: 1rem;">✓ Investigation: Correct!</h4>
+                        `}
+
+                        ${!fixCorrect ? `
+                            <h4 style="margin-top: 1rem;">❌ Solution needs reconsideration</h4>
+                            <p><strong>Think about:</strong> The problem is that "parental leave" and "sick leave" seem too similar in the embedding space. How can you make them more distinct?</p>
+                            <p><strong>Hint:</strong> If each policy has a clear, distinct heading ("Parental Leave Policy" vs "Sick Leave Policy"), those headings become part of the embedded text, making it easier to tell them apart.</p>
+                            <div class="key-insight">
+                                <strong>Remember:</strong> RAG retrieval quality often comes down to document structure. Clear headings and well-organized content make embeddings more distinct.
+                            </div>
+                        ` : `
+                            <h4 style="margin-top: 1rem;">✓ Solution: Correct!</h4>
+                        `}
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Review the RAG pipeline and try again!</strong></p>
+                `;
+            }
+
+            feedback.innerHTML = feedbackHTML;
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetActivity() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback';
+            feedback.innerHTML = '';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

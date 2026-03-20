@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Foundations Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 81, 0.4);
+        }
+
+        .btn-primary:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(91, 44, 111, 0.4);
+        }
+
+        .option-btn {
+            transition: all 0.3s ease;
+            border: 2px solid var(--turquoise);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(5px);
+            border-color: var(--ivey-green);
+            background-color: rgba(0, 147, 169, 0.05);
+        }
+
+        .option-btn:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(164, 181, 68, 0.05) 100%);
+            border-color: var(--bright-green);
+            border-width: 3px;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(91, 44, 111, 0.05) 100%);
+            border-color: var(--purple);
+            border-width: 3px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="root"></div>
+
+    <script>
+        const TERMS = {
+            "Assets": "Resources controlled by an entity from which future economic benefits are expected.",
+            "Liabilities": "Present obligations arising from past events that will result in an outflow of resources.",
+            "Owner's Equity": "The residual interest in assets after deducting liabilities; the owners' claim.",
+            "Accrual Basis": "Recording revenues when earned and expenses when incurred, regardless of cash flow.",
+            "Cash Basis": "Recording revenues when cash is received and expenses when cash is paid.",
+            "Revenue Recognition": "The principle that revenue should be recognized when performance obligations are satisfied.",
+            "Faithful Representation": "Information that is complete, neutral, and free from error.",
+            "Relevance": "Information capable of making a difference in users' decisions."
+        };
+
+        const ASSESSMENT_DATA = {
+            easy: [
+                {
+                    term: "Assets",
+                    type: "definition",
+                    correctAnswer: "Assets"
+                },
+                {
+                    term: "Liabilities",
+                    type: "definition",
+                    correctAnswer: "Liabilities"
+                },
+                {
+                    term: "Owner's Equity",
+                    type: "definition",
+                    correctAnswer: "Owner's Equity"
+                },
+                {
+                    term: "Accrual Basis",
+                    type: "definition",
+                    correctAnswer: "Accrual Basis"
+                },
+                {
+                    term: "Cash Basis",
+                    type: "definition",
+                    correctAnswer: "Cash Basis"
+                },
+                {
+                    term: "Revenue Recognition",
+                    type: "definition",
+                    correctAnswer: "Revenue Recognition"
+                },
+                {
+                    term: "Faithful Representation",
+                    type: "definition",
+                    correctAnswer: "Faithful Representation"
+                },
+                {
+                    term: "Relevance",
+                    type: "definition",
+                    correctAnswer: "Relevance"
+                }
+            ],
+            medium: [
+                {
+                    question: "A company records a $50,000 sale on December 28th even though the customer won't pay until January 15th.",
+                    options: ["Accrual Basis", "Cash Basis", "Revenue Recognition", "Faithful Representation"],
+                    correctAnswer: 0,
+                    explanation: "This demonstrates Accrual Basis accounting, where revenue is recognized when earned (sale made), not when cash is received."
+                },
+                {
+                    question: "A consulting firm only records income when clients' checks clear the bank.",
+                    options: ["Cash Basis", "Accrual Basis", "Revenue Recognition", "Relevance"],
+                    correctAnswer: 0,
+                    explanation: "Cash Basis accounting records revenue only when cash is actually received, regardless of when the service was performed."
+                },
+                {
+                    question: "TechCorp owns computers, inventory, and a warehouse that will generate future profits.",
+                    options: ["Assets", "Liabilities", "Owner's Equity", "Revenue Recognition"],
+                    correctAnswer: 0,
+                    explanation: "Assets are resources controlled by an entity from which future economic benefits are expected."
+                },
+                {
+                    question: "ABC Company owes suppliers $30,000 for inventory purchased last month.",
+                    options: ["Liabilities", "Assets", "Owner's Equity", "Cash Basis"],
+                    correctAnswer: 0,
+                    explanation: "Liabilities are present obligations arising from past events that will result in an outflow of resources (payment)."
+                },
+                {
+                    question: "After calculating that a business has $500,000 in assets and $200,000 in liabilities, the owners' claim is $300,000.",
+                    options: ["Owner's Equity", "Assets", "Liabilities", "Relevance"],
+                    correctAnswer: 0,
+                    explanation: "Owner's Equity is the residual interest in assets after deducting liabilities. (Assets minus Liabilities equals Owner's Equity)"
+                },
+                {
+                    question: "A software company completes and delivers a project to a client, triggering income recognition.",
+                    options: ["Revenue Recognition", "Accrual Basis", "Cash Basis", "Faithful Representation"],
+                    correctAnswer: 0,
+                    explanation: "Revenue Recognition principle states that revenue should be recognized when performance obligations are satisfied (project completed and delivered)."
+                },
+                {
+                    question: "A financial report shows all material facts, presents data without bias, and has been verified for accuracy.",
+                    options: ["Faithful Representation", "Relevance", "Accrual Basis", "Revenue Recognition"],
+                    correctAnswer: 0,
+                    explanation: "Faithful Representation means information is complete (all material facts), neutral (without bias), and free from error (verified)."
+                },
+                {
+                    question: "An investor reviews quarterly earnings data because it will influence whether to buy or sell stock.",
+                    options: ["Relevance", "Faithful Representation", "Assets", "Revenue Recognition"],
+                    correctAnswer: 0,
+                    explanation: "Relevance means information is capable of making a difference in users' decisions, like this investor's buy/sell decision."
+                }
+            ],
+            hard: [
+                {
+                    question: "Company A uses accrual basis. Company B uses cash basis. Both made $100,000 in sales in December, but only received $40,000 in cash. Which company reports higher December revenue?",
+                    options: [
+                        "Company A reports $100,000",
+                        "Company B reports $100,000",
+                        "Both report $100,000",
+                        "Both report $40,000"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Company A (accrual basis) recognizes $100,000 when earned. Company B (cash basis) only recognizes $40,000 when received. Accrual basis shows higher revenue."
+                },
+                {
+                    question: "A CEO wants to delay recording expenses until next quarter to make this quarter look more profitable. Which accounting principle does this violate?",
+                    options: [
+                        "Accrual Basis and Faithful Representation",
+                        "Cash Basis only",
+                        "Revenue Recognition only",
+                        "Relevance only"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "This violates Accrual Basis (expenses should be recorded when incurred) and Faithful Representation (information must be neutral and complete, not manipulated)."
+                },
+                {
+                    question: "If a company's assets increase by $50,000 and liabilities increase by $30,000, what happens to Owner's Equity?",
+                    options: [
+                        "Increases by $20,000",
+                        "Increases by $50,000",
+                        "Decreases by $30,000",
+                        "Stays the same"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The accounting equation: Assets = Liabilities + Owner's Equity. If Assets increase by $50K and Liabilities increase by $30K, Owner's Equity must increase by $20K to maintain balance."
+                },
+                {
+                    question: "A startup recognizes $1 million in revenue from a 3-year contract signed today, even though they haven't delivered any services yet. What's wrong?",
+                    options: [
+                        "Violates Revenue Recognition principle",
+                        "Violates Cash Basis principle",
+                        "Violates Relevance principle",
+                        "Nothing is wrong"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Revenue Recognition requires revenue to be recognized when performance obligations are satisfied, not just when contracts are signed. The services haven't been delivered yet."
+                },
+                {
+                    question: "An investor needs to decide whether to fund a startup. The financial report is missing key data about outstanding loans and is overly optimistic. Which qualitative characteristic is violated?",
+                    options: [
+                        "Faithful Representation",
+                        "Relevance",
+                        "Revenue Recognition",
+                        "Cash Basis"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Faithful Representation requires information to be complete (missing loan data violates this), neutral (overly optimistic violates this), and free from error."
+                },
+                {
+                    question: "Two identical businesses use different accounting methods (one accrual, one cash). Why might a bank prefer to lend to the company using accrual basis?",
+                    options: [
+                        "Accrual basis provides better matching of revenues and expenses, showing more accurate financial health",
+                        "Accrual basis always shows higher profits",
+                        "Cash basis is too complicated for banks to understand",
+                        "Banks only accept accrual basis by regulation"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Accrual basis matches revenues with the expenses incurred to generate them, providing a more accurate picture of economic performance rather than just cash timing."
+                },
+                {
+                    question: "A competitor's financial information shows huge revenue but also massive liabilities. As an investor, why is Owner's Equity the most relevant metric for you?",
+                    options: [
+                        "Owner's Equity shows the true residual value belonging to owners after obligations are paid",
+                        "Owner's Equity always equals revenue",
+                        "Owner's Equity ignores liabilities completely",
+                        "Liabilities don't matter to investors"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Relevance means information capable of influencing decisions. Owner's Equity (Assets minus Liabilities) shows what's actually owned after debts, which is what matters to investors."
+                },
+                {
+                    question: "A construction company completes 50% of a 2-year building project in Year 1. Under revenue recognition, can they record 50% of the contract value as revenue in Year 1?",
+                    options: [
+                        "Yes, if performance obligations are satisfied incrementally",
+                        "No, must wait until 100% complete",
+                        "Only if customer pays 50% upfront",
+                        "Only under Cash Basis accounting"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "Revenue Recognition allows recognition as performance obligations are satisfied. For long-term contracts, revenue can be recognized incrementally as work is completed (percentage-of-completion method)."
+                }
+            ]
+        };
+
+        class AccountingAssessment {
+            constructor() {
+                this.currentLevel = null;
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.answered = false;
+                this.levelScores = { easy: 0, medium: 0, hard: 0 };
+                this.shuffledQuestions = [];
+                this.shuffledOptions = [];
+                this.init();
+            }
+
+            init() {
+                this.render();
+            }
+
+            shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            shuffleQuestionOptions(question) {
+                // Create a new question object with shuffled options
+                const optionsWithIndex = question.options.map((option, index) => ({
+                    option: option,
+                    originalIndex: index
+                }));
+
+                // Shuffle the options
+                const shuffledOptionsWithIndex = this.shuffleArray(optionsWithIndex);
+
+                // Find the new index of the correct answer
+                const newCorrectIndex = shuffledOptionsWithIndex.findIndex(
+                    item => item.originalIndex === question.correctAnswer
+                );
+
+                return {
+                    ...question,
+                    options: shuffledOptionsWithIndex.map(item => item.option),
+                    correctAnswer: newCorrectIndex
+                };
+            }
+
+            selectLevel(level) {
+                this.currentLevel = level;
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.answered = false;
+
+                if (level === 'easy') {
+                    this.shuffledQuestions = this.shuffleArray(ASSESSMENT_DATA.easy);
+                } else {
+                    // Shuffle questions and randomize answer options for medium/hard
+                    this.shuffledQuestions = this.shuffleArray(ASSESSMENT_DATA[level]).map(q => {
+                        return this.shuffleQuestionOptions(q);
+                    });
+                }
+
+                this.render();
+                this.announceToScreenReader(`${this.getLevelName(level)} level started. Question 1 of ${this.shuffledQuestions.length}`);
+            }
+
+            getLevelName(level) {
+                const names = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+                return names[level];
+            }
+
+            generateEasyOptions(correctTerm) {
+                const allTerms = Object.keys(TERMS);
+                let options = [correctTerm];
+
+                const otherTerms = allTerms.filter(t => t !== correctTerm);
+                const shuffledOthers = this.shuffleArray(otherTerms);
+
+                options.push(...shuffledOthers.slice(0, 3));
+
+                return this.shuffleArray(options);
+            }
+
+            handleAnswer(selectedIndex) {
+                if (this.answered) return;
+
+                this.answered = true;
+                const question = this.shuffledQuestions[this.currentQuestionIndex];
+                let isCorrect = false;
+
+                if (this.currentLevel === 'easy') {
+                    const selectedTerm = this.shuffledOptions[selectedIndex];
+                    isCorrect = selectedTerm === question.correctAnswer;
+                } else {
+                    isCorrect = selectedIndex === question.correctAnswer;
+                }
+
+                if (isCorrect) {
+                    this.score++;
+                    this.levelScores[this.currentLevel]++;
+                }
+
+                this.render();
+                this.announceToScreenReader(isCorrect ? 'Correct answer' : 'Incorrect answer');
+            }
+
+            nextQuestion() {
+                this.currentQuestionIndex++;
+                this.answered = false;
+
+                if (this.currentQuestionIndex >= this.shuffledQuestions.length) {
+                    this.showLevelComplete();
+                } else {
+                    this.render();
+                    this.announceToScreenReader(`Question ${this.currentQuestionIndex + 1} of ${this.shuffledQuestions.length}`);
+                }
+            }
+
+            showLevelComplete() {
+                this.render();
+                const percentage = Math.round((this.score / this.shuffledQuestions.length) * 100);
+                this.announceToScreenReader(`Level complete. You scored ${this.score} out of ${this.shuffledQuestions.length}, ${percentage} percent`);
+            }
+
+            backToLevelSelect() {
+                this.currentLevel = null;
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.answered = false;
+                this.render();
+                this.announceToScreenReader('Returned to level selection');
+            }
+
+            retryLevel() {
+                const level = this.currentLevel;
+                this.currentQuestionIndex = 0;
+                this.score = 0;
+                this.answered = false;
+
+                if (level === 'easy') {
+                    this.shuffledQuestions = this.shuffleArray(ASSESSMENT_DATA.easy);
+                } else {
+                    // Shuffle questions and randomize answer options for medium/hard
+                    this.shuffledQuestions = this.shuffleArray(ASSESSMENT_DATA[level]).map(q => {
+                        return this.shuffleQuestionOptions(q);
+                    });
+                }
+
+                this.render();
+                this.announceToScreenReader(`Retrying ${this.getLevelName(level)} level`);
+            }
+
+            announceToScreenReader(message) {
+                const announcement = document.createElement('div');
+                announcement.setAttribute('role', 'status');
+                announcement.setAttribute('aria-live', 'polite');
+                announcement.className = 'sr-only';
+                announcement.textContent = message;
+                document.body.appendChild(announcement);
+
+                setTimeout(() => {
+                    document.body.removeChild(announcement);
+                }, 1000);
+            }
+
+            render() {
+                const root = document.getElementById('root');
+
+                if (!this.currentLevel) {
+                    root.innerHTML = this.renderLevelSelection();
+                } else if (this.currentQuestionIndex >= this.shuffledQuestions.length) {
+                    root.innerHTML = this.renderLevelComplete();
+                } else {
+                    root.innerHTML = this.renderQuestion();
+                }
+
+                this.attachEventListeners();
+            }
+
+            renderLevelSelection() {
+                return `
+                    <div class="gradient-bg min-h-screen p-4 md:p-8">
+                        <div class="max-w-4xl mx-auto">
+                            <header class="text-center mb-12 text-white">
+                                <h1 class="text-4xl md:text-5xl font-bold mb-4">Accounting Foundations Assessment</h1>
+                                <p class="text-lg md:text-xl opacity-95">Test your knowledge of fundamental accounting concepts</p>
+                            </header>
+
+                            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+                                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center" style="color: var(--ivey-green);">
+                                    Choose Your Level
+                                </h2>
+
+                                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                                    <button
+                                        class="level-btn bg-white border-4 hover:border-4 rounded-xl p-6 transition-all hover:shadow-lg hover:-translate-y-1"
+                                        style="border-color: var(--bright-green); background: linear-gradient(135deg, rgba(164, 181, 68, 0.05) 0%, rgba(255, 255, 255, 1) 100%);"
+                                        data-level="easy"
+                                        aria-label="Select Easy level: Definition Matching">
+                                        <div class="text-4xl mb-4">Level 1</div>
+                                        <h3 class="text-xl font-bold mb-2" style="color: var(--ivey-green);">Easy</h3>
+                                        <p class="text-gray-600 mb-3">Definition Matching</p>
+                                        <p class="text-sm text-gray-500">Match terms to their correct definitions</p>
+                                        <div class="mt-4 text-sm font-semibold" style="color: var(--bright-green);">8 Questions</div>
+                                    </button>
+
+                                    <button
+                                        class="level-btn bg-white border-4 hover:border-4 rounded-xl p-6 transition-all hover:shadow-lg hover:-translate-y-1"
+                                        style="border-color: var(--turquoise); background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%);"
+                                        data-level="medium"
+                                        aria-label="Select Medium level: Scenario Identification">
+                                        <div class="text-4xl mb-4">Level 2</div>
+                                        <h3 class="text-xl font-bold mb-2" style="color: var(--ivey-green);">Medium</h3>
+                                        <p class="text-gray-600 mb-3">Scenario Identification</p>
+                                        <p class="text-sm text-gray-500">Apply concepts to real-world situations</p>
+                                        <div class="mt-4 text-sm font-semibold" style="color: var(--turquoise);">8 Questions</div>
+                                    </button>
+
+                                    <button
+                                        class="level-btn bg-white border-4 hover:border-4 rounded-xl p-6 transition-all hover:shadow-lg hover:-translate-y-1"
+                                        style="border-color: var(--purple); background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, rgba(255, 255, 255, 1) 100%);"
+                                        data-level="hard"
+                                        aria-label="Select Hard level: Critical Thinking">
+                                        <div class="text-4xl mb-4">Level 3</div>
+                                        <h3 class="text-xl font-bold mb-2" style="color: var(--ivey-green);">Hard</h3>
+                                        <p class="text-gray-600 mb-3">Critical Thinking</p>
+                                        <p class="text-sm text-gray-500">Analyze complex scenarios and conflicts</p>
+                                        <div class="mt-4 text-sm font-semibold" style="color: var(--purple);">8 Questions</div>
+                                    </button>
+                                </div>
+
+                                <div class="rounded-lg p-6 border-l-4" style="background: linear-gradient(90deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--turquoise);">
+                                    <h3 class="font-bold text-lg mb-2" style="color: var(--ivey-green);">Assessment Guidelines</h3>
+                                    <ul class="space-y-2 text-gray-700">
+                                        <li class="flex items-start">
+                                            <span class="mr-2">•</span>
+                                            <span>Start with Easy to master basic definitions</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="mr-2">•</span>
+                                            <span>Progress to Medium for practical application</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="mr-2">•</span>
+                                            <span>Challenge yourself with Hard for critical analysis</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="mr-2">•</span>
+                                            <span>Read feedback carefully to learn from each question</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderQuestion() {
+                const question = this.shuffledQuestions[this.currentQuestionIndex];
+                const totalQuestions = this.shuffledQuestions.length;
+                const progress = ((this.currentQuestionIndex + 1) / totalQuestions) * 100;
+
+                let questionContent = '';
+                let options = [];
+
+                if (this.currentLevel === 'easy') {
+                    this.shuffledOptions = this.generateEasyOptions(question.correctAnswer);
+                    questionContent = `
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-4" style="color: var(--ivey-green);">Match the definition:</h3>
+                            <div class="rounded-lg p-6 border-l-4 mb-6" style="background: linear-gradient(90deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--turquoise);">
+                                <p class="text-lg leading-relaxed">${TERMS[question.term]}</p>
+                            </div>
+                            <p class="text-gray-700 font-semibold mb-4">Which term does this definition describe?</p>
+                        </div>
+                    `;
+                    options = this.shuffledOptions;
+                } else {
+                    questionContent = `
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold mb-4" style="color: var(--ivey-green);">Scenario:</h3>
+                            <div class="rounded-lg p-6 border-l-4 mb-6" style="background: linear-gradient(90deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--turquoise);">
+                                <p class="text-lg leading-relaxed">${question.question}</p>
+                            </div>
+                            <p class="text-gray-700 font-semibold mb-4">Which accounting concept applies?</p>
+                        </div>
+                    `;
+                    options = question.options;
+                }
+
+                const optionsHTML = options.map((option, index) => {
+                    let btnClass = 'option-btn bg-white text-left w-full p-4 rounded-lg mb-3';
+                    let disabled = '';
+                    let indicator = '';
+
+                    if (this.answered) {
+                        disabled = 'disabled';
+                        let isThisCorrect = false;
+
+                        if (this.currentLevel === 'easy') {
+                            isThisCorrect = option === question.correctAnswer;
+                        } else {
+                            isThisCorrect = index === question.correctAnswer;
+                        }
+
+                        if (isThisCorrect) {
+                            btnClass += ' correct';
+                            indicator = '<span class="float-right text-2xl" style="color: var(--bright-green);">✓</span>';
+                        } else {
+                            // Check if this was the selected wrong answer
+                            const selectedWrong = this.currentLevel === 'easy'
+                                ? option !== question.correctAnswer
+                                : index !== question.correctAnswer;
+
+                            if (selectedWrong) {
+                                btnClass += ' incorrect';
+                                indicator = '<span class="float-right text-2xl" style="color: var(--purple);">✗</span>';
+                            }
+                        }
+                    }
+
+                    return `
+                        <button
+                            class="${btnClass}"
+                            data-index="${index}"
+                            ${disabled}
+                            aria-label="Option ${index + 1}: ${option}">
+                            ${option}
+                            ${indicator}
+                        </button>
+                    `;
+                }).join('');
+
+                let feedbackHTML = '';
+                if (this.answered && this.currentLevel !== 'easy') {
+                    const isCorrect = this.currentLevel === 'easy'
+                        ? true
+                        : question.correctAnswer >= 0;
+
+                    feedbackHTML = `
+                        <div class="mt-6 p-6 rounded-lg border-l-4" style="background: linear-gradient(90deg, rgba(0, 89, 81, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--ivey-green);">
+                            <h4 class="font-bold text-lg mb-3" style="color: var(--ivey-green);">Explanation</h4>
+                            <p class="text-gray-700 leading-relaxed">${question.explanation}</p>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="gradient-bg min-h-screen p-4 md:p-8">
+                        <div class="max-w-3xl mx-auto">
+                            <div class="mb-6">
+                                <button
+                                    id="back-btn"
+                                    class="text-white hover:underline flex items-center gap-2 mb-4"
+                                    aria-label="Back to level selection">
+                                    <span>←</span> Back to Levels
+                                </button>
+
+                                <div class="flex justify-between items-center text-white mb-3">
+                                    <span class="font-semibold">${this.getLevelName(this.currentLevel)} Level</span>
+                                    <span class="font-semibold">Question ${this.currentQuestionIndex + 1} of ${totalQuestions}</span>
+                                </div>
+
+                                <div class="w-full bg-white bg-opacity-30 rounded-full h-3">
+                                    <div class="progress-bar h-3 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                                ${questionContent}
+
+                                <div role="group" aria-label="Answer options">
+                                    ${optionsHTML}
+                                </div>
+
+                                ${feedbackHTML}
+
+                                ${this.answered ? `
+                                    <button
+                                        id="next-btn"
+                                        class="btn-primary text-white font-bold py-3 px-8 rounded-lg w-full mt-6"
+                                        aria-label="${this.currentQuestionIndex < totalQuestions - 1 ? 'Next question' : 'View results'}">
+                                        ${this.currentQuestionIndex < totalQuestions - 1 ? 'Next Question →' : 'View Results →'}
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderLevelComplete() {
+                const totalQuestions = this.shuffledQuestions.length;
+                const percentage = Math.round((this.score / totalQuestions) * 100);
+
+                let message = '';
+                if (percentage === 100) {
+                    message = 'Perfect score! You have mastered this level.';
+                } else if (percentage >= 75) {
+                    message = 'Great job! You have a strong understanding.';
+                } else if (percentage >= 50) {
+                    message = 'Good effort! Review the concepts and try again.';
+                } else {
+                    message = 'Keep practicing! Review the feedback to improve.';
+                }
+
+                return `
+                    <div class="gradient-bg min-h-screen p-4 md:p-8">
+                        <div class="max-w-3xl mx-auto">
+                            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+                                <div class="text-center mb-8">
+                                    <div class="inline-block bg-gradient-to-br p-8 rounded-full mb-6" style="background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);">
+                                        <div class="text-5xl md:text-6xl font-bold text-white">${this.score}/${totalQuestions}</div>
+                                    </div>
+
+                                    <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--ivey-green);">
+                                        ${this.getLevelName(this.currentLevel)} Level Complete
+                                    </h2>
+
+                                    <p class="text-xl text-gray-700 mb-2">${percentage}% Correct</p>
+                                    <p class="text-lg text-gray-600">${message}</p>
+                                </div>
+
+                                <div class="grid md:grid-cols-3 gap-4 mb-8">
+                                    <div class="rounded-lg p-6 text-center border-2" style="background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--turquoise);">
+                                        <div class="text-3xl font-bold mb-2" style="color: var(--ivey-green);">${this.score}</div>
+                                        <div class="text-gray-600">Correct</div>
+                                    </div>
+
+                                    <div class="rounded-lg p-6 text-center border-2" style="background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--purple);">
+                                        <div class="text-3xl font-bold mb-2" style="color: var(--purple);">${totalQuestions - this.score}</div>
+                                        <div class="text-gray-600">Incorrect</div>
+                                    </div>
+
+                                    <div class="rounded-lg p-6 text-center border-2" style="background: linear-gradient(135deg, rgba(164, 181, 68, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--bright-green);">
+                                        <div class="text-3xl font-bold mb-2" style="color: var(--bright-green);">${percentage}%</div>
+                                        <div class="text-gray-600">Accuracy</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <button
+                                        id="retry-btn"
+                                        class="btn-primary text-white font-bold py-3 px-8 rounded-lg flex-1"
+                                        aria-label="Retry this level">
+                                        Retry This Level
+                                    </button>
+
+                                    <button
+                                        id="levels-btn"
+                                        class="btn-secondary text-white font-bold py-3 px-8 rounded-lg flex-1"
+                                        aria-label="Back to all levels">
+                                        Choose Different Level
+                                    </button>
+                                </div>
+
+                                ${percentage === 100 && this.currentLevel !== 'hard' ? `
+                                    <div class="mt-6 p-6 rounded-lg border-l-4" style="background: linear-gradient(90deg, rgba(164, 181, 68, 0.05) 0%, rgba(255, 255, 255, 1) 100%); border-color: var(--bright-green);">
+                                        <p class="text-center font-semibold" style="color: var(--ivey-green);">
+                                            Ready for the next challenge? Try the ${this.currentLevel === 'easy' ? 'Medium' : 'Hard'} level!
+                                        </p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            attachEventListeners() {
+                const levelButtons = document.querySelectorAll('.level-btn');
+                levelButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.selectLevel(btn.dataset.level);
+                    });
+                });
+
+                const optionButtons = document.querySelectorAll('.option-btn');
+                optionButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.handleAnswer(parseInt(btn.dataset.index));
+                    });
+                });
+
+                const nextBtn = document.getElementById('next-btn');
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        this.nextQuestion();
+                    });
+                }
+
+                const backBtn = document.getElementById('back-btn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => {
+                        this.backToLevelSelect();
+                    });
+                }
+
+                const retryBtn = document.getElementById('retry-btn');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        this.retryLevel();
+                    });
+                }
+
+                const levelsBtn = document.getElementById('levels-btn');
+                if (levelsBtn) {
+                    levelsBtn.addEventListener('click', () => {
+                        this.backToLevelSelect();
+                    });
+                }
+            }
+        }
+
+        // Initialize the assessment
+        const assessment = new AccountingAssessment();
+    </script>
+</body>
+</html>

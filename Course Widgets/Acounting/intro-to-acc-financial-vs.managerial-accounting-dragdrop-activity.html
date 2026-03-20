@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial vs Managerial Accounting - Categorization Activity</title>
+    <style>
+        :root {
+            /* Ivey Brand Colors from Color Reference */
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #ffffff;
+            --text-dark: #1a1a1a;
+            --light-text: #666666;
+            --border-light: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--white);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .activity-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .instructions-section {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.05) 0%, rgba(0, 147, 169, 0.05) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border-left: 4px solid var(--turquoise);
+        }
+
+        .instructions-section h2 {
+            color: var(--ivey-green);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .instructions-section p {
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .keyboard-hints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .hint-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .hint-item kbd {
+            background: var(--white);
+            border: 2px solid var(--turquoise);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--ivey-green);
+            font-weight: 600;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .statements-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--ivey-green);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--turquoise);
+        }
+
+        .statement-item {
+            background: linear-gradient(135deg, var(--white) 0%, rgba(0, 147, 169, 0.02) 100%);
+            border: 2px solid var(--turquoise);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: var(--text-dark);
+            position: relative;
+            user-select: none;
+        }
+
+        .statement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 147, 169, 0.2);
+            border-color: var(--ivey-green);
+        }
+
+        .statement-item:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .statement-item.selected {
+            border-color: var(--bright-green);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(164, 181, 68, 0.05) 100%);
+            box-shadow: 0 0 0 3px rgba(164, 181, 68, 0.3);
+        }
+
+        .statement-item.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+        }
+
+        .statement-item.correct-feedback {
+            border-color: var(--bright-green);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.15) 0%, rgba(164, 181, 68, 0.05) 100%);
+        }
+
+        .statement-item.incorrect-feedback {
+            border-color: var(--purple);
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.15) 0%, rgba(91, 44, 111, 0.05) 100%);
+        }
+
+        .drop-zones {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .drop-zone {
+            background: var(--white);
+            border: 3px dashed var(--border-light);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .drop-zone.financial h3 {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+            color: var(--white);
+        }
+
+        .drop-zone.managerial h3 {
+            background: linear-gradient(135deg, var(--bright-green) 0%, rgba(164, 181, 68, 0.8) 100%);
+            color: var(--white);
+        }
+
+        .drop-zone.financial {
+            border-color: var(--purple);
+        }
+
+        .drop-zone.managerial {
+            border-color: var(--bright-green);
+        }
+
+        .drop-zone.drag-over {
+            border-style: solid;
+            background: rgba(0, 147, 169, 0.05);
+            transform: scale(1.02);
+        }
+
+        .drop-zone.financial.drag-over {
+            background: rgba(91, 44, 111, 0.05);
+        }
+
+        .drop-zone.managerial.drag-over {
+            background: rgba(164, 181, 68, 0.05);
+        }
+
+        .drop-zone:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .dropped-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 100px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 81, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.reset-btn {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+        }
+
+        button.reset-btn:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(91, 44, 111, 0.4);
+        }
+
+        .feedback-section {
+            display: none;
+            margin-top: 32px;
+        }
+
+        .feedback-section.visible {
+            display: block;
+        }
+
+        .score-banner {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 89, 81, 0.3);
+        }
+
+        .score-banner h3 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .score-banner p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .feedback-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feedback-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .feedback-card.correct {
+            border-color: var(--bright-green);
+            background: linear-gradient(90deg, rgba(164, 181, 68, 0.08) 0%, var(--white) 100%);
+        }
+
+        .feedback-card.incorrect {
+            border-color: var(--purple);
+            background: linear-gradient(90deg, rgba(91, 44, 111, 0.08) 0%, var(--white) 100%);
+        }
+
+        .feedback-card .statement {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .feedback-card .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .feedback-card.correct .status {
+            background: var(--bright-green);
+            color: var(--white);
+        }
+
+        .feedback-card.incorrect .status {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .feedback-card .explanation {
+            color: var(--light-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .feedback-card .correct-answer {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            color: var(--ivey-green);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .activity-card {
+                padding: 24px;
+            }
+
+            .workspace {
+                gap: 16px;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .activity-card {
+                padding: 20px;
+            }
+
+            .statement-item {
+                padding: 14px 16px;
+                font-size: 0.95rem;
+            }
+
+            .keyboard-hints {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Financial vs Managerial Accounting</h1>
+            <p class="subtitle">Interactive Categorization Activity</p>
+        </header>
+
+        <div class="activity-card">
+            <section class="instructions-section" role="region" aria-label="Activity Instructions">
+                <h2>Instructions</h2>
+                <p>Drag each statement into the correct category: "Financial Accounting" or "Managerial Accounting."</p>
+                <p><strong>Note:</strong> Some items may be relevant to both areas of accounting!</p>
+
+                <div class="keyboard-hints">
+                    <div class="hint-item">
+                        <kbd>Tab</kbd>
+                        <span>Navigate items</span>
+                    </div>
+                    <div class="hint-item">
+                        <kbd>Space</kbd>
+                        <span>Select item</span>
+                    </div>
+                    <div class="hint-item">
+                        <kbd>↑↓</kbd>
+                        <span>Choose category</span>
+                    </div>
+                    <div class="hint-item">
+                        <kbd>Enter</kbd>
+                        <span>Drop item</span>
+                    </div>
+                </div>
+            </section>
+
+            <div class="workspace">
+                <div class="statements-area">
+                    <div class="section-title">Statements to Categorize</div>
+                    <div id="statements-container" role="list">
+                        <!-- Statements will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="drop-zones">
+                    <div class="drop-zone financial"
+                         id="financial-zone"
+                         data-category="financial"
+                         tabindex="0"
+                         role="region"
+                         aria-label="Financial Accounting drop zone">
+                        <h3>Financial Accounting</h3>
+                        <div class="dropped-items" role="list" aria-live="polite">
+                            <!-- Dropped items appear here -->
+                        </div>
+                    </div>
+
+                    <div class="drop-zone managerial"
+                         id="managerial-zone"
+                         data-category="managerial"
+                         tabindex="0"
+                         role="region"
+                         aria-label="Managerial Accounting drop zone">
+                        <h3>Managerial Accounting</h3>
+                        <div class="dropped-items" role="list" aria-live="polite">
+                            <!-- Dropped items appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls" role="group" aria-label="Activity controls">
+                <button id="submit-btn" aria-label="Submit your answers for feedback">
+                    Check My Answers
+                </button>
+                <button id="reset-btn" class="reset-btn" aria-label="Reset activity to start over">
+                    Reset Activity
+                </button>
+            </div>
+
+            <div id="feedback" class="feedback-section" role="region" aria-live="polite">
+                <!-- Feedback will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Activity data - Updated to allow Total Revenue in either category
+        const statements = [
+            {
+                id: 1,
+                text: "Total Revenue: CAD $12.5M",
+                category: ["financial", "managerial"], // Accepts both categories
+                explanation: {
+                    financial: "Total Revenue is an important line item in the Income Statement, which is a key financial accounting report prepared for external stakeholders like investors and regulators according to GAAP or IFRS.",
+                    managerial: "Total Revenue information is also useful in many managerial accounting calculations, such as revenue analysis by product line, customer segment, or time period to support internal decision-making."
+                }
+            },
+            {
+                id: 2,
+                text: "Enterprise tier has a $2M margin.",
+                category: ["managerial"],
+                explanation: {
+                    managerial: "Managerial accounting provides detailed margin analysis by product tier or customer segment to help management make internal decisions about pricing and resource allocation."
+                }
+            },
+            {
+                id: 3,
+                text: "Audited report for investors.",
+                category: ["financial"],
+                explanation: {
+                    financial: "Financial accounting produces audited reports for external users such as investors, creditors, and regulators to ensure accuracy and compliance with established standards."
+                }
+            },
+            {
+                id: 4,
+                text: "Decision: Increase marketing for small business clients.",
+                category: ["managerial"],
+                explanation: {
+                    managerial: "Managerial accounting supports internal decision-making and strategic planning, such as allocating marketing resources to specific customer segments based on operational insights."
+                }
+            }
+        ];
+
+        let draggedElement = null;
+        let selectedElement = null;
+        let targetZone = null;
+        let submitted = false;
+
+        // Initialize
+        function init() {
+            renderStatements();
+            setupEventListeners();
+            announceToScreenReader('Activity loaded. 4 statements ready to categorize.');
+        }
+
+        // Render statements
+        function renderStatements() {
+            const container = document.getElementById('statements-container');
+            container.innerHTML = '';
+
+            statements.forEach(statement => {
+                const item = createStatementElement(statement);
+                container.appendChild(item);
+            });
+        }
+
+        // Create statement element
+        function createStatementElement(statement) {
+            const item = document.createElement('div');
+            item.className = 'statement-item';
+            item.id = `statement-${statement.id}`;
+            item.draggable = true;
+            item.tabIndex = 0;
+            item.setAttribute('role', 'listitem');
+            item.setAttribute('data-id', statement.id);
+            // Store all acceptable categories
+            item.setAttribute('data-categories', JSON.stringify(statement.category));
+            item.setAttribute('aria-label', `Statement: ${statement.text}. Press Space to select, arrow keys to choose category, Enter to place.`);
+            item.textContent = statement.text;
+
+            // Mouse drag events
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+
+            // Keyboard events
+            item.addEventListener('keydown', handleItemKeyDown);
+
+            return item;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('dragenter', handleDragEnter);
+            });
+
+            document.getElementById('submit-btn').addEventListener('click', submitAnswers);
+            document.getElementById('reset-btn').addEventListener('click', resetActivity);
+        }
+
+        // Drag handlers
+        function handleDragStart(e) {
+            if (submitted) return;
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.id);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            if (submitted) return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (submitted) return;
+            if (e.target.classList.contains('drop-zone') || e.target.classList.contains('dropped-items')) {
+                const zone = e.target.classList.contains('drop-zone') ? e.target : e.target.closest('.drop-zone');
+                zone.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            if (submitted) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const zone = e.target.classList.contains('drop-zone') ? e.target : e.target.closest('.drop-zone');
+            if (!zone) return;
+
+            zone.classList.remove('drag-over');
+
+            if (draggedElement) {
+                const droppedItems = zone.querySelector('.dropped-items');
+                droppedItems.appendChild(draggedElement);
+                announceToScreenReader(`Statement moved to ${zone.querySelector('h3').textContent}`);
+            }
+
+            return false;
+        }
+
+        // Keyboard navigation
+        function handleItemKeyDown(e) {
+            if (submitted) return;
+
+            // Space to select/deselect
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                toggleSelection(this);
+            }
+            // Arrow keys to choose zone
+            else if (selectedElement === this && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                e.preventDefault();
+                handleArrowNavigation(e.key);
+            }
+            // Enter to drop
+            else if (e.key === 'Enter' && selectedElement === this && targetZone) {
+                e.preventDefault();
+                dropInZone();
+            }
+        }
+
+        function toggleSelection(item) {
+            // Deselect previous
+            if (selectedElement && selectedElement !== item) {
+                selectedElement.classList.remove('selected');
+            }
+
+            // Clear any zone highlights
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.style.boxShadow = '';
+                zone.style.borderWidth = '3px';
+            });
+
+            // Toggle current
+            if (selectedElement === item) {
+                selectedElement.classList.remove('selected');
+                selectedElement = null;
+                targetZone = null;
+                announceToScreenReader('Item deselected');
+            } else {
+                item.classList.add('selected');
+                selectedElement = item;
+                targetZone = document.getElementById('financial-zone');
+                // Highlight the default zone
+                targetZone.style.boxShadow = '0 0 0 4px rgba(91, 44, 111, 0.4)';
+                targetZone.style.borderWidth = '4px';
+                announceToScreenReader('Item selected. Financial Accounting category is selected by default. Use Up/Down arrow keys to switch to Managerial, then press Enter to place.');
+            }
+        }
+
+        function handleArrowNavigation(key) {
+            if (!selectedElement) return;
+
+            // Remove previous highlight
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.style.boxShadow = '';
+                zone.style.borderWidth = '3px';
+            });
+
+            if (key === 'ArrowDown' || key === 'ArrowRight') {
+                targetZone = document.getElementById('managerial-zone');
+                targetZone.style.boxShadow = '0 0 0 4px rgba(164, 181, 68, 0.4)';
+                targetZone.style.borderWidth = '4px';
+                announceToScreenReader('Managerial Accounting category selected. Press Enter to place.');
+            } else if (key === 'ArrowUp' || key === 'ArrowLeft') {
+                targetZone = document.getElementById('financial-zone');
+                targetZone.style.boxShadow = '0 0 0 4px rgba(91, 44, 111, 0.4)';
+                targetZone.style.borderWidth = '4px';
+                announceToScreenReader('Financial Accounting category selected. Press Enter to place.');
+            }
+        }
+
+        function dropInZone() {
+            if (!selectedElement || !targetZone) return;
+
+            const droppedItems = targetZone.querySelector('.dropped-items');
+            droppedItems.appendChild(selectedElement);
+            selectedElement.classList.remove('selected');
+
+            const zoneName = targetZone.querySelector('h3').textContent;
+            announceToScreenReader(`Statement placed in ${zoneName}`);
+
+            // Clear zone highlights
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.style.boxShadow = '';
+                zone.style.borderWidth = '3px';
+            });
+
+            selectedElement = null;
+            targetZone = null;
+        }
+
+        // Submit answers
+        function submitAnswers() {
+            submitted = true;
+
+            let correct = 0;
+            const total = statements.length;
+            const feedbackItems = [];
+
+            statements.forEach(statement => {
+                const item = document.getElementById(`statement-${statement.id}`);
+                const parentZone = item.closest('.drop-zone');
+                const userCategory = parentZone ? parentZone.dataset.category : null;
+
+                // Check if user's answer matches any acceptable category
+                const acceptableCategories = statement.category;
+                const isCorrect = userCategory && acceptableCategories.includes(userCategory);
+
+                if (isCorrect) {
+                    correct++;
+                    item.classList.add('correct-feedback');
+                } else {
+                    item.classList.add('incorrect-feedback');
+                }
+
+                // Get the appropriate explanation based on user's choice
+                let explanation;
+                if (typeof statement.explanation === 'object') {
+                    explanation = statement.explanation[userCategory] || statement.explanation[acceptableCategories[0]];
+                } else {
+                    explanation = statement.explanation;
+                }
+
+                feedbackItems.push({
+                    statement: statement.text,
+                    isCorrect: isCorrect,
+                    acceptableCategories: acceptableCategories,
+                    userCategory: userCategory,
+                    explanation: explanation,
+                    allExplanations: statement.explanation
+                });
+            });
+
+            displayFeedback(correct, total, feedbackItems);
+
+            // Disable all interactions
+            document.querySelectorAll('.statement-item').forEach(item => {
+                item.draggable = false;
+                item.style.cursor = 'default';
+                item.tabIndex = -1;
+            });
+
+            document.getElementById('submit-btn').disabled = true;
+
+            const percentage = Math.round((correct / total) * 100);
+            announceToScreenReader(`Activity submitted. You got ${correct} out of ${total} correct, ${percentage} percent.`);
+        }
+
+        // Display feedback
+        function displayFeedback(correct, total, feedbackItems) {
+            const feedbackSection = document.getElementById('feedback');
+            const percentage = Math.round((correct / total) * 100);
+
+            let html = `
+                <div class="score-banner">
+                    <h3>Your Score: ${correct}/${total}</h3>
+                    <p>${percentage}% Correct</p>
+                </div>
+                <div class="feedback-items">
+            `;
+
+            feedbackItems.forEach(item => {
+                const statusText = item.isCorrect ? '✓ Correct' : '✗ Incorrect';
+
+                html += `
+                    <div class="feedback-card ${item.isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="statement">${item.statement}</div>
+                        <div class="status">${statusText}</div>
+                        <div class="explanation">${item.explanation}</div>
+                `;
+
+                // For items that can go in either category, show both explanations if correct
+                if (item.isCorrect && typeof item.allExplanations === 'object' && Object.keys(item.allExplanations).length > 1) {
+                    html += `<div class="correct-answer" style="border-top: 1px solid var(--border-light); margin-top: 12px; padding-top: 12px;">`;
+                    html += `<strong>Note:</strong> This item could be placed in either category:<br><br>`;
+
+                    if (item.allExplanations.financial) {
+                        html += `<strong>Financial Accounting:</strong> ${item.allExplanations.financial}<br><br>`;
+                    }
+                    if (item.allExplanations.managerial) {
+                        html += `<strong>Managerial Accounting:</strong> ${item.allExplanations.managerial}`;
+                    }
+                    html += `</div>`;
+                }
+
+                // For incorrect answers, show what categories were acceptable
+                if (!item.isCorrect) {
+                    const categoryNames = item.acceptableCategories.map(cat =>
+                        cat === 'financial' ? 'Financial Accounting' : 'Managerial Accounting'
+                    );
+                    const correctCategoryText = categoryNames.length > 1
+                        ? `Acceptable Categories: ${categoryNames.join(' or ')}`
+                        : `Correct Category: ${categoryNames[0]}`;
+
+                    html += `<div class="correct-answer">${correctCategoryText}</div>`;
+                }
+
+                html += `</div>`;
+            });
+
+            html += '</div>';
+            feedbackSection.innerHTML = html;
+            feedbackSection.classList.add('visible');
+
+            // Scroll to feedback
+            setTimeout(() => {
+                feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        }
+
+        // Reset activity
+        function resetActivity() {
+            submitted = false;
+            selectedElement = null;
+            targetZone = null;
+            draggedElement = null;
+
+            // Clear feedback
+            const feedbackSection = document.getElementById('feedback');
+            feedbackSection.classList.remove('visible');
+            feedbackSection.innerHTML = '';
+
+            // Clear drop zones
+            document.querySelectorAll('.dropped-items').forEach(zone => {
+                zone.innerHTML = '';
+            });
+
+            // Re-enable submit button
+            document.getElementById('submit-btn').disabled = false;
+
+            // Re-render statements
+            renderStatements();
+
+            announceToScreenReader('Activity reset. All statements returned to starting position.');
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'visually-hidden';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Learning Outcomes</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(164, 181, 68, 0.03) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .intro-box {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--turquoise);
+        }
+
+        .intro-box h2 {
+            color: var(--ivey-green);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .intro-box p {
+            color: var(--dark-gray);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .intro-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .outcomes-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--ivey-green);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--ivey-green);
+        }
+
+        .clo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .clo-item {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 3px solid var(--turquoise);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .clo-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 147, 169, 0.2);
+            border-color: var(--ivey-green);
+        }
+
+        .clo-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .clo-code {
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .clo-text {
+            color: var(--dark-gray);
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .footer-note {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(0, 147, 169, 0.1) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--purple);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .footer-note p {
+            color: var(--dark-gray);
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .footer-note strong {
+            color: var(--purple);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            header {
+                padding: 25px 15px;
+            }
+
+            .outcomes-section {
+                padding: 20px;
+            }
+
+            .clo-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to Introduction to Accounting</h1>
+            <p class="subtitle">Your journey into the language of business starts here</p>
+        </header>
+
+        <div class="intro-box">
+            <h2>What You'll Master:</h2>
+            <p>This course will equip you with foundational accounting skills essential for effective business decision-making. Whether you're analyzing financial statements, evaluating business performance, or understanding how companies report their financial health, you'll develop the competencies needed to navigate the business world with confidence.</p>
+        </div>
+
+        <div class="outcomes-section">
+            <div class="clo-list" role="list" id="clo-list"></div>
+        </div>
+
+        <div class="footer-note">
+            <p>Each module builds toward these outcomes. Track your progress as you advance through the course.</p>
+        </div>
+    </div>
+
+    <script>
+        const courseOutcomes = [
+            {
+                code: 'CLO 1',
+                text: 'Understand the accounting equation and distinguish between different forms of business ownership'
+            },
+            {
+                code: 'CLO 2',
+                text: 'Prepare and interpret the three key financial statements, and explain their interrelationships'
+            },
+            {
+                code: 'CLO 3',
+                text: 'Calculate and interpret key financial ratios to assess profitability, liquidity, and operational efficiency'
+            },
+            {
+                code: 'CLO 4',
+                text: 'Use managerial accounting concepts and tools to evaluate business performance'
+            },
+            {
+                code: 'CLO 5',
+                text: 'Evaluate how accounting information enables and supports external reporting and internal decision-making'
+            }
+        ];
+
+        const cloList = document.getElementById('clo-list');
+
+        courseOutcomes.forEach((clo) => {
+            const div = document.createElement('div');
+            div.className = 'clo-item';
+            div.setAttribute('role', 'listitem');
+
+            div.innerHTML = `
+                <div class="clo-header">
+                    <span class="clo-code">${clo.code}</span>
+                    <div class="clo-text">${clo.text}</div>
+                </div>
+            `;
+
+            cloList.appendChild(div);
+        });
+    </script>
+</body>
+</html>

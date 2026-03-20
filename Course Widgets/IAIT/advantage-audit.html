@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structural Advantage Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ivey-blue: #005596;
+            --ivey-gold: #f4a300;
+            --sage: #c0d1cd;
+            --cream: #f0ede0;
+            --aqua: #bfe5e7;
+            --lavender: #d5cae0;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            color: var(--neutral-900);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .audit-container { max-width: 900px; margin: 0 auto; }
+
+        .audit-header { text-align: center; margin-bottom: 2rem; }
+        .audit-header h1 { color: #034638; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .audit-header p { color: var(--neutral-600); font-size: 0.9375rem; max-width: 600px; margin: 0 auto; }
+
+        .advantage-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+
+        .advantage-card {
+            background: #f0ede0;
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 2px 8px rgba(0, 85, 150, 0.08);
+            border: 1px solid var(--neutral-200);
+            transition: all 0.3s ease;
+        }
+
+        .advantage-card:nth-child(1) { border-left: 5px solid var(--ivey-blue); }
+        .advantage-card:nth-child(2) { border-left: 5px solid #0891b2; }
+        .advantage-card:nth-child(3) { border-left: 5px solid var(--ivey-gold); }
+        .advantage-card:nth-child(4) { border-left: 5px solid #7c3aed; }
+        .advantage-card:hover { box-shadow: 0 4px 16px rgba(0, 85, 150, 0.12); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; gap: 1rem; }
+        .card-title { flex: 1; }
+        .card-title h3 { font-size: 1.125rem; font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem; }
+        .card-title p { font-size: 0.8125rem; color: var(--neutral-500); }
+
+        .score-display { background: var(--neutral-500); border-radius: 8px; padding: 0.5rem 1rem; text-align: center; min-width: 70px; transition: all 0.3s ease; }
+        .advantage-card:nth-child(1) .score-display.has-score { background: var(--ivey-blue); }
+        .advantage-card:nth-child(2) .score-display.has-score { background: #0891b2; }
+        .advantage-card:nth-child(3) .score-display.has-score { background: var(--ivey-gold); }
+        .advantage-card:nth-child(4) .score-display.has-score { background: #7c3aed; }
+
+        .score-value { font-size: 1.5rem; font-weight: 700; color: white; line-height: 1; }
+        .score-label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.8); margin-top: 0.125rem; }
+
+        .rating-section { margin-bottom: 1.25rem; }
+        .rating-label { font-size: 0.75rem; font-weight: 600; color: var(--neutral-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.625rem; display: block; }
+
+        .rating-buttons { display: flex; gap: 0.375rem; }
+
+        .rating-btn {
+            width: 100%;
+            max-width: 52px;
+            aspect-ratio: 1;
+            border: 2px solid var(--neutral-300);
+            background: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neutral-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rating-btn:hover { border-color: var(--ivey-blue); color: var(--ivey-blue); background: var(--aqua); }
+        .rating-btn.selected { background: var(--ivey-blue); border-color: var(--ivey-blue); color: white; }
+        .advantage-card:nth-child(2) .rating-btn.selected { background: #0891b2; border-color: #0891b2; }
+        .advantage-card:nth-child(3) .rating-btn.selected { background: var(--ivey-gold); border-color: var(--ivey-gold); color: var(--neutral-900); }
+        .advantage-card:nth-child(4) .rating-btn.selected { background: #7c3aed; border-color: #7c3aed; }
+
+        .rating-scale { display: flex; justify-content: space-between; margin-top: 0.375rem; font-size: 0.6875rem; color: var(--neutral-500); }
+
+        .summary-section { background: white; border-radius: 12px; padding: 1.75rem; margin-top: 1.5rem; box-shadow: 0 2px 8px rgba(0, 85, 150, 0.08); border: 2px solid var(--ivey-blue); }
+        .summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+        .summary-header h3 { font-size: 1rem; font-weight: 600; color: var(--ivey-blue); }
+        .total-score { background: var(--ivey-blue); color: white; padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: 1.125rem; }
+
+        .score-bars { display: flex; flex-direction: column; gap: 0.75rem; }
+        .score-bar-item { display: flex; align-items: center; gap: 1rem; }
+        .bar-label { width: 140px; font-size: 0.8125rem; color: var(--neutral-700); flex-shrink: 0; }
+        .bar-container { flex: 1; height: 24px; background: var(--neutral-100); border-radius: 12px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; border-radius: 12px; transition: width 0.5s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.5rem; min-width: 0; }
+        .bar-fill.bar-1 { background: linear-gradient(90deg, var(--ivey-blue), #0077cc); }
+        .bar-fill.bar-2 { background: linear-gradient(90deg, #0891b2, #06b6d4); }
+        .bar-fill.bar-3 { background: linear-gradient(90deg, var(--ivey-gold), #fbbf24); }
+        .bar-fill.bar-4 { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+        .bar-value { font-size: 0.75rem; font-weight: 600; color: white; }
+
+        .interpretation { margin-top: 1.25rem; padding: 1rem; background: var(--sage); border-radius: 8px; border-left: 4px solid var(--ivey-gold); }
+        .interpretation p { font-size: 0.875rem; color: var(--neutral-700); }
+        .interpretation strong { color: var(--ivey-blue); }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .advantage-card { padding: 1.25rem; }
+            .rating-btn { max-width: 40px; font-size: 0.875rem; }
+            .card-header { flex-direction: column; }
+            .score-display { align-self: flex-start; }
+            .bar-label { width: 100px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="audit-container">
+        <header class="audit-header">
+            <h1>Structural Advantage Audit</h1>
+            <p>Rate your organization's four structural advantages that give established firms staying power against digital disruption.</p>
+        </header>
+
+        <div class="advantage-cards">
+            <div class="advantage-card" data-advantage="customers">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3>Customer Relationships</h3>
+                        <p>Trust, loyalty, and switching costs built over time</p>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-value" id="score-customers">—</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <label class="rating-label">Your Rating</label>
+                    <div class="rating-buttons" data-target="customers">
+                        <button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6</button><button class="rating-btn" data-value="7">7</button><button class="rating-btn" data-value="8">8</button><button class="rating-btn" data-value="9">9</button><button class="rating-btn" data-value="10">10</button>
+                    </div>
+                    <div class="rating-scale"><span>Weak</span><span>Strong</span></div>
+                </div>
+            </div>
+
+            <div class="advantage-card" data-advantage="distribution">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3>Distribution Networks</h3>
+                        <p>Physical and digital reach spanning markets</p>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-value" id="score-distribution">—</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <label class="rating-label">Your Rating</label>
+                    <div class="rating-buttons" data-target="distribution">
+                        <button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6</button><button class="rating-btn" data-value="7">7</button><button class="rating-btn" data-value="8">8</button><button class="rating-btn" data-value="9">9</button><button class="rating-btn" data-value="10">10</button>
+                    </div>
+                    <div class="rating-scale"><span>Weak</span><span>Strong</span></div>
+                </div>
+            </div>
+
+            <div class="advantage-card" data-advantage="brand">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3>Brand Equity</h3>
+                        <p>Recognition, trust, and premium positioning</p>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-value" id="score-brand">—</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <label class="rating-label">Your Rating</label>
+                    <div class="rating-buttons" data-target="brand">
+                        <button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6</button><button class="rating-btn" data-value="7">7</button><button class="rating-btn" data-value="8">8</button><button class="rating-btn" data-value="9">9</button><button class="rating-btn" data-value="10">10</button>
+                    </div>
+                    <div class="rating-scale"><span>Weak</span><span>Strong</span></div>
+                </div>
+            </div>
+
+            <div class="advantage-card" data-advantage="financial">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h3>Financial Resources</h3>
+                        <p>Capital for transformation investment</p>
+                    </div>
+                    <div class="score-display">
+                        <div class="score-value" id="score-financial">—</div>
+                        <div class="score-label">out of 10</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <label class="rating-label">Your Rating</label>
+                    <div class="rating-buttons" data-target="financial">
+                        <button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6</button><button class="rating-btn" data-value="7">7</button><button class="rating-btn" data-value="8">8</button><button class="rating-btn" data-value="9">9</button><button class="rating-btn" data-value="10">10</button>
+                    </div>
+                    <div class="rating-scale"><span>Weak</span><span>Strong</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <div class="summary-header">
+                <h3>Your Advantage Profile</h3>
+                <div class="total-score"><span id="total-score">0</span>/40</div>
+            </div>
+            <div class="score-bars">
+                <div class="score-bar-item">
+                    <span class="bar-label">Customer Relationships</span>
+                    <div class="bar-container"><div class="bar-fill bar-1" id="bar-customers" style="width: 0%"><span class="bar-value" id="bar-value-customers"></span></div></div>
+                </div>
+                <div class="score-bar-item">
+                    <span class="bar-label">Distribution Networks</span>
+                    <div class="bar-container"><div class="bar-fill bar-2" id="bar-distribution" style="width: 0%"><span class="bar-value" id="bar-value-distribution"></span></div></div>
+                </div>
+                <div class="score-bar-item">
+                    <span class="bar-label">Brand Equity</span>
+                    <div class="bar-container"><div class="bar-fill bar-3" id="bar-brand" style="width: 0%"><span class="bar-value" id="bar-value-brand"></span></div></div>
+                </div>
+                <div class="score-bar-item">
+                    <span class="bar-label">Financial Resources</span>
+                    <div class="bar-container"><div class="bar-fill bar-4" id="bar-financial" style="width: 0%"><span class="bar-value" id="bar-value-financial"></span></div></div>
+                </div>
+            </div>
+            <div class="interpretation" id="interpretation">
+                <p>Rate each advantage above to see your overall profile and interpretation.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scores = { customers: null, distribution: null, brand: null, financial: null };
+
+        document.querySelectorAll('.rating-buttons').forEach(container => {
+            const target = container.dataset.target;
+            container.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    const value = parseInt(btn.dataset.value);
+                    scores[target] = value;
+                    const scoreDisplay = document.getElementById(`score-${target}`);
+                    scoreDisplay.textContent = value;
+                    scoreDisplay.closest('.score-display').classList.add('has-score');
+                    updateSummary();
+                });
+            });
+        });
+
+        function updateSummary() {
+            let total = 0, rated = 0;
+            Object.keys(scores).forEach(key => {
+                const value = scores[key];
+                const bar = document.getElementById(`bar-${key}`);
+                const barValue = document.getElementById(`bar-value-${key}`);
+                if (value !== null) {
+                    total += value; rated++;
+                    bar.style.width = `${value * 10}%`;
+                    barValue.textContent = value;
+                } else {
+                    bar.style.width = '0%'; barValue.textContent = '';
+                }
+            });
+            document.getElementById('total-score').textContent = total;
+            const interpretation = document.getElementById('interpretation');
+            if (rated === 4) {
+                const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+                const strongest = sorted[0][0], weakest = sorted[3][0];
+                const labels = { customers: 'Customer Relationships', distribution: 'Distribution Networks', brand: 'Brand Equity', financial: 'Financial Resources' };
+                let message = '';
+                if (total >= 32) message = `<strong>Strong Advantage Position (${total}/40)</strong><br>Your organization has robust structural advantages. Your strongest asset is <strong>${labels[strongest]}</strong>. Focus on leveraging these advantages for transformation while being mindful that ${labels[weakest]} may need attention.`;
+                else if (total >= 24) message = `<strong>Moderate Advantage Position (${total}/40)</strong><br>You have a solid foundation with room to strengthen. <strong>${labels[strongest]}</strong> is your standout advantage—consider how to better leverage it. Prioritize improving <strong>${labels[weakest]}</strong> to build a more balanced position.`;
+                else if (total >= 16) message = `<strong>Developing Advantage Position (${total}/40)</strong><br>Your advantages need strengthening before major transformation efforts. Focus first on building <strong>${labels[weakest]}</strong> while protecting <strong>${labels[strongest]}</strong> as your anchor during change.`;
+                else message = `<strong>Vulnerable Position (${total}/40)</strong><br>Limited structural advantages may make transformation challenging. Consider partnerships or acquisitions to quickly build capabilities, particularly in <strong>${labels[weakest]}</strong>.`;
+                interpretation.innerHTML = `<p>${message}</p>`;
+            } else if (rated > 0) {
+                interpretation.innerHTML = `<p>Complete all four ratings to see your overall interpretation. <strong>${4 - rated}</strong> remaining.</p>`;
+            } else {
+                interpretation.innerHTML = `<p>Rate each advantage above to see your overall profile and interpretation.</p>`;
+            }
+        }
+    </script>
+</body></html>

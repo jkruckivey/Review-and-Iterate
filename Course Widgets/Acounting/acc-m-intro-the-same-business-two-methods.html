@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Same Business, Two Methods - Cash vs Accrual Accounting</title>
+    <style>
+        :root {
+            /* Ivey Brand Colors */
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #ffffff;
+            --text-dark: #1a1a1a;
+            --light-text: #666666;
+            --border-light: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--white);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .activity-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.05) 0%, rgba(0, 147, 169, 0.05) 100%);
+            border-left: 4px solid var(--turquoise);
+            padding: 20px;
+            margin-bottom: 32px;
+            border-radius: 8px;
+        }
+
+        .intro-section p {
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-radius: 12px;
+            border: 2px solid var(--bright-green);
+        }
+
+        .step-indicator {
+            font-weight: 600;
+            color: var(--ivey-green);
+            font-size: 1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        .nav-btn:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .scenario-container {
+            min-height: 500px;
+        }
+
+        .scenario-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .scenario-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .scenario-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .scenario-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .timeline-section {
+            background: var(--white);
+            border: 2px solid var(--turquoise);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .timeline-title {
+            color: var(--ivey-green);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 40px 0 60px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 5%;
+            right: 5%;
+            top: 52px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            border-radius: 2px;
+        }
+
+        .timeline-events {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+            gap: 20px;
+        }
+
+        .timeline-event {
+            flex: 1;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            padding: 0 10px;
+            min-width: 0;
+        }
+
+        .timeline-event.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-dot {
+            width: 28px;
+            height: 28px;
+            background: var(--white);
+            border: 5px solid var(--turquoise);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            box-shadow: 0 2px 8px rgba(0, 147, 169, 0.3);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--ivey-green);
+            font-size: 1rem;
+            margin-bottom: 12px;
+            background: var(--white);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            word-wrap: break-word;
+        }
+
+        .comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .accounting-view {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.6s ease;
+            border: 3px solid;
+        }
+
+        .accounting-view.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .accounting-view.cash-view {
+            border-color: var(--purple);
+        }
+
+        .accounting-view.accrual-view {
+            border-color: var(--bright-green);
+            transition-delay: 0.2s;
+        }
+
+        .view-header {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cash-view .view-header {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+        }
+
+        .accrual-view .view-header {
+            background: linear-gradient(135deg, var(--bright-green) 0%, rgba(164, 181, 68, 0.8) 100%);
+        }
+
+        .revenue-item {
+            margin-bottom: 16px;
+        }
+
+        .revenue-label {
+            font-weight: 600;
+            color: var(--ivey-green);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .revenue-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .revenue-explanation {
+            font-size: 0.9rem;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        .conclusion-section {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 3px solid var(--turquoise);
+            border-radius: 12px;
+            padding: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .conclusion-section.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .conclusion-question {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .conclusion-answer {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .conclusion-explanation {
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border: none;
+            padding: 16px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 24px;
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 81, 0.4);
+        }
+
+        .continue-btn:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .activity-card {
+                padding: 24px;
+            }
+
+            .comparison-section {
+                grid-template-columns: 1fr;
+            }
+
+            .accounting-view.accrual-view {
+                transition-delay: 0s;
+            }
+
+            .timeline {
+                padding: 20px 0 40px 0;
+            }
+
+            .timeline-events {
+                flex-direction: column;
+                gap: 32px;
+                padding: 0 20px;
+            }
+
+            .timeline-event {
+                padding: 0;
+            }
+
+            .timeline-line {
+                left: 50%;
+                top: 28px;
+                bottom: 28px;
+                width: 4px;
+                height: auto;
+                transform: translateX(-50%);
+            }
+
+            .timeline-description {
+                font-size: 0.95rem;
+                padding: 12px;
+            }
+
+            .nav-buttons {
+                flex-wrap: wrap;
+            }
+
+            .progress-container {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>The Same Business, Two Methods</h1>
+            <p class="subtitle">Understanding Cash vs. Accrual Accounting</p>
+        </header>
+
+        <div class="activity-card">
+            <div class="intro-section">
+                <p>It's time to explore two different scenarios and compare them to determine which method works best.</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="step-indicator" id="step-indicator" aria-live="polite">Introduction</div>
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prev-btn" aria-label="Previous step" disabled>← Previous</button>
+                    <button class="nav-btn" id="next-btn" aria-label="Next step">Next →</button>
+                </div>
+            </div>
+
+            <div class="scenario-container">
+                <!-- Scenario 1: Timeline -->
+                <div class="scenario-section active" id="scenario1-timeline" role="region" aria-labelledby="scenario1-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario1-title">Scenario 1: December Consulting Project</h2>
+                        <p>Let's explore how timing affects revenue recognition</p>
+                    </div>
+
+                    <div class="timeline-section">
+                        <div class="timeline-title">Timeline:</div>
+                        <div class="timeline">
+                            <div class="timeline-line"></div>
+                            <div class="timeline-events">
+                                <div class="timeline-event" data-step="1">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">December 15</div>
+                                    <div class="timeline-description">You complete a $10,000 consulting project</div>
+                                </div>
+                                <div class="timeline-event" data-step="2">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">December 31</div>
+                                    <div class="timeline-description">Year-end (time to prepare financial statements)</div>
+                                </div>
+                                <div class="timeline-event" data-step="3">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">January 10</div>
+                                    <div class="timeline-description">Client pays you $10,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="timeline-continue">Continue to Comparison →</button>
+                </div>
+
+                <!-- Scenario 1: Comparison -->
+                <div class="scenario-section" id="scenario1-comparison" role="region" aria-labelledby="scenario1-comp-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario1-comp-title">Scenario 1: Comparing the Methods</h2>
+                        <p>How does each method handle the same transaction?</p>
+                    </div>
+
+                    <div class="comparison-section">
+                        <div class="accounting-view cash-view">
+                            <div class="view-header">Cash Accounting View:</div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">December Revenue:</div>
+                                <div class="revenue-amount">$0</div>
+                                <div class="revenue-explanation">(no cash received yet)</div>
+                            </div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">January Revenue:</div>
+                                <div class="revenue-amount">$10,000</div>
+                                <div class="revenue-explanation">(cash received)</div>
+                            </div>
+                        </div>
+
+                        <div class="accounting-view accrual-view">
+                            <div class="view-header">Accrual Accounting View:</div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">December Revenue:</div>
+                                <div class="revenue-amount">$10,000</div>
+                                <div class="revenue-explanation">(earned when service delivered)</div>
+                            </div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">January Revenue:</div>
+                                <div class="revenue-amount">$0</div>
+                                <div class="revenue-explanation">(cash collected, no new economic event)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="comparison-continue">See the Answer →</button>
+                </div>
+
+                <!-- Scenario 1: Conclusion -->
+                <div class="scenario-section" id="scenario1-conclusion" role="region" aria-labelledby="scenario1-concl-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario1-concl-title">Scenario 1: The Verdict</h2>
+                    </div>
+
+                    <div class="conclusion-section">
+                        <div class="conclusion-question">Which method gives a better picture of December's performance?</div>
+                        <div class="conclusion-answer">Accrual!</div>
+                        <div class="conclusion-explanation">
+                            You did the work in December. That's when you created and delivered value and earned the revenue. The fact that the client paid in January is just a cash timing issue—it doesn't change the economic reality of when you performed the service.
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="scenario1-done">Continue to Scenario 2 →</button>
+                </div>
+
+                <!-- Scenario 2: Timeline -->
+                <div class="scenario-section" id="scenario2-timeline" role="region" aria-labelledby="scenario2-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario2-title">Scenario 2: Prepaid Rent (Expense Matching)</h2>
+                        <p>Now let's see how expenses are handled differently</p>
+                    </div>
+
+                    <div class="timeline-section">
+                        <div class="timeline-title">Timeline:</div>
+                        <div class="timeline">
+                            <div class="timeline-line"></div>
+                            <div class="timeline-events">
+                                <div class="timeline-event" data-step="1">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">January 1</div>
+                                    <div class="timeline-description">You pay $12,000 cash for 12 months of office rent (January-December)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="timeline2-continue">Continue to Comparison →</button>
+                </div>
+
+                <!-- Scenario 2: Comparison -->
+                <div class="scenario-section" id="scenario2-comparison" role="region" aria-labelledby="scenario2-comp-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario2-comp-title">Scenario 2: Comparing the Methods</h2>
+                        <p>How should the rent expense be recognized?</p>
+                    </div>
+
+                    <div class="comparison-section">
+                        <div class="accounting-view cash-view">
+                            <div class="view-header">Cash Accounting View:</div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">January Expense:</div>
+                                <div class="revenue-amount">$12,000</div>
+                                <div class="revenue-explanation">(entire amount paid in January)</div>
+                            </div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">Feb-Dec Expense:</div>
+                                <div class="revenue-amount">$0</div>
+                                <div class="revenue-explanation">each month (no cash paid)</div>
+                            </div>
+                        </div>
+
+                        <div class="accounting-view accrual-view">
+                            <div class="view-header">Accrual Accounting View:</div>
+                            <div class="revenue-item">
+                                <div class="revenue-label">Every Month:</div>
+                                <div class="revenue-amount">$1,000</div>
+                                <div class="revenue-explanation">expense ($12,000 ÷ 12 months)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="comparison2-continue">See the Answer →</button>
+                </div>
+
+                <!-- Scenario 2: Conclusion -->
+                <div class="scenario-section" id="scenario2-conclusion" role="region" aria-labelledby="scenario2-concl-title">
+                    <div class="scenario-header">
+                        <h2 id="scenario2-concl-title">Scenario 2: The Verdict</h2>
+                    </div>
+
+                    <div class="conclusion-section">
+                        <div class="conclusion-question">Which method gives a better picture of monthly performance?</div>
+                        <div class="conclusion-answer">Accrual!</div>
+                        <div class="conclusion-explanation">
+                            You're using the office space all year, not just in January. Matching $1,000 of rent expense to each month reflects the economic reality that you're consuming the space benefit evenly throughout the year.
+                        </div>
+                    </div>
+
+                    <button class="continue-btn" id="restart-btn">Review from Beginning →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation state
+        const sections = [
+            'scenario1-timeline',
+            'scenario1-comparison',
+            'scenario1-conclusion',
+            'scenario2-timeline',
+            'scenario2-comparison',
+            'scenario2-conclusion'
+        ];
+
+        const sectionTitles = [
+            'Scenario 1: Timeline',
+            'Scenario 1: Comparison',
+            'Scenario 1: Conclusion',
+            'Scenario 2: Timeline',
+            'Scenario 2: Comparison',
+            'Scenario 2: Conclusion'
+        ];
+
+        let currentSection = 0;
+        let timelineStep = 0;
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            revealTimeline();
+            updateStepIndicator();
+            announceToScreenReader('Activity loaded. Scenario 1: December Consulting Project timeline is displayed.');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('prev-btn').addEventListener('click', goToPrevious);
+            document.getElementById('next-btn').addEventListener('click', goToNext);
+            document.getElementById('timeline-continue').addEventListener('click', () => continueToSection(1));
+            document.getElementById('comparison-continue').addEventListener('click', () => continueToSection(2));
+            document.getElementById('scenario1-done').addEventListener('click', () => continueToSection(3));
+            document.getElementById('timeline2-continue').addEventListener('click', () => continueToSection(4));
+            document.getElementById('comparison2-continue').addEventListener('click', () => continueToSection(5));
+            document.getElementById('restart-btn').addEventListener('click', restart);
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && !document.getElementById('prev-btn').disabled) {
+                    goToPrevious();
+                } else if (e.key === 'ArrowRight' && !document.getElementById('next-btn').disabled) {
+                    goToNext();
+                }
+            });
+        }
+
+        // Reveal timeline events progressively
+        function revealTimeline() {
+            const currentSectionId = sections[currentSection];
+            const events = document.querySelectorAll(`#${currentSectionId} .timeline-event`);
+
+            timelineStep = 0;
+
+            function revealNext() {
+                if (timelineStep < events.length) {
+                    events[timelineStep].classList.add('revealed');
+                    const dateText = events[timelineStep].querySelector('.timeline-date').textContent;
+                    announceToScreenReader(`Timeline event revealed: ${dateText}`);
+                    timelineStep++;
+                    setTimeout(revealNext, 600);
+                }
+            }
+
+            revealNext();
+        }
+
+        // Reveal comparison views
+        function revealComparison() {
+            const currentSectionId = sections[currentSection];
+            const views = document.querySelectorAll(`#${currentSectionId} .accounting-view`);
+
+            views.forEach((view, index) => {
+                setTimeout(() => {
+                    view.classList.add('revealed');
+                    const viewType = view.classList.contains('cash-view') ? 'Cash Accounting' : 'Accrual Accounting';
+                    announceToScreenReader(`${viewType} view revealed`);
+                }, index * 400);
+            });
+        }
+
+        // Reveal conclusion
+        function revealConclusion() {
+            const currentSectionId = sections[currentSection];
+            const conclusion = document.querySelector(`#${currentSectionId} .conclusion-section`);
+
+            setTimeout(() => {
+                conclusion.classList.add('revealed');
+                announceToScreenReader('Conclusion revealed');
+            }, 300);
+        }
+
+        // Continue to specific section
+        function continueToSection(sectionIndex) {
+            currentSection = sectionIndex;
+            showCurrentSection();
+            updateButtons();
+            updateStepIndicator();
+
+            // Trigger appropriate reveal animation
+            const sectionId = sections[currentSection];
+            if (sectionId.includes('timeline')) {
+                revealTimeline();
+            } else if (sectionId.includes('comparison')) {
+                revealComparison();
+            } else if (sectionId.includes('conclusion')) {
+                revealConclusion();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            announceToScreenReader(`Navigated to ${sectionTitles[currentSection]}`);
+        }
+
+        // Navigation functions
+        function goToPrevious() {
+            if (currentSection > 0) {
+                continueToSection(currentSection - 1);
+            }
+        }
+
+        function goToNext() {
+            if (currentSection < sections.length - 1) {
+                continueToSection(currentSection + 1);
+            }
+        }
+
+        // Show current section
+        function showCurrentSection() {
+            sections.forEach((sectionId, index) => {
+                const section = document.getElementById(sectionId);
+                if (index === currentSection) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+        }
+
+        // Update navigation buttons
+        function updateButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentSection === 0;
+            nextBtn.disabled = currentSection === sections.length - 1;
+        }
+
+        // Update step indicator
+        function updateStepIndicator() {
+            const indicator = document.getElementById('step-indicator');
+            indicator.textContent = `${sectionTitles[currentSection]} (${currentSection + 1}/${sections.length})`;
+        }
+
+        // Restart activity
+        function restart() {
+            currentSection = 0;
+            showCurrentSection();
+            updateButtons();
+            updateStepIndicator();
+            revealTimeline();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            announceToScreenReader('Activity restarted from the beginning');
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'visually-hidden';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

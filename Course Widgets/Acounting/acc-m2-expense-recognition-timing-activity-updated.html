@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Recognition Timing - Fundamentals of Accounting</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --error-red: #C62828;
+            --success-green: #2E7D32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(164, 181, 68, 0.03) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        /* Matching Principle Box */
+        .matching-principle {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(0, 147, 169, 0.1) 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid var(--purple);
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .matching-principle h2 {
+            color: var(--purple);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .matching-principle p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .matching-principle .key-question {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: 600;
+            border-left: 4px solid var(--purple);
+            font-size: 1.05rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .progress-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .score {
+            font-size: 1.3rem;
+            color: var(--ivey-green);
+            font-weight: 700;
+        }
+
+        .reset-btn {
+            background: var(--purple);
+            color: var(--white);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: var(--bright-green);
+            transform: scale(1.05);
+        }
+
+        .reset-btn:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        /* Scenario Card */
+        .scenario-container {
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid var(--ivey-green);
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card.answered-correct {
+            border-left-color: var(--success-green);
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.05) 0%, var(--white) 100%);
+        }
+
+        .scenario-card.answered-incorrect {
+            border-left-color: var(--error-red);
+        }
+
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .scenario-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+        }
+
+        .scenario-status {
+            font-size: 1.5rem;
+        }
+
+        .scenario-story {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--turquoise);
+        }
+
+        .scenario-story h3 {
+            color: var(--turquoise);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-story p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: var(--white);
+            border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timeline-item {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            background: var(--light-gray);
+        }
+
+        .timeline-month {
+            font-weight: 700;
+            color: var(--ivey-green);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .timeline-event {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+        }
+
+        .question-section {
+            margin: 25px 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            background: var(--white);
+            border: 3px solid var(--medium-gray);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--dark-gray);
+            text-align: center;
+        }
+
+        .answer-btn:hover:not(:disabled) {
+            border-color: var(--ivey-green);
+            background: rgba(0, 89, 81, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .answer-btn:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .answer-btn.selected {
+            border-color: var(--ivey-green);
+            background: var(--ivey-green);
+            color: var(--white);
+        }
+
+        .answer-btn.correct {
+            border-color: var(--success-green);
+            background: var(--success-green);
+            color: var(--white);
+        }
+
+        .answer-btn.incorrect {
+            border-color: var(--error-red);
+            background: var(--error-red);
+            color: var(--white);
+            animation: shake 0.5s ease;
+        }
+
+        .answer-btn.show-correct {
+            border-color: var(--success-green);
+            border-width: 4px;
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .answer-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .submit-btn {
+            background: var(--ivey-green);
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--turquoise);
+            transform: scale(1.05);
+        }
+
+        .submit-btn:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .submit-btn:disabled {
+            background: var(--medium-gray);
+            cursor: not-allowed;
+        }
+
+        .feedback-section {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        .feedback-section.correct {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15) 0%, rgba(46, 125, 50, 0.05) 100%);
+            border: 2px solid var(--success-green);
+        }
+
+        .feedback-section.incorrect {
+            background: linear-gradient(135deg, rgba(198, 40, 40, 0.15) 0%, rgba(198, 40, 40, 0.05) 100%);
+            border: 2px solid var(--error-red);
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .feedback-section.correct .feedback-title {
+            color: var(--success-green);
+        }
+
+        .feedback-section.incorrect .feedback-title {
+            color: var(--error-red);
+        }
+
+        .feedback-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 4px solid var(--ivey-green);
+        }
+
+        .explanation strong {
+            color: var(--ivey-green);
+        }
+
+        /* Completion Modal */
+        .completion-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .completion-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h2 {
+            color: var(--ivey-green);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .modal-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-content .final-score {
+            font-size: 2.5rem;
+            color: var(--success-green);
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .modal-btn {
+            background: var(--ivey-green);
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .modal-btn:hover {
+            background: var(--turquoise);
+            transform: scale(1.05);
+        }
+
+        .modal-btn:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            header {
+                padding: 20px 15px;
+            }
+
+            .scenario-card {
+                padding: 20px;
+            }
+
+            .timeline {
+                flex-direction: column;
+            }
+
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .answer-btn {
+                border: 3px solid #000;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus Visible */
+        *:focus-visible {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Expense Recognition Timing Activity</h1>
+            <p class="subtitle">When Should Expenses Be Recognized? Apply the Matching Principle</p>
+        </header>
+
+        <!-- Matching Principle Explanation -->
+        <section class="matching-principle" role="region" aria-label="Matching Principle Explanation">
+            <h2>The Matching Principle (Expense Recognition)</h2>
+            <p>Match expenses to the revenues they help generate in the <strong>same accounting period</strong>. This means expenses are recognized when the related revenue is recognized, NOT when cash is paid.</p>
+            <div class="key-question">
+                Key Question: "Which costs were incurred to earn this period's revenues?"
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="progress-section" role="region" aria-label="Activity Progress">
+            <div class="progress-info">
+                <span>Scenarios Completed: <span class="score" id="progress" aria-live="polite">0/4</span></span>
+            </div>
+            <div class="progress-info">
+                <span>Correct: <span class="score" id="correctCount" aria-live="polite">0</span></span>
+            </div>
+            <button class="reset-btn" id="resetBtn" aria-label="Reset activity and start over">Reset Activity</button>
+        </section>
+
+        <!-- Scenarios Container -->
+        <div id="scenariosContainer"></div>
+
+        <!-- Completion Modal -->
+        <div class="completion-modal" id="completionModal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+            <div class="modal-content">
+                <h2 id="modalTitle">Activity Complete!</h2>
+                <p>You've completed all expense recognition scenarios!</p>
+                <div class="final-score" id="finalScore" aria-live="polite">4/4</div>
+                <p id="modalMessage">Excellent work! You understand the Matching Principle.</p>
+                <button class="modal-btn" id="closeModal">Continue Learning</button>
+                <button class="modal-btn" id="retryBtn">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scenario data
+        const scenarios = [
+            {
+                id: 1,
+                story: "A furniture company purchases wood for $5,000 in January. They manufacture tables in February. The tables are sold in March for $12,000.",
+                timeline: [
+                    { month: "January", event: "Wood purchased for $5,000" },
+                    { month: "February", event: "Tables manufactured" },
+                    { month: "March", event: "Tables sold for $12,000" }
+                ],
+                question: "When should the $5,000 cost of raw materials be recognized as cost of goods sold?",
+                options: ["January", "February", "March"],
+                correct: "March",
+                explanation: "The raw materials should be recognized as cost of goods sold in March when the tables are sold. The expense is 'matched' to the revenue it helped generate. In January, the wood is raw materials inventory. In February, it becomes finished goods inventory. Only in March, when the revenue from selling the tables is recognized, does it become cost of goods sold (an expense)."
+            },
+            {
+                id: 2,
+                story: "A retail store purchases inventory for $8,000 in July. The inventory sits in the warehouse during August. In September, the inventory is sold for $15,000.",
+                timeline: [
+                    { month: "July", event: "Inventory purchased: $8,000" },
+                    { month: "August", event: "Inventory in storage" },
+                    { month: "September", event: "Inventory sold: $15,000" }
+                ],
+                question: "When should the $8,000 inventory expense (COGS) be recognized?",
+                options: ["July", "August", "September"],
+                correct: "September",
+                explanation: "The inventory expense (Cost of Goods Sold) should be recognized in September when the inventory is sold. Until the goods are sold, they remain an asset (inventory) on the balance sheet. The expense is only recognized when revenue is generated from the sale."
+            },
+            {
+                id: 3,
+                story: "A consulting firm completes a project in October and bills the client $25,000. The client pays the invoice in November. The firm had $10,000 in direct project costs incurred in October.",
+                timeline: [
+                    { month: "October", event: "Project completed; Costs: $10,000; Billed: $25,000" },
+                    { month: "November", event: "Payment received: $25,000" }
+                ],
+                question: "When should the $10,000 project costs be recognized as expenses?",
+                options: ["October", "November", "Split between both months"],
+                correct: "October",
+                explanation: "The $10,000 project costs should be recognized in October when the project is completed and revenue is recognized. According to the matching principle, expenses must be matched with the revenues they help generate in the same period, regardless of when cash is received."
+            },
+            {
+                id: 4,
+                story: "A manufacturing company purchases a machine for $120,000 in January that will last 10 years. The machine is used to produce products that are sold every month throughout the year, generating $500,000 in annual revenue.",
+                timeline: [
+                    { month: "January", event: "Machine purchased: $120,000" },
+                    { month: "Throughout the year", event: "Products manufactured and sold: $500,000" }
+                ],
+                question: "When should the machine cost be recognized as an expense?",
+                options: ["All in January", "Gradually over 10 years (depreciation)", "At the end of the year"],
+                correct: "Gradually over 10 years (depreciation)",
+                explanation: "The machine cost should be recognized gradually over its 10-year useful life through depreciation expense. Since the machine helps generate revenue over multiple years, its cost is matched to those revenues over time. Each year, a portion of the cost ($12,000 annually) is recognized as depreciation expense."
+            }
+        ];
+
+        // State management
+        let correctCount = 0;
+        let answeredCount = 0;
+        let userAnswers = {};
+
+        // Initialize the activity
+        function init() {
+            renderScenarios();
+            updateProgress();
+            setupEventListeners();
+        }
+
+        // Render all scenarios
+        function renderScenarios() {
+            const container = document.getElementById('scenariosContainer');
+            container.innerHTML = '';
+
+            scenarios.forEach((scenario, index) => {
+                const scenarioCard = createScenarioCard(scenario, index);
+                container.appendChild(scenarioCard);
+            });
+        }
+
+        // Create individual scenario card
+        function createScenarioCard(scenario, index) {
+            const card = document.createElement('div');
+            card.className = 'scenario-container';
+            card.innerHTML = `
+                <div class="scenario-card" id="scenario-${scenario.id}" data-scenario-id="${scenario.id}">
+                    <div class="scenario-header">
+                        <span class="scenario-number">Scenario ${scenario.id}</span>
+                        <span class="scenario-status" aria-live="polite" aria-label="Scenario status"></span>
+                    </div>
+
+                    <div class="scenario-story">
+                        <h3>Scenario:</h3>
+                        <p>${scenario.story}</p>
+
+                        <div class="timeline" role="region" aria-label="Timeline of events">
+                            ${scenario.timeline.map(item => `
+                                <div class="timeline-item">
+                                    <div class="timeline-month">${item.month}</div>
+                                    <div class="timeline-event">${item.event}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-text" role="heading" aria-level="3">${scenario.question}</div>
+
+                        <div class="answer-options" role="radiogroup" aria-label="Answer options">
+                            ${scenario.options.map(option => `
+                                <button class="answer-btn"
+                                        data-scenario-id="${scenario.id}"
+                                        data-answer="${option}"
+                                        role="radio"
+                                        aria-checked="false"
+                                        aria-label="${option}">
+                                    ${option}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <button class="submit-btn"
+                                data-scenario-id="${scenario.id}"
+                                disabled
+                                aria-label="Submit answer for scenario ${scenario.id}">
+                            Submit Answer
+                        </button>
+                    </div>
+
+                    <div class="feedback-section" id="feedback-${scenario.id}" role="status" aria-live="polite">
+                        <div class="feedback-title"></div>
+                        <div class="feedback-text"></div>
+                        <div class="explanation"></div>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners to answer buttons
+            const answerBtns = card.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', () => handleAnswerSelection(scenario.id, btn));
+            });
+
+            // Add event listener to submit button
+            const submitBtn = card.querySelector('.submit-btn');
+            submitBtn.addEventListener('click', () => handleSubmit(scenario.id));
+
+            return card;
+        }
+
+        function handleAnswerSelection(scenarioId, selectedBtn) {
+            const scenarioCard = document.getElementById(`scenario-${scenarioId}`);
+            const answerBtns = scenarioCard.querySelectorAll('.answer-btn');
+            const submitBtn = scenarioCard.querySelector('.submit-btn');
+
+            // If already answered, don't allow changes
+            if (userAnswers[scenarioId]?.submitted) return;
+
+            // Deselect all buttons
+            answerBtns.forEach(btn => {
+                btn.classList.remove('selected');
+                btn.setAttribute('aria-checked', 'false');
+            });
+
+            // Select clicked button
+            selectedBtn.classList.add('selected');
+            selectedBtn.setAttribute('aria-checked', 'true');
+
+            // Store answer
+            userAnswers[scenarioId] = {
+                answer: selectedBtn.dataset.answer,
+                submitted: false
+            };
+
+            // Enable submit button
+            submitBtn.disabled = false;
+        }
+
+        function handleSubmit(scenarioId) {
+            const scenario = scenarios.find(s => s.id === scenarioId);
+            const scenarioCard = document.getElementById(`scenario-${scenarioId}`);
+            const userAnswer = userAnswers[scenarioId]?.answer;
+
+            if (!userAnswer) return;
+
+            // Mark as submitted
+            userAnswers[scenarioId].submitted = true;
+
+            const answerBtns = scenarioCard.querySelectorAll('.answer-btn');
+            const submitBtn = scenarioCard.querySelector('.submit-btn');
+            const feedbackSection = scenarioCard.querySelector('.feedback-section');
+            const feedbackTitle = feedbackSection.querySelector('.feedback-title');
+            const feedbackText = feedbackSection.querySelector('.feedback-text');
+            const explanation = feedbackSection.querySelector('.explanation');
+            const statusIcon = scenarioCard.querySelector('.scenario-status');
+
+            // Disable all buttons
+            answerBtns.forEach(btn => btn.disabled = true);
+            submitBtn.disabled = true;
+
+            const isCorrect = userAnswer === scenario.correct;
+
+            if (isCorrect) {
+                correctCount++;
+                scenarioCard.classList.add('answered-correct');
+                feedbackSection.className = 'feedback-section show correct';
+                feedbackTitle.textContent = '✓ Correct!';
+                feedbackText.textContent = 'Excellent! You correctly applied the Matching Principle.';
+                statusIcon.textContent = '✓';
+                statusIcon.style.color = 'var(--success-green)';
+
+                // Highlight correct answer
+                answerBtns.forEach(btn => {
+                    if (btn.dataset.answer === scenario.correct) {
+                        btn.classList.add('correct');
+                    }
+                });
+            } else {
+                scenarioCard.classList.add('answered-incorrect');
+                feedbackSection.className = 'feedback-section show incorrect';
+                feedbackTitle.textContent = '✗ Not Quite Right';
+                feedbackText.textContent = `You selected "${userAnswer}", but that's not correct.`;
+                statusIcon.textContent = '✗';
+                statusIcon.style.color = 'var(--error-red)';
+
+                // Show incorrect and correct answers
+                answerBtns.forEach(btn => {
+                    if (btn.dataset.answer === userAnswer) {
+                        btn.classList.add('incorrect');
+                    }
+                    if (btn.dataset.answer === scenario.correct) {
+                        btn.classList.add('show-correct');
+                    }
+                });
+            }
+
+            explanation.innerHTML = `<strong>Explanation:</strong> ${scenario.explanation}`;
+
+            answeredCount++;
+            updateProgress();
+
+            // Check if all scenarios are completed
+            if (answeredCount === scenarios.length) {
+                setTimeout(showCompletionModal, 1000);
+            }
+
+            // Scroll to feedback
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function updateProgress() {
+            document.getElementById('progress').textContent = `${answeredCount}/${scenarios.length}`;
+            document.getElementById('correctCount').textContent = correctCount;
+        }
+
+        function showCompletionModal() {
+            const modal = document.getElementById('completionModal');
+            const finalScore = document.getElementById('finalScore');
+            const message = document.getElementById('modalMessage');
+
+            finalScore.textContent = `${correctCount}/${scenarios.length}`;
+
+            if (correctCount === scenarios.length) {
+                message.textContent = 'Perfect score! You\'ve mastered the Matching Principle for expense recognition.';
+            } else if (correctCount >= scenarios.length * 0.7) {
+                message.textContent = `Good work! You correctly answered ${correctCount} out of ${scenarios.length} scenarios. Review the explanations to strengthen your understanding.`;
+            } else {
+                message.textContent = `You got ${correctCount} out of ${scenarios.length} correct. Review the Matching Principle and try again to improve your understanding.`;
+            }
+
+            modal.classList.add('show');
+            document.getElementById('closeModal').focus();
+        }
+
+        function hideCompletionModal() {
+            document.getElementById('completionModal').classList.remove('show');
+        }
+
+        function resetActivity() {
+            correctCount = 0;
+            answeredCount = 0;
+            userAnswers = {};
+            updateProgress();
+
+            // Reset all scenario cards
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.className = 'scenario-card';
+                card.querySelector('.scenario-status').textContent = '';
+
+                const answerBtns = card.querySelectorAll('.answer-btn');
+                answerBtns.forEach(btn => {
+                    btn.className = 'answer-btn';
+                    btn.disabled = false;
+                    btn.setAttribute('aria-checked', 'false');
+                });
+
+                const submitBtn = card.querySelector('.submit-btn');
+                submitBtn.disabled = true;
+
+                const feedbackSection = card.querySelector('.feedback-section');
+                feedbackSection.className = 'feedback-section';
+            });
+
+            hideCompletionModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setupEventListeners() {
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', resetActivity);
+
+            // Modal buttons
+            document.getElementById('closeModal').addEventListener('click', hideCompletionModal);
+            document.getElementById('retryBtn').addEventListener('click', resetActivity);
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && document.getElementById('completionModal').classList.contains('show')) {
+                    hideCompletionModal();
+                }
+            });
+        }
+
+        // Initialize when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

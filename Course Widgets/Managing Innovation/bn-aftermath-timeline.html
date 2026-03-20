@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Aftermath: Bavarian Nordic</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #faf9f5;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .infographic {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 36px 48px;
+    box-shadow: 0 4px 24px rgba(3,70,56,0.10);
+    border: 1px solid #c0d1cd;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #c0d1cd;
+  }
+  .header h1 {
+    color: #034638;
+    font-size: 1.45em;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .header p {
+    color: #034638;
+    font-size: 0.88em;
+    opacity: 0.7;
+  }
+
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr 48px 1fr;
+    align-items: start;
+    gap: 0;
+  }
+
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 48px;
+  }
+
+  .event {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .date-badge {
+    display: inline-block;
+    padding: 5px 18px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #034638;
+  }
+  .date-badge.one   { background: #c0d1cd; }
+  .date-badge.two   { background: #d5cae0; }
+  .date-badge.three { background: #bfe5e7; }
+
+  .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid #034638;
+    background: #ffffff;
+  }
+
+  .card {
+    background: #faf9f5;
+    border-radius: 10px;
+    padding: 18px 20px;
+    width: 100%;
+    border-top: 4px solid #c0d1cd;
+  }
+  .card.two   { border-top-color: #d5cae0; }
+  .card.three { border-top-color: #bfe5e7; }
+
+  .card-label {
+    font-size: 0.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #034638;
+    margin-bottom: 8px;
+  }
+
+  .card-text {
+    font-size: 0.88em;
+    color: #2a2a2a;
+    line-height: 1.65;
+  }
+</style>
+</head>
+<body>
+<div class="infographic">
+
+  <div class="header">
+    <h1>The Aftermath: Bavarian Nordic</h1>
+    <p>What actually happened to ABNCoV2</p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="event">
+      <div class="date-badge one">February 2023</div>
+      <div class="dot"></div>
+      <div class="card one">
+        <div class="card-label">Delay Announced</div>
+        <div class="card-text">Bavarian Nordic announces a delay to its Phase 3 clinical trial. Recruiting subjects is proving harder than expected.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="36" height="20" viewBox="0 0 36 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="10" x2="26" y2="10" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="20,4 28,10 20,16" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="event">
+      <div class="date-badge two">June 2023</div>
+      <div class="dot"></div>
+      <div class="card two">
+        <div class="card-label">Trial Results</div>
+        <div class="card-text">ABNCoV2 matches mRNA vaccines against the original Wuhan strain. But against newer mutations such as Omicron XBB.1.5, it produces considerably lower neutralizing antibody levels. Like mRNA vaccines, it would need annual updates. Unlike them, the technology cannot be adapted quickly enough to meet seasonal timelines.</div>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg width="36" height="20" viewBox="0 0 36 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="10" x2="26" y2="10" stroke="#c0d1cd" stroke-width="2.5"/>
+        <polyline points="20,4 28,10 20,16" stroke="#c0d1cd" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="event">
+      <div class="date-badge three">August 2023</div>
+      <div class="dot"></div>
+      <div class="card three">
+        <div class="card-label">Program Ends</div>
+        <div class="card-text">Bavarian Nordic announces that ABNCoV2 no longer represents a commercial opportunity for the company. The program is discontinued.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

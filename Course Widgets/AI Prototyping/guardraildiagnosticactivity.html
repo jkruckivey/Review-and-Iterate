@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosing Guardrail Failures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: #faf9f5;
+            border-radius: 16px;
+            padding: 35px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1300px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h2 {
+            color: #034638;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.05em;
+        }
+        
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .issue-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #c0d1cd;
+        }
+        
+        .issue-header {
+            background: #034638;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .issue-text {
+            font-size: 1.05em;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .question {
+            font-weight: 600;
+            color: #034638;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            background: #faf9f5;
+            border: 2px solid #d5cae0;
+            padding: 12px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1em;
+            color: #333;
+        }
+        
+        .option:hover {
+            background: #d5cae0;
+            border-color: #034638;
+            transform: translateX(3px);
+        }
+        
+        .option.selected {
+            background: #034638;
+            border-color: #034638;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .option.correct {
+            background: #034638;
+            border-color: #034638;
+            color: white;
+        }
+        
+        .option.incorrect {
+            background: #d5cae0;
+            border-color: #7D4E57;
+            opacity: 0.5;
+        }
+        
+        .diagnosis-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #bfe5e7;
+            display: none;
+        }
+        
+        .diagnosis-panel.show {
+            display: block;
+        }
+        
+        .diagnosis-header {
+            background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+            color: #034638;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .diagnosis-section {
+            margin: 15px 0;
+        }
+        
+        .diagnosis-label {
+            font-weight: bold;
+            color: #034638;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        
+        .diagnosis-content {
+            background: #faf9f5;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border-left: 4px solid #034638;
+            font-size: 1.05em;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .progress {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d5cae0;
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.active {
+            background: #034638;
+            transform: scale(1.3);
+        }
+        
+        .progress-dot.completed {
+            background: #034638;
+        }
+        
+        .progress-text {
+            color: #666;
+            font-size: 1em;
+            margin-left: 10px;
+        }
+        
+        .button {
+            background: #034638;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .button:hover:not(:disabled) {
+            background: #045a48;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(3, 70, 56, 0.3);
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .completion-message {
+            display: none;
+            background: #034638;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .completion-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 1100px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Diagnosing Guardrail Failures</h2>
+            <p>Identify which guardrail failed and see the recommended fix</p>
+        </div>
+        
+        <div class="content-area" id="content-area">
+            <!-- Issue 1 -->
+            <div class="issue-panel" id="issue-1">
+                <div class="issue-header">Issue 1: Hallucinated Password Reset</div>
+                <div class="issue-text">
+                    Users report the assistant sometimes says "I've reset your password" when it has no system access to do so.
+                </div>
+                <div class="question">Which guardrail category failed?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(1, 'scope')">Scope Limits</div>
+                    <div class="option" onclick="selectOption(1, 'action')">Action Limits</div>
+                    <div class="option" onclick="selectOption(1, 'uncertainty')">Uncertainty Handling</div>
+                    <div class="option" onclick="selectOption(1, 'escalation')">Escalation Paths</div>
+                </div>
+            </div>
+            
+            <div class="diagnosis-panel" id="diagnosis-1">
+                <div class="diagnosis-header">✓ Correct: Action Limits</div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Problem:</div>
+                    <div class="diagnosis-content">
+                        Missing or weak action limit guardrail. The assistant claims to perform system actions it cannot actually do.
+                    </div>
+                </div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Fix:</div>
+                    <div class="diagnosis-content">
+                        Add explicit instruction: "You cannot access, modify, or reset any systems, accounts, or passwords. Never claim to have performed a system action. If users request system changes, direct them to the IT help desk."
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area" id="content-area-2" style="display: none;">
+            <!-- Issue 2 -->
+            <div class="issue-panel" id="issue-2">
+                <div class="issue-header">Issue 2: Unapproved Software Support</div>
+                <div class="issue-text">
+                    When users ask about software not on the approved list, the assistant sometimes provides download links and installation instructions instead of directing them to IT for approval.
+                </div>
+                <div class="question">Which guardrail category failed?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(2, 'scope')">Scope Limits</div>
+                    <div class="option" onclick="selectOption(2, 'action')">Action Limits</div>
+                    <div class="option" onclick="selectOption(2, 'citation')">Citation Requirements</div>
+                    <div class="option" onclick="selectOption(2, 'sensitive')">Sensitive Information Protection</div>
+                </div>
+            </div>
+            
+            <div class="diagnosis-panel" id="diagnosis-2">
+                <div class="diagnosis-header">✓ Correct: Scope Limits</div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Problem:</div>
+                    <div class="diagnosis-content">
+                        Missing scope limit for unapproved software. The assistant provides support outside its authorized domain.
+                    </div>
+                </div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Fix:</div>
+                    <div class="diagnosis-content">
+                        Add instruction: "Only provide support for software on the company-approved list [reference knowledge base]. For questions about software not on this list, explain that it requires IT approval and direct users to submit a software request through [process]."
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area" id="content-area-3" style="display: none;">
+            <!-- Issue 3 -->
+            <div class="issue-panel" id="issue-3">
+                <div class="issue-header">Issue 3: Inconsistent VPN Instructions</div>
+                <div class="issue-text">
+                    Users asking about the same VPN setup process get different step sequences depending on how they phrase the question.
+                </div>
+                <div class="question">What's the root cause?</div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(3, 'guardrail')">Missing guardrail in instructions</div>
+                    <div class="option" onclick="selectOption(3, 'knowledge')">Knowledge base inconsistency</div>
+                    <div class="option" onclick="selectOption(3, 'model')">LLM model limitations</div>
+                    <div class="option" onclick="selectOption(3, 'user')">User error in phrasing</div>
+                </div>
+            </div>
+            
+            <div class="diagnosis-panel" id="diagnosis-3">
+                <div class="diagnosis-header">✓ Correct: Knowledge Base Inconsistency</div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Problem:</div>
+                    <div class="diagnosis-content">
+                        VPN process documented in multiple places with variations. Different phrasings retrieve different versions.
+                    </div>
+                </div>
+                <div class="diagnosis-section">
+                    <div class="diagnosis-label">The Fix:</div>
+                    <div class="diagnosis-content">
+                        Consolidate documentation into a single authoritative source. Test with multiple phrasings to verify consistent retrieval. This is a knowledge base problem, not a guardrail problem.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="completion-message" id="completion">
+            <strong>Activity Complete!</strong><br>
+            You've diagnosed three common guardrail failures: action limits (claiming to do things it can't), scope limits (answering outside authorized domain), and knowledge base inconsistency (conflicting documentation). These patterns appear across many AI deployments—recognizing them helps you test and fix issues before users encounter them.
+        </div>
+        
+        <div class="controls">
+            <div class="progress">
+                <div class="progress-dot active" id="dot1"></div>
+                <div class="progress-dot" id="dot2"></div>
+                <div class="progress-dot" id="dot3"></div>
+                <span class="progress-text">Issue <span id="current-issue">1</span> of 3</span>
+            </div>
+            
+            <button class="button" id="next-btn" onclick="nextIssue()" disabled>Continue</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentIssue = 1;
+        const correctAnswers = {
+            1: 'action',
+            2: 'scope',
+            3: 'knowledge'
+        };
+        
+        function selectOption(issueNum, answer) {
+            if (issueNum !== currentIssue) return;
+            
+            // Remove previous selections
+            const options = document.querySelectorAll(`#issue-${issueNum} .option`);
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark selected option
+            event.target.classList.add('selected');
+            
+            // Check if correct
+            if (answer === correctAnswers[issueNum]) {
+                event.target.classList.add('correct');
+                event.target.classList.remove('selected');
+                
+                // Show diagnosis
+                document.getElementById(`diagnosis-${issueNum}`).classList.add('show');
+                
+                // Enable next button
+                document.getElementById('next-btn').disabled = false;
+            } else {
+                event.target.classList.add('incorrect');
+                event.target.classList.remove('selected');
+            }
+        }
+        
+        function nextIssue() {
+            if (currentIssue < 3) {
+                // Hide current content
+                document.getElementById(`content-area${currentIssue === 1 ? '' : '-' + currentIssue}`).style.display = 'none';
+                
+                // Move to next issue
+                currentIssue++;
+                
+                // Show next content
+                document.getElementById(`content-area-${currentIssue}`).style.display = 'grid';
+                
+                // Update progress
+                updateProgress();
+                
+                // Disable next button until answer selected
+                document.getElementById('next-btn').disabled = true;
+            } else {
+                // Show completion
+                document.getElementById('content-area-3').style.display = 'none';
+                document.getElementById('completion').classList.add('show');
+                document.getElementById('next-btn').textContent = 'Restart';
+                document.getElementById('next-btn').onclick = restart;
+            }
+        }
+        
+        function updateProgress() {
+            // Update dots
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                dot.classList.remove('active', 'completed');
+                if (i < currentIssue) {
+                    dot.classList.add('completed');
+                } else if (i === currentIssue) {
+                    dot.classList.add('active');
+                }
+            }
+            
+            // Update text
+            document.getElementById('current-issue').textContent = currentIssue;
+        }
+        
+        function restart() {
+            currentIssue = 1;
+            
+            // Reset all panels
+            document.getElementById('content-area').style.display = 'grid';
+            document.getElementById('content-area-2').style.display = 'none';
+            document.getElementById('content-area-3').style.display = 'none';
+            document.getElementById('completion').classList.remove('show');
+            
+            // Reset all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Reset all diagnoses
+            document.querySelectorAll('.diagnosis-panel').forEach(panel => {
+                panel.classList.remove('show');
+            });
+            
+            // Reset button
+            document.getElementById('next-btn').textContent = 'Continue';
+            document.getElementById('next-btn').onclick = nextIssue;
+            document.getElementById('next-btn').disabled = true;
+            
+            // Reset progress
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

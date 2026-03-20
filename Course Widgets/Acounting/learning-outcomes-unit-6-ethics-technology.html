@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Outcomes - Module 6</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(164, 181, 68, 0.03) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .help-box {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(0, 147, 169, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--purple);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .help-box p {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .help-box strong {
+            color: var(--purple);
+        }
+
+        .outcomes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .outcomes-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-badge {
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .section-badge.module {
+            background: var(--bright-green);
+        }
+
+        .section-title {
+            color: var(--dark-gray);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .outcome-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .outcome-item {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 3px solid var(--turquoise);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .outcome-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 147, 169, 0.15);
+            border-color: var(--ivey-green);
+        }
+
+        .outcome-item:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .outcome-item.active {
+            border-color: var(--bright-green);
+            box-shadow: 0 6px 16px rgba(164, 181, 68, 0.25);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .outcome-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .outcome-code {
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .outcome-item.active .outcome-code {
+            background: var(--bright-green);
+        }
+
+        .outcome-text {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .connection-badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            margin-left: 44px;
+            flex-wrap: wrap;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .outcome-item.active .connection-badges {
+            opacity: 1;
+            max-height: 100px;
+        }
+
+        .connection-badge {
+            background: var(--turquoise);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .clo-item {
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .clo-item.highlighted {
+            opacity: 1;
+            border-color: var(--ivey-green);
+            box-shadow: 0 6px 16px rgba(0, 89, 81, 0.25);
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+        }
+
+        .clo-item .outcome-code {
+            background: var(--medium-gray);
+        }
+
+        .clo-item.highlighted .outcome-code {
+            background: var(--ivey-green);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            header {
+                padding: 25px 15px;
+            }
+
+            .outcomes-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .outcome-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .connection-badges {
+                margin-left: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Learning Outcomes</h1>
+            <p class="subtitle">Click any module outcome to see how it connects to course-level goals</p>
+        </header>
+
+        <div class="help-box">
+            <p><strong>How to use:</strong> Each module outcome contributes to broader course-level goals. Click outcomes to explore the connections.</p>
+        </div>
+
+        <div class="outcomes-grid">
+            <div class="outcomes-section">
+                <div class="section-header">
+                    <span class="section-badge module">Module 6</span>
+                    <span class="section-title">Ethics, Technology, and Society</span>
+                </div>
+                <div class="outcome-list" role="list" id="mlo-list"></div>
+            </div>
+
+            <div class="outcomes-section">
+                <div class="section-header">
+                    <span class="section-badge">Course</span>
+                    <span class="section-title">Learning Outcomes</span>
+                </div>
+                <div class="outcome-list" role="list" id="clo-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcements"></div>
+
+    <script>
+        const courseOutcomes = [
+            { code: 'CLO 1', text: 'Understand the accounting equation and distinguish between different forms of business ownership' },
+            { code: 'CLO 2', text: 'Prepare and interpret the three key financial statements, and explain their interrelationships' },
+            { code: 'CLO 3', text: 'Calculate and interpret key financial ratios to assess profitability, liquidity, and operational efficiency' },
+            { code: 'CLO 4', text: 'Use managerial accounting concepts and tools to evaluate business performance' },
+            { code: 'CLO 5', text: 'Evaluate how accounting information enables and supports external reporting and internal decision-making' }
+        ];
+
+        const mlos = [
+            {
+                code: 'MLO 6.1',
+                text: 'Evaluate how accounting information supports external reporting and internal decision-making',
+                clos: ['CLO 5']
+            },
+            {
+                code: 'MLO 6.2',
+                text: 'Communicate accounting information effectively to non-accounting audiences',
+                clos: ['CLO 5']
+            },
+            {
+                code: 'MLO 6.3',
+                text: 'Assess the ethical principles needed to sustain strong governance in accounting',
+                clos: ['CLO 5']
+            },
+            {
+                code: 'MLO 6.4',
+                text: 'Analyze the role of accounting in sustainability and corporate social responsibility',
+                clos: ['CLO 5']
+            },
+            {
+                code: 'MLO 6.5',
+                text: 'Judge the broader societal impact of accounting choices and financial reporting',
+                clos: ['CLO 5']
+            }
+        ];
+
+        const mloList = document.getElementById('mlo-list');
+        const cloList = document.getElementById('clo-list');
+
+        mlos.forEach(mlo => {
+            const div = document.createElement('div');
+            div.className = 'outcome-item';
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('role', 'button');
+            div.setAttribute('aria-label', `${mlo.code}: ${mlo.text}. Press to see connected course outcomes.`);
+
+            const badges = mlo.clos.map(c => `<span class="connection-badge">${c}</span>`).join('');
+
+            div.innerHTML = `
+                <div class="outcome-header">
+                    <span class="outcome-code">${mlo.code}</span>
+                    <span class="outcome-text">${mlo.text}</span>
+                </div>
+                <div class="connection-badges">${badges}</div>
+            `;
+
+            div.onclick = () => highlight(mlo.clos, div, mlo.code);
+            div.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    highlight(mlo.clos, div, mlo.code);
+                }
+            };
+            mloList.appendChild(div);
+        });
+
+        courseOutcomes.forEach(clo => {
+            const div = document.createElement('div');
+            div.className = 'outcome-item clo-item';
+            div.dataset.code = clo.code;
+            div.setAttribute('aria-label', `${clo.code}: ${clo.text}`);
+            div.innerHTML = `
+                <div class="outcome-header">
+                    <span class="outcome-code">${clo.code}</span>
+                    <span class="outcome-text">${clo.text}</span>
+                </div>
+            `;
+            cloList.appendChild(div);
+        });
+
+        function highlight(cloCodes, mloEl, mloCode) {
+            const wasActive = mloEl.classList.contains('active');
+            document.querySelectorAll('.outcome-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.clo-item').forEach(el => el.classList.remove('highlighted'));
+
+            if (!wasActive) {
+                mloEl.classList.add('active');
+                cloCodes.forEach(code => {
+                    const cloEl = document.querySelector(`.clo-item[data-code="${code}"]`);
+                    if (cloEl) cloEl.classList.add('highlighted');
+                });
+                announce(`${mloCode} selected. Contributes to ${cloCodes.join(', ')}.`);
+            } else {
+                announce('Selection cleared.');
+            }
+        }
+
+        function announce(message) {
+            const announcer = document.getElementById('announcements');
+            announcer.textContent = message;
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+    </script>
+</body>
+</html>

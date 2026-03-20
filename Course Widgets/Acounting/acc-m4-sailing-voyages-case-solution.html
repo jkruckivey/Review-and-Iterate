@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sailing Voyages Case - Solution Guide</title>
+    <style>
+        :root {
+            /* Ivey Brand Colors */
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --text-dark: #2C2C2C;
+
+            /* Functional Colors */
+            --success-color: #A4B544;
+            --warning-color: #0093A9;
+            --insight-color: #5B2C6F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Introduction Card */
+        .intro-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            border-left: 5px solid var(--purple);
+        }
+
+        .intro-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark-gray);
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            padding: 0 0 15px 0;
+            border-bottom: 3px solid var(--bright-green);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .question-header:hover {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(0, 147, 169, 0.03) 100%);
+            margin: -10px -15px 0 -15px;
+            padding: 10px 15px 15px 15px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .question-number {
+            background: var(--purple);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .question-title {
+            color: var(--ivey-green);
+            font-size: 1.3rem;
+            font-weight: 700;
+            flex: 1;
+        }
+
+        .toggle-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--ivey-green);
+        }
+
+        .question-header[aria-expanded="true"] .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .question-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.4s ease;
+        }
+
+        .question-content.expanded {
+            max-height: 10000px;
+            margin-top: 25px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.1) 0%, rgba(0, 147, 169, 0.05) 100%);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--ivey-green);
+            margin: 25px 0 15px 0;
+        }
+
+        .section-header h3 {
+            color: var(--ivey-green);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .product-section {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .product-section h4 {
+            color: var(--purple);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bright-green);
+        }
+
+        /* Formula Boxes */
+        .formula-box {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, var(--white) 100%);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--purple);
+            margin: 10px 0;
+        }
+
+        .formula-box p {
+            margin: 8px 0;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        /* Calculation Display */
+        .calculation {
+            background: var(--white);
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 1.05rem;
+            border-left: 3px solid var(--turquoise);
+        }
+
+        /* Result Highlight */
+        .result-highlight {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.15) 0%, rgba(164, 181, 68, 0.05) 100%);
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border: 2px solid var(--bright-green);
+            color: var(--ivey-green);
+        }
+
+        /* Insight Boxes */
+        .insight-box {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(91, 44, 111, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--purple);
+            margin: 20px 0;
+        }
+
+        .insight-box .label {
+            color: var(--purple);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .insight-box p {
+            color: var(--dark-gray);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Caution Boxes */
+        .caution-box {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.1) 0%, rgba(0, 147, 169, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--turquoise);
+            margin: 20px 0;
+        }
+
+        .caution-box .label {
+            color: var(--turquoise);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .caution-box ul {
+            margin-left: 20px;
+            color: var(--dark-gray);
+            line-height: 1.8;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th {
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .data-table tr:nth-child(even) {
+            background: var(--light-gray);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table .highlight-row {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(164, 181, 68, 0.05) 100%);
+            font-weight: 700;
+        }
+
+        /* Step Lists */
+        .step-list {
+            margin: 20px 0;
+        }
+
+        .step-item {
+            background: var(--light-gray);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 4px solid var(--bright-green);
+        }
+
+        .step-item strong {
+            color: var(--ivey-green);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Recommendation Box */
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.15) 0%, rgba(164, 181, 68, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid var(--bright-green);
+            margin: 20px 0;
+        }
+
+        .recommendation-box .label {
+            color: var(--ivey-green);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .recommendation-box p {
+            color: var(--dark-gray);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Rationale Box */
+        .rationale-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .rationale-box .label {
+            color: var(--purple);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .rationale-box p {
+            color: var(--dark-gray);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        /* Verification Section */
+        .verification-section {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, var(--white) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--turquoise);
+            margin: 20px 0;
+        }
+
+        .verification-section .label {
+            color: var(--turquoise);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-number {
+                margin-bottom: 15px;
+            }
+
+            .question-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        *:focus-visible {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .question-card {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--medium-gray);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" role="banner">
+            <h1>Sailing Voyages Case</h1>
+            <p>Complete Solution Guide with Analysis and Recommendations</p>
+        </header>
+
+        <!-- Introduction -->
+        <section class="intro-card" aria-labelledby="intro-heading">
+            <h2 id="intro-heading" class="sr-only">Introduction</h2>
+            <p>Now that you you have your analysis of the case, try comparing your solution with the below answers and reflect on what could be right.</p>
+        </section>
+
+        <!-- Question 1: Contribution Margin per Trip -->
+        <article class="question-card" aria-labelledby="q1-heading">
+            <button class="question-header"
+                    aria-expanded="false"
+                    aria-controls="q1-content"
+                    onclick="toggleQuestion('q1')"
+                    onkeydown="handleKeyDown(event, 'q1')">
+                <div class="question-number" aria-hidden="true">1</div>
+                <h2 id="q1-heading" class="question-title">Question 1: Contribution Margin per Trip</h2>
+                <div class="toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="q1-content" class="question-content">
+                <div class="comparison-grid">
+                <section class="product-section" aria-labelledby="q1-day-sails">
+                    <h3 id="q1-day-sails">Day Sails</h3>
+
+                    <div class="formula-box" role="group" aria-label="Day Sails Formula">
+                        <p>Contribution Margin per Trip = Price − Variable Cost</p>
+                    </div>
+
+                    <div class="calculation">
+                        <p>CM = $1,200 − $650 = $550 per trip</p>
+                    </div>
+
+                    <div class="result-highlight">
+                        <p>CM Ratio = $550 ÷ $1,200 = 45.8%</p>
+                    </div>
+                </section>
+
+                <section class="product-section" aria-labelledby="q1-sunset-cruises">
+                    <h3 id="q1-sunset-cruises">Sunset Cruises</h3>
+
+                    <div class="formula-box" role="group" aria-label="Sunset Cruises Formula">
+                        <p>Contribution Margin per Trip = Price − Variable Cost</p>
+                    </div>
+
+                    <div class="calculation">
+                        <p>CM = $800 − $400 = $400 per trip</p>
+                    </div>
+
+                    <div class="result-highlight">
+                        <p>CM Ratio = $400 ÷ $800 = 50.0%</p>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="insight-box" aria-labelledby="q1-insight">
+                <span class="label" id="q1-insight">Key Insight:</span>
+                <p>Day Sails generate more contribution margin per trip ($550 vs. $400), but Sunset Cruises have a higher CM ratio (50% vs. 45.8%). This difference matters when making capacity and pricing decisions.</p>
+            </aside>
+            </div>
+        </article>
+
+        <!-- Question 2 & 3: Break-Even Analysis with Sales Mix -->
+        <article class="question-card" aria-labelledby="q2-heading">
+            <button class="question-header"
+                    aria-expanded="false"
+                    aria-controls="q2-content"
+                    onclick="toggleQuestion('q2')"
+                    onkeydown="handleKeyDown(event, 'q2')">
+                <div class="question-number" aria-hidden="true">2</div>
+                <h2 id="q2-heading" class="question-title">Question 2 & 3: Break-Even Analysis with Sales Mix</h2>
+                <div class="toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="q2-content" class="question-content">
+            <div class="section-header">
+                <h3>Step 1: Determine Sales Mix Ratio</h3>
+            </div>
+
+            <div class="step-item">
+                <p>Historical data: 120 Day Sails and 90 Sunset Cruises</p>
+            </div>
+
+            <div class="calculation">
+                <p>Total trips = 210</p>
+            </div>
+
+            <div class="step-item">
+                <strong>Sales Mix:</strong>
+                <p>Day Sails: 120 ÷ 210 = 57.1%</p>
+                <p>Sunset Cruises: 90 ÷ 210 = 42.9%</p>
+            </div>
+
+            <div class="result-highlight">
+                <p>Ratio = 120:90 or simplified to 4:3</p>
+            </div>
+
+            <div class="section-header">
+                <h3>Question 3 Continued</h3>
+            </div>
+
+            <div class="step-item">
+                <strong>A. Calculate Weighted Average Contribution Margin</strong>
+            </div>
+
+            <div class="step-list">
+                <div class="step-item">
+                    <strong>Contribution Margin per Trip:</strong>
+                    <p>Day Sails CM: $550</p>
+                    <p>Sunset Cruises CM: $400</p>
+                </div>
+
+                <div class="step-item">
+                    <strong>Sales Mix:</strong>
+                    <p>Day Sails: 57.1%</p>
+                    <p>Sunset Cruises: 42.9%</p>
+                </div>
+            </div>
+
+            <div class="formula-box" role="group" aria-label="Weighted Average Calculation">
+                <p>Weighted Average CM = (0.571 × $550) + (0.429 × $400)= (314.05) + (171.60)= $485.65 ≈ $485.71</p>
+            </div>
+
+            <div class="step-item">
+                <strong>B. Break-Even Trips (Total) = Fixed Costs ÷ Weighted Avg CM</strong>
+            </div>
+
+            <div class="result-highlight">
+                <p>Break-Even = $84,000 ÷ $485.71 = 173 trips (rounded)</p>
+            </div>
+
+            <div class="step-item">
+                <strong>Break-Even by Product (using 4:3 ratio):</strong>
+                <p>Day Sails: 173 × (4/7) = 99 trips</p>
+                <p>Sunset Cruises: 173 × (3/7) = 74 trips</p>
+            </div>
+
+            <div class="verification-section" aria-labelledby="verification-label">
+                <span class="label" id="verification-label">Verification:</span>
+
+                <div class="step-item">
+                    <strong>Revenue:</strong>
+                    <p>Day Sails: 99 × $1,200 = $118,800</p>
+                    <p>Sunset: 74 × $800 = $59,200</p>
+                    <p>Total Revenue = $178,000</p>
+                </div>
+
+                <div class="step-item">
+                    <strong>Variable Costs:</strong>
+                    <p>Day Sails: 99 × $650 = $64,350</p>
+                    <p>Sunset: 74 × $400 = $29,600</p>
+                    <p>Total VC = $93,950</p>
+                </div>
+
+                <div class="calculation">
+                    <p>Total CM = $178,000 − $93,950 = $84,050</p>
+                </div>
+
+                <div class="calculation">
+                    <p>Fixed Costs = $84,000</p>
+                </div>
+
+                <div class="result-highlight">
+                    <p>Profit ≈ $50 given the effects of rounding, since a partial trip cannot be operated.</p>
+                </div>
+            </div>
+            </div>
+        </article>
+
+        <!-- Question 4: Target Profit of $50,000 -->
+        <article class="question-card" aria-labelledby="q4-heading">
+            <button class="question-header"
+                    aria-expanded="false"
+                    aria-controls="q4-content"
+                    onclick="toggleQuestion('q4')"
+                    onkeydown="handleKeyDown(event, 'q4')">
+                <div class="question-number" aria-hidden="true">4</div>
+                <h2 id="q4-heading" class="question-title">Question 4: Target Profit of $50,000</h2>
+                <div class="toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="q4-content" class="question-content">
+            <div class="section-header">
+                <h3>Calculation:</h3>
+            </div>
+
+            <div class="formula-box" role="group" aria-label="Target Profit Formula">
+                <p>Required Trips = (Fixed Costs + Target Profit) ÷ Weighted Avg CM</p>
+            </div>
+
+            <div class="result-highlight">
+                <p>Required Trips = ($84,000 + $50,000) ÷ $485.71 = 276 trips total</p>
+            </div>
+
+            <div class="step-item">
+                <strong>By Product (using 4:3 ratio):</strong>
+                <p>Day Sails: 276 × (4/7) = 158 trips</p>
+                <p>Sunset Cruises: 276 × (3/7) = 118 trips</p>
+            </div>
+
+            <aside class="insight-box" aria-labelledby="q4-insight">
+                <span class="label" id="q4-insight">Managerial Insight:</span>
+                <p>Last season, Maria operated 210 trips (120 + 90). To achieve a $50,000 profit, she needs to increase to 276 trips—an increase of 31%. This requires either extending the season, operating more trips per week, or improving the sales mix.</p>
+            </aside>
+            </div>
+        </article>
+
+        <!-- Question 5: Special Order Decision - $900 Day Sail -->
+        <article class="question-card" aria-labelledby="q5-heading">
+            <button class="question-header"
+                    aria-expanded="false"
+                    aria-controls="q5-content"
+                    onclick="toggleQuestion('q5')"
+                    onkeydown="handleKeyDown(event, 'q5')">
+                <div class="question-number" aria-hidden="true">5</div>
+                <h2 id="q5-heading" class="question-title">Question 5: Special Order Decision - $900 Day Sail</h2>
+                <div class="toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="q5-content" class="question-content">
+            <div class="section-header">
+                <h3>Analysis:</h3>
+            </div>
+
+            <div class="step-list">
+                <div class="step-item">
+                    <p>Special Order Price: $900</p>
+                </div>
+
+                <div class="step-item">
+                    <p>Variable Cost per Trip: $650</p>
+                </div>
+
+                <div class="result-highlight">
+                    <p>Incremental Contribution Margin: $900 − $650 = $250</p>
+                </div>
+            </div>
+
+            <div class="recommendation-box" aria-labelledby="q5-recommendation">
+                <span class="label" id="q5-recommendation">Recommendation:</span>
+                <p>Accept the order</p>
+            </div>
+
+            <div class="rationale-box" aria-labelledby="q5-rationale">
+                <span class="label" id="q5-rationale">Rationale:</span>
+
+                <p>Positive Contribution: The order contributes $250 toward fixed costs and profit</p>
+
+                <p>Relevant Costs: Fixed costs can be viewed as irrelevant in this one-off decision, rendering variable costs as the only relevant costs.</p>
+
+                <p>Excess Capacity: Assuming Maria has an available day/time slot, there's no opportunity cost</p>
+
+                <p>Price Floor: Any price above $650 (variable cost) is beneficial</p>
+            </div>
+
+            <div class="caution-box" aria-labelledby="q5-cautions">
+                <span class="label" id="q5-cautions">Cautions:</span>
+                <ul>
+                    <li>Ensure this doesn't set a pricing precedent for regular customers</li>
+                    <li>Confirm there's excess capacity (not displacing a full-price trip)</li>
+                </ul>
+            </div>
+            </div>
+        </article>
+
+        <!-- Question 6: Capacity Constraint - Which Product to Prioritize? -->
+        <article class="question-card" aria-labelledby="q6-heading">
+            <button class="question-header"
+                    aria-expanded="false"
+                    aria-controls="q6-content"
+                    onclick="toggleQuestion('q6')"
+                    onkeydown="handleKeyDown(event, 'q6')">
+                <div class="question-number" aria-hidden="true">6</div>
+                <h2 id="q6-heading" class="question-title">Question 6: Capacity Constraint - Which Product to Prioritize?</h2>
+                <div class="toggle-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <div id="q6-content" class="question-content">
+            <div class="section-header">
+                <h3>Analysis:</h3>
+            </div>
+
+            <div class="step-item">
+                <p>Constraint: Maximum 25 trips per week</p>
+            </div>
+
+            <div class="step-item">
+                <strong>Contribution Margin per Trip:</strong>
+                <p>Day Sails: $550</p>
+                <p>Sunset Cruises: $400</p>
+            </div>
+
+            <div class="step-item">
+                <strong>Contribution Margin per Constrained Unit (trip):</strong>
+                <p>Day Sails: $550 per trip ← Higher!</p>
+                <p>Sunset Cruises: $400 per trip</p>
+            </div>
+
+            <div class="recommendation-box" aria-labelledby="q6-recommendation">
+                <span class="label" id="q6-recommendation">Recommendation:</span>
+                <p>PRIORITIZE Day Sails</p>
+            </div>
+
+            <div class="rationale-box" aria-labelledby="q6-rationale">
+                <span class="label" id="q6-rationale">Rationale:</span>
+
+                <p>When capacity is limited, maximize contribution margin per unit of the constraining resource. Since both products consume one "trip slot," and Day Sails generate $550 vs. $400 per slot, Day Sails are more profitable.</p>
+            </div>
+
+            <div class="section-header">
+                <h3>Strategic Consideration:</h3>
+            </div>
+
+            <div class="step-item">
+                <p>However, Maria should consider:</p>
+            </div>
+
+            <div class="step-list">
+                <div class="step-item">
+                    <p>Customer preferences: Some customers may only be available for sunset trips</p>
+                </div>
+
+                <div class="step-item">
+                    <p>Operational efficiency: Can she operate both a Day Sail and Sunset Cruise in the same day?</p>
+                </div>
+
+                <div class="step-item">
+                    <p>Market positioning: Offering variety may attract more total customers</p>
+                </div>
+            </div>
+
+            <div class="insight-box" aria-labelledby="q6-strategy">
+                <span class="label" id="q6-strategy">Optimal Strategy:</span>
+                <p>Prioritize Day Sails when there's direct competition for the same time slot, but maintain some Sunset Cruises to serve different market segments.</p>
+            </div>
+            </div>
+        </article>
+    </div>
+
+    <script>
+        // Toggle question accordion
+        function toggleQuestion(questionId) {
+            const header = document.querySelector(`button[aria-controls="${questionId}-content"]`);
+            const content = document.getElementById(`${questionId}-content`);
+            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+            // Toggle the state
+            header.setAttribute('aria-expanded', !isExpanded);
+
+            if (isExpanded) {
+                content.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+            }
+        }
+
+        // Handle keyboard navigation
+        function handleKeyDown(event, questionId) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleQuestion(questionId);
+            }
+        }
+
+        // Initialize - all questions collapsed by default
+        document.addEventListener('DOMContentLoaded', function() {
+            // All questions start collapsed
+            // Students click on headers to expand and focus on one question at a time
+            const allHeaders = document.querySelectorAll('.question-header');
+            allHeaders.forEach(header => {
+                // Ensure button styling works correctly
+                header.style.border = 'none';
+                header.style.width = '100%';
+                header.style.background = 'transparent';
+                header.style.textAlign = 'left';
+                header.style.font = 'inherit';
+            });
+        });
+    </script>
+</body>
+</html>

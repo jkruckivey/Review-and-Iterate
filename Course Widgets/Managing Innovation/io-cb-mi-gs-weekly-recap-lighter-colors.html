@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Managing Innovation Course Overview - A 5-week journey through innovation processes, user involvement, market strategies, creative services, and generative AI.">
+    <meta name="author" content="Ivey Business School">
+    <title>Managing Innovation - Course Overview</title>
+    <style>
+        :root {
+            --primary-teal: #c0d1cd;
+            --week-1-color: #c0d1cd;
+            --week-2-color: #f0ede0;
+            --week-3-color: #d5cae0;
+            --week-4-color: #bfe5e7;
+            --week-5-color: #c0d1cd;
+            --week-1-light: rgba(192, 209, 205, 0.3);
+            --week-2-light: rgba(240, 237, 224, 0.3);
+            --week-3-light: rgba(213, 202, 224, 0.3);
+            --week-4-light: rgba(191, 229, 231, 0.3);
+            --week-5-light: rgba(192, 209, 205, 0.3);
+            --bg-light: #F5F5F5;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --white: #FFFFFF;
+            --black: #000000;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+            --transition-speed: 300ms;
+            --border-radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--white);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--white);
+            color: var(--primary-teal);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 0 0 4px 0;
+            z-index: 100;
+        }
+
+        .skip-link:focus { top: 0; }
+
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        .header p { font-size: 1rem; font-weight: 400; color: #4b5563; }
+
+        .course-overview { background: transparent; }
+
+        .week-item {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+
+        .week-item:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+
+        .week-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 1.5rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color var(--transition-speed) ease;
+            position: relative;
+        }
+
+        .week-header:hover { background-color: rgba(0,0,0,0.02); }
+
+        .week-header-content { display: flex; align-items: center; gap: 1rem; flex: 1; }
+
+        .drag-handle { color: #CCCCCC; font-size: 1.25rem; cursor: grab; user-select: none; line-height: 1; }
+
+        .week-number {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .week-title { font-size: clamp(1.125rem, 2vw, 1.375rem); font-weight: 600; color: var(--text-dark); margin: 0; }
+
+        .expand-icon {
+            color: #CCCCCC;
+            font-size: 1rem;
+            transition: transform var(--transition-speed) ease;
+            display: inline-block;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        .week-header[aria-expanded="true"] .expand-icon { transform: rotate(180deg); }
+
+        .week-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed) ease, padding var(--transition-speed) ease;
+            background-color: var(--bg-light);
+        }
+
+        .week-content.expanded { max-height: 2000px; padding: 1.5rem 1.25rem; }
+
+        .week-content p { font-size: 1rem; line-height: 1.7; color: var(--text-medium); margin: 0; }
+        .week-content strong { color: var(--text-dark); font-weight: 600; }
+
+        .week-item:nth-child(1) .week-header:focus { outline: 3px solid var(--week-1-color); outline-offset: -3px; background-color: var(--week-1-light); }
+        .week-item:nth-child(1):focus-within { outline: 3px solid var(--week-1-color); outline-offset: 2px; }
+        .week-item:nth-child(2) .week-header:focus { outline: 3px solid var(--week-2-color); outline-offset: -3px; background-color: var(--week-2-light); }
+        .week-item:nth-child(2):focus-within { outline: 3px solid var(--week-2-color); outline-offset: 2px; }
+        .week-item:nth-child(3) .week-header:focus { outline: 3px solid var(--week-3-color); outline-offset: -3px; background-color: var(--week-3-light); }
+        .week-item:nth-child(3):focus-within { outline: 3px solid var(--week-3-color); outline-offset: 2px; }
+        .week-item:nth-child(4) .week-header:focus { outline: 3px solid var(--week-4-color); outline-offset: -3px; background-color: var(--week-4-light); }
+        .week-item:nth-child(4):focus-within { outline: 3px solid var(--week-4-color); outline-offset: 2px; }
+        .week-item:nth-child(5) .week-header:focus { outline: 3px solid var(--week-5-color); outline-offset: -3px; background-color: var(--week-5-light); }
+        .week-item:nth-child(5):focus-within { outline: 3px solid var(--week-5-color); outline-offset: 2px; }
+
+        @media (min-width: 768px) {
+            body { padding: 3rem 2rem; }
+            .week-header { padding: 1.75rem 1.5rem; }
+            .week-content.expanded { padding: 2rem 1.5rem; }
+            .week-header-content { gap: 1.25rem; }
+        }
+
+        @media (min-width: 1024px) {
+            .header { margin-bottom: 2rem; }
+            .week-item { margin-bottom: 1.5rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .week-content { max-height: none !important; padding: 1rem !important; display: block !important; }
+            .expand-icon, .drag-handle { display: none; }
+            .week-item { page-break-inside: avoid; margin-bottom: 1rem; box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        @media (prefers-contrast: high) {
+            .week-header:focus { outline: 3px solid currentColor; }
+            .week-item { border: 2px solid var(--text-dark); }
+        }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        .sr-live { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-live" id="live-region"></div>
+
+    <div class="container">
+        <header class="header" role="banner">
+            <p>Click on each week to explore the topics</p>
+        </header>
+
+        <main id="main-content" class="course-overview" role="main">
+
+            <div class="week-item">
+                <button class="week-header" aria-expanded="true" aria-controls="week-1-content" id="week-1-header" type="button">
+                    <div class="week-header-content">
+                        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+                        <span class="week-number" style="background-color: var(--week-1-color);" aria-label="Week 1">1</span>
+                        <h2 class="week-title">Week 1: Innovation Process</h2>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">▼</span>
+                    <span class="sr-only">Click to expand or collapse Week 1 content</span>
+                </button>
+                <div id="week-1-content" class="week-content expanded" role="region" aria-labelledby="week-1-header">
+                    <p>We'll take a deep dive into the processes involved in innovation. We'll try to understand where great new ideas come from and how managers can create the conditions that often lead to ideas that are original and valuable. We'll discover that innovation processes are unlike other business processes in important ways, and that they need to be managed differently.</p>
+                </div>
+            </div>
+
+            <div class="week-item">
+                <button class="week-header" aria-expanded="false" aria-controls="week-2-content" id="week-2-header" type="button">
+                    <div class="week-header-content">
+                        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+                        <span class="week-number" style="background-color: var(--week-2-color);" aria-label="Week 2">2</span>
+                        <h2 class="week-title">Week 2: Users and Innovation</h2>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">▼</span>
+                    <span class="sr-only">Click to expand or collapse Week 2 content</span>
+                </button>
+                <div id="week-2-content" class="week-content" role="region" aria-labelledby="week-2-header">
+                    <p>We'll look at how customers, users, and other "outsiders" can be usefully involved in innovation. This is a relatively new development in our understanding of innovation. We've come to realize that customers, users and others, have always had more to do with innovation than we thought, and that it is often in our best interests as innovation managers to facilitate their involvement. Design Thinking and crowdsourcing extend this idea in fascinating ways.</p>
+                </div>
+            </div>
+
+            <div class="week-item">
+                <button class="week-header" aria-expanded="false" aria-controls="week-3-content" id="week-3-header" type="button">
+                    <div class="week-header-content">
+                        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+                        <span class="week-number" style="background-color: var(--week-3-color);" aria-label="Week 3">3</span>
+                        <h2 class="week-title">Week 3: Taking Ideas to Market</h2>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">▼</span>
+                    <span class="sr-only">Click to expand or collapse Week 3 content</span>
+                </button>
+                <div id="week-3-content" class="week-content" role="region" aria-labelledby="week-3-header">
+                    <p>We'll focus on the challenges of taking innovations to market. Coming up with a great new idea does not guarantee its acceptance by customers. Business history is littered with the carcasses of better ideas that did not catch on or win out. We'll explore the surprisingly complex factors that cause ideas to spread (or not spread), and how we, as managers, might influence those factors.</p>
+                </div>
+            </div>
+
+            <div class="week-item">
+                <button class="week-header" aria-expanded="false" aria-controls="week-4-content" id="week-4-header" type="button">
+                    <div class="week-header-content">
+                        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+                        <span class="week-number" style="background-color: var(--week-4-color);" aria-label="Week 4">4</span>
+                        <h2 class="week-title">Week 4: Creative Products and Services</h2>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">▼</span>
+                    <span class="sr-only">Click to expand or collapse Week 4 content</span>
+                </button>
+                <div id="week-4-content" class="week-content" role="region" aria-labelledby="week-4-header">
+                    <p>We'll look at "creative industries" where both the process and the product or service are valued for their creative content, such as fashion, design, movies, video games, music and other similar businesses. The importance of this category is increasing, as products valued for functionality often also need to be cool or beautiful. An appreciation for such qualities is finding its way into businesses that have historically been mostly about practical functionality and utilitarian value.</p>
+                </div>
+            </div>
+
+            <div class="week-item">
+                <button class="week-header" aria-expanded="false" aria-controls="week-5-content" id="week-5-header" type="button">
+                    <div class="week-header-content">
+                        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+                        <span class="week-number" style="background-color: var(--week-5-color);" aria-label="Week 5">5</span>
+                        <h2 class="week-title">Week 5: Innovation and Generative AI</h2>
+                    </div>
+                    <span class="expand-icon" aria-hidden="true">▼</span>
+                    <span class="sr-only">Click to expand or collapse Week 5 content</span>
+                </button>
+                <div id="week-5-content" class="week-content" role="region" aria-labelledby="week-5-header">
+                    <p>We'll explore the implications for innovation of the rise of AI, especially Generative AI. Unlike Analytic AI (used to classify, predict, diagnose), Gen AI creates new content and can be applied to design, writing, graphics, and code. It holds potential to supercharge ideation by harnessing valuable randomness, supporting iterative processes, and helping us recognize value in unfamiliar forms. This is an emerging area, but already we can see new paths to important value creation.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            const weekHeaders = document.querySelectorAll('.week-header');
+            const liveRegion = document.getElementById('live-region');
+
+            function initAccordion() {
+                weekHeaders.forEach(header => {
+                    header.addEventListener('click', toggleWeek);
+                    header.addEventListener('keydown', handleKeyboard);
+                });
+            }
+
+            function toggleWeek(event) {
+                const header = event.currentTarget;
+                const content = document.getElementById(header.getAttribute('aria-controls'));
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+                if (isExpanded) { collapseWeek(header, content); } else { expandWeek(header, content); }
+            }
+
+            function expandWeek(header, content) {
+                header.setAttribute('aria-expanded', 'true');
+                content.classList.add('expanded');
+                announceToScreenReader(header.querySelector('.week-title').textContent + ' expanded');
+            }
+
+            function collapseWeek(header, content) {
+                header.setAttribute('aria-expanded', 'false');
+                content.classList.remove('expanded');
+                announceToScreenReader(header.querySelector('.week-title').textContent + ' collapsed');
+            }
+
+            function handleKeyboard(event) {
+                const header = event.currentTarget;
+                switch(event.key) {
+                    case 'Enter': case ' ': case 'Spacebar': event.preventDefault(); toggleWeek(event); break;
+                    case 'ArrowDown': event.preventDefault(); focusNextWeek(header); break;
+                    case 'ArrowUp': event.preventDefault(); focusPreviousWeek(header); break;
+                    case 'Home': event.preventDefault(); weekHeaders[0].focus(); break;
+                    case 'End': event.preventDefault(); weekHeaders[weekHeaders.length - 1].focus(); break;
+                }
+            }
+
+            function focusNextWeek(currentHeader) {
+                const headers = Array.from(weekHeaders);
+                headers[(headers.indexOf(currentHeader) + 1) % headers.length].focus();
+            }
+
+            function focusPreviousWeek(currentHeader) {
+                const headers = Array.from(weekHeaders);
+                const i = headers.indexOf(currentHeader);
+                headers[i === 0 ? headers.length - 1 : i - 1].focus();
+            }
+
+            function announceToScreenReader(message) {
+                if (liveRegion) {
+                    liveRegion.textContent = message;
+                    setTimeout(() => { liveRegion.textContent = ''; }, 1000);
+                }
+            }
+
+            if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initAccordion); } else { initAccordion(); }
+        })();
+    </script>
+
+</body></html>

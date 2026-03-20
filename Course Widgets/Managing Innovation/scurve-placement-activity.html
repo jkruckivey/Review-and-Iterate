@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Is It on the Curve?</title>
+<style>
+  :root {
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --ivey-green: #034638;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+    --success: #2d6a4f;
+    --error: #8b2020;
+    --success-bg: #eaf4ee;
+    --error-bg: #fdf0f0;
+    --warning-bg: #fef9ec;
+    --warning: #7a5c00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 860px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(3,70,56,0.08);
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 20px 32px;
+    text-align: center;
+  }
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.45em;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .inf-header .subtitle {
+    color: var(--pale-sage);
+    font-size: 0.9em;
+    font-style: italic;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: var(--pale-sage);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(3,70,56,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--ivey-green);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .progress-text {
+    font-size: 0.82em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    white-space: nowrap;
+  }
+
+  /* Question screen */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .question-body {
+    padding: 28px 32px;
+  }
+
+  .product-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+
+  .product-label {
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    margin-bottom: 6px;
+  }
+
+  .product-name {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+
+  .product-desc {
+    font-size: 0.88em;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  .question-prompt {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+
+  /* S-curve mini visual */
+  .curve-visual {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px 8px;
+    margin-bottom: 18px;
+  }
+
+  /* Options grid */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .option-btn {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.86em;
+    color: var(--text-dark);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.4;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--pale-sage); background: #f0f4f3; }
+  .option-btn.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); font-weight: 600; }
+  .option-btn.incorrect { border-color: var(--error); background: var(--error-bg); color: var(--error); }
+  .option-btn .adopter-label {
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .option-btn .adopter-desc {
+    font-size: 0.82em;
+    opacity: 0.85;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 0.88em;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .correct-fb { background: var(--success-bg); border: 1px solid #b7dfc8; color: var(--success); }
+  .incorrect-fb { background: var(--error-bg); border: 1px solid #f5c6c6; color: var(--error); }
+
+  .btn-primary {
+    background: var(--ivey-green);
+    color: var(--cream);
+    padding: 10px 22px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover:not(:disabled) { background: #023025; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Results screen */
+  .results-body {
+    padding: 32px;
+    text-align: center;
+  }
+
+  .score-display {
+    font-size: 3em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .score-label {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  .results-breakdown {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .result-item {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .result-product {
+    font-size: 0.88em;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 3px;
+  }
+
+  .result-answer {
+    font-size: 0.83em;
+    color: var(--text-mid);
+    line-height: 1.4;
+  }
+
+  .result-badge {
+    font-size: 0.78em;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-correct { background: var(--success-bg); color: var(--success); }
+  .badge-incorrect { background: var(--error-bg); color: var(--error); }
+
+  .insight-bar {
+    background: var(--pale-blue);
+    border-top: 1px solid #a8d4d6;
+    padding: 14px 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .insight-label {
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+  }
+  .insight-divider {
+    width: 1px;
+    height: 26px;
+    background: rgba(3,70,56,0.2);
+    flex-shrink: 0;
+  }
+  .insight-content {
+    font-size: 0.92em;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="inf-header">
+    <h1>Where Is It on the Curve?</h1>
+    <div class="subtitle">Place each innovation on Rogers' S-curve and identify which adopter group is currently driving uptake</div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <span class="progress-text" id="progressText">Question 1 of 5</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+    </div>
+  </div>
+
+  <!-- Q1: Electric Vehicles -->
+  <div class="screen active" id="screen-0">
+    <div class="question-body">
+      <div class="product-card">
+        <div class="product-label">Product 1</div>
+        <div class="product-name">Electric Vehicles</div>
+        <div class="product-desc">EVs have moved well beyond the early enthusiast stage. Major manufacturers now offer dozens of models at a range of price points, charging infrastructure is expanding rapidly, and government incentives have accelerated purchase decisions. Sales are growing but still represent a minority of total vehicle purchases in most markets.</div>
+      </div>
+
+      <svg viewBox="0 0 520 90" width="100%" style="margin-bottom:16px;">
+        <path d="M 30,75 C 60,74 80,72 100,68 C 120,64 135,58 150,50 C 168,40 185,28 205,20 C 222,13 240,10 265,10 C 288,10 308,13 328,20 C 348,28 362,40 375,52 C 388,62 400,70 420,74 C 440,77 460,78 490,78" fill="none" stroke="#dde8e6" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Innovators</text>
+        <text x="140" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Adopters</text>
+        <text x="245" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Majority</text>
+        <text x="355" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Late Majority</text>
+        <text x="455" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Laggards</text>
+      </svg>
+
+      <div class="question-prompt">Which adopter group is currently driving EV uptake?</div>
+
+      <div class="options-grid" id="options-0">
+        <button class="option-btn" onclick="selectAnswer(0, 0, false)">
+          <span class="adopter-label">Innovators</span>
+          <span class="adopter-desc">Tech enthusiasts, first to try anything new</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(0, 1, false)">
+          <span class="adopter-label">Early Adopters</span>
+          <span class="adopter-desc">Visionaries seeking competitive advantage</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(0, 2, true)">
+          <span class="adopter-label">Early Majority</span>
+          <span class="adopter-desc">Pragmatists who want proven, reliable solutions</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(0, 3, false)">
+          <span class="adopter-label">Late Majority</span>
+          <span class="adopter-desc">Risk-averse, price-sensitive, wait for the norm</span>
+        </button>
+      </div>
+
+      <div class="feedback-box" id="feedback-0"></div>
+      <button class="btn-primary" id="next-0" onclick="nextQuestion(1)" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- Q2: Generative AI -->
+  <div class="screen" id="screen-1">
+    <div class="question-body">
+      <div class="product-card">
+        <div class="product-label">Product 2</div>
+        <div class="product-name">Generative AI Tools (e.g. ChatGPT, Claude)</div>
+        <div class="product-desc">Generative AI tools burst into public awareness in late 2022 and have seen explosive growth since. Millions of people now use them regularly for writing, coding, and research. Businesses are integrating them into workflows at speed, and the tools are becoming embedded in products people already use. Adoption is accelerating rapidly across a broad population.</div>
+      </div>
+
+      <svg viewBox="0 0 520 90" width="100%" style="margin-bottom:16px;">
+        <path d="M 30,75 C 60,74 80,72 100,68 C 120,64 135,58 150,50 C 168,40 185,28 205,20 C 222,13 240,10 265,10 C 288,10 308,13 328,20 C 348,28 362,40 375,52 C 388,62 400,70 420,74 C 440,77 460,78 490,78" fill="none" stroke="#dde8e6" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Innovators</text>
+        <text x="140" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Adopters</text>
+        <text x="245" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Majority</text>
+        <text x="355" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Late Majority</text>
+        <text x="455" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Laggards</text>
+      </svg>
+
+      <div class="question-prompt">Which adopter group is currently driving generative AI uptake?</div>
+
+      <div class="options-grid" id="options-1">
+        <button class="option-btn" onclick="selectAnswer(1, 0, false)">
+          <span class="adopter-label">Innovators</span>
+          <span class="adopter-desc">Tech enthusiasts, first to try anything new</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(1, 1, false)">
+          <span class="adopter-label">Early Adopters</span>
+          <span class="adopter-desc">Visionaries seeking competitive advantage</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(1, 2, true)">
+          <span class="adopter-label">Early Majority</span>
+          <span class="adopter-desc">Pragmatists who want proven, reliable solutions</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(1, 3, false)">
+          <span class="adopter-label">Late Majority</span>
+          <span class="adopter-desc">Risk-averse, price-sensitive, wait for the norm</span>
+        </button>
+      </div>
+
+      <div class="feedback-box" id="feedback-1"></div>
+      <button class="btn-primary" id="next-1" onclick="nextQuestion(2)" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- Q3: Smart Home Devices -->
+  <div class="screen" id="screen-2">
+    <div class="question-body">
+      <div class="product-card">
+        <div class="product-label">Product 3</div>
+        <div class="product-name">Smart Home Devices (e.g. smart speakers, thermostats)</div>
+        <div class="product-desc">Smart home devices have been on the market for over a decade. Products like smart speakers and connected thermostats are now widely available and well-known, with significant penetration in many households. However, uptake has been uneven: enthusiastic in some segments, resistant in others. Growth has slowed compared to the early surge and the market is beginning to plateau in some categories.</div>
+      </div>
+
+      <svg viewBox="0 0 520 90" width="100%" style="margin-bottom:16px;">
+        <path d="M 30,75 C 60,74 80,72 100,68 C 120,64 135,58 150,50 C 168,40 185,28 205,20 C 222,13 240,10 265,10 C 288,10 308,13 328,20 C 348,28 362,40 375,52 C 388,62 400,70 420,74 C 440,77 460,78 490,78" fill="none" stroke="#dde8e6" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Innovators</text>
+        <text x="140" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Adopters</text>
+        <text x="245" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Majority</text>
+        <text x="355" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Late Majority</text>
+        <text x="455" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Laggards</text>
+      </svg>
+
+      <div class="question-prompt">Which adopter group is currently driving smart home device uptake?</div>
+
+      <div class="options-grid" id="options-2">
+        <button class="option-btn" onclick="selectAnswer(2, 0, false)">
+          <span class="adopter-label">Innovators</span>
+          <span class="adopter-desc">Tech enthusiasts, first to try anything new</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(2, 1, false)">
+          <span class="adopter-label">Early Adopters</span>
+          <span class="adopter-desc">Visionaries seeking competitive advantage</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(2, 2, false)">
+          <span class="adopter-label">Early Majority</span>
+          <span class="adopter-desc">Pragmatists who want proven, reliable solutions</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(2, 3, true)">
+          <span class="adopter-label">Late Majority</span>
+          <span class="adopter-desc">Risk-averse, price-sensitive, wait for the norm</span>
+        </button>
+      </div>
+
+      <div class="feedback-box" id="feedback-2"></div>
+      <button class="btn-primary" id="next-2" onclick="nextQuestion(3)" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- Q4: AR Glasses -->
+  <div class="screen" id="screen-3">
+    <div class="question-body">
+      <div class="product-card">
+        <div class="product-label">Product 4</div>
+        <div class="product-name">Augmented Reality Glasses</div>
+        <div class="product-desc">AR glasses have been promised as a transformative technology for years. Products exist, but they remain expensive, niche, and unfamiliar to most consumers. Mainstream use cases are still unclear to the average buyer, and the products have yet to find a beachhead segment that could serve as a reliable reference for broader adoption. The technology is compelling to enthusiasts but has not crossed into everyday life.</div>
+      </div>
+
+      <svg viewBox="0 0 520 90" width="100%" style="margin-bottom:16px;">
+        <path d="M 30,75 C 60,74 80,72 100,68 C 120,64 135,58 150,50 C 168,40 185,28 205,20 C 222,13 240,10 265,10 C 288,10 308,13 328,20 C 348,28 362,40 375,52 C 388,62 400,70 420,74 C 440,77 460,78 490,78" fill="none" stroke="#dde8e6" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Innovators</text>
+        <text x="140" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Adopters</text>
+        <text x="245" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Majority</text>
+        <text x="355" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Late Majority</text>
+        <text x="455" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Laggards</text>
+      </svg>
+
+      <div class="question-prompt">Which adopter group is currently engaging with AR glasses?</div>
+
+      <div class="options-grid" id="options-3">
+        <button class="option-btn" onclick="selectAnswer(3, 0, false)">
+          <span class="adopter-label">Innovators</span>
+          <span class="adopter-desc">Tech enthusiasts, first to try anything new</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(3, 1, true)">
+          <span class="adopter-label">Early Adopters</span>
+          <span class="adopter-desc">Visionaries seeking competitive advantage</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(3, 2, false)">
+          <span class="adopter-label">Early Majority</span>
+          <span class="adopter-desc">Pragmatists who want proven, reliable solutions</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(3, 3, false)">
+          <span class="adopter-label">Late Majority</span>
+          <span class="adopter-desc">Risk-averse, price-sensitive, wait for the norm</span>
+        </button>
+      </div>
+
+      <div class="feedback-box" id="feedback-3"></div>
+      <button class="btn-primary" id="next-3" onclick="nextQuestion(4)" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- Q5: 3D Television -->
+  <div class="screen" id="screen-4">
+    <div class="question-body">
+      <div class="product-card">
+        <div class="product-label">Product 5</div>
+        <div class="product-name">3D Television</div>
+        <div class="product-desc">3D TVs launched with enormous fanfare in the early 2010s, promising a cinema-like experience at home. Early adopters were enthusiastic, and major manufacturers invested heavily in marketing. But mainstream consumers never followed. The glasses required were cumbersome, content was limited, and most people could not identify a compelling reason to switch from their existing flat screens. By the mid-2010s, manufacturers had quietly stopped producing them.</div>
+      </div>
+
+      <svg viewBox="0 0 520 90" width="100%" style="margin-bottom:16px;">
+        <path d="M 30,75 C 60,74 80,72 100,68 C 120,64 135,58 150,50 C 168,40 185,28 205,20 C 222,13 240,10 265,10 C 288,10 308,13 328,20 C 348,28 362,40 375,52 C 388,62 400,70 420,74 C 440,77 460,78 490,78" fill="none" stroke="#dde8e6" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Innovators</text>
+        <text x="140" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Adopters</text>
+        <text x="245" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Early Majority</text>
+        <text x="355" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Late Majority</text>
+        <text x="455" y="86" font-family="Segoe UI,sans-serif" font-size="9" fill="#5a6a68" text-anchor="middle">Laggards</text>
+      </svg>
+
+      <div class="question-prompt">Where on the S-curve did 3D television ultimately end up?</div>
+
+      <div class="options-grid" id="options-4">
+        <button class="option-btn" onclick="selectAnswer(4, 0, false)">
+          <span class="adopter-label">Crossed into Early Majority, then declined</span>
+          <span class="adopter-desc">Made it to mainstream before newer tech replaced it</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(4, 1, true)">
+          <span class="adopter-label">Stalled in the Chasm</span>
+          <span class="adopter-desc">Never crossed from Early Adopters to the Early Majority</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(4, 2, false)">
+          <span class="adopter-label">Reached the Late Majority before fading</span>
+          <span class="adopter-desc">Achieved broad adoption but then lost relevance</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(4, 3, false)">
+          <span class="adopter-label">Never passed the Innovator stage</span>
+          <span class="adopter-desc">Failed to attract even early enthusiast interest</span>
+        </button>
+      </div>
+
+      <div class="feedback-box" id="feedback-4"></div>
+      <button class="btn-primary" id="next-4" onclick="showResults()" disabled>See Results</button>
+    </div>
+  </div>
+
+  <!-- Results screen -->
+  <div class="screen" id="screen-results">
+    <div class="results-body">
+      <div class="score-display" id="scoreDisplay">0/4</div>
+      <div class="score-label" id="scoreLabel"></div>
+
+      <div class="results-breakdown" id="resultsBreakdown"></div>
+
+      <button class="btn-primary" onclick="resetActivity()">Try Again</button>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <span class="insight-label">Keep in Mind</span>
+    <div class="insight-divider"></div>
+    <span class="insight-content">Placing an innovation on the S-curve is rarely clear-cut. The same product can sit at different points for different markets or segments. The value of the exercise is in the reasoning, not just the answer.</span>
+  </div>
+
+</div>
+
+<script>
+  const feedbackData = [
+    {
+      correct: "Right. EVs have moved into the Early Majority stage in many markets. The Pragmatists are now engaging: infrastructure has improved, prices have come down, and there are enough peer references to reduce the perceived risk of switching. The market is growing but has not yet reached saturation.",
+      incorrect: "Not quite. EVs have moved past the enthusiast stages and are now being driven by the Early Majority: Pragmatists who want proven, reliable solutions with adequate infrastructure and peer references before committing."
+    },
+    {
+      correct: "Correct. Generative AI has crossed the chasm remarkably quickly and is now firmly in Early Majority territory. Tools like ChatGPT and Claude are embedded in everyday workflows and consumer products, and the Pragmatists, who want proven, useful solutions, are now the primary growth driver.",
+      incorrect: "Not quite. Generative AI has crossed the chasm at speed and is now in Early Majority territory. The rapid integration into everyday tools and workflows signals that the Pragmatists are now driving adoption, not just the early enthusiast groups."
+    },
+    {
+      correct: "Good. Smart home devices are now in Late Majority territory in many categories. The early excitement has faded, growth has slowed, and the remaining adopters are the more risk-averse, price-sensitive buyers who waited until the technology was well established and widely normalized.",
+      incorrect: "Not quite. Smart home devices have been on the market long enough that the enthusiast and early majority phases have largely passed. The remaining growth is coming from the Late Majority: buyers who waited until the technology was fully proven and ubiquitous."
+    },
+    {
+      correct: "Correct. AR glasses remain in Early Adopter territory. The technology is compelling to visionaries and enthusiasts, but clear mainstream use cases have not yet emerged, prices remain high, and there is no established beachhead segment serving as a reference for broader adoption. The chasm looms.",
+      incorrect: "Not quite. AR glasses are best placed in the Early Adopter stage. The technology attracts visionaries and enthusiasts, but it has not yet found the beachhead segment or whole product solution needed to make the leap to the Early Majority."
+    },
+    {
+      correct: "Right. 3D TV is a textbook chasm failure. It generated genuine excitement among early adopters but never found a beachhead segment with a compelling enough use case to bring the Pragmatists on board. Without mainstream references or a whole product solution that solved a real problem, the market stalled and manufacturers eventually abandoned it entirely.",
+      incorrect: "Not quite. 3D TV stalled in the chasm between Early Adopters and the Early Majority and never crossed it. Despite significant marketing investment, it never identified a beachhead segment with a genuine need, and the Pragmatists never saw a compelling reason to adopt it."
+    }
+  ];
+
+  const productNames = [
+    "Electric Vehicles",
+    "Generative AI Tools",
+    "Smart Home Devices",
+    "Augmented Reality Glasses",
+    "3D Television"
+  ];
+
+  const correctAnswers = [2, 2, 3, 1, 1];
+  const answerLabels = ["Innovators", "Early Adopters", "Early Majority", "Late Majority", "Laggards"];
+
+  let userAnswers = [-1, -1, -1, -1, -1];
+  let score = 0;
+
+  function selectAnswer(qIndex, aIndex, isCorrect) {
+    const options = document.querySelectorAll(`#options-${qIndex} .option-btn`);
+    options.forEach(btn => btn.disabled = true);
+
+    options[aIndex].classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) {
+      options[correctAnswers[qIndex]].classList.add('correct');
+    }
+
+    userAnswers[qIndex] = aIndex;
+    if (isCorrect) score++;
+
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    feedback.textContent = isCorrect ? feedbackData[qIndex].correct : feedbackData[qIndex].incorrect;
+    feedback.className = `feedback-box show ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`;
+
+    document.getElementById(`next-${qIndex}`).disabled = false;
+  }
+
+  function nextQuestion(nextIndex) {
+    document.getElementById(`screen-${nextIndex - 1}`).classList.remove('active');
+    document.getElementById(`screen-${nextIndex}`).classList.add('active');
+    document.getElementById('progressText').textContent = `Question ${nextIndex + 1} of 5`;
+    document.getElementById('progressFill').style.width = `${(nextIndex + 1) * 20}%`;
+  }
+
+  function showResults() {
+    document.getElementById('screen-4').classList.remove('active');
+    document.getElementById('screen-results').classList.add('active');
+    document.getElementById('progressText').textContent = 'Complete';
+    document.getElementById('progressFill').style.width = '100%';
+
+    document.getElementById('scoreDisplay').textContent = `${score}/5`;
+
+    const labels = ['Keep practicing', 'Good effort', 'Good effort', 'Well done', 'Almost there', 'Excellent work'];
+    const msgs = [
+      'Review the S-curve and adopter categories and give it another try.',
+      'You have a feel for some of the categories. Review the feedback above and try again.',
+      'You have a good grasp of several categories. Review the feedback above and try again.',
+      'Solid understanding of where these innovations sit on the curve.',
+      'Very strong. Review any feedback above and consider what made the tricky ones difficult.',
+      'Perfect score. You have a sharp eye for placing innovations on the adoption curve.'
+    ];
+    document.getElementById('scoreLabel').textContent = `${labels[score]} — ${msgs[score]}`;
+
+    const breakdown = document.getElementById('resultsBreakdown');
+    breakdown.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
+      const correct = userAnswers[i] === correctAnswers[i];
+      breakdown.innerHTML += `
+        <div class="result-item">
+          <div>
+            <div class="result-product">${productNames[i]}</div>
+            <div class="result-answer">Your answer: ${answerLabels[userAnswers[i]]} &nbsp;|&nbsp; Correct: ${answerLabels[correctAnswers[i]]}</div>
+          </div>
+          <span class="result-badge ${correct ? 'badge-correct' : 'badge-incorrect'}">${correct ? 'Correct' : 'Review'}</span>
+        </div>`;
+    }
+  }
+
+  function resetActivity() {
+    score = 0;
+    userAnswers = [-1, -1, -1, -1, -1];
+    document.getElementById('screen-results').classList.remove('active');
+    document.getElementById('screen-0').classList.add('active');
+    document.getElementById('progressText').textContent = 'Question 1 of 5';
+    document.getElementById('progressFill').style.width = '20%';
+
+    for (let i = 0; i < 5; i++) {
+      const options = document.querySelectorAll(`#options-${i} .option-btn`);
+      options.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('correct', 'incorrect');
+      });
+      const fb = document.getElementById(`feedback-${i}`);
+      fb.className = 'feedback-box';
+      fb.textContent = '';
+      document.getElementById(`next-${i}`).disabled = true;
+    }
+  }
+</script>
+
+</div>
+</body>
+</html>

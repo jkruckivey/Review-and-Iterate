@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started with Claude Code on the Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-primary: #5a9ea1;
+            --color-secondary: #6b9085;
+            --color-accent: #4a8a8d;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            color: var(--color-neutral-900);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.925rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #f0f7f7 0%, #f5f5f5 100%);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 4px solid var(--color-primary);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-box h4 {
+            color: var(--color-neutral-900);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .intro-box p {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .intro-box ul {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            padding-left: 1.25rem;
+        }
+
+        .intro-box li {
+            margin-bottom: 0.25rem;
+        }
+
+        .what-is-box {
+            background: linear-gradient(135deg, #f5f0f7 0%, #f5f5f5 100%);
+            border: 1px solid var(--color-neutral-200);
+            border-left: 4px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .what-is-box h4 {
+            color: var(--color-neutral-900);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .what-is-box p {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .what-is-box ul {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            padding-left: 1.25rem;
+        }
+
+        .what-is-box li {
+            margin-bottom: 0.375rem;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--color-neutral-200);
+            z-index: 0;
+        }
+
+        .progress-step.completed:not(:last-child)::after {
+            background: var(--color-primary);
+        }
+
+        .progress-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.completed .progress-dot {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .progress-step.active .progress-dot {
+            background: var(--color-secondary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(90, 158, 161, 0.2);
+        }
+
+        .progress-label {
+            font-size: 0.65rem;
+            color: var(--color-neutral-500);
+            margin-top: 0.375rem;
+            text-align: center;
+            max-width: 60px;
+        }
+
+        .progress-step.completed .progress-label,
+        .progress-step.active .progress-label {
+            color: var(--color-neutral-700);
+            font-weight: 500;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .step-item {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .step-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(90, 158, 161, 0.15);
+        }
+
+        .step-item.active {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(90, 158, 161, 0.2);
+        }
+
+        .step-item.completed {
+            border-color: var(--color-secondary);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+        }
+
+        .step-number {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-600);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .step-item.active .step-number {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .step-item.completed .step-number {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        .step-title-area {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            color: var(--color-neutral-900);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+        }
+
+        .step-subtitle {
+            color: var(--color-neutral-500);
+            font-size: 0.8rem;
+        }
+
+        .step-item.active .step-subtitle {
+            display: none;
+        }
+
+        .step-time {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-600);
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .expand-icon {
+            color: var(--color-neutral-400);
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .step-item.active .expand-icon {
+            transform: rotate(180deg);
+            color: var(--color-primary);
+        }
+
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--color-neutral-50);
+            border-top: 1px solid var(--color-neutral-200);
+        }
+
+        .step-item.active .step-content {
+            max-height: 1500px;
+        }
+
+        .step-content-inner {
+            padding: 1.25rem;
+        }
+
+        .instructions {
+            margin-bottom: 1rem;
+        }
+
+        .instructions h5 {
+            color: var(--color-neutral-900);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.625rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .instructions ol {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            padding-left: 1.25rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .instructions li strong {
+            color: var(--color-neutral-900);
+        }
+
+        .tip-box {
+            background: white;
+            border: 1px solid var(--color-neutral-200);
+            border-left: 3px solid var(--color-primary);
+            border-radius: 6px;
+            padding: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .tip-box h6 {
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.375rem;
+        }
+
+        .tip-box p {
+            color: var(--color-neutral-700);
+            font-size: 0.825rem;
+            line-height: 1.5;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            padding: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .warning-box h6 {
+            color: #b45309;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.375rem;
+        }
+
+        .warning-box p {
+            color: #92400e;
+            font-size: 0.825rem;
+            line-height: 1.5;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 3px solid #3b82f6;
+            border-radius: 6px;
+            padding: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .info-box h6 {
+            color: #1d4ed8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.375rem;
+        }
+
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.825rem;
+            line-height: 1.5;
+        }
+
+        .checkpoint {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .checkpoint-icon {
+            color: #059669;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .checkpoint p {
+            color: #065f46;
+            font-size: 0.825rem;
+            line-height: 1.4;
+        }
+
+        .checkpoint strong {
+            font-weight: 600;
+        }
+
+        .mark-complete-btn {
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .mark-complete-btn:hover {
+            background: var(--color-accent);
+        }
+
+        .step-item.completed .mark-complete-btn {
+            background: var(--color-neutral-300);
+            cursor: default;
+        }
+
+        .footer-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .completion-message {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .completion-message.visible {
+            display: block;
+        }
+
+        .completion-message h4 {
+            color: #065f46;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .completion-message p {
+            color: #047857;
+            font-size: 0.9rem;
+        }
+
+        .help-text {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-primary);
+            padding: 0.75rem 1rem;
+            margin-top: 1.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .help-text p {
+            color: var(--color-neutral-600);
+            font-size: 0.8rem;
+        }
+
+        .help-text strong {
+            color: var(--color-neutral-900);
+        }
+
+        .help-text a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .glossary-term {
+            border-bottom: 1px dotted var(--color-neutral-400);
+            cursor: help;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+
+            .progress-bar {
+                display: none;
+            }
+
+            .step-header {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .step-time {
+                order: 3;
+                margin-left: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="header">
+            <h1>Get Started with Claude Code on the Web</h1>
+            <p>A beginner-friendly guide to using AI to write and modify code - no prior coding experience needed.</p>
+        </div>
+
+        <div class="what-is-box">
+            <h4>What is Claude Code on the Web?</h4>
+            <p>Claude Code on the web is a tool that lets you use AI to work with code stored on GitHub. Think of it as having an expert coding assistant that can:</p>
+            <ul>
+                <li><strong>Read and understand code</strong> - Ask questions about how code works or how features are built</li>
+                <li><strong>Fix bugs</strong> - Describe a problem and Claude will find and fix it</li>
+                <li><strong>Make changes</strong> - Request new features or modifications to existing code</li>
+                <li><strong>Run tests</strong> - Claude can test its changes to make sure they work</li>
+                <li><strong>Work while you're away</strong> - Start a task and come back when it's done</li>
+            </ul>
+            <p style="margin-top: 0.75rem; margin-bottom: 0;"><strong>No coding knowledge required</strong> - you describe what you want in plain English, and Claude handles the technical work.</p>
+        </div>
+
+        <div class="intro-box">
+            <h4>Before You Begin</h4>
+            <p>This guide will walk you through setting up Claude Code on the web step by step. Here's what you'll need:</p>
+            <ul>
+                <li>A <strong>Claude account</strong> with Pro, Max, or Team/Enterprise access (free accounts don't include this feature)</li>
+                <li>A <strong>GitHub account</strong> (free to create - we'll cover this)</li>
+                <li>A <strong>code repository on GitHub</strong> that you want to work with (or create a new one)</li>
+            </ul>
+        </div>
+
+        <div class="progress-bar" id="progress-bar">
+            <div class="progress-step" data-step="1">
+                <div class="progress-dot">1</div>
+                <span class="progress-label">Account</span>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-dot">2</div>
+                <span class="progress-label">GitHub</span>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-dot">3</div>
+                <span class="progress-label">Connect</span>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="progress-dot">4</div>
+                <span class="progress-label">Install</span>
+            </div>
+            <div class="progress-step" data-step="5">
+                <div class="progress-dot">5</div>
+                <span class="progress-label">Setup</span>
+            </div>
+            <div class="progress-step" data-step="6">
+                <div class="progress-dot">6</div>
+                <span class="progress-label">Task</span>
+            </div>
+            <div class="progress-step" data-step="7">
+                <div class="progress-dot">7</div>
+                <span class="progress-label">Review</span>
+            </div>
+            <div class="progress-step" data-step="8">
+                <div class="progress-dot">8</div>
+                <span class="progress-label">PR</span>
+            </div>
+        </div>
+
+        <div class="steps-list" id="steps-list"></div>
+
+        <div class="footer-section">
+            <div class="completion-message" id="completion-message">
+                <h4>Congratulations! You've Completed Your First Task!</h4>
+                <p>You now know how to use Claude Code on the web to work with code. Try starting more tasks, asking questions about your codebase, or running multiple tasks in parallel.</p>
+            </div>
+        </div>
+
+        <div class="help-text">
+            <p><strong>Need help?</strong> Visit <a href="https://code.claude.com/docs/en/claude-code-on-the-web" target="_blank" rel="noopener">Claude Code documentation</a> for more resources and detailed guides.</p>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcements"></div>
+
+    <script>
+        const steps = [
+            {
+                number: 1,
+                title: 'Sign In to Your Claude Account',
+                subtitle: 'Access Claude Code with your existing account',
+                time: '2 min',
+                instructions: [
+                    'Open your web browser (Chrome, Firefox, Safari, or Edge) and go to <strong>claude.ai/code</strong>',
+                    'You\'ll see a sign-in page. Click <strong>"Continue with email"</strong> or choose to sign in with your <strong>Google account</strong>.',
+                    'If you already have a Claude account, enter your email and password. If you don\'t have an account yet, click <strong>"Sign up"</strong> to create one.',
+                    'After signing in, you\'ll be taken to the Claude Code interface.',
+                    '<strong>Important:</strong> Claude Code on the web requires a paid plan (Pro, Max, or Team/Enterprise). If you\'re on the free plan, you\'ll need to upgrade to access this feature.'
+                ],
+                tip: 'If you\'re new to Claude, you can start with a Pro subscription which gives you access to Claude Code on the web. Visit claude.ai to see subscription options.',
+                checkpoint: 'You should now be signed in and see the Claude Code interface with a text box where you can type your request.'
+            },
+            {
+                number: 2,
+                title: 'Create or Sign In to GitHub',
+                subtitle: 'GitHub stores your code in the cloud',
+                time: '5 min',
+                instructions: [
+                    '<strong>What is GitHub?</strong> GitHub is a repository, a website where developers store and share code. It also keeps track of every change ever made to those files. Think of it like Google Drive, but specifically designed for code files. It\'s free to use.',
+                    'Open a new browser tab and go to <strong>github.com</strong>',
+                    'If you already have a GitHub account, click <strong>"Sign in"</strong> in the top right corner and enter your credentials.',
+                    'If you don\'t have an account, click <strong>"Sign up"</strong> and follow these steps:',
+                    'Enter your <strong>email address</strong> and create a <strong>password</strong>.',
+                    'Choose a <strong>username</strong> - this will be visible to others, so pick something professional.',
+                    'Complete the verification puzzle and click <strong>"Create account"</strong>.',
+                    'Check your email for a verification code and enter it when prompted.',
+                    'You can skip the personalisation questions by clicking <strong>"Skip personalisation"</strong> at the bottom.'
+                ],
+                tip: 'Your GitHub username will be part of your profile URL (github.com/yourusername), so choose something you\'re comfortable sharing professionally.',
+                checkpoint: 'You should now be signed in to GitHub and see your dashboard or homepage.'
+            },
+            {
+                number: 3,
+                title: 'Connect Your GitHub Account to Claude',
+                subtitle: 'Allow Claude to access your repositories',
+                time: '2 min',
+                instructions: [
+                    'Go back to your Claude Code tab at <strong>claude.ai/code</strong> (or open it again if you closed it).',
+                    'You\'ll see a prompt to <strong>"Connect your GitHub account"</strong>. Click this button.',
+                    'A popup window will appear from GitHub asking you to authorise Claude.',
+                    'Review the permissions being requested - Claude needs access to read your code and create branches.',
+                    'Click <strong>"Authorise"</strong> to grant permission.',
+                    'The popup will close and you\'ll return to Claude Code, now connected to GitHub.'
+                ],
+                tip: 'If the popup doesn\'t appear, check if your browser is blocking popups. You may need to allow popups from claude.ai.',
+                warning: 'Only connect GitHub accounts that contain code you\'re comfortable sharing with Claude. Claude will be able to read and modify code in repositories you grant access to.',
+                checkpoint: 'You should see a confirmation that your GitHub account is connected, and you may see a list of your repositories.'
+            },
+            {
+                number: 4,
+                title: 'Install the Claude GitHub App',
+                subtitle: 'Grant Claude permission to work with your repositories',
+                time: '3 min',
+                instructions: [
+                    'After connecting your account, Claude will prompt you to <strong>install the Claude GitHub App</strong>. Click <strong>"Install"</strong>.',
+                    'GitHub will open and show you the app installation page.',
+                    'You\'ll be asked where to install the app. Choose your personal account or an organisation you belong to.',
+                    'Next, choose which repositories Claude can access:<br><span style="display: block; padding-left: 1.5rem;">a. <strong>All repositories</strong> - Claude can access all your current and future repos (convenient but gives broad access).<br>b. <strong>Only select repositories</strong> - Choose specific repos Claude can access (recommended for more control).<br>c. If selecting specific repos, use the dropdown to pick the repositories you want Claude to work with.</span>',
+                    'Click <strong>"Install"</strong> at the bottom of the page.',
+                    'You\'ll be redirected back to Claude Code.'
+                ],
+                tip: 'Start with "Only select repositories" and choose one or two repos you want to experiment with. You can always add more later from your GitHub settings.',
+                info: 'What is an "app" in GitHub? It\'s not something you download - it\'s a way for external services (like Claude) to interact with your GitHub account securely.',
+                checkpoint: 'The Claude GitHub App should now be installed. You should see your selected repository/repositories available in Claude Code.'
+            },
+            {
+                number: 5,
+                title: 'Configure Your Environment',
+                subtitle: 'Set up how Claude runs your code',
+                time: '3 min',
+                instructions: [
+                    'Claude Code will prompt you to <strong>select or create an environment</strong>. An environment is like a virtual computer where Claude will work on your code.',
+                    'For your first time, you can use the <strong>default environment</strong> which comes pre-configured with common programming tools.',
+                    'Click on the environment selector (usually shows "Default" or your environment name).',
+                    'You\'ll see options for <strong>network access</strong>:<br><span style="display: block; padding-left: 1.5rem;">a. <strong>Limited (default)</strong> - Claude can access package managers and common development tools, but not the general internet. This is the safest option.<br>b. <strong>Full</strong> - Claude can access any website. Only use this if your project specifically needs it.<br>c. <strong>None</strong> - No internet access at all. Most restrictive.<br>d. For beginners, leave it on <strong>Limited</strong> - this gives Claude everything it needs while maintaining security.</span>',
+                    'Click <strong>"Save"</strong> or close the settings panel.'
+                ],
+                tip: 'The default environment includes popular programming languages like Python, JavaScript, Ruby, Go, and more - it likely has everything your project needs.',
+                info: 'What is an environment? Think of it as a clean computer set up with programming tools. Claude uses this to run and test code without affecting your actual computer.',
+                checkpoint: 'You should see your environment selected and configured. The main Claude Code interface should be ready for you to submit a task.'
+            },
+            {
+                number: 6,
+                title: 'Submit Your First Coding Task',
+                subtitle: 'Ask Claude to do something with your code',
+                time: '5 min',
+                instructions: [
+                    'Now you\'re ready to give Claude a task! In the text box, type what you want Claude to do.',
+                    '<strong>First, select a repository</strong> if you haven\'t already. Look for a dropdown or selector showing your repo name.',
+                    '<strong>Type your request in plain English.</strong> Here are some example tasks you can try:<br><span style="display: block; padding-left: 1.5rem;">a. <em>"Look through this codebase and explain what it does"</em> - Great for understanding new code.<br>b. <em>"Find any bugs in the login functionality"</em> - Ask Claude to review and identify issues.<br>c. <em>"Add a new button that says Hello World to the homepage"</em> - Request a specific change.<br>d. <em>"Update the README file to explain how to install this project"</em> - Documentation tasks.</span>',
+                    'Press <strong>Enter</strong> or click the <strong>Send</strong> button to submit your task.',
+                    'Claude will start working. You\'ll see progress updates as it clones your repository, analyzes the code, and makes changes.',
+                    '<strong>You can close the browser and come back later</strong> - Claude will keep working in the cloud. You\'ll be notified when it\'s done.'
+                ],
+                tip: 'Be specific in your requests. Instead of "make the website better", try "change the header background colour from blue to green" or "add a contact form to the About page".',
+                warning: 'Claude makes real changes to your code. Always review the changes before accepting them (we\'ll cover this in the next step).',
+                checkpoint: 'Claude should be working on your task. You\'ll see a progress indicator and updates as Claude reads files, runs commands, and makes changes.'
+            },
+            {
+                number: 7,
+                title: 'Review Changes in Diff View',
+                subtitle: 'See exactly what Claude changed',
+                time: '5 min',
+                instructions: [
+                    'When Claude finishes a task, you\'ll see a summary of what was changed.',
+                    'Look for <strong>diff stats</strong> - these show numbers like <strong>+12 -3</strong>, meaning 12 lines were added and 3 were removed.',
+                    'Click on the diff stats or the <strong>"View Changes"</strong> button to open the <strong>diff viewer</strong>.',
+                    '<strong>What is a diff?</strong> A diff shows the differences between the old code and the new code. Removed lines appear in red, added lines appear in green.',
+                    'On the left side, you\'ll see a <strong>list of files</strong> that were changed.',
+                    'Click on any file to see what changed in that specific file.',
+                    'Read through the changes carefully. Even if you don\'t understand all the code, look for:<br><span style="display: block; padding-left: 1.5rem;">a. Does it seem related to what you asked for?<br>b. Are there any obvious mistakes (like your company name spelled wrong)?<br>c. Did Claude change too many things or too few?</span>',
+                    'If something doesn\'t look right, <strong>type a comment</strong> in the chat to ask Claude to make changes.',
+                    'For example: <em>"The button text should say \'Submit\' not \'Send\'"</em> or <em>"Please also add a cancel button"</em>',
+                    'Claude will revise the code based on your feedback. You can go through multiple rounds of review.'
+                ],
+                tip: 'Don\'t be afraid to ask Claude to explain what it did. Type "Can you explain the changes you made?" and Claude will walk you through them in plain English.',
+                info: 'What are lines of code? Code is written in text files, and each line is a separate instruction or piece of content. When we say "+12 lines", it means 12 new lines of text were added to the file.',
+                checkpoint: 'You should be able to see all the files Claude changed and understand generally what modifications were made.'
+            },
+            {
+                number: 8,
+                title: 'Create a Pull Request',
+                subtitle: 'Propose your changes to the main codebase',
+                time: '3 min',
+                instructions: [
+                    'Once you\'re happy with the changes, it\'s time to create a <strong>pull request</strong> (often called a "PR").',
+                    '<strong>What is a pull request?</strong> It\'s a proposal to add your changes to the main version of the code. It lets you (or others) review changes before they become permanent.',
+                    'Click the <strong>"Create Pull Request"</strong> or <strong>"Create PR"</strong> button.',
+                    'Claude will push the changes to GitHub and create the pull request automatically.',
+                    'You\'ll see a link to view the PR on GitHub. Click it to open in a new tab.',
+                    'On GitHub, you\'ll see:<br><span style="display: block; padding-left: 1.5rem;">a. A <strong>title</strong> describing the changes.<br>b. A <strong>description</strong> explaining what was done.<br>c. The list of <strong>changed files</strong> (the same diff you reviewed earlier).</span>',
+                    'If this is a personal project and you\'re ready to apply the changes, click the green <strong>"Merge pull request"</strong> button.',
+                    'Click <strong>"Confirm merge"</strong> to apply the changes to your main code.',
+                    'Congratulations! Your code changes are now live!'
+                ],
+                tip: 'If you\'re working with a team, you might not merge the PR yourself. Instead, send the PR link to a colleague for review. They can approve it or request changes.',
+                warning: 'For important projects, always have someone review the PR before merging. Merging applies the changes permanently to your main codebase.',
+                checkpoint: 'You should see your pull request on GitHub. If you merged it, the changes are now part of your main codebase. Congratulations!'
+            }
+        ];
+
+        const stepsList = document.getElementById('steps-list');
+        const progressBar = document.getElementById('progress-bar');
+        const completionMessage = document.getElementById('completion-message');
+        let completedSteps = new Set();
+
+        function renderSteps() {
+            stepsList.innerHTML = '';
+            steps.forEach((step, index) => {
+                const isCompleted = completedSteps.has(step.number);
+                const div = document.createElement('div');
+                div.className = `step-item${isCompleted ? ' completed' : ''}`;
+                div.setAttribute('data-step', step.number);
+
+                let instructionsHTML = step.instructions.map(inst => `<li>${inst}</li>`).join('');
+
+                let extraContent = '';
+                if (step.tip) {
+                    extraContent += `
+                        <div class="tip-box">
+                            <h6>Tip</h6>
+                            <p>${step.tip}</p>
+                        </div>
+                    `;
+                }
+                if (step.info) {
+                    extraContent += `
+                        <div class="info-box">
+                            <h6>Beginner's Note</h6>
+                            <p>${step.info}</p>
+                        </div>
+                    `;
+                }
+                if (step.warning) {
+                    extraContent += `
+                        <div class="warning-box">
+                            <h6>Important</h6>
+                            <p>${step.warning}</p>
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <div class="step-header" onclick="toggleStep(${step.number})">
+                        <div class="step-number">${isCompleted ? '✓' : step.number}</div>
+                        <div class="step-title-area">
+                            <div class="step-title">${step.title}</div>
+                            <div class="step-subtitle">${step.subtitle}</div>
+                        </div>
+                        <span class="step-time">${step.time}</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-content-inner">
+                            <div class="instructions">
+                                <h5>Instructions</h5>
+                                <ol>${instructionsHTML}</ol>
+                            </div>
+                            ${extraContent}
+                            <div class="checkpoint">
+                                <span class="checkpoint-icon">✓</span>
+                                <p><strong>Checkpoint:</strong> ${step.checkpoint}</p>
+                            </div>
+                            <button class="mark-complete-btn" onclick="markComplete(${step.number}, event)">
+                                ${isCompleted ? '✓ Completed' : 'Mark as Complete'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                stepsList.appendChild(div);
+            });
+            updateProgressBar();
+        }
+
+        function toggleStep(stepNumber) {
+            const allSteps = document.querySelectorAll('.step-item');
+            const clickedStep = document.querySelector(`.step-item[data-step="${stepNumber}"]`);
+            const wasActive = clickedStep.classList.contains('active');
+
+            allSteps.forEach(step => step.classList.remove('active'));
+
+            if (!wasActive) {
+                clickedStep.classList.add('active');
+                updateProgressBar(stepNumber);
+                announce(`Step ${stepNumber} expanded`);
+            } else {
+                announce(`Step ${stepNumber} collapsed`);
+            }
+        }
+
+        function markComplete(stepNumber, event) {
+            event.stopPropagation();
+            if (completedSteps.has(stepNumber)) return;
+
+            completedSteps.add(stepNumber);
+            renderSteps();
+
+            // Keep the current step open
+            const currentStep = document.querySelector(`.step-item[data-step="${stepNumber}"]`);
+            currentStep.classList.add('active');
+
+            // Auto-open next step if available
+            if (stepNumber < steps.length) {
+                setTimeout(() => {
+                    toggleStep(stepNumber + 1);
+                }, 300);
+            }
+
+            // Check if all steps completed
+            if (completedSteps.size === steps.length) {
+                completionMessage.classList.add('visible');
+                announce('Congratulations! You have completed all steps.');
+            } else {
+                announce(`Step ${stepNumber} marked as complete`);
+            }
+        }
+
+        function updateProgressBar(activeStep = null) {
+            const progressSteps = progressBar.querySelectorAll('.progress-step');
+            progressSteps.forEach(step => {
+                const stepNum = parseInt(step.dataset.step);
+                step.classList.remove('completed', 'active');
+
+                if (completedSteps.has(stepNum)) {
+                    step.classList.add('completed');
+                } else if (stepNum === activeStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        function announce(message) {
+            const announcer = document.getElementById('announcements');
+            announcer.textContent = message;
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+
+        // Initialize
+        renderSteps();
+        // Auto-open first step
+        toggleStep(1);
+    </script>
+</body>
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Accounting Matters - Role-Based Scenario Quiz</title>
+    <style>
+        :root {
+            /* Ivey Brand Colors */
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #ffffff;
+            --text-dark: #1a1a1a;
+            --light-text: #666666;
+            --border-light: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--white);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .activity-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .progress-bar-container {
+            margin-bottom: 32px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            color: var(--ivey-green);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .score-display {
+            color: var(--turquoise);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--border-light);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 20px;
+        }
+
+        .scenario-card-container {
+            perspective: 1000px;
+            min-height: 500px;
+            margin-bottom: 32px;
+        }
+
+        .scenario-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .scenario-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(0, 147, 169, 0.03) 100%);
+            border: 2px solid var(--turquoise);
+        }
+
+        .card-back {
+            background: var(--white);
+            transform: rotateY(180deg);
+        }
+
+        .card-back.correct {
+            border: 3px solid var(--bright-green);
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.05) 0%, var(--white) 100%);
+        }
+
+        .card-back.incorrect {
+            border: 3px solid var(--purple);
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.05) 0%, var(--white) 100%);
+        }
+
+        .scenario-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .scenario-title {
+            color: var(--ivey-green);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .scenario-description {
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 8px;
+            border-left: 4px solid var(--turquoise);
+        }
+
+        .role-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .role-button {
+            background: var(--white);
+            border: 2px solid var(--turquoise);
+            color: var(--ivey-green);
+            padding: 16px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .role-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 147, 169, 0.3);
+        }
+
+        .role-button:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .role-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback-section {
+            margin-top: 24px;
+        }
+
+        .feedback-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .feedback-status.correct {
+            background: var(--bright-green);
+            color: var(--white);
+        }
+
+        .feedback-status.incorrect {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .feedback-status-icon {
+            font-size: 1.8rem;
+        }
+
+        .correct-role-box {
+            background: linear-gradient(90deg, rgba(0, 89, 81, 0.08) 0%, rgba(0, 147, 169, 0.08) 100%);
+            border-left: 4px solid var(--ivey-green);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .correct-role-box h3 {
+            color: var(--ivey-green);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .correct-role-box p {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .accounting-concept {
+            background: var(--white);
+            border: 2px solid var(--turquoise);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .accounting-concept strong {
+            color: var(--turquoise);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        .next-button {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 24px;
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        .next-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 89, 81, 0.4);
+        }
+
+        .next-button:focus {
+            outline: 3px solid var(--turquoise);
+            outline-offset: 2px;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+        }
+
+        .results-screen.visible {
+            display: block;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .score-message {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.05) 0%, rgba(0, 147, 169, 0.05) 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border: 2px solid var(--turquoise);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--light-text);
+            font-size: 0.95rem;
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, var(--purple) 0%, rgba(91, 44, 111, 0.8) 100%);
+            color: var(--white);
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(91, 44, 111, 0.3);
+        }
+
+        .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(91, 44, 111, 0.4);
+        }
+
+        .restart-button:focus {
+            outline: 3px solid var(--purple);
+            outline-offset: 2px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .activity-card {
+                padding: 24px;
+            }
+
+            .card-face {
+                padding: 24px;
+            }
+
+            .scenario-card-container {
+                min-height: 550px;
+            }
+
+            .scenario-card {
+                min-height: 550px;
+            }
+
+            .role-options {
+                grid-template-columns: 1fr;
+            }
+
+            .results-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Why Accounting Matters</h1>
+            <p class="subtitle">Role-Based Scenario Challenge</p>
+        </header>
+
+        <div class="activity-card">
+            <div id="quiz-section">
+                <div class="progress-bar-container">
+                    <div class="progress-header">
+                        <div class="progress-text" id="progress-text" aria-live="polite">
+                            Scenario 1 of 7
+                        </div>
+                        <div class="score-display" id="score-display" aria-live="polite">
+                            Score: 0/0
+                        </div>
+                    </div>
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="scenario-card-container">
+                    <div class="scenario-card" id="scenario-card">
+                        <!-- Front of card -->
+                        <div class="card-face card-front" id="card-front">
+                            <span class="scenario-number" id="scenario-number">Scenario 1</span>
+                            <h2 class="scenario-title" id="scenario-title"></h2>
+                            <div class="scenario-description" id="scenario-description"></div>
+
+                            <div role="group" aria-label="Choose the role that handles this scenario">
+                                <div class="role-options" id="role-options">
+                                    <!-- Role buttons will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Back of card -->
+                        <div class="card-face card-back" id="card-back">
+                            <div class="feedback-section">
+                                <!-- Feedback will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-section" class="results-screen">
+                <div class="results-header">
+                    <h2>Quiz Complete!</h2>
+                    <div class="final-score" id="final-score">0/7</div>
+                    <p class="score-message" id="score-message"></p>
+                </div>
+
+                <div class="results-summary">
+                    <div class="stat-card">
+                        <div class="stat-value" id="correct-count">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="incorrect-count">0</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracy-percent">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+
+                <button class="restart-button" id="restart-button" onclick="restartQuiz()">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                title: "New Feature Development Decision",
+                description: "Your team wants to build a premium analytics dashboard. You need to present a business case to executives showing whether the $200,000 development cost is justified based on projected revenue impact and user adoption.",
+                correctRole: "Product Manager",
+                explanation: "Product Managers must calculate ROI (return on investment) to justify new feature development. They explain how features impact revenue, costs, and profit margins to secure funding from executives.",
+                concept: "ROI (Return on Investment) - Measures the financial return of an investment relative to its cost."
+            },
+            {
+                title: "Marketing Budget Justification",
+                description: "Your social media campaign cost $75,000 and brought in 500 new customers. The executive team is questioning whether to continue funding this channel. You need to prove its value using financial metrics.",
+                correctRole: "Marketing Manager",
+                explanation: "Marketing Managers must measure customer acquisition cost (CAC), customer lifetime value (CLV), and campaign ROI. They use these metrics to defend budgets and demonstrate marketing's contribution to the bottom line.",
+                concept: "CAC & CLV - Customer Acquisition Cost shows how much you spend to gain each customer; Customer Lifetime Value shows total revenue expected from that customer."
+            },
+            {
+                title: "Supply Chain Cost Optimization",
+                description: "Your manufacturing plant has monthly rent of $50,000 (whether you produce 100 units or 10,000 units) plus $25 per unit in materials. You need to figure out how many units to produce to become profitable.",
+                correctRole: "Operations Manager",
+                explanation: "Operations Managers analyze cost behavior (fixed vs. variable costs), calculate break-even points, and optimize supply chain spending. Financial metrics guide efficiency improvements.",
+                concept: "Fixed vs. Variable Costs & Break-Even Analysis - Fixed costs stay constant regardless of production; variable costs change with volume. Break-even shows when revenue covers all costs."
+            },
+            {
+                title: "Startup Funding Pitch",
+                description: "You're meeting with venture capitalists next week. They want to see your financial projections for the next 3 years, understand your monthly burn rate, and evaluate your unit economics before investing $2 million.",
+                correctRole: "Entrepreneur/Founder",
+                explanation: "Entrepreneurs must prepare financial projections, burn rate analysis, and unit economics for investors. They pitch using financial statements and must understand cash flow to avoid running out of money.",
+                concept: "Burn Rate & Unit Economics - Burn rate shows how quickly you're spending cash reserves; unit economics reveals profit/loss per customer or product sold."
+            },
+            {
+                title: "Non-Profit Grant Reporting",
+                description: "Your largest donor gave you $500,000 with specific restrictions on how funds can be used. You need to prepare quarterly reports showing exactly how the money was spent and demonstrate compliance with grant requirements.",
+                correctRole: "Non-Profit Manager",
+                explanation: "Non-Profit Managers prepare budgets, report to boards and donors, demonstrate financial stewardship, and ensure compliance with funding requirements.",
+                concept: "Financial Stewardship & Compliance - Tracking restricted funds, demonstrating responsible use of donations, and meeting regulatory reporting requirements."
+            },
+            {
+                title: "Pricing Strategy Decision",
+                description: "Your competitor just lowered their prices by 20%. Before you react, you need to understand your current profit margin per product, your fixed overhead costs, and how much volume you'd need to maintain profitability at a lower price point.",
+                correctRole: "Operations Manager",
+                explanation: "Operations Managers use financial data to make pricing and production decisions. Understanding cost structure (fixed vs. variable) is essential for competitive pricing strategies while maintaining profitability.",
+                concept: "Contribution Margin & Cost Structure - Shows profit per unit after variable costs, helping determine sustainable pricing and required sales volume."
+            },
+            {
+                title: "Marketing Channel Performance",
+                description: "You're running ads on 5 different platforms. Google Ads costs $10,000/month with CAC of $50, while Facebook costs $8,000/month with CAC of $80. You need to decide which channels to scale and which to cut.",
+                correctRole: "Marketing Manager",
+                explanation: "Marketing Managers must compare channel efficiency using metrics like CAC and ROI. They optimize budget allocation by identifying which channels deliver customers at the lowest cost with highest lifetime value.",
+                concept: "Channel ROI & CAC Comparison - Comparing customer acquisition costs across marketing channels to optimize budget allocation and maximize returns."
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let answered = 0;
+        let isFlipped = false;
+        let shuffledScenarios = [];
+
+        const roles = [
+            "Product Manager",
+            "Marketing Manager",
+            "Operations Manager",
+            "Entrepreneur/Founder",
+            "Non-Profit Manager"
+        ];
+
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function init() {
+            // Shuffle scenarios on load
+            shuffledScenarios = shuffleArray(scenarios);
+            displayScenario();
+            updateProgress();
+        }
+
+        function displayScenario() {
+            const scenario = shuffledScenarios[currentScenarioIndex];
+
+            document.getElementById('scenario-number').textContent = `Scenario ${currentScenarioIndex + 1}`;
+            document.getElementById('scenario-title').textContent = scenario.title;
+            document.getElementById('scenario-description').textContent = scenario.description;
+
+            // Create role buttons
+            const roleOptionsContainer = document.getElementById('role-options');
+            roleOptionsContainer.innerHTML = '';
+
+            roles.forEach(role => {
+                const button = document.createElement('button');
+                button.className = 'role-button';
+                button.textContent = role;
+                button.setAttribute('aria-label', `Select ${role} as your answer`);
+                button.onclick = () => handleAnswer(role);
+                roleOptionsContainer.appendChild(button);
+            });
+
+            // Reset card flip
+            document.getElementById('scenario-card').classList.remove('flipped');
+            isFlipped = false;
+
+            announceToScreenReader(`Scenario ${currentScenarioIndex + 1} of ${shuffledScenarios.length}: ${scenario.title}`);
+        }
+
+        function handleAnswer(selectedRole) {
+            if (isFlipped) return; // Prevent multiple answers
+
+            const scenario = shuffledScenarios[currentScenarioIndex];
+            const isCorrect = selectedRole === scenario.correctRole;
+
+            if (isCorrect) {
+                score++;
+            }
+            answered++;
+
+            // Disable all buttons
+            document.querySelectorAll('.role-button').forEach(btn => {
+                btn.disabled = true;
+            });
+
+            // Display feedback on back of card
+            displayFeedback(isCorrect, selectedRole, scenario);
+
+            // Flip card
+            document.getElementById('scenario-card').classList.add('flipped');
+            document.getElementById('card-back').className = `card-face card-back ${isCorrect ? 'correct' : 'incorrect'}`;
+            isFlipped = true;
+
+            updateProgress();
+            announceToScreenReader(isCorrect ? 'Correct!' : 'Incorrect. Review the explanation.');
+        }
+
+        function displayFeedback(isCorrect, selectedRole, scenario) {
+            const feedbackSection = document.querySelector('.feedback-section');
+
+            let feedbackHTML = `
+                <div class="feedback-status ${isCorrect ? 'correct' : 'incorrect'}">
+                    <span class="feedback-status-icon">${isCorrect ? '✓' : '✗'}</span>
+                    <span>${isCorrect ? 'Correct!' : 'Not Quite'}</span>
+                </div>
+
+                <div class="correct-role-box">
+                    <h3>Correct Role: ${scenario.correctRole}</h3>
+                    <p>${scenario.explanation}</p>
+
+                    <div class="accounting-concept">
+                        <strong>Key Accounting Concept:</strong>
+                        ${scenario.concept}
+                    </div>
+                </div>
+
+                ${!isCorrect ? `<p style="color: var(--light-text); font-style: italic; margin-top: 12px;">You selected: ${selectedRole}</p>` : ''}
+
+                <button class="next-button" onclick="nextScenario()" aria-label="${currentScenarioIndex < scenarios.length - 1 ? 'Next scenario' : 'View results'}">
+                    ${currentScenarioIndex < scenarios.length - 1 ? 'Next Scenario →' : 'View Results →'}
+                </button>
+            `;
+
+            feedbackSection.innerHTML = feedbackHTML;
+        }
+
+        function nextScenario() {
+            currentScenarioIndex++;
+
+            if (currentScenarioIndex < shuffledScenarios.length) {
+                displayScenario();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progressPercent = (answered / shuffledScenarios.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+            document.getElementById('progress-text').textContent = `Scenario ${currentScenarioIndex + 1} of ${shuffledScenarios.length}`;
+            document.getElementById('score-display').textContent = `Score: ${score}/${answered}`;
+
+            const progressBar = document.querySelector('.progress-bar');
+            progressBar.setAttribute('aria-valuenow', progressPercent);
+        }
+
+        function showResults() {
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('results-section').classList.add('visible');
+
+            const accuracy = Math.round((score / shuffledScenarios.length) * 100);
+
+            document.getElementById('final-score').textContent = `${score}/${shuffledScenarios.length}`;
+            document.getElementById('correct-count').textContent = score;
+            document.getElementById('incorrect-count').textContent = shuffledScenarios.length - score;
+            document.getElementById('accuracy-percent').textContent = `${accuracy}%`;
+
+            let message = '';
+            if (accuracy === 100) {
+                message = 'Perfect! You have excellent understanding of accounting roles.';
+            } else if (accuracy >= 75) {
+                message = 'Great job! You understand how accounting applies across roles.';
+            } else if (accuracy >= 50) {
+                message = 'Good effort! Review the concepts and try again.';
+            } else {
+                message = 'Keep learning! Accounting literacy is valuable in all roles.';
+            }
+
+            document.getElementById('score-message').textContent = message;
+            announceToScreenReader(`Quiz complete! You scored ${score} out of ${shuffledScenarios.length}, ${accuracy} percent.`);
+        }
+
+        function restartQuiz() {
+            currentScenarioIndex = 0;
+            score = 0;
+            answered = 0;
+            isFlipped = false;
+
+            // Re-shuffle scenarios for a new experience
+            shuffledScenarios = shuffleArray(scenarios);
+
+            document.getElementById('results-section').classList.remove('visible');
+            document.getElementById('quiz-section').style.display = 'block';
+
+            displayScenario();
+            updateProgress();
+
+            announceToScreenReader('Quiz restarted. Starting from scenario 1.');
+        }
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'visually-hidden';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

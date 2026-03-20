@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Determines the Winner?</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 940px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(3,70,56,0.08);
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 20px 32px;
+    text-align: center;
+  }
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.45em;
+    font-weight: 600;
+  }
+  .inf-header .subtitle {
+    color: var(--pale-sage);
+    font-size: 0.9em;
+    font-style: italic;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+
+  .intro-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    font-size: 0.88em;
+    color: var(--text-mid);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .grid {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  /* CARD */
+  .factor-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+  }
+  .factor-card:hover {
+    box-shadow: 0 2px 10px rgba(3,70,56,0.12);
+  }
+  .factor-card.open {
+    background: var(--ivey-green);
+    border-color: var(--ivey-green);
+  }
+
+  .card-front {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    min-height: 110px;
+    justify-content: center;
+  }
+  .factor-card.open .card-front {
+    display: none;
+  }
+
+  .card-icon {
+    font-size: 1.4em;
+    line-height: 1;
+  }
+  .card-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--ivey-green);
+    line-height: 1.3;
+  }
+  .card-hint {
+    font-size: 0.68em;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  .card-back {
+    display: none;
+    padding: 16px;
+  }
+  .factor-card.open .card-back {
+    display: block;
+  }
+  .back-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: var(--pale-sage);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .back-body {
+    font-size: 0.82em;
+    color: var(--cream);
+    line-height: 1.6;
+  }
+  .back-close {
+    margin-top: 10px;
+    font-size: 0.7em;
+    color: var(--pale-sage);
+    font-style: italic;
+    text-align: right;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    padding: 0 28px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 5px;
+    background: rgba(3,70,56,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--ivey-green);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-text {
+    font-size: 0.8em;
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+
+  /* INSIGHT BAR */
+  .insight-bar {
+    background: var(--pale-purple);
+    border-top: 1px solid #c8bdd8;
+    padding: 14px 28px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .insight-label {
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    white-space: nowrap;
+  }
+  .insight-divider {
+    width: 1px;
+    height: 26px;
+    background: rgba(3,70,56,0.2);
+    flex-shrink: 0;
+  }
+  .insight-content {
+    font-size: 0.88em;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="inf-header">
+    <h1>What Determines the Winner?</h1>
+    <div class="subtitle">Ten factors that influence which design becomes dominant</div>
+  </div>
+
+  <div class="intro-bar">
+    Click each card to reveal the explanation. Functional superiority matters, but it is only one of many factors at play.
+  </div>
+
+  <div class="grid" id="cardGrid">
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">📣</div>
+        <div class="card-title">Marketing Efforts</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Marketing Efforts</div>
+        <div class="back-body">Firms invest in persuading customers, partners, and the public to favour their design. Heavy marketing can create awareness and preference before the market has settled, tipping adoption in one direction early on.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">Functional Superiority</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Functional Superiority</div>
+        <div class="back-body">A design that performs better on the dimensions customers care about has an advantage. But this factor alone rarely determines the outcome. Many technically superior designs have lost to inferior ones when other factors were misaligned.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Network Effects</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Network Effects</div>
+        <div class="back-body">Some designs become more valuable as more people adopt them. A fax machine is useless if no one else has one. As one standard gains users, it becomes increasingly attractive relative to alternatives, creating a self-reinforcing cycle.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Switching Costs</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Switching Costs</div>
+        <div class="back-body">Once users invest time, money, or habits into a design, the cost of switching to an alternative rises. High switching costs reduce the likelihood of displacement even when a superior alternative exists.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Market Power</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Market Power</div>
+        <div class="back-body">A firm with significant market power can push its preferred design toward dominance through pricing, distribution control, or simply the weight of its existing customer relationships. The QWERTY story is partly a story about Remington's market power.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">⏱️</div>
+        <div class="card-title">Timing and First-Mover Advantage</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Timing and First-Mover Advantage</div>
+        <div class="back-body">Being first to market allows a firm to establish user habits, build infrastructure, and accumulate adoption before competitors arrive. Early adoption can snowball into lock-in before alternatives have had a chance to prove themselves.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🤝</div>
+        <div class="card-title">Alliances and Partnerships</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Alliances and Partnerships</div>
+        <div class="back-body">Firms that successfully recruit partners, suppliers, and distributors to support their design can accelerate adoption and outmanoeuvre technically superior rivals. Standards battles are often won or lost in the boardroom as much as in the market.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🏗️</div>
+        <div class="card-title">Past Infrastructure Commitments</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Past Infrastructure Commitments</div>
+        <div class="back-body">Existing infrastructure built around an older standard can make it easier for a new design that is compatible with it to gain adoption. A design that requires entirely new infrastructure faces a much higher barrier, regardless of its merits.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)">
+      <div class="card-front">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Complementary Business Models</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Complementary Business Models</div>
+        <div class="back-body">When firms in adjacent markets adopt a compatible standard, they drive broader adoption. The choices of video rental stores and the adult film industry played a significant role in the VHS versus Betamax outcome, tipping the balance well beyond what either format's technical merits could explain.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+    <div class="factor-card" onclick="toggleCard(this)" style="grid-column: 2;">
+      <div class="card-front">
+        <div class="card-icon">🏛️</div>
+        <div class="card-title">Government Edicts or Regulations</div>
+        <div class="card-hint">click to reveal</div>
+      </div>
+      <div class="card-back">
+        <div class="back-title">Government Edicts or Regulations</div>
+        <div class="back-body">Governments sometimes declare a winning standard directly. In the medical records industry, some governments have required all systems to be compatible with one another, effectively mandating a dominant design and bypassing market competition entirely.</div>
+        <div class="back-close">click to close</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="progress-bar-wrap">
+    <span class="progress-text" id="progressText">0 of 10 revealed</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+
+
+</div>
+
+<script>
+  let revealed = 0;
+  const total = 10;
+
+  function toggleCard(card) {
+    const isOpen = card.classList.contains('open');
+    card.classList.toggle('open', !isOpen);
+    revealed += isOpen ? -1 : 1;
+    revealed = Math.max(0, Math.min(revealed, total));
+    document.getElementById('progressFill').style.width = `${(revealed / total) * 100}%`;
+    document.getElementById('progressText').textContent =
+      revealed === total ? 'All 10 revealed' : `${revealed} of ${total} revealed`;
+  }
+</script>
+</body>
+</html>

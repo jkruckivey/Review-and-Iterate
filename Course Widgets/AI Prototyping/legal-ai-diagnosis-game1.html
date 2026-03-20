@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Consultant: Diagnose the Breakdown | Financial Services</title>
+<style>
+  :root {
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --ivey-green: #034638;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #666;
+    --border: #e0ddd6;
+    --success: #2d6a4f;
+    --error: #8b2020;
+    --success-bg: #eaf4ee;
+    --error-bg: #fdf0f0;
+    --warning-bg: #fef9ec;
+    --warning: #7a5c00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .game-header {
+    background: var(--ivey-green);
+    color: var(--cream);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .badge {
+    background: var(--pale-sage);
+    color: var(--ivey-green);
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .game-header h1 {
+    font-size: 1.4em;
+    font-weight: normal;
+    letter-spacing: 0.3px;
+  }
+
+  .game-header p {
+    font-size: 0.88em;
+    opacity: 0.8;
+    margin-top: 3px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--pale-sage);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-label {
+    font-size: 0.82em;
+    color: var(--ivey-green);
+    font-weight: bold;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(3,70,56,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--ivey-green);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .progress-steps {
+    display: flex;
+    gap: 6px;
+  }
+
+  .step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(3,70,56,0.2);
+    transition: background 0.3s;
+  }
+
+  .step-dot.active { background: var(--ivey-green); }
+  .step-dot.done { background: var(--ivey-green); opacity: 0.5; }
+
+  /* MAIN CONTENT */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 24px;
+  }
+
+  /* SCENARIO CARD */
+  .scenario-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .scenario-card.active { display: block; }
+
+  .card-top {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .card-accent {
+    width: 6px;
+    flex-shrink: 0;
+  }
+
+  .card-header {
+    padding: 18px 20px 14px;
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .incident-label {
+    font-size: 0.76em;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .card-header h2 {
+    font-size: 1.15em;
+    font-weight: normal;
+    color: var(--text-dark);
+  }
+
+  .card-header .subtitle {
+    font-size: 0.85em;
+    color: var(--text-light);
+    margin-top: 3px;
+  }
+
+  /* INCIDENT REPORT */
+  .incident-report {
+    margin: 20px 20px 0;
+    background: #f7f6f2;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .report-header {
+    background: var(--ivey-green);
+    color: var(--cream);
+    padding: 8px 16px;
+    font-size: 0.78em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .report-body {
+    padding: 16px;
+    font-size: 0.88em;
+  }
+
+  .report-meta {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .meta-item { color: var(--text-light); }
+  .meta-item strong { color: var(--text-dark); }
+
+  .report-section {
+    margin-bottom: 12px;
+  }
+
+  .report-section-label {
+    font-size: 0.78em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 5px;
+  }
+
+  .ai-output {
+    background: var(--white);
+    border-left: 3px solid var(--pale-blue);
+    padding: 10px 14px;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    color: var(--text-mid);
+    font-size: 0.92em;
+    line-height: 1.55;
+  }
+
+  .problem-flags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .flag {
+    background: #fdecea;
+    color: #8b2020;
+    border: 1px solid #f5c6c6;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 0.78em;
+    font-weight: bold;
+  }
+
+  /* DIAGNOSIS SECTION */
+  .diagnosis-section {
+    padding: 20px;
+  }
+
+  .diagnosis-section h3 {
+    font-size: 0.95em;
+    font-weight: bold;
+    margin-bottom: 14px;
+    color: var(--ivey-green);
+    letter-spacing: 0.3px;
+  }
+
+  /* QUESTION BLOCKS */
+  .question-block {
+    margin-bottom: 18px;
+  }
+
+  .question-label {
+    font-size: 0.88em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .option-btn {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.86em;
+    color: var(--text-dark);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: inherit;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--pale-sage);
+    background: #f0f4f3;
+  }
+
+  .option-btn.selected {
+    border-color: var(--ivey-green);
+    background: #e8f0ee;
+    color: var(--ivey-green);
+    font-weight: bold;
+  }
+
+  .option-btn.correct {
+    border-color: var(--success);
+    background: var(--success-bg);
+    color: var(--success);
+  }
+
+  .option-btn.incorrect {
+    border-color: var(--error);
+    background: var(--error-bg);
+    color: var(--error);
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  /* FEEDBACK BOX */
+  .feedback-box {
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    font-size: 0.88em;
+    display: none;
+    line-height: 1.55;
+  }
+
+  .feedback-box.correct-fb {
+    background: var(--success-bg);
+    border: 1px solid #b7dfc8;
+    color: var(--success);
+  }
+
+  .feedback-box.incorrect-fb {
+    background: var(--error-bg);
+    border: 1px solid #f5c6c6;
+    color: var(--error);
+  }
+
+  .feedback-box.neutral-fb {
+    background: var(--warning-bg);
+    border: 1px solid #f0e0a0;
+    color: var(--warning);
+  }
+
+  .feedback-icon { font-size: 1.1em; margin-right: 6px; }
+
+  .feedback-box strong { display: block; margin-bottom: 4px; font-size: 0.95em; }
+
+  /* SUBMIT / NEXT BUTTONS */
+  .btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    padding: 10px 22px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary {
+    background: var(--ivey-green);
+    color: var(--cream);
+  }
+
+  .btn-primary:hover:not(:disabled) { background: #023025; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--ivey-green);
+    color: var(--ivey-green);
+  }
+
+  .btn-secondary:hover { background: #e8f0ee; }
+
+  /* RED HERRING styling */
+  .red-herring-clue {
+    background: var(--warning-bg);
+    border: 1px solid #f0e0a0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.84em;
+    color: var(--warning);
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  /* APPLY SCENARIO (final step) */
+  .apply-scenario {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .apply-scenario.active { display: block; }
+
+  .apply-header {
+    background: var(--pale-purple);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .apply-header .badge-apply {
+    font-size: 0.76em;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #4a3a6a;
+    margin-bottom: 4px;
+  }
+
+  .apply-header h2 {
+    font-size: 1.1em;
+    font-weight: normal;
+    color: #2a1a4a;
+  }
+
+  .apply-body {
+    padding: 20px;
+  }
+
+  .scenario-brief {
+    background: #f7f6f2;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-size: 0.88em;
+  }
+
+  .scenario-brief h4 {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--ivey-green);
+  }
+
+  .req-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .req-list li {
+    padding: 4px 0;
+    padding-left: 18px;
+    position: relative;
+    color: var(--text-mid);
+  }
+
+  .req-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--pale-sage);
+    font-weight: bold;
+  }
+
+  .assign-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86em;
+    margin-bottom: 16px;
+  }
+
+  .assign-table th {
+    background: var(--ivey-green);
+    color: var(--cream);
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 0.82em;
+    letter-spacing: 0.5px;
+  }
+
+  .assign-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .assign-table tr:nth-child(even) td { background: #f9f8f4; }
+
+  .assign-select {
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 0.9em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .assign-select:focus {
+    outline: none;
+    border-color: var(--ivey-green);
+  }
+
+  /* FINAL RESULTS */
+  .results-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .results-panel.active { display: block; }
+
+  .results-header {
+    background: var(--ivey-green);
+    color: var(--cream);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .results-header h2 { font-size: 1.3em; font-weight: normal; }
+  .results-header p { font-size: 0.88em; opacity: 0.8; margin-top: 4px; }
+
+  .score-display {
+    text-align: center;
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .score-number {
+    font-size: 3em;
+    font-weight: bold;
+    color: var(--ivey-green);
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 0.88em;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  .results-breakdown {
+    padding: 20px 24px;
+  }
+
+  .results-breakdown h3 {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: var(--ivey-green);
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88em;
+    gap: 12px;
+  }
+
+  .result-row:last-child { border-bottom: none; }
+
+  .result-name { color: var(--text-mid); flex: 1; }
+
+  .result-verdict {
+    font-weight: bold;
+    font-size: 0.82em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .verdict-correct { background: var(--success-bg); color: var(--success); }
+  .verdict-partial { background: var(--warning-bg); color: var(--warning); }
+  .verdict-incorrect { background: var(--error-bg); color: var(--error); }
+
+  .key-insight {
+    background: linear-gradient(135deg, #e8f0ee, #edf4f8);
+    border: 1px solid var(--pale-sage);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 20px 24px;
+    font-size: 0.88em;
+    line-height: 1.6;
+  }
+
+  .key-insight strong {
+    display: block;
+    color: var(--ivey-green);
+    margin-bottom: 6px;
+    font-size: 0.95em;
+  }
+
+  .restart-row {
+    padding: 16px 24px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  /* TECHNIQUE TAG */
+  .technique-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  .tag-ft { background: var(--pale-sage); color: var(--ivey-green); }
+  .tag-rag { background: var(--pale-blue); color: #1a5c60; }
+  .tag-both { background: var(--pale-purple); color: #3a2a6a; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .game-header { padding: 16px 18px; }
+    .container { padding: 18px 14px; }
+    .report-meta { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="game-header">
+  <div>
+    <div class="badge">In Practice: Diagnosing Real-World Failures</div>
+    <h1>Diagnose the Breakdown</h1>
+    <p>A wealth management firm's AI assistant is failing. Your job: find out why and prescribe the fix.</p>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar-wrap">
+  <span class="progress-label">PROGRESS</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-steps">
+    <div class="step-dot active" id="dot0"></div>
+    <div class="step-dot" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ======================== INCIDENT 1 ======================== -->
+  <div class="scenario-card active" id="scenario-0">
+
+    <div class="card-top">
+      <div class="card-accent" style="background: var(--pale-blue);"></div>
+      <div class="card-header">
+        <div class="incident-label" style="color: #1a5c60;">Incident Report #1</div>
+        <h2>Harrington Private Wealth: Communication Problems</h2>
+        <div class="subtitle">The AI gives accurate information, but something is clearly off in how it communicates with clients.</div>
+      </div>
+    </div>
+
+    <div class="incident-report">
+      <div class="report-header">
+        <span>AI Output: Sample Response</span>
+        <span style="opacity:0.7;">Query: Portfolio rebalancing options after rate change</span>
+      </div>
+      <div class="report-body">
+        <div class="report-meta">
+          <div class="meta-item"><strong>Client:</strong> Harrington Private Wealth</div>
+          <div class="meta-item"><strong>Technique Used:</strong> RAG only</div>
+          <div class="meta-item"><strong>Status:</strong> <span style="color:#8b2020; font-weight:bold;">Failing</span></div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">AI Response (Actual)</div>
+          <div class="ai-output">
+            "Hey! So with the Bank of Canada rate change last week, you've basically got a few options for rebalancing. Moving some stuff into shorter-duration bonds is probably the most common thing people do, and also you might want to look at your equity exposure which could be kind of risky right now. Oh and dividend-paying stocks are super relevant here too! Does that help?"
+          </div>
+          <div class="problem-flags">
+            <span class="flag">Casual tone ("Hey!", "kind of risky", "super relevant")</span>
+            <span class="flag">Vague, imprecise language ("some stuff")</span>
+            <span class="flag">No regulatory or compliance framing</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">What's Interesting</div>
+          <p style="color: var(--text-mid); font-size:0.92em;">The financial information itself is accurate and current, correctly referencing last week's Bank of Canada rate decision. But the communication style is completely wrong for a wealth management context serving high-net-worth clients.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagnosis-section">
+      <h3>Your Diagnosis</h3>
+
+      <div class="question-block">
+        <div class="question-label">Q1: What caused this failure?</div>
+        <div class="options-grid" id="q0-cause">
+          <button class="option-btn" onclick="selectOption('q0-cause', this, false)" data-val="a">The AI wasn't connected to any legal database</button>
+          <button class="option-btn" onclick="selectOption('q0-cause', this, true)" data-val="b">RAG retrieves current information but doesn't control how the AI communicates</button>
+          <button class="option-btn" onclick="selectOption('q0-cause', this, false)" data-val="c">The model was trained on outdated legal data</button>
+          <button class="option-btn" onclick="selectOption('q0-cause', this, false)" data-val="d">The citation format was wrong because RAG pulled bad sources</button>
+        </div>
+        <div class="feedback-box" id="fb-q0-cause"></div>
+      </div>
+
+      <div class="question-block" id="q0-fix-block" style="display:none;">
+        <div class="question-label">Q2: What's your prescription?</div>
+        <div class="options-grid" id="q0-fix">
+          <button class="option-btn" onclick="selectOption('q0-fix', this, false)" data-val="a">Replace RAG with a bigger model</button>
+          <button class="option-btn" onclick="selectOption('q0-fix', this, true)" data-val="b">Add fine-tuning on legal style examples alongside RAG</button>
+          <button class="option-btn" onclick="selectOption('q0-fix', this, false)" data-val="c">Remove RAG and fine-tune the model on legal documents only</button>
+          <button class="option-btn" onclick="selectOption('q0-fix', this, false)" data-val="d">Adjust the RAG retrieval settings to pull more formal sources</button>
+        </div>
+        <div class="feedback-box" id="fb-q0-fix"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-0" onclick="nextScenario(0)" disabled>Next Incident &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== INCIDENT 2 ======================== -->
+  <div class="scenario-card" id="scenario-1">
+
+    <div class="card-top">
+      <div class="card-accent" style="background: var(--pale-sage);"></div>
+      <div class="card-header">
+        <div class="incident-label" style="color: var(--ivey-green);">Incident Report #2</div>
+        <h2>Caldwell Asset Management: Knowledge Problems</h2>
+        <div class="subtitle">The AI communicates perfectly, but portfolio managers are getting nervous about its recommendations.</div>
+      </div>
+    </div>
+
+    <div class="incident-report">
+      <div class="report-header">
+        <span>AI Output: Sample Response</span>
+        <span style="opacity:0.7;">Query: ESG disclosure requirements for institutional clients</span>
+      </div>
+      <div class="report-body">
+        <div class="report-meta">
+          <div class="meta-item"><strong>Client:</strong> Caldwell Asset Management</div>
+          <div class="meta-item"><strong>Technique Used:</strong> Fine-tuning only</div>
+          <div class="meta-item"><strong>Status:</strong> <span style="color:#8b2020; font-weight:bold;">Failing</span></div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">AI Response (Actual)</div>
+          <div class="ai-output">
+            "Pursuant to the Canadian Securities Administrators' guidance on ESG-related investment fund disclosure, institutional clients are required to receive documentation outlining the fund's ESG approach, including material risk factors and proxy voting policies. These requirements reflect the CSA's position that ESG disclosure should be consistent with existing continuous disclosure obligations. This framework represents the current standard for institutional ESG reporting in Canada."
+          </div>
+          <div class="problem-flags">
+            <span class="flag">References superseded CSA guidance</span>
+            <span class="flag">Missing 2024 mandatory climate disclosure rules</span>
+            <span class="flag">Knowledge frozen at training cutoff</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">What's Interesting</div>
+          <p style="color: var(--text-mid); font-size:0.92em;">The tone is impeccable, the structure is professional, and the regulatory framing sounds authoritative. But the substance is dangerously incomplete: the CSA introduced significantly updated mandatory climate-related disclosure requirements in 2024, and this AI doesn't know that.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagnosis-section">
+      <h3>Your Diagnosis</h3>
+
+      <div class="question-block">
+        <div class="question-label">Q1: What caused this failure?</div>
+        <div class="options-grid" id="q1-cause">
+          <button class="option-btn" onclick="selectOption('q1-cause', this, false)" data-val="a">The fine-tuning examples used poor-quality legal writing</button>
+          <button class="option-btn" onclick="selectOption('q1-cause', this, false)" data-val="b">The model wasn't fine-tuned on enough examples</button>
+          <button class="option-btn" onclick="selectOption('q1-cause', this, true)" data-val="c">Fine-tuning bakes knowledge into the model weights at training time, which means it can't access developments that happened afterward</button>
+          <button class="option-btn" onclick="selectOption('q1-cause', this, false)" data-val="d">Force majeure is too complex a topic for AI to handle</button>
+        </div>
+        <div class="feedback-box" id="fb-q1-cause"></div>
+      </div>
+
+      <div class="question-block" id="q1-fix-block" style="display:none;">
+        <div class="question-label">Q2: What's your prescription?</div>
+        <div class="options-grid" id="q1-fix">
+          <button class="option-btn" onclick="selectOption('q1-fix', this, false)" data-val="a">Retrain the model quarterly with new legal data</button>
+          <button class="option-btn" onclick="selectOption('q1-fix', this, true)" data-val="b">Keep the fine-tuning for style and add RAG connected to a current legal database</button>
+          <button class="option-btn" onclick="selectOption('q1-fix', this, false)" data-val="c">Switch entirely to a larger foundation model with a more recent training cutoff</button>
+          <button class="option-btn" onclick="selectOption('q1-fix', this, false)" data-val="d">Add a disclaimer to all AI outputs about knowledge limitations</button>
+        </div>
+        <div class="feedback-box" id="fb-q1-fix"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-1" onclick="nextScenario(1)" disabled>Next Incident &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== INCIDENT 3 (RED HERRING) ======================== -->
+  <div class="scenario-card" id="scenario-2">
+
+    <div class="card-top">
+      <div class="card-accent" style="background: var(--pale-purple);"></div>
+      <div class="card-header">
+        <div class="incident-label" style="color: #4a3a6a;">Incident Report #3</div>
+        <h2>Hartley &amp; Osei Capital: Something Else Entirely</h2>
+        <div class="subtitle">This firm did everything you recommended. And it still isn't working.</div>
+      </div>
+    </div>
+
+    <div class="incident-report">
+      <div class="report-header">
+        <span>AI Output: Sample Response</span>
+        <span style="opacity:0.7;">Query: Suitability assessment for alternative investments</span>
+      </div>
+      <div class="report-body">
+        <div class="report-meta">
+          <div class="meta-item"><strong>Client:</strong> Hartley &amp; Osei Capital</div>
+          <div class="meta-item"><strong>Technique Used:</strong> Fine-tuning + RAG</div>
+          <div class="meta-item"><strong>Status:</strong> <span style="color:#8b2020; font-weight:bold;">Failing</span></div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">AI Response (Actual)</div>
+          <div class="ai-output">
+            "Pursuant to applicable suitability obligations, alternative investments require assessment of client risk tolerance, liquidity needs, and investment horizon. As noted in our Q3 internal investment committee memo, alternative allocations above 20% require additional sign-off. Per the portfolio review conducted March 2023, clients in the growth category are generally suitable for moderate alternative exposure, subject to advisor discretion."
+          </div>
+          <div class="problem-flags">
+            <span class="flag">Cites internal memo as regulatory authority</span>
+            <span class="flag">References internal portfolio review as industry standard</span>
+            <span class="flag">Training data quality issue</span>
+          </div>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label">What the Firm Tells You</div>
+          <p style="color: var(--text-mid); font-size:0.92em;">They used fine-tuning with RAG exactly as recommended. But when building their fine-tuning dataset, they pulled everything from their internal document server: internal investment committee memos, advisor emails, draft client letters, and internal policy documents, alongside actual regulatory guidance. The RAG knowledge base was built from the same mixed source.</p>
+          <div class="red-herring-clue">
+            <span>⚠️</span>
+            <span>This one is different. The technique combination is right. Something else went wrong. Can you spot it?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diagnosis-section">
+      <h3>Your Diagnosis</h3>
+
+      <div class="question-block">
+        <div class="question-label">Q1: What's the real cause of this failure?</div>
+        <div class="options-grid" id="q2-cause">
+          <button class="option-btn" onclick="selectOption('q2-cause', this, false)" data-val="a">They needed a third technique in addition to fine-tuning and RAG</button>
+          <button class="option-btn" onclick="selectOption('q2-cause', this, false)" data-val="b">Fine-tuning and RAG are fundamentally incompatible</button>
+          <button class="option-btn" onclick="selectOption('q2-cause', this, true)" data-val="c">The technique choice was correct, but both data sources were contaminated with low-quality, non-authoritative content</button>
+          <button class="option-btn" onclick="selectOption('q2-cause', this, false)" data-val="d">The model wasn't large enough to handle both techniques simultaneously</button>
+        </div>
+        <div class="feedback-box" id="fb-q2-cause"></div>
+      </div>
+
+      <div class="question-block" id="q2-fix-block" style="display:none;">
+        <div class="question-label">Q2: What principle does this expose?</div>
+        <div class="options-grid" id="q2-fix">
+          <button class="option-btn" onclick="selectOption('q2-fix', this, false)" data-val="a">Fine-tuning should always come before RAG in implementation order</button>
+          <button class="option-btn" onclick="selectOption('q2-fix', this, true)" data-val="b">Choosing the right techniques only works if the data quality behind them is equally rigorous</button>
+          <button class="option-btn" onclick="selectOption('q2-fix', this, false)" data-val="c">RAG databases should never include any internal documents</button>
+          <button class="option-btn" onclick="selectOption('q2-fix', this, false)" data-val="d">Technique selection is more important than data curation</button>
+        </div>
+        <div class="feedback-box" id="fb-q2-fix"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-2" onclick="nextScenario(2)" disabled>Apply Your Thinking &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== APPLY SCENARIO ======================== -->
+  <div class="apply-scenario" id="scenario-3">
+    <div class="apply-header">
+      <div class="badge-apply">Final Challenge: Apply Your Thinking</div>
+      <h2>A new client needs your recommendation. No hints this time.</h2>
+    </div>
+    <div class="apply-body">
+
+      <div class="scenario-brief">
+        <h4>New Client Brief: NorthPoint Insurance AI Assistant</h4>
+        <p style="color: var(--text-mid); margin-bottom: 10px;">A national insurance company wants an AI assistant that can:</p>
+        <ul class="req-list">
+          <li>Always use precise actuarial and insurance terminology with a formal, trustworthy tone appropriate for claims and underwriting contexts</li>
+          <li>Reference current OSFI guidelines and provincial insurance regulations</li>
+          <li>Follow a specific structured response format (client situation, applicable policy, recommended next step)</li>
+          <li>Provide accurate information about current premium benchmarks and recent claims trends in the market</li>
+        </ul>
+      </div>
+
+      <p style="font-size: 0.9em; color: var(--text-mid); margin-bottom: 16px; font-weight: bold;">Assign each requirement to the technique best suited to handle it:</p>
+
+      <table class="assign-table">
+        <thead>
+          <tr>
+            <th>Requirement</th>
+            <th>Best handled by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Precise actuarial terminology and formal, trustworthy tone</td>
+            <td>
+              <select class="assign-select" id="apply-1" onchange="checkApply()">
+                <option value="">Select technique</option>
+                <option value="ft">Fine-tuning</option>
+                <option value="rag">RAG</option>
+                <option value="both">Either could work</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Current OSFI guidelines and provincial insurance regulations</td>
+            <td>
+              <select class="assign-select" id="apply-2" onchange="checkApply()">
+                <option value="">Select technique</option>
+                <option value="ft">Fine-tuning</option>
+                <option value="rag">RAG</option>
+                <option value="both">Either could work</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Structured response format (situation / policy / next step)</td>
+            <td>
+              <select class="assign-select" id="apply-3" onchange="checkApply()">
+                <option value="">Select technique</option>
+                <option value="ft">Fine-tuning</option>
+                <option value="rag">RAG</option>
+                <option value="both">Either could work</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Current premium benchmarks and recent claims trends</td>
+            <td>
+              <select class="assign-select" id="apply-4" onchange="checkApply()">
+                <option value="">Select technique</option>
+                <option value="ft">Fine-tuning</option>
+                <option value="rag">RAG</option>
+                <option value="both">Either could work</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="feedback-box" id="fb-apply" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-apply" onclick="submitApply()" disabled>Submit My Recommendation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== RESULTS ======================== -->
+  <div class="results-panel" id="results">
+    <div class="results-header">
+      <h2>Consultation Complete</h2>
+      <p>Here's how your diagnoses held up.</p>
+    </div>
+    <div class="score-display">
+      <div class="score-number" id="scoreNumber">0/5</div>
+      <div class="score-label">Correct diagnoses and prescriptions</div>
+    </div>
+    <div class="results-breakdown">
+      <h3>Breakdown</h3>
+      <div class="result-row">
+        <span class="result-name">Incident #1: Harrington Private Wealth (Cause)</span>
+        <span class="result-verdict" id="rv-q0-cause"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">Incident #1: Harrington Private Wealth (Prescription)</span>
+        <span class="result-verdict" id="rv-q0-fix"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">Incident #2: Caldwell Asset Management (Cause)</span>
+        <span class="result-verdict" id="rv-q1-cause"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">Incident #2: Caldwell Asset Management (Prescription)</span>
+        <span class="result-verdict" id="rv-q1-fix"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">Incident #3: Hartley &amp; Osei Capital (Cause)</span>
+        <span class="result-verdict" id="rv-q2-cause"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">Incident #3: Hartley &amp; Osei Capital (Principle)</span>
+        <span class="result-verdict" id="rv-q2-fix"></span>
+      </div>
+      <div class="result-row">
+        <span class="result-name">MediCom Apply Challenge</span>
+        <span class="result-verdict" id="rv-apply"></span>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      <strong>The pattern across all three incidents:</strong>
+      Choosing the right technique is about understanding what each one actually controls. Fine-tuning shapes <em>how</em> the model behaves: its voice, tone, terminology, and structure. RAG shapes <em>what</em> the model knows at the moment of a query. These are distinct jobs. And as Hartley &amp; Osei Capital showed, even the right technique choice fails without rigorous data behind it.
+    </div>
+
+    <div class="restart-row">
+      <button class="btn btn-secondary" onclick="restartGame()">Try Again</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  // State tracking
+  const answers = {};
+  let currentScenario = 0;
+  const totalScenarios = 4;
+
+  const feedback = {
+    'q0-cause': {
+      correct: 'q0-cause-b',
+      messages: {
+        'q0-cause-b': { type: 'correct', title: 'Exactly right.', text: 'RAG is a retrieval mechanism: it pulls relevant documents and data at query time and gives the model access to current information. But it has no influence over how the model responds stylistically. Tone, voice, and professional register are behavioral patterns that come from training, not retrieval.' },
+        'q0-cause-a': { type: 'incorrect', title: 'Not quite.', text: 'The AI clearly did access current information: it correctly referenced last week\'s Bank of Canada rate decision. The data connection was working. The problem is that retrieval and communication style are completely separate things.' },
+        'q0-cause-c': { type: 'incorrect', title: 'Look at the output again.', text: 'The AI referenced a rate change from last week. The knowledge is current. The issue is not what it knows, but how it communicates that knowledge to high-net-worth clients.' },
+        'q0-cause-d': { type: 'incorrect', title: 'Not quite.', text: 'The imprecise language is a symptom of the AI\'s casual communication style, not a problem with the sources RAG retrieved. The fix isn\'t in the retrieval settings.' }
+      }
+    },
+    'q0-fix': {
+      correct: 'q0-fix-b',
+      messages: {
+        'q0-fix-b': { type: 'correct', title: 'Right prescription.', text: 'This is the core insight: RAG handles the "what" (current market data, rate decisions, regulatory updates) and fine-tuning handles the "how" (formal tone, precise terminology, compliant communication style). Running both in parallel addresses both dimensions of the requirement.' },
+        'q0-fix-a': { type: 'incorrect', title: 'Model size won\'t fix this.', text: 'A bigger model would still default to the same casual communication patterns. Model size and professional register are not directly related. The issue is that the model has no examples of the specific style required for wealth management.' },
+        'q0-fix-c': { type: 'incorrect', title: 'That would create a different failure.', text: 'Removing RAG would give you consistent professional style but lock the model\'s knowledge at the training cutoff. You\'d be trading a style problem for a knowledge problem, which is actually Incident #2.' },
+        'q0-fix-d': { type: 'incorrect', title: 'RAG settings control retrieval, not output style.', text: 'Retrieval settings affect which documents get pulled and how many. They don\'t shape how the model writes its response. Professional communication style is a behavioral quality that requires training examples.' }
+      }
+    },
+    'q1-cause': {
+      correct: 'q1-cause-c',
+      messages: {
+        'q1-cause-c': { type: 'correct', title: 'Exactly right.', text: 'This is the fundamental limitation of fine-tuning alone. Fine-tuning encodes knowledge into model weights during training, and those weights don\'t update after deployment. In financial services, where regulations, compliance requirements, and market frameworks evolve continuously, this is a critical gap.' },
+        'q1-cause-a': { type: 'incorrect', title: 'The output actually shows excellent writing quality.', text: 'The tone is professional, the structure is authoritative, and the regulatory framing sounds exactly right. This is not a training data quality problem. The fine-tuning worked as intended. The limitation is temporal, not qualitative.' },
+        'q1-cause-b': { type: 'incorrect', title: 'Not a quantity problem.', text: 'The stylistic output is excellent, which suggests the fine-tuning dataset was sufficient. Adding more examples of the same type wouldn\'t address a fundamentally different problem: the model has no way to access regulatory developments that occurred after training.' },
+        'q1-cause-d': { type: 'incorrect', title: 'That\'s not the issue here.', text: 'AI handles complex regulatory topics routinely. The problem is specific: fine-tuning freezes knowledge at a point in time, and ESG disclosure requirements have evolved significantly since the model was trained.' }
+      }
+    },
+    'q1-fix': {
+      correct: 'q1-fix-b',
+      messages: {
+        'q1-fix-b': { type: 'correct', title: 'The right combination.', text: 'Keep the fine-tuning: it\'s doing its job, producing professional, well-structured regulatory communication. Add RAG connected to a current compliance database so the model retrieves up-to-date CSA guidance, OSFI directives, and regulatory updates at query time.' },
+        'q1-fix-a': { type: 'incorrect', title: 'Retraining is expensive and still creates a gap.', text: 'Quarterly retraining means the model is always months out of date at minimum, which is a meaningful lag when regulators can issue updated guidance at any time. RAG addresses this continuously, without retraining costs.' },
+        'q1-fix-c': { type: 'incorrect', title: 'A newer model still has a training cutoff.', text: 'Every model has a knowledge cutoff date. Switching to a larger or more recent model doesn\'t solve the fundamental issue: static weights can\'t reflect ongoing regulatory developments. RAG is the right structural solution.' },
+        'q1-fix-d': { type: 'incorrect', title: 'A disclaimer doesn\'t fix the problem.', text: 'Telling clients the AI might be out of date is a liability concern, not a solution. In regulated financial services, producing confidently-worded but outdated compliance guidance carries real regulatory and reputational risk.' }
+      }
+    },
+    'q2-cause': {
+      correct: 'q2-cause-c',
+      messages: {
+        'q2-cause-c': { type: 'correct', title: 'Well spotted.', text: 'This is the red herring: the technique combination was correct. The failure came from data quality. When fine-tuning data includes internal investment memos and advisor emails alongside authoritative regulatory guidance, the model learns to treat all of it as equally valid. The RAG database had the same problem, retrieving internal documents as if they were regulatory sources.' },
+        'q2-cause-a': { type: 'incorrect', title: 'No third technique would solve this.', text: 'Fine-tuning plus RAG is the right combination. The problem isn\'t the architecture, it\'s what that architecture was built on. Adding another technique on top of poor-quality data would just amplify the problems.' },
+        'q2-cause-b': { type: 'incorrect', title: 'Fine-tuning and RAG work together routinely.', text: 'They are complementary by design, not competing. Many high-performing financial AI systems use both. The failure here has nothing to do with the combination itself.' },
+        'q2-cause-d': { type: 'incorrect', title: 'Model size isn\'t the variable here.', text: 'The problem is data quality, not model capacity. A larger model trained and grounded in the same mixed data would produce the same confused outputs, confidently citing internal memos as regulatory standards.' }
+      }
+    },
+    'q2-fix': {
+      correct: 'q2-fix-b',
+      messages: {
+        'q2-fix-b': { type: 'correct', title: 'Exactly right, and this is the key takeaway from Incident #3.', text: 'Strategic technique selection is necessary but not sufficient. Every technique is only as reliable as the data behind it. Fine-tuning on contaminated examples teaches contaminated behavior. RAG retrieving internal memos returns internal memos as answers. Rigorous data curation, separating authoritative regulatory sources from internal documents, is the other half of the equation.' },
+        'q2-fix-a': { type: 'incorrect', title: 'Implementation order isn\'t the principle here.', text: 'You can fine-tune before or after setting up RAG in various workflows. That\'s an implementation detail. The principle this incident reveals is about the foundation both techniques rest on.' },
+        'q2-fix-c': { type: 'incorrect', title: 'Internal documents aren\'t inherently problematic.', text: 'Vetted internal compliance policies, properly attributed investment guidelines, and approved advisor training materials could be valuable RAG sources. The issue is mixing authoritative and non-authoritative sources without distinguishing between them.' },
+        'q2-fix-d': { type: 'incorrect', title: 'This incident is actually showing the opposite.', text: 'Hartley &amp; Osei got the technique selection right. What failed was the data. That\'s the argument that data quality matters just as much as, if not more than, technique selection.' }
+      }
+    }
+  };
+
+  const applyAnswers = { 'apply-1': 'ft', 'apply-2': 'rag', 'apply-3': 'ft', 'apply-4': 'rag' };
+
+  function selectOption(groupId, btn, isCorrect) {
+    const group = document.getElementById(groupId);
+    const btns = group.querySelectorAll('.option-btn');
+    btns.forEach(b => { b.classList.remove('selected', 'correct', 'incorrect'); b.disabled = true; });
+
+    const fbEl = document.getElementById('fb-' + groupId);
+    const cfg = feedback[groupId];
+    const val = btn.getAttribute('data-val');
+    const key = groupId + '-' + val;
+    const msg = cfg.messages[key];
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      fbEl.className = 'feedback-box correct-fb';
+      answers[groupId] = true;
+    } else {
+      btn.classList.add('incorrect');
+      // Show correct answer
+      btns.forEach(b => {
+        if (b.getAttribute('data-val') === cfg.correct.split('-').pop()) {
+          b.classList.add('correct');
+        }
+      });
+      fbEl.className = 'feedback-box incorrect-fb';
+      answers[groupId] = false;
+    }
+
+    fbEl.innerHTML = '<span class="feedback-icon">' + (isCorrect ? '✓' : '✗') + '</span><strong>' + msg.title + '</strong>' + msg.text;
+    fbEl.style.display = 'block';
+
+    // Reveal next question or enable next button
+    const scenario = groupId.charAt(1);
+    if (groupId.endsWith('cause')) {
+      setTimeout(() => {
+        const fixBlock = document.getElementById('q' + scenario + '-fix-block');
+        if (fixBlock) fixBlock.style.display = 'block';
+      }, 400);
+    } else if (groupId.endsWith('fix')) {
+      setTimeout(() => {
+        const nextBtn = document.getElementById('btn-' + scenario);
+        if (nextBtn) nextBtn.disabled = false;
+      }, 400);
+    }
+  }
+
+  function nextScenario(current) {
+    document.getElementById('scenario-' + current).classList.remove('active');
+    const next = current + 1;
+    const nextEl = document.getElementById('scenario-' + next);
+    if (nextEl) {
+      nextEl.classList.add('active');
+      nextEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    currentScenario = next;
+    updateProgress();
+  }
+
+  function checkApply() {
+    const allFilled = ['apply-1','apply-2','apply-3','apply-4'].every(id => document.getElementById(id).value !== '');
+    document.getElementById('btn-apply').disabled = !allFilled;
+  }
+
+  function submitApply() {
+    let correct = 0;
+    let total = 4;
+    const selects = ['apply-1','apply-2','apply-3','apply-4'];
+    selects.forEach(id => {
+      const el = document.getElementById(id);
+      el.disabled = true;
+      if (el.value === applyAnswers[id]) correct++;
+    });
+
+    const fbEl = document.getElementById('fb-apply');
+    const applyMessages = {
+      'apply-1': { req: 'Clinical terminology and tone', correct: 'Fine-tuning', yours: document.getElementById('apply-1').options[document.getElementById('apply-1').selectedIndex].text },
+      'apply-2': { req: 'Current Health Canada regulations', correct: 'RAG', yours: document.getElementById('apply-2').options[document.getElementById('apply-2').selectedIndex].text },
+      'apply-3': { req: 'Structured response format', correct: 'Fine-tuning', yours: document.getElementById('apply-3').options[document.getElementById('apply-3').selectedIndex].text },
+      'apply-4': { req: 'Latest drug interaction data', correct: 'RAG', yours: document.getElementById('apply-4').options[document.getElementById('apply-4').selectedIndex].text }
+    };
+
+    let breakdown = '<strong>' + correct + ' of 4 correct.</strong>';
+
+    if (correct === 4) {
+      fbEl.className = 'feedback-box correct-fb';
+      breakdown += ' Perfect. The logic holds across domains: tone, voice, and structure are fine-tuning territory because they\'re behavioral. Regulatory guidelines and current market data are RAG territory because they change continuously.';
+    } else if (correct >= 2) {
+      fbEl.className = 'feedback-box neutral-fb';
+      breakdown += ' Good instincts. The ones to review: <span class="technique-tag tag-ft">Fine-tuning</span> controls how the model behaves (tone, format, terminology). <span class="technique-tag tag-rag">RAG</span> controls what it knows at query time (regulations, current benchmarks). Ask yourself whether each requirement is about behavior or about current knowledge.';
+    } else {
+      fbEl.className = 'feedback-box incorrect-fb';
+      breakdown += ' The core distinction: <span class="technique-tag tag-ft">Fine-tuning</span> is for behavioral qualities baked in through training (tone, terminology, format). <span class="technique-tag tag-rag">RAG</span> is for knowledge that changes over time and needs to be current at the moment of the query.';
+    }
+
+    fbEl.innerHTML = breakdown;
+    fbEl.style.display = 'block';
+
+    answers['apply'] = correct >= 3 ? 'strong' : correct >= 2 ? 'partial' : 'weak';
+
+    setTimeout(() => {
+      document.getElementById('btn-apply').textContent = 'See Full Results';
+      document.getElementById('btn-apply').onclick = showResults;
+      document.getElementById('btn-apply').disabled = false;
+    }, 500);
+  }
+
+  function showResults() {
+    document.getElementById('scenario-3').classList.remove('active');
+    const results = document.getElementById('results');
+    results.classList.add('active');
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Score
+    let score = 0;
+    const allKeys = ['q0-cause','q0-fix','q1-cause','q1-fix','q2-cause','q2-fix'];
+    allKeys.forEach(k => { if (answers[k] === true) score++; });
+    if (answers['apply'] === 'strong') score++;
+
+    document.getElementById('scoreNumber').textContent = score + '/7';
+
+    // Verdicts
+    allKeys.forEach(k => {
+      const el = document.getElementById('rv-' + k);
+      if (el) {
+        if (answers[k] === true) {
+          el.textContent = 'Correct';
+          el.className = 'result-verdict verdict-correct';
+        } else {
+          el.textContent = 'Incorrect';
+          el.className = 'result-verdict verdict-incorrect';
+        }
+      }
+    });
+
+    const applyEl = document.getElementById('rv-apply');
+    if (answers['apply'] === 'strong') {
+      applyEl.textContent = 'Strong';
+      applyEl.className = 'result-verdict verdict-correct';
+    } else if (answers['apply'] === 'partial') {
+      applyEl.textContent = 'Partial';
+      applyEl.className = 'result-verdict verdict-partial';
+    } else {
+      applyEl.textContent = 'Review';
+      applyEl.className = 'result-verdict verdict-incorrect';
+    }
+
+    updateProgress(true);
+  }
+
+  function updateProgress(done) {
+    const steps = done ? 4 : currentScenario;
+    const pct = (steps / totalScenarios) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    for (let i = 0; i < 4; i++) {
+      const dot = document.getElementById('dot' + i);
+      if (i < steps) { dot.className = 'step-dot done'; }
+      else if (i === steps) { dot.className = 'step-dot active'; }
+      else { dot.className = 'step-dot'; }
+    }
+  }
+
+  function restartGame() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    currentScenario = 0;
+
+    // Reset all cards
+    for (let i = 0; i < 4; i++) {
+      const sc = document.getElementById('scenario-' + i);
+      if (sc) sc.classList.remove('active');
+    }
+    document.getElementById('results').classList.remove('active');
+
+    // Reset all buttons/options
+    document.querySelectorAll('.option-btn').forEach(b => {
+      b.disabled = false;
+      b.classList.remove('correct','incorrect','selected');
+    });
+
+    document.querySelectorAll('.feedback-box').forEach(fb => { fb.style.display = 'none'; });
+
+    ['q0-fix-block','q1-fix-block','q2-fix-block'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    ['btn-0','btn-1','btn-2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = true;
+    });
+
+    ['apply-1','apply-2','apply-3','apply-4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.disabled = false; }
+    });
+
+    const applyBtn = document.getElementById('btn-apply');
+    applyBtn.disabled = true;
+    applyBtn.textContent = 'Submit My Recommendation';
+    applyBtn.onclick = submitApply;
+
+    document.getElementById('scenario-0').classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

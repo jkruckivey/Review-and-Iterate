@@ -112,7 +112,7 @@ body {
   transition: all 0.2s ease;
 }
 .btn-preset:hover { background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
-.btn-preset.active { background: var(--color-pastel-teal); border-color: var(--color-accent); color: var(--color-neutral-900); }
+.btn-preset.active { background: var(--color-pastel-teal); border-color: var(--color-accent); color: var(--color-neutral-900); font-weight: 600; }
 
 /* Feedback States */
 .feedback-box { padding: 16px; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
@@ -120,6 +120,18 @@ body {
 .feedback-correct { background: var(--color-success-light); border: 1px solid var(--color-success); color: var(--color-neutral-900); }
 .feedback-incorrect { background: var(--color-error-light); border: 1px solid var(--color-error); color: var(--color-neutral-900); }
 .feedback-hint { background: var(--color-warning-light); border: 1px solid var(--color-warning); color: var(--color-neutral-900); }
+
+/* Standard Widget Container Shell — use as the outermost wrapper in every iFrame widget */
+.widget-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
 
 /* Interactive Sample Widget */
 .widget-sample { border: 1px solid var(--color-neutral-300); border-radius: 12px; padding: 24px; background: var(--color-neutral-50); }
@@ -292,19 +304,19 @@ body {
       <fieldset style="border: none;">
         <legend class="question-text">According to the unified design standard, which color should <strong>never</strong> be used to indicate an error state?</legend>
         
-        <label class="mcq-option" id="opt-1" onclick="selectOption('opt-1')">
+        <label class="mcq-option" id="opt-1">
           <input type="radio" name="quiz" value="red" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
           <span>Red (#ef4444)</span>
         </label>
-        
-        <label class="mcq-option" id="opt-2" onclick="selectOption('opt-2')">
+
+        <label class="mcq-option" id="opt-2">
           <input type="radio" name="quiz" value="purple" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
           <span>Purple (#5B2C6F)</span>
         </label>
-        
-        <label class="mcq-option" id="opt-3" onclick="selectOption('opt-3')">
+
+        <label class="mcq-option" id="opt-3">
           <input type="radio" name="quiz" value="orange" tabindex="0">
           <div class="radio-circle"><div class="radio-inner"></div></div>
           <span>Orange (#f59e0b)</span>
@@ -320,6 +332,47 @@ body {
         <!-- Feedback boxes inject here -->
       </div>
 
+    </div>
+  </div>
+
+  <!-- SECTION 4b: WIDGET CONTAINER SHELL -->
+  <div class="section">
+    <h2>4b. Widget Container Shell</h2>
+    <p style="margin-bottom: 24px; color: var(--color-neutral-600);">Every standalone widget must use <code>.widget-container</code> as its outermost wrapper. This ensures consistent framing regardless of which LMS page or iframe it appears in.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+
+      <div style="border: 2px solid var(--color-success); border-radius: 8px; padding: 20px; background: var(--color-success-light);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-800);">Correct — uses .widget-container</h3>
+        <div class="widget-container" style="padding: 20px;">
+          <p style="font-size: 0.8125rem; color: var(--color-neutral-500); font-style: italic;">[Widget content here]</p>
+        </div>
+      </div>
+
+      <div style="border: 2px solid var(--color-error); border-radius: 8px; padding: 20px; background: var(--color-error-light);">
+        <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 12px; color: var(--color-neutral-800);">Incorrect — ad-hoc wrapper</h3>
+        <div style="max-width: 760px; background: white; padding: 20px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+          <p style="font-size: 0.8125rem; color: var(--color-neutral-500); font-style: italic;">[Hardcoded styles drift between files]</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background: var(--color-neutral-50); padding: 20px; border-radius: 8px; border: 1px solid var(--color-neutral-200);">
+      <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--color-neutral-700);">Container Spec</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>max-width:</strong> 800px, centered</p>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>background:</strong> white</p>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>border:</strong> 1px solid neutral-200</p>
+        </div>
+        <div>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>border-radius:</strong> 12px</p>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>padding:</strong> 32px</p>
+          <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>box-shadow:</strong> 0 1px 3px rgba(0,0,0,0.06) — no heavy shadows</p>
+        </div>
+      </div>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-top: 12px;"><strong>No gradients on the container or its headers.</strong> Section headers inside a widget use a flat <code>neutral-50</code> background with a <code>neutral-200</code> border-bottom, not gradient fills.</p>
     </div>
   </div>
 
@@ -390,7 +443,8 @@ body {
       <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Any selection-based widget must have an explicit submit button.</strong> This applies to MCQ, decision trees, drag-and-drop, sorting, and any other widget where the student chooses between options. Clicking an option highlights it — a separate primary button confirms and advances.</p>
       <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>The submit button should be disabled until a selection is made.</strong> This prevents empty submissions and signals to the student that a choice is required before they can proceed.</p>
       <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>The button always says "Submit"</strong> — for every step, every widget type, every stage of a multi-step flow. Do not use "Continue", "Next", "See Results", or any other label.</p>
-      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>Exception:</strong> Scenario toggles and preset filters (btn-preset) are not submissions — they filter or reframe content in place and do not need a confirm step. The rule applies to selections that lock in an answer or advance the student's path.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700); margin-bottom: 8px;"><strong>Exception — multi-selection widgets:</strong> When a widget evaluates multiple simultaneous placements (e.g. all 12 cards in a drag-and-drop sort, or all rows in a ranking exercise), use <strong>"Check Answers"</strong> instead of "Submit." "Submit" implies a single answer is being locked in; "Check" communicates that a full batch is being evaluated. This is the only permitted alternative label for an evaluation action.</p>
+      <p style="font-size: 0.875rem; line-height: 1.7; color: var(--color-neutral-700);"><strong>Exception — non-submission actions:</strong> Scenario toggles and preset filters (btn-preset) are not submissions — they filter or reframe content in place and do not need a confirm step. Modal close buttons ("Close Results") and navigation actions ("Back to Instructions") are also exempt. The Submit/Check Answers rule applies only to actions that lock in an answer or trigger evaluation.</p>
     </div>
   </div>
 
@@ -513,28 +567,16 @@ body {
 <script>
   let currentSelection = null;
 
-  function selectOption(id) {
-    // Clear previous selection
-    document.querySelectorAll('.mcq-option').forEach(el => el.classList.remove('selected'));
-    
-    // Set new selection visually
-    const selectedEl = document.getElementById(id);
-    selectedEl.classList.add('selected');
-    selectedEl.querySelector('input').checked = true;
-    
-    currentSelection = selectedEl.querySelector('input').value;
-    
-    // Clear existing feedback
-    document.getElementById('feedback-live-region').innerHTML = '';
-  }
-
-  // Allow keyboard interaction (Enter/Space on inputs)
+  // Single change listener handles both mouse clicks and keyboard navigation
   document.querySelectorAll('input[type="radio"]').forEach(input => {
-    input.addEventListener('keydown', function(e) {
-      if(e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        selectOption(this.parentElement.id);
-      }
+    input.addEventListener('change', function() {
+      // Clear previous selection
+      document.querySelectorAll('.mcq-option').forEach(el => el.classList.remove('selected'));
+      // Apply selected state to parent label
+      this.parentElement.classList.add('selected');
+      currentSelection = this.value;
+      // Clear any existing feedback when selection changes
+      document.getElementById('feedback-live-region').innerHTML = '';
     });
   });
 

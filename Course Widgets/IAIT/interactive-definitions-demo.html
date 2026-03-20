@@ -1,0 +1,1350 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive: Digitization vs. Digitalization vs. Digital Transformation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f8f9fa;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .activity-section {
+            width: 100%;
+            max-width: 800px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .activity-content {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        /* SLIDER SECTION */
+        .slider-content h2 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .company-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .company-btn {
+            padding: 8px 14px;
+            border: 1px solid #2d3748;
+            background: white;
+            color: #2d3748;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .company-btn:hover {
+            background: #f7fafc;
+            border-color: #4a5568;
+        }
+
+        .company-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .company-btn.active {
+            background: #2d3748;
+            color: white;
+        }
+
+        .slider-container {
+            position: relative;
+            margin: 16px 0 12px 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 0 5px;
+        }
+
+        .slider-label {
+            font-weight: 500;
+            color: #6b7280;
+            font-size: 11px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .slider-label.active {
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .slider-track {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .slider-progress {
+            height: 100%;
+            background: #2d3748;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .slider-input {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            background: transparent;
+            outline: none;
+            position: absolute;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2d3748;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #2d3748;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .visualization {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-top: 12px;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .viz-logo {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .viz-stage {
+            background: #2d3748;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 11px;
+        }
+
+        .viz-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .viz-visual {
+            text-align: center;
+            padding: 14px;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+        }
+
+        .viz-description {
+            padding: 12px;
+            background: #f7fafc;
+            border-left: 3px solid #10b981;
+            border-radius: 3px;
+        }
+
+        .viz-description h4 {
+            color: #1f2937;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .viz-description p {
+            color: #4a5568;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .viz-metrics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .metric {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #2d3748;
+            border: 1px solid #e5e7eb;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: #6b7280;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .metric-value {
+            font-size: 11px;
+            font-weight: 500;
+            color: #1f2937;
+            line-height: 1.4;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .comparison-box {
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .comparison-box.changed {
+            background: #d1fae5;
+            border-left: 3px solid #10b981;
+        }
+
+        .comparison-box.stayed {
+            background: #dbeafe;
+            border-left: 3px solid #3182ce;
+        }
+
+        .comparison-box strong {
+            font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .comparison-box.changed strong {
+            color: #065f46;
+        }
+
+        .comparison-box.stayed strong {
+            color: #1e40af;
+        }
+
+        .comparison-box p {
+            margin-top: 4px;
+            font-size: 10px;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        /* CARD GAME SECTION */
+        .game-content h2 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .game-instructions {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 10px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .score-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .game-main {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .card {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: grab;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            touch-action: none;
+        }
+
+        .card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: #cbd5e0;
+        }
+
+        .card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .card.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .card.incorrect {
+            border-color: #e53e3e;
+            background: #fed7d7;
+        }
+
+        .card-company {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .card-text {
+            font-size: 11px;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        .drop-zones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .drop-zone {
+            background: #f8f9fa;
+            border: 2px dashed #cbd5e0;
+            border-radius: 4px;
+            padding: 12px;
+            min-height: 100px;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #2d3748;
+            background: #f7fafc;
+            transform: scale(1.02);
+        }
+
+        .drop-zone h3 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .drop-zone.digitization h3 {
+            color: #d97706;
+        }
+
+        .drop-zone.digitalization h3 {
+            color: #3182ce;
+        }
+
+        .drop-zone.transformation h3 {
+            color: #7c3aed;
+        }
+
+        .zone-description {
+            text-align: center;
+            font-size: 10px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .dropped-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .game-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .check-answers-btn {
+            padding: 12px 24px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .check-answers-btn:hover {
+            background: #059669;
+        }
+
+        .check-answers-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .check-answers-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            color: #6b7280;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            background: white;
+            color: #2d3748;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .reset-btn:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .reset-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .feedback-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .feedback-modal.show {
+            display: flex;
+        }
+
+        .feedback-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feedback-content h2 {
+            color: #1f2937;
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .feedback-summary {
+            text-align: center;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            border: 1px solid;
+        }
+
+        .feedback-summary.perfect {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+
+        .feedback-summary.good {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+
+        .feedback-summary.needs-work {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .feedback-summary .score-display {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .feedback-summary .score-message {
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        .feedback-item {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #cbd5e0;
+            background: #f9fafb;
+        }
+
+        .feedback-item.correct {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+
+        .feedback-item.incorrect {
+            background: #fed7d7;
+            border-left-color: #e53e3e;
+        }
+
+        .feedback-item strong {
+            color: #1f2937;
+            font-size: 12px;
+        }
+
+        .feedback-item p {
+            color: #4a5568;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-top: 6px;
+        }
+
+        .close-modal-btn {
+            display: block;
+            margin: 16px auto 0;
+            padding: 10px 24px;
+            background: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .close-modal-btn:hover {
+            background: #4a5568;
+        }
+
+        .close-modal-btn:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        /* Tablet and larger screens */
+        @media (min-width: 768px) {
+            .activity-section {
+                padding: 40px;
+            }
+
+            .activity-content {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .slider-content h2,
+            .game-content h2 {
+                font-size: 20px;
+            }
+
+            .viz-metrics {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .game-main {
+                flex-direction: row;
+            }
+
+            .cards-container {
+                flex: 1;
+                max-height: 400px;
+            }
+
+            .drop-zones {
+                grid-template-columns: repeat(3, 1fr);
+                flex: 2;
+            }
+
+            .game-footer {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .check-answers-btn,
+            .reset-btn {
+                width: auto;
+            }
+        }
+
+        /* Desktop screens */
+        @media (min-width: 1024px) {
+            .activity-section {
+                max-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ACTIVITY 1: SLIDER -->
+    <div class="activity-section">
+        <div class="activity-content slider-content">
+            <h1>Part 1: Explore the Progression</h1>
+            <p class="subtitle">Drag the slider to see how companies transform at each level. Select different companies to compare.</p>
+
+            <div class="company-selector">
+                <button class="company-btn active" data-company="netflix">Netflix</button>
+                <button class="company-btn" data-company="adobe">Adobe</button>
+                <button class="company-btn" data-company="nike">Nike</button>
+                <button class="company-btn" data-company="bank">Traditional Bank</button>
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-labels">
+                    <div class="slider-label active" data-level="0">Digitization</div>
+                    <div class="slider-label" data-level="1">Digitalization</div>
+                    <div class="slider-label" data-level="2">Digital Transformation</div>
+                </div>
+                <div class="slider-track">
+                    <div class="slider-progress" id="sliderProgress" style="width: 0%;"></div>
+                </div>
+                <input type="range" min="0" max="2" value="0" step="1" class="slider-input" id="transformationSlider">
+            </div>
+
+            <div class="visualization" id="visualization">
+                <div class="viz-header">
+                    <div class="viz-logo">Netflix</div>
+                    <div class="viz-stage">Digitization</div>
+                </div>
+                <div class="viz-content">
+                    <div class="viz-visual">DVD catalog converted to digital database</div>
+                    <div class="viz-description">
+                        <h4>What's Happening:</h4>
+                        <p>DVD catalog converted to digital database. Still mailing physical DVDs to customers, but inventory and ordering managed digitally.</p>
+                    </div>
+                    <div class="comparison-grid">
+                        <div class="comparison-box changed">
+                            <strong>What Changed:</strong>
+                            <p>Medium: Physical catalog cards to computer database</p>
+                        </div>
+                        <div class="comparison-box stayed">
+                            <strong>What Stayed the Same:</strong>
+                            <p>Business model: DVD rental by mail, Customer experience: Wait for DVDs</p>
+                        </div>
+                    </div>
+                    <div class="viz-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Revenue Impact</div>
+                            <div class="metric-value">Same DVD rental model</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Customer Impact</div>
+                            <div class="metric-value">Convenience improved slightly</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Strategic Value</div>
+                            <div class="metric-value">Low - operational efficiency</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVITY 2: CARD GAME -->
+    <div class="activity-section">
+        <div class="activity-content game-content">
+            <h1>Part 2: Test Your Understanding</h1>
+            <p class="game-instructions">
+                Drag each scenario to the correct category. Get all 12 correct to master the concepts!
+            </p>
+
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-label">Remaining</div>
+                    <div class="score-value" id="remaining">12</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Sorted</div>
+                    <div class="score-value" id="sorted">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Score</div>
+                    <div class="score-value" id="score">0%</div>
+                </div>
+            </div>
+
+            <div class="game-main">
+                <div class="cards-container" id="cardsContainer"><div class="card" draggable="true" data-id="1" data-category="digitization">
+                    <div class="card-company">Hospital</div>
+                    <div class="card-text">Scans paper patient charts and stores them as PDF files</div>
+                </div><div class="card" draggable="true" data-id="11" data-category="digitization">
+                    <div class="card-company">Music Store</div>
+                    <div class="card-text">Converts vinyl record inventory to MP3 files for customers</div>
+                </div><div class="card" draggable="true" data-id="5" data-category="digitization">
+                    <div class="card-company">Factory</div>
+                    <div class="card-text">Converts paper maintenance logs to digital tablets</div>
+                </div><div class="card" draggable="true" data-id="12" data-category="digitalization">
+                    <div class="card-company">Retailer</div>
+                    <div class="card-text">Uses AI and customer data for personalized product recommendations and dynamic pricing</div>
+                </div><div class="card" draggable="true" data-id="3" data-category="digitalization">
+                    <div class="card-company">Bank</div>
+                    <div class="card-text">Adds mobile check deposit feature to banking app</div>
+                </div><div class="card" draggable="true" data-id="9" data-category="digitalization">
+                    <div class="card-company">Insurance</div>
+                    <div class="card-text">Automates claims processing with digital workflow and AI review</div>
+                </div><div class="card" draggable="true" data-id="8" data-category="digitization">
+                    <div class="card-company">Library</div>
+                    <div class="card-text">Digitizes archive of historical documents and makes them searchable</div>
+                </div><div class="card" draggable="true" data-id="6" data-category="digitalization">
+                    <div class="card-company">Restaurant</div>
+                    <div class="card-text">Implements online ordering system integrated with kitchen displays</div>
+                </div><div class="card" draggable="true" data-id="4" data-category="transformation">
+                    <div class="card-company">Adobe</div>
+                    <div class="card-text">Shifts from selling boxed software to Creative Cloud subscription model</div>
+                </div><div class="card" draggable="true" data-id="7" data-category="transformation">
+                    <div class="card-company">John Deere</div>
+                    <div class="card-text">Becomes precision agriculture platform provider with data analytics and optimization</div>
+                </div><div class="card" draggable="true" data-id="2" data-category="transformation">
+                    <div class="card-company">Nike</div>
+                    <div class="card-text">Launches personalized app ecosystem with Nike Training Club and membership platform</div>
+                </div><div class="card" draggable="true" data-id="10" data-category="transformation">
+                    <div class="card-company">Domino's</div>
+                    <div class="card-text">Repositions as 'technology company that sells pizza' with AI ordering and delivery optimization</div>
+                </div></div>
+
+                <div class="drop-zones">
+                    <div class="drop-zone digitization" data-category="digitization">
+                        <h3>Digitization</h3>
+                        <p class="zone-description">Analog to Digital format</p>
+                        <div class="dropped-cards" id="digitization-zone"></div>
+                    </div>
+
+                    <div class="drop-zone digitalization" data-category="digitalization">
+                        <h3>Digitalization</h3>
+                        <p class="zone-description">Processes to Digital workflows</p>
+                        <div class="dropped-cards" id="digitalization-zone"></div>
+                    </div>
+
+                    <div class="drop-zone transformation" data-category="transformation">
+                        <h3>Digital Transformation</h3>
+                        <p class="zone-description">Business Model to Digital</p>
+                        <div class="dropped-cards" id="transformation-zone"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-footer">
+                <button class="check-answers-btn" id="checkAnswers" disabled="">Check My Answers</button>
+                <button class="reset-btn" id="resetGame">Reset Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK MODAL -->
+    <div class="feedback-modal" id="feedbackModal">
+        <div class="feedback-content">
+            <h2>Your Results</h2>
+            <div id="feedbackList"></div>
+            <button class="close-modal-btn" id="closeModal">Continue Learning</button>
+        </div>
+    </div>
+
+    <script>
+        // PART 1: SLIDER FUNCTIONALITY
+        const companyData = {
+            netflix: {
+                name: "Netflix",
+                stages: [
+                    {
+                        level: "Digitization",
+                        visual: "DVD catalog converted to digital database",
+                        description: "DVD catalog converted to digital database. Still mailing physical DVDs to customers, but inventory and ordering managed digitally.",
+                        whatChanged: "Medium: Physical catalog cards to computer database",
+                        whatStayed: "Business model: DVD rental by mail, Customer experience: Wait for DVDs",
+                        metrics: {
+                            revenue: "Same DVD rental model",
+                            customer: "Convenience improved slightly",
+                            strategic: "Low - operational efficiency"
+                        }
+                    },
+                    {
+                        level: "Digitalization",
+                        visual: "Online ordering system with recommendation algorithm",
+                        description: "Online ordering system with recommendation algorithm. Customers browse and order online. Still delivering DVDs, but digital processes transformed the experience.",
+                        whatChanged: "Process: In-person rental to online ordering, Customer experience: Algorithm recommendations",
+                        whatStayed: "Business model: Still renting DVDs for fees, Core product: Physical DVDs",
+                        metrics: {
+                            revenue: "Improved efficiency, more rentals",
+                            customer: "Better experience, personalization",
+                            strategic: "Moderate - competitive advantage"
+                        }
+                    },
+                    {
+                        level: "Digital Transformation",
+                        visual: "Streaming platform with original content production",
+                        description: "Streaming platform with original content production. Completely new business model: subscription streaming. Became content producer, not just distributor. Global reach, data-driven content creation.",
+                        whatChanged: "Everything: Business model (subscription), Product (streaming), Value prop (original content), Industry position (producer)",
+                        whatStayed: "Purpose: Entertaining people with video content",
+                        metrics: {
+                            revenue: "New model: $30B+ subscription revenue",
+                            customer: "Transformational: on-demand, global",
+                            strategic: "High - redefined industry"
+                        }
+                    }
+                ]
+            },
+            adobe: {
+                name: "Adobe",
+                stages: [
+                    {
+                        level: "Digitization",
+                        visual: "Software manuals converted to digital PDFs",
+                        description: "Software manuals and documentation converted to digital PDFs. Physical manuals eliminated, but software still sold in boxes at stores.",
+                        whatChanged: "Medium: Paper manuals to digital documentation",
+                        whatStayed: "Business model: Sell boxed software for upfront fee, Distribution: Retail stores",
+                        metrics: {
+                            revenue: "Same - one-time software sales",
+                            customer: "Minimal - just documentation format",
+                            strategic: "Low - cost savings only"
+                        }
+                    },
+                    {
+                        level: "Digitalization",
+                        visual: "Digital downloads instead of boxed software",
+                        description: "Digital downloads instead of boxed software. Customers download Photoshop instead of buying physical boxes. Automated licensing. Still one-time purchase model.",
+                        whatChanged: "Process: Retail purchase to digital download, Distribution: Instant delivery, Updates automated",
+                        whatStayed: "Business model: One-time license purchase (~$600), Product: Same creative tools",
+                        metrics: {
+                            revenue: "Higher margins (no manufacturing)",
+                            customer: "Better - instant access, updates",
+                            strategic: "Moderate - improved distribution"
+                        }
+                    },
+                    {
+                        level: "Digital Transformation",
+                        visual: "Creative Cloud subscription model",
+                        description: "Creative Cloud subscription model. From $600 one-time purchase to $50/month subscription. Continuous updates, cloud storage, mobile apps, collaboration features. Transformed from software vendor to creative platform.",
+                        whatChanged: "Business model: Perpetual license to subscription, Relationship: One-time to ongoing, Product: Desktop app to cloud ecosystem",
+                        whatStayed: "Purpose: Empowering creativity, Brand: Adobe quality and innovation",
+                        metrics: {
+                            revenue: "New model: Predictable $15B+ recurring",
+                            customer: "Always current, cloud collaboration",
+                            strategic: "High - industry model shift"
+                        }
+                    }
+                ]
+            },
+            nike: {
+                name: "Nike",
+                stages: [
+                    {
+                        level: "Digitization",
+                        visual: "Inventory records converted to digital databases",
+                        description: "Inventory and sales records converted to digital databases. Store inventory tracked digitally, but customers still shop the same way in retail stores.",
+                        whatChanged: "Medium: Paper inventory to digital tracking systems",
+                        whatStayed: "Business model: Sell shoes through retailers, Customer experience: In-store shopping",
+                        metrics: {
+                            revenue: "Same wholesale model",
+                            customer: "No visible change",
+                            strategic: "Low - internal efficiency"
+                        }
+                    },
+                    {
+                        level: "Digitalization",
+                        visual: "E-commerce website and mobile app",
+                        description: "E-commerce website and mobile app for purchases. Customers can buy Nike products online. Digital marketing and personalized emails. Still primarily product sales.",
+                        whatChanged: "Process: In-store only to omnichannel, Marketing: Mass media to digital + personalized",
+                        whatStayed: "Business model: Sell products for profit, Value prop: Quality athletic footwear/apparel",
+                        metrics: {
+                            revenue: "Additional channel, higher margins",
+                            customer: "Convenience, better selection",
+                            strategic: "Moderate - direct customer data"
+                        }
+                    },
+                    {
+                        level: "Digital Transformation",
+                        visual: "Digital ecosystem with apps and membership platform",
+                        description: "Digital ecosystem with Nike Training Club, Nike Run Club apps, SNKRS app, membership program. From product seller to fitness/lifestyle platform. Direct-to-consumer focus (60% of sales). Personalized experiences, community, data-driven product development.",
+                        whatChanged: "Business model: Product sales to platform + membership, Relationship: Transactional to ongoing engagement, Value prop: Shoes to personalized fitness journey",
+                        whatStayed: "Purpose: Bringing innovation and inspiration to athletes, Brand: Just Do It ethos",
+                        metrics: {
+                            revenue: "DTC $18B+, higher margins, membership",
+                            customer: "Personalized journey, community",
+                            strategic: "High - platform with lock-in"
+                        }
+                    }
+                ]
+            },
+            bank: {
+                name: "Traditional Bank",
+                stages: [
+                    {
+                        level: "Digitization",
+                        visual: "Paper records converted to digital format",
+                        description: "Paper records and statements converted to digital format. Bank scans documents, emails PDF statements. Customers still visit branches for transactions.",
+                        whatChanged: "Medium: Paper statements to email/PDF, Records: File cabinets to databases",
+                        whatStayed: "Business model: Deposits, loans, fees, Customer experience: Branch-based banking",
+                        metrics: {
+                            revenue: "Same banking model",
+                            customer: "Slight convenience (email statements)",
+                            strategic: "Low - cost reduction"
+                        }
+                    },
+                    {
+                        level: "Digitalization",
+                        visual: "Online banking and mobile app",
+                        description: "Online banking and mobile app. Customers can check balances, transfer money, deposit checks via phone. Automated loan applications. Digital workflows for approvals.",
+                        whatChanged: "Process: Branch-based to omnichannel, Transactions: In-person to digital, Operations: Manual to automated workflows",
+                        whatStayed: "Business model: Interest spreads, fees, Products: Same checking, savings, loans",
+                        metrics: {
+                            revenue: "Lower costs, same revenue model",
+                            customer: "Major convenience improvement",
+                            strategic: "Moderate - competitive necessity"
+                        }
+                    },
+                    {
+                        level: "Digital Transformation",
+                        visual: "AI-powered financial wellness platform",
+                        description: "AI-powered financial wellness platform with embedded banking. From transaction processor to financial advisor. AI budgeting, personalized insights, embedded finance (banking within other apps), subscription model for premium features, marketplace for financial products.",
+                        whatChanged: "Business model: Transactions to advisory + platform, Relationship: Account holder to financial partner, Revenue: Fees to subscription + marketplace, Value prop: Store money to financial wellness",
+                        whatStayed: "Purpose: Helping customers achieve financial security, Trust and regulatory compliance",
+                        metrics: {
+                            revenue: "New streams: subscriptions, platform",
+                            customer: "Proactive guidance, personalized",
+                            strategic: "High - reimagined banking"
+                        }
+                    }
+                ]
+            }
+        };
+
+        let currentCompany = 'netflix';
+        let currentLevel = 0;
+
+        // Initialize slider
+        const slider = document.getElementById('transformationSlider');
+        const sliderProgress = document.getElementById('sliderProgress');
+        const visualization = document.getElementById('visualization');
+
+        function updateVisualization() {
+            const data = companyData[currentCompany].stages[currentLevel];
+            const company = companyData[currentCompany];
+
+            // Update progress bar
+            sliderProgress.style.width = (currentLevel * 50) + '%';
+
+            // Update active label
+            document.querySelectorAll('.slider-label').forEach((label, index) => {
+                label.classList.toggle('active', index === currentLevel);
+            });
+
+            // Update visualization
+            visualization.innerHTML = `
+                <div class="viz-header">
+                    <div class="viz-logo">${company.name}</div>
+                    <div class="viz-stage">${data.level}</div>
+                </div>
+                <div class="viz-content">
+                    <div class="viz-visual">${data.visual}</div>
+                    <div class="viz-description">
+                        <h4>What's Happening:</h4>
+                        <p>${data.description}</p>
+                    </div>
+                    <div class="comparison-grid">
+                        <div class="comparison-box changed">
+                            <strong>What Changed:</strong>
+                            <p>${data.whatChanged}</p>
+                        </div>
+                        <div class="comparison-box stayed">
+                            <strong>What Stayed the Same:</strong>
+                            <p>${data.whatStayed}</p>
+                        </div>
+                    </div>
+                    <div class="viz-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Revenue Impact</div>
+                            <div class="metric-value">${data.metrics.revenue}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Customer Impact</div>
+                            <div class="metric-value">${data.metrics.customer}</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Strategic Value</div>
+                            <div class="metric-value">${data.metrics.strategic}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        slider.addEventListener('input', (e) => {
+            currentLevel = parseInt(e.target.value);
+            updateVisualization();
+        });
+
+        // Company selector
+        document.querySelectorAll('.company-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.company-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCompany = btn.dataset.company;
+                currentLevel = 0;
+                slider.value = 0;
+                updateVisualization();
+            });
+        });
+
+        // Initial load
+        updateVisualization();
+
+        // PART 2: CARD GAME FUNCTIONALITY
+        const cards = [
+            { id: 1, company: "Hospital", text: "Scans paper patient charts and stores them as PDF files", category: "digitization", explanation: "This is digitization - converting analog (paper) to digital format. The patient records are now digital, but the processes and workflows remain the same." },
+            { id: 2, company: "Nike", text: "Launches personalized app ecosystem with Nike Training Club and membership platform", category: "transformation", explanation: "This is digital transformation - Nike evolved from a product seller to a platform that creates ongoing customer relationships, generates data-driven insights, and offers personalized experiences. The business model fundamentally changed." },
+            { id: 3, company: "Bank", text: "Adds mobile check deposit feature to banking app", category: "digitalization", explanation: "This is digitalization - changing the process of depositing checks from in-person to digital. The banking model hasn't changed, but the workflow has been digitized." },
+            { id: 4, company: "Adobe", text: "Shifts from selling boxed software to Creative Cloud subscription model", category: "transformation", explanation: "This is digital transformation - Adobe completely changed its business model from one-time sales to recurring subscriptions, transformed customer relationships from transactional to ongoing, and evolved into a platform provider." },
+            { id: 5, company: "Factory", text: "Converts paper maintenance logs to digital tablets", category: "digitization", explanation: "This is digitization - converting the medium from paper to digital. The maintenance process and workflows remain essentially the same." },
+            { id: 6, company: "Restaurant", text: "Implements online ordering system integrated with kitchen displays", category: "digitalization", explanation: "This is digitalization - the ordering and fulfillment process has been digitized, improving workflows and efficiency. The restaurant business model (selling food) hasn't fundamentally changed." },
+            { id: 7, company: "John Deere", text: "Becomes precision agriculture platform provider with data analytics and optimization", category: "transformation", explanation: "This is digital transformation - John Deere evolved from equipment manufacturer to platform provider, changing from product sales to data-driven services, fundamentally reimagining their value proposition." },
+            { id: 8, company: "Library", text: "Digitizes archive of historical documents and makes them searchable", category: "digitization", explanation: "This is digitization - converting physical documents to digital format. The library's fundamental purpose and model haven't changed." },
+            { id: 9, company: "Insurance", text: "Automates claims processing with digital workflow and AI review", category: "digitalization", explanation: "This is digitalization - the claims process has been digitized and automated, but the insurance business model (premiums for coverage) remains the same." },
+            { id: 10, company: "Domino's", text: "Repositions as 'technology company that sells pizza' with AI ordering and delivery optimization", category: "transformation", explanation: "This is digital transformation - Domino's transformed its identity and competitive positioning. Technology became the core differentiator, not just an efficiency tool. The customer relationship and value proposition fundamentally changed." },
+            { id: 11, company: "Music Store", text: "Converts vinyl record inventory to MP3 files for customers", category: "digitization", explanation: "This is digitization - converting analog music format (vinyl) to digital format (MP3). Still selling music in individual units." },
+            { id: 12, company: "Retailer", text: "Uses AI and customer data for personalized product recommendations and dynamic pricing", category: "digitalization", explanation: "This is digitalization - improving existing sales and marketing processes with digital tools. The retail business model (selling products) hasn't fundamentally changed, but processes are more sophisticated." }
+        ];
+
+        let draggedCard = null;
+        let placedCards = {};
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function initializeCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+            placedCards = {};
+
+            const shuffledCards = shuffleArray(cards);
+
+            shuffledCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.draggable = true;
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.category = card.category;
+                cardEl.innerHTML = `
+                    <div class="card-company">${card.company}</div>
+                    <div class="card-text">${card.text}</div>
+                `;
+
+                cardEl.addEventListener('dragstart', (e) => {
+                    draggedCard = cardEl;
+                    cardEl.classList.add('dragging');
+                });
+
+                cardEl.addEventListener('dragend', (e) => {
+                    cardEl.classList.remove('dragging');
+                });
+
+                container.appendChild(cardEl);
+            });
+
+            updateScore();
+        }
+
+        // Drop zone functionality
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+
+                if (draggedCard) {
+                    const dropZoneCards = zone.querySelector('.dropped-cards');
+                    dropZoneCards.appendChild(draggedCard);
+
+                    const cardId = parseInt(draggedCard.dataset.id);
+                    const category = zone.dataset.category;
+                    placedCards[cardId] = category;
+
+                    updateScore();
+                }
+            });
+        });
+
+        // Allow dropping back to main container
+        document.getElementById('cardsContainer').addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.getElementById('cardsContainer').addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedCard) {
+                document.getElementById('cardsContainer').appendChild(draggedCard);
+                const cardId = parseInt(draggedCard.dataset.id);
+                delete placedCards[cardId];
+                updateScore();
+            }
+        });
+
+        function updateScore() {
+            const totalCards = cards.length;
+            const sortedCount = Object.keys(placedCards).length;
+            const remainingCount = totalCards - sortedCount;
+
+            document.getElementById('remaining').textContent = remainingCount;
+            document.getElementById('sorted').textContent = sortedCount;
+
+            // Enable check button only when all cards are sorted
+            document.getElementById('checkAnswers').disabled = sortedCount < totalCards;
+
+            // Calculate score (only shown after checking)
+            let correctCount = 0;
+            cards.forEach(card => {
+                if (placedCards[card.id] === card.category) {
+                    correctCount++;
+                }
+            });
+
+            const percentage = sortedCount > 0 ? Math.round((correctCount / totalCards) * 100) : 0;
+            document.getElementById('score').textContent = percentage + '%';
+        }
+
+        document.getElementById('checkAnswers').addEventListener('click', () => {
+            let feedbackHTML = '';
+            let correctCount = 0;
+
+            cards.forEach(card => {
+                const isCorrect = placedCards[card.id] === card.category;
+                if (isCorrect) correctCount++;
+
+                const cardEl = document.querySelector(`[data-id="${card.id}"]`);
+                cardEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+                feedbackHTML += `
+                    <div class="feedback-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>${isCorrect ? 'Correct:' : 'Incorrect:'} ${card.company}</strong>
+                        <p>${card.text}</p>
+                        <p style="margin-top: 10px;">
+                            <strong>${isCorrect ? 'Explanation:' : 'Why this is wrong:'}</strong> ${card.explanation}
+                        </p>
+                        ${!isCorrect ? `<p style="margin-top: 8px; color: #991b1b;"><strong>You placed it in:</strong> ${placedCards[card.id]} | <strong>Correct answer:</strong> ${card.category}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            const percentage = Math.round((correctCount / cards.length) * 100);
+            let summaryClass = 'needs-work';
+            let summaryMessage = 'Good effort! Study the explanations below and try again.';
+
+            if (percentage === 100) {
+                summaryClass = 'perfect';
+                summaryMessage = 'Perfect! You have mastered the concepts!';
+            } else if (percentage >= 75) {
+                summaryClass = 'good';
+                summaryMessage = 'Great job! Review the feedback below to master the remaining concepts.';
+            }
+
+            feedbackHTML = `
+                <div class="feedback-summary ${summaryClass}">
+                    <div class="score-display">Score: ${correctCount}/${cards.length} (${percentage}%)</div>
+                    <div class="score-message">${summaryMessage}</div>
+                </div>
+            ` + feedbackHTML;
+
+            document.getElementById('feedbackList').innerHTML = feedbackHTML;
+            document.getElementById('feedbackModal').classList.add('show');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('feedbackModal').classList.remove('show');
+        });
+
+        document.getElementById('resetGame').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset the game? This will shuffle all cards.')) {
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.remove('correct', 'incorrect');
+                });
+                initializeCards();
+            }
+        });
+
+        // Initialize game
+        initializeCards();
+    </script>
+
+
+</body></html>"
+### Ran Playwright code
+```js
+await page.evaluate('() => document.documentElement.outerHTML');
+```

@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human vs. AI in Accounting - Interactive Decision Quiz</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --ai-color: #0093A9;
+            --human-color: #5B2C6F;
+            --both-color: #A4B544;
+            --correct-green: #28a745;
+            --incorrect-red: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 89, 81, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .legend-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .legend-badge.ai {
+            background: var(--ai-color);
+            color: var(--white);
+        }
+
+        .legend-badge.human {
+            background: var(--human-color);
+            color: var(--white);
+        }
+
+        .legend-badge.both {
+            background: var(--both-color);
+            color: var(--white);
+        }
+
+        .progress-container {
+            background: var(--light-gray);
+            padding: 20px 30px;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--medium-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--bright-green) 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .question-card {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-header {
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .scenario-box {
+            background: var(--light-gray);
+            border-left: 4px solid var(--turquoise);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .scenario-title {
+            font-weight: 600;
+            color: var(--ivey-green);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-description {
+            color: var(--dark-gray);
+            line-height: 1.7;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 25px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .option-button:hover:not(:disabled) {
+            border-color: var(--ivey-green);
+            background: var(--light-gray);
+            transform: translateX(5px);
+        }
+
+        .option-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .option-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-button.selected {
+            border-width: 3px;
+        }
+
+        .option-button.ai-option {
+            border-color: var(--ai-color);
+        }
+
+        .option-button.human-option {
+            border-color: var(--human-color);
+        }
+
+        .option-button.both-option {
+            border-color: var(--both-color);
+        }
+
+        .option-button.correct {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-color: var(--correct-green);
+        }
+
+        .option-button.incorrect {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+            border-color: var(--incorrect-red);
+        }
+
+        .option-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .option-button.ai-option .option-badge {
+            background: var(--ai-color);
+            color: var(--white);
+        }
+
+        .option-button.human-option .option-badge {
+            background: var(--human-color);
+            color: var(--white);
+        }
+
+        .option-button.both-option .option-badge {
+            background: var(--both-color);
+            color: var(--white);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            font-size: 1.05rem;
+        }
+
+        .option-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .option-status {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .option-button.correct .option-status.correct-icon {
+            display: flex;
+            background: var(--correct-green);
+            color: var(--white);
+        }
+
+        .option-button.incorrect .option-status.incorrect-icon {
+            display: flex;
+            background: var(--incorrect-red);
+            color: var(--white);
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-box.correct {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 5px solid var(--correct-green);
+        }
+
+        .feedback-box.incorrect {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.05) 100%);
+            border-left: 5px solid var(--incorrect-red);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .feedback-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .feedback-box.correct .feedback-badge {
+            background: var(--correct-green);
+            color: var(--white);
+        }
+
+        .feedback-box.incorrect .feedback-badge {
+            background: var(--incorrect-red);
+            color: var(--white);
+        }
+
+        .feedback-text {
+            line-height: 1.8;
+            color: var(--dark-gray);
+        }
+
+        .learn-more {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .learn-more-title {
+            font-weight: 600;
+            color: var(--ivey-green);
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .learn-more-content {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .nav-button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-button.primary {
+            background: var(--ivey-green);
+            color: var(--white);
+        }
+
+        .nav-button.primary:hover:not(:disabled) {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        .nav-button.secondary {
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .nav-button.secondary:hover:not(:disabled) {
+            background: var(--dark-gray);
+            color: var(--white);
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .results-badge {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--bright-green) 100%);
+            color: var(--white);
+        }
+
+        .results-title {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            color: var(--ivey-green);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .score-display {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            font-weight: 700;
+            color: var(--purple);
+            margin: 20px 0;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+
+        .performance-message {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid var(--bright-green);
+        }
+
+        .performance-message h3 {
+            color: var(--ivey-green);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .performance-message p {
+            color: var(--dark-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .insights-section {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .insights-title {
+            color: var(--ivey-green);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--turquoise);
+        }
+
+        .insight-card h4 {
+            color: var(--purple);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .insight-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .insight-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .insight-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--correct-green);
+            font-weight: bold;
+        }
+
+        .bottom-line-box {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            border-radius: 10px;
+            border-left: 5px solid var(--ivey-green);
+        }
+
+        .bottom-line-box h4 {
+            color: var(--ivey-green);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .bottom-line-box p {
+            color: var(--dark-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .restart-button {
+            margin-top: 30px;
+            padding: 16px 40px;
+            background: var(--ivey-green);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 89, 81, 0.3);
+        }
+
+        .restart-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .option-button {
+                border-width: 3px;
+            }
+
+            .option-button:focus,
+            .nav-button:focus,
+            .restart-button:focus {
+                outline-width: 4px;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .option-button:hover:not(:disabled) {
+                transform: none;
+            }
+
+            .nav-button:hover:not(:disabled),
+            .restart-button:hover {
+                transform: none;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                padding: 25px 20px;
+            }
+
+            .legend {
+                gap: 15px;
+            }
+
+            .progress-container {
+                padding: 15px 20px;
+            }
+
+            .quiz-content,
+            .results-screen {
+                padding: 20px;
+            }
+
+            .option-button {
+                padding: 15px;
+            }
+
+            .option-badge {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .legend {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .scenario-box {
+                padding: 15px;
+            }
+
+            .feedback-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" role="main">
+        <header role="banner">
+            <h1>Human vs. AI in Accounting</h1>
+            <p class="subtitle">Interactive Decision-Making Quiz</p>
+            <div class="legend" role="list" aria-label="Answer type legend">
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge ai" aria-hidden="true">AI</span>
+                    <span>AI/Automation Can Handle</span>
+                </div>
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge human" aria-hidden="true">H</span>
+                    <span>Human Judgment Required</span>
+                </div>
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge both" aria-hidden="true">+</span>
+                    <span>Best with Both Working Together</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-container" role="region" aria-label="Quiz progress">
+            <div class="progress-info">
+                <span id="progressText">Question <span id="currentQuestion">0</span> of <span id="totalQuestions">6</span></span>
+                <span id="scoreText">Score: <span id="currentScore">0</span>/6</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Quiz completion progress">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="quiz-content" id="quizContent">
+            <!-- Questions will be dynamically generated here -->
+        </div>
+
+        <div class="results-screen" id="resultsScreen" role="region" aria-label="Quiz results">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                scenario: "Transaction Categorization Challenge",
+                description: "Your company processes 500+ vendor invoices monthly. Each invoice needs to be categorized into expense accounts (office supplies, utilities, rent, etc.) based on vendor name and invoice description.",
+                question: "Who should handle routine transaction categorization?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Let software categorize transactions automatically",
+                        correct: true
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment",
+                        description: "Have accountants manually review and categorize each transaction",
+                        correct: false
+                    }
+                ],
+                feedback: {
+                    correct: "Excellent choice! AI and automation excel at routine, high-volume categorization tasks. Machine learning algorithms can recognize patterns in vendor names and descriptions to accurately categorize transactions. This frees up accountants to focus on exceptions and strategic analysis. For 500+ monthly invoices, automation reduces processing time from days to minutes while maintaining high accuracy.",
+                    incorrect: "Not quite. While human oversight is valuable for exceptions, manual categorization of 500+ routine invoices is inefficient and prone to human error from fatigue. AI can handle high-volume, pattern-based tasks with greater speed and consistency, allowing accountants to focus on complex judgments and exceptions that require professional expertise.",
+                    learnMore: "Real-World Impact: Companies using AI for invoice processing report 80% reduction in processing time and 95%+ accuracy rates. The AI flags unusual transactions for human review while automatically handling routine categorization. This hybrid approach combines AI efficiency with human oversight for exceptions."
+                }
+            },
+            {
+                id: 2,
+                scenario: "Revenue Recognition Complexity",
+                description: "Your software company just signed a 3-year contract with a client worth $360,000. The contract includes: upfront implementation ($60,000), monthly subscription services ($5,000/month for 36 months), annual training sessions ($15,000/year), and performance bonuses tied to customer satisfaction metrics.",
+                question: "Who should determine how to recognize this revenue over the contract period?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Use software to automatically calculate revenue recognition",
+                        correct: false
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment",
+                        description: "Have accountants analyze and apply professional judgment",
+                        correct: true
+                    }
+                ],
+                feedback: {
+                    correct: "Absolutely correct! Revenue recognition for complex contracts requires professional accounting judgment and deep understanding of ASC 606 (or IFRS 15) standards. Accountants must analyze: performance obligations, transaction price allocation, timing of control transfer, and variable consideration. Each contract element may follow different recognition patterns. This requires expertise that AI cannot replace—understanding business substance, applying professional standards, and making defensible judgments.",
+                    incorrect: "Revenue recognition for complex contracts involves nuanced professional judgment that AI cannot provide. While software can help with calculations after decisions are made, accountants must first determine: how to identify separate performance obligations, allocate transaction price, assess when control transfers, and estimate variable consideration. These require professional expertise, understanding of accounting standards (ASC 606), and business context that goes beyond algorithmic processing.",
+                    learnMore: "Professional Standards: ASC 606 (Revenue from Contracts with Customers) requires a 5-step process involving significant judgment: identifying contracts, identifying performance obligations, determining transaction price, allocating price to obligations, and recognizing revenue when obligations are satisfied. Each step involves professional judgment based on facts and circumstances. CPAs are trained specifically to make these complex determinations."
+                }
+            },
+            {
+                id: 3,
+                scenario: "Bank Reconciliation Process",
+                description: "At month-end, you need to reconcile your company's bank statement with the accounting records. There are 200+ transactions including checks, electronic transfers, deposits, and bank fees. Most items match, but you need to identify outstanding checks, deposits in transit, and any discrepancies.",
+                question: "Who should perform the monthly bank reconciliation?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Use software to automatically match and reconcile transactions",
+                        correct: true
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment",
+                        description: "Have accountants manually compare each transaction",
+                        correct: false
+                    }
+                ],
+                feedback: {
+                    correct: "Perfect! Bank reconciliation is an ideal task for automation. Modern accounting software can automatically match transactions between bank statements and accounting records using date, amount, and reference numbers. AI can identify outstanding checks, deposits in transit, and flag discrepancies for human review. For 200+ monthly transactions, automation provides speed, accuracy, and consistency. Humans should focus on investigating flagged exceptions and unusual items.",
+                    incorrect: "Manual reconciliation of 200+ transactions is time-consuming and error-prone. Bank reconciliation involves pattern matching and arithmetic calculations—tasks where AI excels. Modern software can automatically match transactions in seconds, identify timing differences, and flag exceptions. This allows accountants to focus their expertise on investigating and resolving discrepancies rather than spending hours on routine matching. Automation improves both efficiency and accuracy.",
+                    learnMore: "Automation in Practice: Modern bank reconciliation software uses algorithms to match transactions based on multiple criteria (amount, date, reference number, description). The software handles routine matches automatically and flags exceptions like: duplicate transactions, amount discrepancies, or unmatched items. This reduces reconciliation time by 75-90% while improving accuracy. Accountants investigate only the exceptions that need professional judgment."
+                }
+            },
+            {
+                id: 4,
+                scenario: "Ethical Dilemma",
+                description: "Your company's CEO asks you to recognize $500,000 in revenue from a contract signed on December 30th, even though the product won't be delivered until January 15th. The CEO emphasizes that 'we technically signed the contract in December, and we need to hit our annual revenue target to secure our bonuses and keep investor confidence high.'",
+                question: "Who should make the decision about whether to recognize this revenue?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Use software to automatically process the CEO's request",
+                        correct: false
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment",
+                        description: "Use professional judgment to evaluate and push back if needed",
+                        correct: true
+                    }
+                ],
+                feedback: {
+                    correct: "Absolutely correct! This scenario involves ethical judgment and professional integrity—uniquely human responsibilities. As an accountant, you must apply professional skepticism and understand that revenue recognition isn't about contract signing dates, but when performance obligations are satisfied (delivery in this case). You need to: recognize the ethical pressure, apply GAAP/IFRS standards correctly, communicate professionally with the CEO about proper accounting, and potentially escalate if pressured to violate standards. AI cannot navigate ethical dilemmas or stand up to authority when professional standards are at stake.",
+                    incorrect: "This is an ethical dilemma requiring human professional judgment, not automation. The CEO's request violates revenue recognition principles (recognizing revenue before delivery/performance). AI would simply process the transaction as requested—it cannot recognize ethical red flags, apply professional skepticism, understand the pressure tactics being used, or push back against authority. Accountants have professional and ethical obligations to apply GAAP/IFRS correctly, regardless of pressure. This requires moral courage and professional judgment that AI cannot provide.",
+                    learnMore: "Professional Ethics: Accountants are bound by professional codes of ethics (AICPA, CPA Canada, etc.) requiring integrity, objectivity, and professional competence. When facing pressure to manipulate financial statements, accountants must: apply professional skepticism, document the situation, communicate proper accounting treatment, and escalate to audit committees or regulators if necessary. This scenario describes earnings management—a serious ethical violation. Professional judgment includes knowing when to say 'no' to authority."
+                }
+            },
+            {
+                id: 5,
+                scenario: "Fraud Detection Investigation",
+                description: "Your company's expense reports show unusual patterns: several employees have submitted similar amounts for meals and travel on the same dates, but from different vendors. The amounts are just below the approval threshold requiring manager sign-off. Some receipts look slightly altered, and there are inconsistencies in formatting.",
+                question: "Who should investigate potential fraud in expense reports?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Let AI detect and investigate the fraud patterns",
+                        correct: false
+                    },
+                    {
+                        type: "both",
+                        badge: "+",
+                        label: "Both AI and Human",
+                        description: "AI flags patterns, humans investigate and make decisions",
+                        correct: true
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment Only",
+                        description: "Have accountants manually review all expense reports",
+                        correct: false
+                    }
+                ],
+                feedback: {
+                    correct: "Excellent! Fraud detection is a perfect example of AI-human collaboration. AI excels at: analyzing large datasets, detecting unusual patterns, identifying anomalies, flagging expenses just below approval thresholds, and comparing receipt formatting. However, humans are essential for: investigating flagged cases, interviewing employees, applying professional skepticism, understanding context and intent, and making final decisions about whether fraud occurred. This collaboration leverages AI's pattern recognition with human judgment and interpersonal skills.",
+                    incorrect: "Fraud detection requires both AI and human collaboration. AI alone cannot conduct investigations, interview suspects, or make final fraud determinations. Manual review alone is inefficient for detecting subtle patterns across hundreds of transactions. The optimal approach: AI analyzes all expense data to flag suspicious patterns (amounts just below thresholds, duplicate submissions, receipt inconsistencies), then humans investigate flagged cases using professional skepticism, interviews, and contextual understanding to determine if fraud occurred.",
+                    learnMore: "Fraud Detection Best Practices: Modern fraud detection combines AI pattern recognition with human investigation. AI continuously monitors transactions for red flags: duplicate vendors, round numbers, just-below-threshold amounts, timing patterns, or statistical anomalies. This flags 2-5% of transactions for human review instead of examining all transactions manually. Forensic accountants then investigate flagged cases, interview employees, gather evidence, and make final determinations. This approach is 10x more efficient than manual review alone."
+                }
+            },
+            {
+                id: 6,
+                scenario: "Financial Results Communication",
+                description: "Your company just completed Q4, and the results are mixed: revenue grew 15% but profit margins declined due to rising costs. You need to prepare the earnings presentation for investors, explaining the results, addressing concerns about margin pressure, and outlining the strategy for improving profitability in the coming year.",
+                question: "Who should communicate financial results to stakeholders?",
+                options: [
+                    {
+                        type: "ai",
+                        badge: "AI",
+                        label: "AI/Automation",
+                        description: "Use AI to generate and present the financial report",
+                        correct: false
+                    },
+                    {
+                        type: "human",
+                        badge: "H",
+                        label: "Human Judgment",
+                        description: "Have executives personally present and discuss results",
+                        correct: true
+                    }
+                ],
+                feedback: {
+                    correct: "Perfect! Financial communication to stakeholders requires human leadership, empathy, and strategic thinking. Executives must: understand investor concerns and questions, provide context beyond the numbers, explain strategy and future plans, build trust and credibility, respond to challenging questions, and read the room to adjust messaging. AI can help prepare reports and analyze data, but the communication itself requires emotional intelligence, persuasion, credibility, and the ability to build stakeholder relationships—uniquely human capabilities.",
+                    incorrect: "While AI can help generate reports and analyze data, communicating financial results to stakeholders requires human leadership and interpersonal skills. Investors want to: hear directly from leadership, ask questions and get thoughtful responses, understand the strategy behind the numbers, assess management's competence and credibility, and build trust with the leadership team. This requires: emotional intelligence, persuasion, strategic thinking, adaptability to audience reactions, and relationship building—capabilities AI cannot provide. Financial communication is fundamentally about human connection and trust.",
+                    learnMore: "Stakeholder Communication: Effective financial communication combines data with narrative. Executives must tell the story behind the numbers: explaining the 'why' of results, addressing concerns proactively, articulating strategy, and building confidence in leadership. Research shows investors value management quality and communication transparency as much as the numbers themselves. Earnings calls, investor meetings, and presentations are opportunities to build relationships and trust—inherently human activities that cannot be outsourced to AI."
+                }
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        function initializeQuiz() {
+            document.getElementById('totalQuestions').textContent = questions.length;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            const quizContent = document.getElementById('quizContent');
+
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            updateProgress();
+
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                const optionClass = `${option.type}-option`;
+                optionsHTML += `
+                    <button class="option-button ${optionClass}"
+                            id="option${index}"
+                            onclick="selectAnswer(${index})"
+                            role="radio"
+                            aria-checked="false"
+                            aria-describedby="question${question.id}">
+                        <span class="option-badge" aria-hidden="true">${option.badge}</span>
+                        <div class="option-content">
+                            <span class="option-label">${option.label}</span>
+                            <span class="option-description">${option.description}</span>
+                        </div>
+                        <span class="option-status correct-icon" aria-label="Correct answer">✓</span>
+                        <span class="option-status incorrect-icon" aria-label="Incorrect answer">✗</span>
+                    </button>
+                `;
+            });
+
+            quizContent.innerHTML = `
+                <div class="question-card active" role="article" aria-labelledby="questionNumber${question.id}">
+                    <div class="question-header">
+                        <span class="question-number" id="questionNumber${question.id}">Scenario ${question.id} of ${questions.length}</span>
+                        <div class="scenario-box">
+                            <div class="scenario-title">${question.scenario}</div>
+                            <div class="scenario-description">${question.description}</div>
+                        </div>
+                        <h2 class="question-text" id="question${question.id}">${question.question}</h2>
+                    </div>
+
+                    <div class="options-container" role="radiogroup" aria-labelledby="question${question.id}">
+                        ${optionsHTML}
+                    </div>
+
+                    <div class="feedback-box" id="feedbackBox" role="status" aria-live="polite" aria-atomic="true"></div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-button secondary"
+                                onclick="previousQuestion()"
+                                id="prevButton"
+                                aria-label="Go to previous question"
+                                ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                            ← Previous
+                        </button>
+                        <button class="nav-button primary"
+                                onclick="nextQuestion()"
+                                id="nextButton"
+                                aria-label="${currentQuestionIndex === questions.length - 1 ? 'View results' : 'Go to next question'}"
+                                disabled>
+                            ${currentQuestionIndex === questions.length - 1 ? 'View Results' : 'Next'} →
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            answered = false;
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+
+            const question = questions[currentQuestionIndex];
+            const selectedOption = question.options[selectedIndex];
+            const isCorrect = selectedOption.correct;
+
+            // Update score
+            if (isCorrect) {
+                score++;
+                document.getElementById('currentScore').textContent = score;
+            }
+
+            // Disable all options and mark selected
+            question.options.forEach((option, index) => {
+                const button = document.getElementById(`option${index}`);
+                button.disabled = true;
+                button.setAttribute('aria-checked', index === selectedIndex ? 'true' : 'false');
+
+                if (index === selectedIndex) {
+                    button.classList.add('selected');
+                    button.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (option.correct) {
+                    button.classList.add('correct');
+                }
+            });
+
+            // Show feedback
+            showFeedback(isCorrect, question);
+
+            // Enable next button
+            document.getElementById('nextButton').disabled = false;
+            answered = true;
+
+            // Announce result to screen readers
+            const announcement = isCorrect ? 'Correct answer!' : 'Incorrect answer.';
+            announceToScreenReader(announcement);
+        }
+
+        function showFeedback(isCorrect, question) {
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const feedbackTitle = isCorrect ? 'Correct!' : 'Not Quite';
+            const feedbackText = isCorrect ? question.feedback.correct : question.feedback.incorrect;
+
+            feedbackBox.className = `feedback-box ${feedbackClass} show`;
+            feedbackBox.innerHTML = `
+                <div class="feedback-header">
+                    <span class="feedback-badge" aria-hidden="true">${isCorrect ? '✓' : '✗'}</span>
+                    <span>${feedbackTitle}</span>
+                </div>
+                <div class="feedback-text">${feedbackText}</div>
+                ${question.feedback.learnMore ? `
+                    <div class="learn-more">
+                        <div class="learn-more-title">Learn More</div>
+                        <div class="learn-more-content">${question.feedback.learnMore}</div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function nextQuestion() {
+            if (!answered) return;
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${progress}%`;
+
+            const progressBar = progressFill.parentElement;
+            progressBar.setAttribute('aria-valuenow', Math.round(progress));
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let performanceLevel, performanceMessage, performanceDescription;
+
+            if (percentage >= 83) {
+                performanceLevel = 'Excellent Work!';
+                performanceMessage = 'Outstanding Understanding';
+                performanceDescription = 'You have demonstrated excellent judgment in distinguishing between tasks suitable for AI automation and those requiring human expertise. You understand that modern accounting combines technological efficiency with professional judgment, ethics, and interpersonal skills.';
+            } else if (percentage >= 50) {
+                performanceLevel = 'Good Effort!';
+                performanceMessage = 'Solid Foundation';
+                performanceDescription = 'You have a good understanding of the AI-human balance in accounting. Continue developing your insights into when automation adds value versus when human judgment, ethics, and professional expertise are essential. Review the scenarios where you needed more practice.';
+            } else {
+                performanceLevel = 'Keep Learning!';
+                performanceMessage = 'Room for Growth';
+                performanceDescription = 'This is a complex topic, and you\'re building your understanding. Review the feedback for each scenario to strengthen your ability to identify when AI can help versus when human judgment is irreplaceable. Focus on understanding the unique value that professional accountants bring: ethics, judgment, and stakeholder relationships.';
+            }
+
+            document.getElementById('quizContent').style.display = 'none';
+            const resultsScreen = document.getElementById('resultsScreen');
+
+            resultsScreen.innerHTML = `
+                <div class="results-badge" aria-hidden="true">${percentage}%</div>
+                <h2 class="results-title">${performanceLevel}</h2>
+                <div class="score-display" aria-label="Your score is ${score} out of ${questions.length}">${score}/${questions.length}</div>
+                <p class="score-label">${percentage}% Correct</p>
+
+                <div class="performance-message">
+                    <h3>${performanceMessage}</h3>
+                    <p>${performanceDescription}</p>
+                </div>
+
+                <div class="insights-section">
+                    <h3 class="insights-title">Key Insights: The Future of Accounting</h3>
+                    <div class="insight-grid">
+                        <div class="insight-card">
+                            <h4>AI Strengths</h4>
+                            <ul>
+                                <li>High-volume transaction processing</li>
+                                <li>Pattern recognition and anomaly detection</li>
+                                <li>Routine reconciliation and matching</li>
+                                <li>Data analysis and calculations</li>
+                                <li>24/7 monitoring and flagging</li>
+                            </ul>
+                        </div>
+
+                        <div class="insight-card">
+                            <h4>Human Strengths</h4>
+                            <ul>
+                                <li>Professional judgment and expertise</li>
+                                <li>Ethical decision-making and integrity</li>
+                                <li>Complex accounting standard application</li>
+                                <li>Stakeholder communication and trust</li>
+                                <li>Strategic thinking and context understanding</li>
+                            </ul>
+                        </div>
+
+                        <div class="insight-card">
+                            <h4>Best Together</h4>
+                            <ul>
+                                <li>Fraud detection: AI flags, humans investigate</li>
+                                <li>Audit: AI analyzes data, humans evaluate risk</li>
+                                <li>Reporting: AI compiles, humans interpret</li>
+                                <li>Forecasting: AI models, humans apply judgment</li>
+                                <li>Compliance: AI monitors, humans decide</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bottom-line-box">
+                        <h4>The Bottom Line</h4>
+                        <p>AI is transforming accounting by handling routine, high-volume tasks with unprecedented speed and accuracy. However, the profession's core value—professional judgment, ethical integrity, stakeholder trust, and strategic insight—remains uniquely human. The most successful accountants will leverage AI to enhance their efficiency while focusing their expertise on complex judgments, ethical dilemmas, and relationship building that technology cannot replace.</p>
+                    </div>
+                </div>
+
+                <button class="restart-button" onclick="restartQuiz()" aria-label="Restart quiz">
+                    Retake Quiz
+                </button>
+            `;
+
+            resultsScreen.classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            announceToScreenReader(`Quiz completed. Your final score is ${score} out of ${questions.length}. ${percentage}% correct.`);
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = false;
+
+            document.getElementById('currentScore').textContent = '0';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('resultsScreen').classList.remove('show');
+
+            renderQuestion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            announceToScreenReader('Quiz restarted. Starting from question 1.');
+        }
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && !document.getElementById('nextButton').disabled) {
+                nextQuestion();
+            } else if (e.key === 'ArrowLeft' && currentQuestionIndex > 0) {
+                previousQuestion();
+            }
+        });
+
+        // Initialize quiz on page load
+        window.addEventListener('DOMContentLoaded', initializeQuiz);
+    </script>
+</body>
+</html>

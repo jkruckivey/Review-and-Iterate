@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Ferment to Consolidation</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+    --amber: #c8860a;
+    --amber-light: #fef3dc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--cream);
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 960px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(3,70,56,0.10);
+    border: 1px solid var(--border);
+  }
+  .main-header {
+    background: var(--ivey-green);
+    padding: 22px 36px;
+    text-align: center;
+  }
+  .main-header h1 { color: var(--cream); font-size: 1.4em; font-weight: 700; }
+  .main-header p { color: var(--pale-sage); font-size: 0.88em; margin-top: 5px; font-style: italic; }
+  .panels { display: grid; grid-template-columns: 1fr 1fr; }
+  .panel { padding: 28px 24px 28px; display: flex; flex-direction: column; gap: 16px; }
+  .panel-left { background: var(--white); border-right: 2px dashed var(--border); }
+  .panel-right { background: #f5faf9; }
+  .panel-label {
+    display: inline-block; font-size: 0.72em; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 20px; align-self: flex-start;
+  }
+  .label-ferment { background: var(--amber-light); color: var(--amber); border: 1px solid #e8c870; }
+  .label-consolidation { background: #e8f2ef; color: var(--ivey-green); border: 1px solid var(--pale-sage); }
+  .panel-title { font-size: 1.18em; font-weight: 700; line-height: 1.2; }
+  .title-ferment { color: var(--amber); }
+  .title-consolidation { color: var(--ivey-green); }
+  .panel-desc { font-size: 0.85em; color: var(--text-mid); line-height: 1.6; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .actors { display: flex; flex-direction: column; gap: 8px; }
+  .actor-row { display: flex; gap: 8px; }
+  .actor { flex: 1; border-radius: 7px; padding: 9px 11px; display: flex; flex-direction: column; gap: 3px; border: 1.5px solid transparent; }
+  .actor-ferment:nth-child(1) { border-color: #a8d4d6; background: #f0fafb; }
+  .actor-ferment:nth-child(2) { border-color: #c8bdd8; background: #f8f5fc; }
+  .actor-ferment:nth-child(3) { border-color: #e8c870; background: var(--amber-light); }
+  .actor-ferment:nth-child(4) { border-color: #a8bfbb; background: #f0f5f3; }
+  .actor-consolidation { background: #e8f2ef; border-color: var(--pale-sage); }
+  .actor-consolidation.winner { background: var(--ivey-green); border-color: var(--ivey-green); }
+  .actor-consolidation.faded { background: var(--cream); border-color: #e0e8e6; opacity: 0.5; }
+  .actor-icon { font-size: 1.1em; line-height: 1; }
+  .actor-name { font-size: 0.78em; font-weight: 700; line-height: 1.2; }
+  .actor-status { font-size: 0.72em; line-height: 1.3; }
+  .actor-ferment:nth-child(1) .actor-name { color: #2a7a7e; }
+  .actor-ferment:nth-child(2) .actor-name { color: #6a4a8a; }
+  .actor-ferment:nth-child(3) .actor-name { color: var(--amber); }
+  .actor-ferment:nth-child(4) .actor-name { color: var(--ivey-green); }
+  .actor-ferment .actor-status { color: var(--text-light); }
+  .actor-consolidation .actor-name { color: var(--ivey-green); }
+  .actor-consolidation .actor-status { color: var(--text-light); }
+  .actor-consolidation.winner .actor-name { color: var(--cream); }
+  .actor-consolidation.winner .actor-status { color: var(--pale-sage); }
+  .actor-consolidation.faded .actor-name { color: #aaa; }
+  .actor-consolidation.faded .actor-status { color: #bbb; }
+  .arrow-chaos { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; }
+  .arrow-chip { font-size: 0.72em; padding: 3px 8px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+  .chip-entering { background: #fef3dc; color: var(--amber); border: 1px solid #e8c870; }
+  .chip-experimenting { background: #f0fafb; color: #2a7a7e; border: 1px solid #a8d4d6; }
+  .chip-uncertain { background: #f8f5fc; color: #6a4a8a; border: 1px solid #c8bdd8; }
+  .chip-competing { background: #f0f5f3; color: var(--ivey-green); border: 1px solid #a8bfbb; }
+  .customer-zone { border-radius: 7px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .customer-ferment { background: var(--cream); border: 1.5px dashed #c8a030; }
+  .customer-consolidation { background: #e8f2ef; border: 1.5px solid var(--pale-sage); }
+  .customer-icon { font-size: 1.3em; }
+  .customer-text { font-size: 0.8em; line-height: 1.45; }
+  .customer-ferment .customer-text { color: var(--amber); }
+  .customer-consolidation .customer-text { color: var(--ivey-green); }
+  .timeline { display: flex; flex-direction: column; gap: 6px; }
+  .timeline-item { display: flex; align-items: flex-start; gap: 10px; }
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+  .dot-winner { background: var(--ivey-green); }
+  .dot-exit { background: #c0c0c0; }
+  .dot-scale { background: var(--pale-blue); border: 1.5px solid #6abcc0; }
+  .dot-capital { background: var(--pale-purple); border: 1.5px solid #a890c0; }
+  .timeline-text { font-size: 0.8em; color: var(--text-mid); line-height: 1.4; }
+  .timeline-text strong { color: var(--ivey-green); }
+  .callout-bar { border-radius: 6px; padding: 9px 12px; font-size: 0.8em; line-height: 1.45; display: flex; gap: 8px; align-items: flex-start; }
+  .callout-ferment { background: var(--amber-light); border-left: 3px solid var(--amber); color: #7a5000; }
+  .callout-consolidation { background: #e8f2ef; border-left: 3px solid var(--ivey-green); color: var(--ivey-green); }
+  .callout-icon { font-size: 1em; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="main-header">
+    <h1>How Markets Transform Around a Dominant Design</h1>
+    <p>The shift from creative ferment to consolidation reshapes every industry it touches</p>
+  </div>
+
+  <div class="panels">
+
+    <!-- LEFT: Creative Ferment -->
+    <div class="panel panel-left">
+      <span class="panel-label label-ferment">Stage One</span>
+      <div class="panel-title title-ferment">Creative Ferment</div>
+      <div class="panel-desc">No one has a lock on the market. Producers and customers are both experimenting. No single design has yet won the allegiance of the marketplace.</div>
+      <div class="actors">
+        <div class="actor-row">
+          <div class="actor actor-ferment">
+            <div class="actor-icon">🚀</div>
+            <div class="actor-name">Pioneering Firm</div>
+            <div class="actor-status">Launched the new product category</div>
+          </div>
+          <div class="actor actor-ferment">
+            <div class="actor-icon">⚡</div>
+            <div class="actor-name">New Entrant A</div>
+            <div class="actor-status">Trying a novel design</div>
+          </div>
+        </div>
+        <div class="actor-row">
+          <div class="actor actor-ferment">
+            <div class="actor-icon">🏭</div>
+            <div class="actor-name">Established Firm</div>
+            <div class="actor-status">Pushing its own version</div>
+          </div>
+          <div class="actor actor-ferment">
+            <div class="actor-icon">🔬</div>
+            <div class="actor-name">New Entrant B</div>
+            <div class="actor-status">Experimenting with yet another approach</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow-chaos">
+        <span class="arrow-chip chip-entering">↗ New firms entering</span>
+        <span class="arrow-chip chip-experimenting">⟳ Designs evolving</span>
+        <span class="arrow-chip chip-uncertain">? No perfected design</span>
+        <span class="arrow-chip chip-competing">⊕ Low barriers to entry</span>
+      </div>
+      <div class="customer-zone customer-ferment">
+        <div class="customer-icon">👥</div>
+        <div class="customer-text"><strong>Customers:</strong> Uncommitted. Watching. Trying different options. No design has won their allegiance yet.</div>
+      </div>
+      <div class="callout-bar callout-ferment">
+        <span class="callout-icon">💡</span>
+        <span>Competitive advantage goes to firms with the <strong>best ideas</strong>. Innovation is rapid. The market is wide open.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Consolidation -->
+    <div class="panel panel-right">
+      <span class="panel-label label-consolidation">Stage Two</span>
+      <div class="panel-title title-consolidation">Consolidation</div>
+      <div class="panel-desc">One design has won. Uncertainty is resolved. The market reorganizes around the dominant design and the firm that owns it.</div>
+      <div class="actors">
+        <div class="actor-row">
+          <div class="actor actor-consolidation winner" style="flex:2;">
+            <div class="actor-icon">🏆</div>
+            <div class="actor-name">The Winner</div>
+            <div class="actor-status">Owns the standard. Scaling rapidly. Licensing decisions now shape the whole industry.</div>
+          </div>
+          <div class="actor actor-consolidation faded">
+            <div class="actor-icon">↘</div>
+            <div class="actor-name">Firm A</div>
+            <div class="actor-status">Exited or absorbed</div>
+          </div>
+        </div>
+        <div class="actor-row">
+          <div class="actor actor-consolidation faded">
+            <div class="actor-icon">↘</div>
+            <div class="actor-name">Firm B</div>
+            <div class="actor-status">Exited or absorbed</div>
+          </div>
+          <div class="actor actor-consolidation" style="flex:2;">
+            <div class="actor-icon">🏭</div>
+            <div class="actor-name">Surviving Firms</div>
+            <div class="actor-status">Produce similar designs. Compete on cost and scale, not originality.</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot dot-winner"></div>
+          <div class="timeline-text"><strong>Dominant design emerges</strong> — uncertainty resolved</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot dot-scale"></div>
+          <div class="timeline-text"><strong>Firms invest in scaling</strong> — manufacturing, distribution, efficiency</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot dot-capital"></div>
+          <div class="timeline-text"><strong>Capital beats ideas</strong> — advantage shifts to firms that can afford to scale</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot dot-exit"></div>
+          <div class="timeline-text"><strong>Market consolidates</strong> — fewer firms, similar products, stable structure</div>
+        </div>
+      </div>
+      <div class="customer-zone customer-consolidation">
+        <div class="customer-icon">👥</div>
+        <div class="customer-text"><strong>Customers:</strong> Committed to the standard. Switching costs are now real. The choice has effectively been made.</div>
+      </div>
+      <div class="callout-bar callout-consolidation">
+        <span class="callout-icon">🔒</span>
+        <span>Competitive advantage shifts to firms with the <strong>capital to scale</strong>. Innovation continues, but within the constraints of the dominant design.</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

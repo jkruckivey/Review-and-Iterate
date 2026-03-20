@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Equation Classifier - Fundamentals of Accounting</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --error-red: #C62828;
+            --success-green: #2E7D32;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.03) 0%, rgba(164, 181, 68, 0.03) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .equation-display {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 3px solid var(--ivey-green);
+            text-align: center;
+        }
+
+        .equation-display h2 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--ivey-green);
+            font-weight: 700;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 8px;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .challenge-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--medium-gray);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 2px solid var(--dark-gray);
+        }
+
+        .toggle-switch:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .toggle-switch.active {
+            background: var(--purple);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: var(--white);
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 24px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--medium-gray);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .classification-area {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .item-card {
+            background: linear-gradient(135deg, rgba(0, 147, 169, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 3px solid var(--turquoise);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:focus-within {
+            box-shadow: 0 0 0 4px rgba(164, 181, 68, 0.3);
+        }
+
+        .item-card.correct {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-color: var(--success-green);
+        }
+
+        .item-card.incorrect {
+            background: linear-gradient(135deg, rgba(198, 40, 40, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-color: var(--error-red);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item-number {
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .item-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--ivey-green);
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .hint-button {
+            background: var(--purple);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .hint-button:hover:not(:disabled) {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+        }
+
+        .hint-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .hint-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint-box {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-left: 4px solid var(--purple);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-style: italic;
+            color: var(--dark-gray);
+        }
+
+        .classification-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .classify-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: 3px solid;
+            border-radius: 8px;
+            background: var(--white);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .classify-btn:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 3px;
+        }
+
+        .classify-btn.asset {
+            border-color: var(--ivey-green);
+            color: var(--ivey-green);
+        }
+
+        .classify-btn.asset:hover:not(:disabled) {
+            background: var(--ivey-green);
+            color: var(--white);
+        }
+
+        .classify-btn.liability {
+            border-color: var(--turquoise);
+            color: var(--turquoise);
+        }
+
+        .classify-btn.liability:hover:not(:disabled) {
+            background: var(--turquoise);
+            color: var(--white);
+        }
+
+        .classify-btn.equity {
+            border-color: var(--purple);
+            color: var(--purple);
+        }
+
+        .classify-btn.equity:hover:not(:disabled) {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .classify-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .classify-btn.selected {
+            transform: scale(0.95);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15) 0%, rgba(255, 255, 255, 1) 100%);
+            border-left: 4px solid var(--success-green);
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, rgba(198, 40, 40, 0.15) 0%, rgba(255, 255, 255, 1) 100%);
+            border-left: 4px solid var(--error-red);
+            color: var(--error-red);
+        }
+
+        .feedback-explanation {
+            margin-top: 10px;
+            color: var(--dark-gray);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .summary-panel {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-title {
+            font-size: 1.5rem;
+            color: var(--ivey-green);
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-bottom: 3px solid var(--ivey-green);
+            padding-bottom: 10px;
+        }
+
+        .category-section {
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: var(--white);
+        }
+
+        .category-header.assets {
+            background: var(--ivey-green);
+        }
+
+        .category-header.liabilities {
+            background: var(--turquoise);
+        }
+
+        .category-header.equity {
+            background: var(--purple);
+        }
+
+        .category-items {
+            padding-left: 15px;
+            min-height: 30px;
+        }
+
+        .category-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: var(--light-gray);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            border-left: 3px solid;
+        }
+
+        .category-item.assets {
+            border-color: var(--ivey-green);
+        }
+
+        .category-item.liabilities {
+            border-color: var(--turquoise);
+        }
+
+        .category-item.equity {
+            border-color: var(--purple);
+        }
+
+        .empty-category {
+            color: var(--medium-gray);
+            font-style: italic;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 2px solid var(--bright-green);
+            border-radius: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--ivey-green);
+        }
+
+        .completion-screen {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .completion-screen h2 {
+            font-size: 2rem;
+            color: var(--ivey-green);
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin: 20px 0;
+        }
+
+        .performance-message {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            color: var(--dark-gray);
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .restart-btn:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 3px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, rgba(164, 181, 68, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border: 2px solid var(--bright-green);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h3 {
+            color: var(--ivey-green);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+
+        .instructions strong {
+            color: var(--purple);
+        }
+
+        @media (max-width: 768px) {
+            .classification-buttons {
+                flex-direction: column;
+            }
+
+            .classify-btn {
+                min-width: 100%;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .summary-panel {
+                position: static;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Accounting Equation Classifier</h1>
+            <p class="subtitle">Master the fundamentals: Assets = Liabilities + Equity</p>
+        </header>
+
+        <div class="equation-display" role="region" aria-label="Accounting Equation">
+            <h2>ASSETS = LIABILITIES + EQUITY</h2>
+        </div>
+
+        <div class="instructions" role="region" aria-label="Instructions">
+            <h3>How to Use This Activity</h3>
+            <ul>
+                <li><strong>Classify each item</strong> by clicking Asset, Liability, or Equity buttons</li>
+                <li><strong>Need help?</strong> Click "Show Hint" for progressive clues (up to 3 hints per item)</li>
+                <li><strong>Challenge Mode:</strong> Toggle on to remove hints and test your mastery</li>
+                <li><strong>Keyboard Navigation:</strong> Use Tab to move between elements, Enter/Space to activate buttons</li>
+                <li><strong>Track Progress:</strong> Watch the summary panel update as you classify items correctly</li>
+            </ul>
+        </div>
+
+        <div class="controls">
+            <div class="challenge-toggle">
+                <label for="challenge-mode" class="toggle-label">Challenge Mode</label>
+                <div class="toggle-switch"
+                     id="challenge-mode"
+                     role="switch"
+                     aria-checked="false"
+                     tabindex="0"
+                     aria-label="Toggle Challenge Mode">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-label" id="progress-label">Progress: 0 of 10 items classified</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10" aria-labelledby="progress-label">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%;">
+                        <span>0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <section class="classification-area" id="classification-area" role="main" aria-label="Classification Activity">
+                <!-- Items will be inserted here dynamically -->
+            </section>
+
+            <aside class="summary-panel" role="complementary" aria-label="Classification Summary">
+                <h2 class="summary-title">Your Classifications</h2>
+
+                <div class="category-section">
+                    <div class="category-header assets">Assets</div>
+                    <div class="category-items" id="assets-list" aria-live="polite" aria-atomic="false">
+                        <div class="empty-category">No items classified yet</div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-header liabilities">Liabilities</div>
+                    <div class="category-items" id="liabilities-list" aria-live="polite" aria-atomic="false">
+                        <div class="empty-category">No items classified yet</div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <div class="category-header equity">Equity</div>
+                    <div class="category-items" id="equity-list" aria-live="polite" aria-atomic="false">
+                        <div class="empty-category">No items classified yet</div>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Correct:</span>
+                        <span class="stat-value" id="correct-count">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Incorrect:</span>
+                        <span class="stat-value" id="incorrect-count">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Accuracy:</span>
+                        <span class="stat-value" id="accuracy">0%</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <div aria-live="assertive" aria-atomic="true" class="visually-hidden" id="status-announcer"></div>
+    </div>
+
+    <script>
+        // Accounting items data
+        const ITEMS = [
+            {
+                id: 1,
+                name: "Cash in Bank",
+                category: "asset",
+                hints: [
+                    "Can the company use this immediately?",
+                    "Think: Does the business own this or owe it?",
+                    "If it's something the company can sell or use to produce revenue, think asset."
+                ],
+                explanation: "Cash in Bank is an Asset because it's a resource the company owns and can use immediately to generate revenue or pay obligations."
+            },
+            {
+                id: 2,
+                name: "Bank Loan",
+                category: "liability",
+                hints: [
+                    "Does the business owe it to someone else?",
+                    "Who owes the money—the business or the bank?",
+                    "If the business will have to pay this in the future, it's probably a liability."
+                ],
+                explanation: "Bank Loan is a Liability because the business has an obligation to repay the borrowed money to the bank in the future."
+            },
+            {
+                id: 3,
+                name: "Office Furniture",
+                category: "asset",
+                hints: [
+                    "Does this help the business operate or earn money?",
+                    "Can the business sell this or use it for operations?",
+                    "If it's something the company can sell or use to produce revenue, think asset."
+                ],
+                explanation: "Office Furniture is an Asset because it's a resource owned by the business that provides value and supports operations."
+            },
+            {
+                id: 4,
+                name: "Accounts Payable",
+                category: "liability",
+                hints: [
+                    "Is this something the business needs to pay soon?",
+                    "Does the company owe this to suppliers or vendors?",
+                    "If the business will have to pay this in the future, it's probably a liability."
+                ],
+                explanation: "Accounts Payable is a Liability because it represents money the business owes to suppliers for goods or services received on credit."
+            },
+            {
+                id: 5,
+                name: "Owner's Capital",
+                category: "equity",
+                hints: [
+                    "Did the owner put this into the business?",
+                    "Does this represent the owner's investment?",
+                    "If it represents the owner's residual interest after debts, think equity."
+                ],
+                explanation: "Owner's Capital is Equity because it represents the owner's initial and ongoing investment in the business—their claim after liabilities are paid."
+            },
+            {
+                id: 6,
+                name: "Inventory",
+                category: "asset",
+                hints: [
+                    "Can this be sold or used to generate revenue?",
+                    "Does the business own goods intended for sale?",
+                    "If it's something the company can sell or use to produce revenue, think asset."
+                ],
+                explanation: "Inventory is an Asset because it represents goods the business owns and intends to sell to generate revenue."
+            },
+            {
+                id: 7,
+                name: "Accounts Receivable",
+                category: "asset",
+                hints: [
+                    "Is this money others owe the business?",
+                    "Will the business receive cash for this in the future?",
+                    "If it's something the company can sell or use to produce revenue, think asset."
+                ],
+                explanation: "Accounts Receivable is an Asset because it represents money customers owe the business for goods or services already provided."
+            },
+            {
+                id: 8,
+                name: "Retained Earnings",
+                category: "equity",
+                hints: [
+                    "Is this what's left after profits and paying debts?",
+                    "Does this represent accumulated profits kept in the business?",
+                    "If it represents the owner's residual interest after debts, think equity."
+                ],
+                explanation: "Retained Earnings is Equity because it represents the accumulated profits that have been reinvested in the business rather than distributed to owners."
+            },
+            {
+                id: 9,
+                name: "Prepaid Insurance",
+                category: "asset",
+                hints: [
+                    "Has the business already paid for a future benefit?",
+                    "Does the company own the right to insurance coverage?",
+                    "If it's something the company can sell or use to produce revenue, think asset."
+                ],
+                explanation: "Prepaid Insurance is an Asset because the business has already paid for insurance coverage that will provide future benefits."
+            },
+            {
+                id: 10,
+                name: "Mortgage Payable",
+                category: "liability",
+                hints: [
+                    "Is this a long-term obligation the business must repay?",
+                    "Does the business owe this on property or buildings?",
+                    "If the business will have to pay this in the future, it's probably a liability."
+                ],
+                explanation: "Mortgage Payable is a Liability because it represents a long-term obligation to repay borrowed money secured by property or buildings."
+            }
+        ];
+
+        // State management
+        let challengeMode = false;
+        let currentItems = [];
+        let userAnswers = {};
+        let correctCount = 0;
+        let incorrectCount = 0;
+
+        // Initialize application
+        function init() {
+            currentItems = [...ITEMS];
+            renderItems();
+            setupEventListeners();
+            announceToScreenReader("Accounting Equation Classifier loaded. 10 items to classify.");
+        }
+
+        // Render all items
+        function renderItems() {
+            const container = document.getElementById('classification-area');
+            container.innerHTML = '';
+
+            currentItems.forEach((item, index) => {
+                const itemCard = createItemCard(item, index);
+                container.appendChild(itemCard);
+            });
+        }
+
+        // Create individual item card
+        function createItemCard(item, index) {
+            const card = document.createElement('article');
+            card.className = 'item-card';
+            card.id = `item-${item.id}`;
+            card.setAttribute('aria-labelledby', `item-name-${item.id}`);
+
+            const answered = userAnswers[item.id];
+            if (answered) {
+                card.classList.add(answered.correct ? 'correct' : 'incorrect');
+            }
+
+            card.innerHTML = `
+                <div class="item-header">
+                    <span class="item-number" aria-label="Item number">${index + 1}</span>
+                    <h3 class="item-name" id="item-name-${item.id}">${item.name}</h3>
+                    ${!challengeMode ? `
+                        <button class="hint-button"
+                                id="hint-btn-${item.id}"
+                                aria-label="Show hint for ${item.name}"
+                                ${answered ? 'disabled' : ''}>
+                            Show Hint
+                        </button>
+                    ` : ''}
+                </div>
+
+                <div id="hint-container-${item.id}" role="status" aria-live="polite"></div>
+
+                <div class="classification-buttons" role="group" aria-label="Classification options for ${item.name}">
+                    <button class="classify-btn asset"
+                            data-item-id="${item.id}"
+                            data-category="asset"
+                            aria-label="Classify as Asset"
+                            ${answered ? 'disabled' : ''}>
+                        Asset
+                    </button>
+                    <button class="classify-btn liability"
+                            data-item-id="${item.id}"
+                            data-category="liability"
+                            aria-label="Classify as Liability"
+                            ${answered ? 'disabled' : ''}>
+                        Liability
+                    </button>
+                    <button class="classify-btn equity"
+                            data-item-id="${item.id}"
+                            data-category="equity"
+                            aria-label="Classify as Equity"
+                            ${answered ? 'disabled' : ''}>
+                        Equity
+                    </button>
+                </div>
+
+                <div id="feedback-${item.id}" role="status" aria-live="assertive"></div>
+            `;
+
+            return card;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Challenge mode toggle
+            const toggleSwitch = document.getElementById('challenge-mode');
+            toggleSwitch.addEventListener('click', toggleChallengeMode);
+            toggleSwitch.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleChallengeMode();
+                }
+            });
+
+            // Classification buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('classify-btn')) {
+                    handleClassification(e.target);
+                }
+
+                if (e.target.classList.contains('hint-button')) {
+                    showHint(e.target);
+                }
+
+                if (e.target.classList.contains('restart-btn')) {
+                    restartActivity();
+                }
+            });
+        }
+
+        // Toggle challenge mode
+        function toggleChallengeMode() {
+            challengeMode = !challengeMode;
+            const toggleSwitch = document.getElementById('challenge-mode');
+            toggleSwitch.classList.toggle('active');
+            toggleSwitch.setAttribute('aria-checked', challengeMode);
+
+            announceToScreenReader(`Challenge mode ${challengeMode ? 'enabled' : 'disabled'}. Hints are now ${challengeMode ? 'hidden' : 'available'}.`);
+
+            renderItems();
+        }
+
+        // Show progressive hints
+        function showHint(button) {
+            const itemId = parseInt(button.id.replace('hint-btn-', ''));
+            const item = ITEMS.find(i => i.id === itemId);
+            const container = document.getElementById(`hint-container-${itemId}`);
+
+            if (!userAnswers[itemId]) {
+                userAnswers[itemId] = { hintsShown: 0 };
+            }
+
+            const hintsShown = userAnswers[itemId].hintsShown || 0;
+
+            if (hintsShown < item.hints.length) {
+                const hintBox = document.createElement('div');
+                hintBox.className = 'hint-box';
+                hintBox.textContent = `Hint ${hintsShown + 1}: ${item.hints[hintsShown]}`;
+                container.appendChild(hintBox);
+
+                userAnswers[itemId].hintsShown = hintsShown + 1;
+
+                announceToScreenReader(`Hint ${hintsShown + 1} shown: ${item.hints[hintsShown]}`);
+
+                if (hintsShown + 1 >= item.hints.length) {
+                    button.disabled = true;
+                    button.textContent = 'All Hints Shown';
+                }
+            }
+        }
+
+        // Handle classification
+        function handleClassification(button) {
+            const itemId = parseInt(button.dataset.itemId);
+            const selectedCategory = button.dataset.category;
+            const item = ITEMS.find(i => i.id === itemId);
+
+            const isCorrect = selectedCategory === item.category;
+
+            // Visual feedback
+            button.classList.add('selected');
+
+            // Update user answers
+            userAnswers[itemId] = {
+                ...userAnswers[itemId],
+                selectedCategory,
+                correct: isCorrect,
+                answered: true
+            };
+
+            // Update counts
+            if (isCorrect) {
+                correctCount++;
+            } else {
+                incorrectCount++;
+            }
+
+            // Show feedback
+            showFeedback(itemId, isCorrect, item);
+
+            // Update UI
+            updateSummaryPanel();
+            updateProgress();
+            updateStats();
+
+            // Disable buttons for this item
+            const itemCard = document.getElementById(`item-${itemId}`);
+            itemCard.classList.add(isCorrect ? 'correct' : 'incorrect');
+            const buttons = itemCard.querySelectorAll('.classify-btn, .hint-button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Announce result
+            announceToScreenReader(`${isCorrect ? 'Correct' : 'Incorrect'}. ${item.name} is a ${item.category}. ${item.explanation}`);
+
+            // Check if complete
+            if (Object.keys(userAnswers).filter(id => userAnswers[id].answered).length === ITEMS.length) {
+                setTimeout(showCompletionScreen, 1000);
+            }
+        }
+
+        // Show feedback
+        function showFeedback(itemId, isCorrect, item) {
+            const feedbackContainer = document.getElementById(`feedback-${itemId}`);
+            feedbackContainer.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            feedbackContainer.innerHTML = `
+                <div>${isCorrect ? 'Correct!' : 'Incorrect'}</div>
+                <div class="feedback-explanation">${item.explanation}</div>
+            `;
+        }
+
+        // Update summary panel
+        function updateSummaryPanel() {
+            const assetsList = document.getElementById('assets-list');
+            const liabilitiesList = document.getElementById('liabilities-list');
+            const equityList = document.getElementById('equity-list');
+
+            const categorized = {
+                asset: [],
+                liability: [],
+                equity: []
+            };
+
+            Object.keys(userAnswers).forEach(itemId => {
+                const answer = userAnswers[itemId];
+                if (answer.answered && answer.correct) {
+                    const item = ITEMS.find(i => i.id === parseInt(itemId));
+                    categorized[item.category].push(item.name);
+                }
+            });
+
+            assetsList.innerHTML = categorized.asset.length > 0
+                ? categorized.asset.map(name => `<div class="category-item assets">${name}</div>`).join('')
+                : '<div class="empty-category">No items classified yet</div>';
+
+            liabilitiesList.innerHTML = categorized.liability.length > 0
+                ? categorized.liability.map(name => `<div class="category-item liabilities">${name}</div>`).join('')
+                : '<div class="empty-category">No items classified yet</div>';
+
+            equityList.innerHTML = categorized.equity.length > 0
+                ? categorized.equity.map(name => `<div class="category-item equity">${name}</div>`).join('')
+                : '<div class="empty-category">No items classified yet</div>';
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const answeredCount = Object.keys(userAnswers).filter(id => userAnswers[id].answered).length;
+            const percentage = (answeredCount / ITEMS.length) * 100;
+
+            const progressFill = document.getElementById('progress-fill');
+            const progressLabel = document.getElementById('progress-label');
+            const progressBar = progressFill.parentElement;
+
+            progressFill.style.width = `${percentage}%`;
+            progressFill.querySelector('span').textContent = `${Math.round(percentage)}%`;
+            progressLabel.textContent = `Progress: ${answeredCount} of ${ITEMS.length} items classified`;
+            progressBar.setAttribute('aria-valuenow', answeredCount);
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('incorrect-count').textContent = incorrectCount;
+
+            const total = correctCount + incorrectCount;
+            const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+
+        // Show completion screen
+        function showCompletionScreen() {
+            const total = ITEMS.length;
+            const percentage = Math.round((correctCount / total) * 100);
+
+            let message = '';
+            if (percentage === 100) {
+                message = 'Perfect! You have mastered the accounting equation!';
+            } else if (percentage >= 80) {
+                message = 'Great job! You have a strong understanding of the accounting equation.';
+            } else if (percentage >= 60) {
+                message = 'Good effort! Review the explanations and try again to improve.';
+            } else {
+                message = 'Keep practicing! Review the feedback and hints to strengthen your understanding.';
+            }
+
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="completion-screen" role="dialog" aria-labelledby="completion-title">
+                    <h2 id="completion-title">Activity Complete!</h2>
+                    <div class="score-display" aria-label="Your score">${correctCount} / ${total}</div>
+                    <div class="performance-message">${message}</div>
+
+                    <div class="stats">
+                        <div class="stat-row">
+                            <span class="stat-label">Correct:</span>
+                            <span class="stat-value">${correctCount}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Incorrect:</span>
+                            <span class="stat-value">${incorrectCount}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Accuracy:</span>
+                            <span class="stat-value">${percentage}%</span>
+                        </div>
+                        ${!challengeMode ? `
+                        <div class="stat-row">
+                            <span class="stat-label">Total Hints Used:</span>
+                            <span class="stat-value">${Object.values(userAnswers).reduce((sum, ans) => sum + (ans.hintsShown || 0), 0)}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <button class="restart-btn" aria-label="Restart activity">Try Again</button>
+                </div>
+            `;
+
+            announceToScreenReader(`Activity complete! You scored ${correctCount} out of ${total}. ${message}`);
+        }
+
+        // Restart activity
+        function restartActivity() {
+            userAnswers = {};
+            correctCount = 0;
+            incorrectCount = 0;
+            challengeMode = false;
+
+            location.reload();
+        }
+
+        // Announce to screen reader
+        function announceToScreenReader(message) {
+            const announcer = document.getElementById('status-announcer');
+            announcer.textContent = '';
+            setTimeout(() => {
+                announcer.textContent = message;
+            }, 100);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

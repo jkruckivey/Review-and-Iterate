@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Planning Simulation</title>
+    <style>
+        :root {
+            --primary: #165c55;
+            --accent: #5b3a85;
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #f59e0b;
+            --bg-light: #f8fafa;
+            --bg-card: #ffffff;
+            --callout-bg: #d4e9e8;
+            --text-dark: #0f1419;
+            --text-medium: #475569;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            font-size: 1.05rem;
+            color: var(--text-medium);
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
+        .scenario {
+            background: var(--callout-bg);
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .scenario-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .goal-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .goal-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .goal-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .step-builder {
+            background: var(--bg-light);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .step-item {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .step-item.selected {
+            border-color: var(--primary);
+            background: #e6f4f3;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .step-item.selected .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.875rem;
+            margin: 1rem 0;
+        }
+
+        .tool-option {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tool-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .tool-option.selected {
+            border-color: var(--primary);
+            background: #e6f4f3;
+        }
+
+        .tool-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .tool-desc {
+            font-size: 0.8rem;
+            color: var(--text-medium);
+            line-height: 1.3;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .radio-option {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            background: var(--bg-light);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.875rem;
+            cursor: pointer;
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            margin-top: 0.2rem;
+        }
+
+        .radio-content {
+            flex: 1;
+        }
+
+        .radio-option strong {
+            display: block;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+        }
+
+        .radio-option span {
+            color: var(--text-medium);
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #114741;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset {
+            background: #6b7280;
+            margin-left: 1rem;
+        }
+
+        .btn-reset:hover {
+            background: #4b5563;
+        }
+
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 6px;
+            animation: slideIn 0.4s ease-out;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d1fae5;
+            border-left: 4px solid var(--success);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            border-left: 4px solid var(--error);
+        }
+
+        .feedback h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .feedback.correct h3 {
+            color: var(--success);
+        }
+
+        .feedback.incorrect h3 {
+            color: var(--error);
+        }
+
+        .explanation {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .explanation h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .key-insight {
+            background: #fef3c7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .key-insight strong {
+            color: #92400e;
+        }
+
+        .instruction {
+            background: #e0f2fe;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 3px solid #0284c7;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-reset {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Agent Planning Simulation</h1>
+            <p class="subtitle">Plan how an autonomous agent should accomplish a business goal</p>
+        </header>
+
+        <div class="card scenario">
+            <h2>The Challenge</h2>
+            <p class="scenario-text">
+                You're configuring an AI agent to help your sales team with competitive intelligence. 
+                The agent will work autonomously to gather information and deliver insights.
+            </p>
+            <p class="scenario-text">
+                Your task: Plan the steps the agent should take and identify which tools it needs.
+            </p>
+
+            <div class="goal-box">
+                <div class="goal-label">Agent Goal</div>
+                <div class="goal-text">"Research our main competitor's recent product launches and create a summary report"</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 1: What's the First Step?</h2>
+            <p class="scenario-text">
+                An AI agent breaks down goals into actionable steps. What should the agent do FIRST?
+            </p>
+
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="first_step" value="identify">
+                    <div class="radio-content">
+                        <strong>Identify the main competitor</strong>
+                        <span>Check internal systems to determine who the main competitor is</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="first_step" value="search">
+                    <div class="radio-content">
+                        <strong>Search the web for product launches</strong>
+                        <span>Start searching immediately for recent product news</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="first_step" value="report">
+                    <div class="radio-content">
+                        <strong>Create the report template</strong>
+                        <span>Set up the structure of the final deliverable first</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="first_step" value="database">
+                    <div class="radio-content">
+                        <strong>Check existing reports</strong>
+                        <span>Look for previous competitive intelligence reports</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 2: Which Tools Does the Agent Need?</h2>
+            <p class="scenario-text">
+                Select ALL the tools the agent would likely need to accomplish this goal. (Select multiple)
+            </p>
+
+            <div class="instruction">
+                <strong>Instructions:</strong> Click on each tool the agent should use. You can select multiple tools.
+            </div>
+
+            <div class="tool-grid">
+                <div class="tool-option" data-tool="crm" onclick="toggleTool(this)">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-name">CRM Database</div>
+                    <div class="tool-desc">Query customer and competitor data</div>
+                </div>
+
+                <div class="tool-option" data-tool="web" onclick="toggleTool(this)">
+                    <div class="tool-icon">🌐</div>
+                    <div class="tool-name">Web Search</div>
+                    <div class="tool-desc">Search for public information</div>
+                </div>
+
+                <div class="tool-option" data-tool="fetch" onclick="toggleTool(this)">
+                    <div class="tool-icon">📄</div>
+                    <div class="tool-name">Web Page Fetcher</div>
+                    <div class="tool-desc">Read full content from URLs</div>
+                </div>
+
+                <div class="tool-option" data-tool="email" onclick="toggleTool(this)">
+                    <div class="tool-icon">📧</div>
+                    <div class="tool-name">Email System</div>
+                    <div class="tool-desc">Send the final report</div>
+                </div>
+
+                <div class="tool-option" data-tool="calendar" onclick="toggleTool(this)">
+                    <div class="tool-icon">📅</div>
+                    <div class="tool-name">Calendar API</div>
+                    <div class="tool-desc">Schedule meetings</div>
+                </div>
+
+                <div class="tool-option" data-tool="doc" onclick="toggleTool(this)">
+                    <div class="tool-icon">📝</div>
+                    <div class="tool-name">Document Creator</div>
+                    <div class="tool-desc">Generate formatted reports</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Question 3: The Agent Encounters an Obstacle</h2>
+            <p class="scenario-text">
+                After searching, the agent finds 20 news articles about the competitor. That's too many to process 
+                efficiently. What should an effective agent do?
+            </p>
+
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="adapt" value="all">
+                    <div class="radio-content">
+                        <strong>Read all 20 articles anyway</strong>
+                        <span>Process everything to ensure nothing is missed</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="adapt" value="filter">
+                    <div class="radio-content">
+                        <strong>Filter by date and relevance</strong>
+                        <span>Narrow down to the 5 most recent and relevant articles before reading</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="adapt" value="first">
+                    <div class="radio-content">
+                        <strong>Just read the first article</strong>
+                        <span>Use one article to save time and resources</span>
+                    </div>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="adapt" value="stop">
+                    <div class="radio-content">
+                        <strong>Stop and ask for human help</strong>
+                        <span>This is too complex for the agent to handle alone</span>
+                    </div>
+                </label>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <button class="btn" onclick="checkAnswers()">Submit Answers</button>
+                <button class="btn btn-reset" onclick="resetActivity()">Reset Activity</button>
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback">
+            <!-- Feedback will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        let selectedTools = new Set();
+
+        function toggleTool(element) {
+            const tool = element.dataset.tool;
+            
+            if (selectedTools.has(tool)) {
+                selectedTools.delete(tool);
+                element.classList.remove('selected');
+            } else {
+                selectedTools.add(tool);
+                element.classList.add('selected');
+            }
+        }
+
+        function checkAnswers() {
+            const firstStep = document.querySelector('input[name="first_step"]:checked');
+            const adapt = document.querySelector('input[name="adapt"]:checked');
+
+            // Validation
+            if (!firstStep) {
+                alert('Please answer Question 1: What should the agent do first?');
+                return;
+            }
+
+            if (selectedTools.size === 0) {
+                alert('Please select at least one tool for Question 2.');
+                return;
+            }
+
+            if (!adapt) {
+                alert('Please answer Question 3: How should the agent adapt?');
+                return;
+            }
+
+            // Correct answers
+            const correctFirstStep = 'identify';
+            const correctTools = new Set(['crm', 'web', 'fetch', 'doc']);
+            const correctAdapt = 'filter';
+
+            // Check if answers are correct
+            const firstStepCorrect = firstStep.value === correctFirstStep;
+            
+            // Tools: correct if they selected the right ones and didn't select wrong ones
+            const toolsCorrect = 
+                selectedTools.has('crm') && 
+                selectedTools.has('web') && 
+                selectedTools.has('fetch') && 
+                selectedTools.has('doc') &&
+                !selectedTools.has('email') &&
+                !selectedTools.has('calendar');
+            
+            const adaptCorrect = adapt.value === correctAdapt;
+
+            const allCorrect = firstStepCorrect && toolsCorrect && adaptCorrect;
+
+            // Generate feedback
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback show ' + (allCorrect ? 'correct' : 'incorrect');
+
+            let feedbackHTML = '';
+
+            if (allCorrect) {
+                feedbackHTML = `
+                    <h3>Excellent Agent Design!</h3>
+                    <p>You've correctly planned how an AI agent should approach this task. Here's why your answers demonstrate good understanding:</p>
+                    
+                    <div class="explanation">
+                        <h4>✓ First Step: Identify the Main Competitor</h4>
+                        <p>Agents need to gather context before taking action. Before searching for "our competitor's products," the agent needs to know WHO the competitor is. This shows good reasoning - the agent checks internal systems (like the CRM) to identify the target of the research.</p>
+
+                        <h4 style="margin-top: 1rem;">✓ Tools Selected: CRM, Web Search, Web Fetcher, Document Creator</h4>
+                        <p>You correctly identified the essential tools:</p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong>CRM Database:</strong> To identify who the main competitor is</li>
+                            <li><strong>Web Search:</strong> To find news about product launches</li>
+                            <li><strong>Web Page Fetcher:</strong> To read the full articles (search only gives summaries)</li>
+                            <li><strong>Document Creator:</strong> To generate the final formatted report</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem;">You correctly didn't select Email (no requirement to send it) or Calendar (no meetings to schedule).</p>
+
+                        <h4 style="margin-top: 1rem;">✓ Adaptation: Filter by Date and Relevance</h4>
+                        <p>This shows sophisticated agent behavior. Good agents don't just blindly process everything - they reason about efficiency. Filtering to the 5 most relevant articles before reading demonstrates the kind of adaptive reasoning that makes agents effective. The agent observes a problem (too many results) and adjusts its strategy.</p>
+
+                        <div class="key-insight" style="margin-top: 1rem;">
+                            <strong>Key Principle:</strong> Effective agents don't just execute steps - they reason, adapt, and make strategic decisions. They break down ambiguous goals into concrete steps, select appropriate tools, and adjust their approach when they encounter obstacles. This reasoning ability is what distinguishes agentic AI from simple automation.
+                        </div>
+                    </div>
+                `;
+            } else {
+                feedbackHTML = `
+                    <h3>Let's Refine Your Agent Planning</h3>
+                    <p>Review the hints below and think about how agents reason through tasks:</p>
+                    
+                    <div class="explanation">
+                        ${!firstStepCorrect ? `
+                            <h4>❌ First Step needs reconsideration</h4>
+                            <p><strong>Think about:</strong> The goal mentions "our main competitor." Before the agent can research them, what does it need to know?</p>
+                            <p><strong>Hint:</strong> An agent can't search for "competitor's product launches" without knowing which company to research. What information is missing that the agent needs to find first?</p>
+                            <p>Good agents gather necessary context before taking action. They don't make assumptions.</p>
+                        ` : `
+                            <h4>✓ First Step: Correct!</h4>
+                        `}
+
+                        ${!toolsCorrect ? `
+                            <h4 style="margin-top: 1rem;">❌ Tool Selection needs adjustment</h4>
+                            <p><strong>Think about the workflow:</strong></p>
+                            <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>Where would the agent find out who the main competitor is? (Internal systems)</li>
+                                <li>How would it find news about product launches? (Public web)</li>
+                                <li>How would it read full articles? (Web search only gives summaries)</li>
+                                <li>How would it create the final report? (Document generation)</li>
+                            </ol>
+                            <p style="margin-top: 0.5rem;"><strong>Hint:</strong> The goal says "create a summary report" - not "send" it. Does the agent need email? The goal doesn't mention meetings - does it need a calendar?</p>
+                            <p>Select only the tools the agent actually needs for THIS specific goal.</p>
+                        ` : `
+                            <h4 style="margin-top: 1rem;">✓ Tools: Correct!</h4>
+                        `}
+
+                        ${!adaptCorrect ? `
+                            <h4 style="margin-top: 1rem;">❌ Adaptation Strategy needs rethinking</h4>
+                            <p><strong>Think about:</strong> Good agents balance thoroughness with efficiency. What's a smart middle ground between reading everything and reading too little?</p>
+                            <div class="key-insight">
+                                <strong>Key Principle:</strong> Effective agents observe obstacles and adapt their strategy. When faced with too many results, a sophisticated agent filters and prioritizes rather than processing everything or giving up.
+                            </div>
+                        ` : `
+                            <h4 style="margin-top: 1rem;">✓ Adaptation: Correct!</h4>
+                        `}
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Think through how an agent reasons step-by-step and try again!</strong></p>
+                `;
+            }
+
+            feedback.innerHTML = feedbackHTML;
+            feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetActivity() {
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            
+            selectedTools.clear();
+            document.querySelectorAll('.tool-option').forEach(tool => {
+                tool.classList.remove('selected');
+            });
+            
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback';
+            feedback.innerHTML = '';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

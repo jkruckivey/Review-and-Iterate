@@ -1,0 +1,284 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blair Witch vs Blair Witch 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 24px 40px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 36px 40px 40px;
+  }
+
+  .chart-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px 20px;
+    margin-bottom: 24px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 320px;
+  }
+
+  /* Stat comparison */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ivey-green);
+    margin-bottom: 12px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+
+  .stat-row-label {
+    color: var(--light);
+  }
+
+  .stat-row-value {
+    font-weight: 600;
+    color: var(--mid);
+  }
+
+  .stat-row-value.highlight {
+    color: var(--ivey-green);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <div class="inf-header">
+    <p>Gross ticket sales by week — The Blair Witch Project vs. Blair Witch 2</p>
+  </div>
+
+  <div class="content">
+
+    <div class="chart-wrap">
+      <div class="chart-container">
+        <canvas id="blairChart"></canvas>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">The Blair Witch Project (1999)</div>
+        <div class="stat-row">
+          <span class="stat-row-label">Production budget</span>
+          <span class="stat-row-value highlight">$60,000</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Worldwide gross</span>
+          <span class="stat-row-value highlight">$278 million</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Opening screens</span>
+          <span class="stat-row-value">27</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Peak screens</span>
+          <span class="stat-row-value">2,500+</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Blair Witch 2 (2000)</div>
+        <div class="stat-row">
+          <span class="stat-row-label">Production budget</span>
+          <span class="stat-row-value">$15 million</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Worldwide gross</span>
+          <span class="stat-row-value">$48 million</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Rotten Tomatoes</span>
+          <span class="stat-row-value">"All formula, no creativity"</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-row-label">Rolling Stone</span>
+          <span class="stat-row-value">"Incoherent plotting"</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('blairChart').getContext('2d');
+
+  const weeks = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
+
+  // Blair Witch original: slow start, surge week 3-4, gradual decline
+  const blairData = [1000000, 3000000, 4500000, 49000000, 35000000, 18000000, 9000000, 5000000, 3000000, 2000000, 1500000, 1000000, 700000, 400000, 200000, 100000];
+
+  // Blair Witch 2: opens higher, drops sharply by week 3
+  const blair2Data = [18000000, 5000000, 2000000, 1000000, 500000, 300000, 200000, 100000, 80000, 60000, 50000, 40000, 30000, 20000, 10000, 5000];
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [
+        {
+          label: 'The Blair Witch Project',
+          data: blairData,
+          borderColor: '#034638',
+          backgroundColor: 'rgba(3,70,56,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: '#034638',
+          tension: 0.4,
+          fill: false
+        },
+        {
+          label: 'Blair Witch 2',
+          data: blair2Data,
+          borderColor: '#c0d1cd',
+          backgroundColor: 'rgba(192,209,205,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointBackgroundColor: '#c0d1cd',
+          tension: 0.4,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 },
+            color: '#3a3a3a',
+            padding: 20,
+            usePointStyle: true,
+            pointStyleWidth: 16
+          }
+        },
+        tooltip: {
+          backgroundColor: 'white',
+          borderColor: '#dde8e6',
+          borderWidth: 1,
+          titleColor: '#034638',
+          bodyColor: '#3a3a3a',
+          titleFont: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12, weight: 'bold' },
+          bodyFont: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 },
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed.y;
+              if (val >= 1000000) return context.dataset.label + ': $' + (val / 1000000).toFixed(1) + 'M';
+              if (val >= 1000) return context.dataset.label + ': $' + (val / 1000).toFixed(0) + 'K';
+              return context.dataset.label + ': $' + val;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Week',
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 }
+          },
+          grid: { color: '#eef3f2' },
+          ticks: {
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 }
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Gross Ticket Sales',
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 12 }
+          },
+          grid: { color: '#eef3f2' },
+          ticks: {
+            color: '#5a6a68',
+            font: { family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', size: 11 },
+            callback: function(value) {
+              if (value >= 1000000) return '$' + (value / 1000000).toFixed(0) + 'M';
+              if (value >= 1000) return '$' + (value / 1000).toFixed(0) + 'K';
+              return '$' + value;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</body></html>

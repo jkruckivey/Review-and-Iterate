@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario: The Forma Chair</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --text-dark: #1a1a1a;
+    --text-body: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    margin: 0;
+    padding: 0;
+  }
+
+  .outer { max-width: 1060px; margin: 0 auto; }
+
+  .header {
+    background: var(--ivey-green);
+    padding: 18px 32px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .header h1 { color: var(--cream); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.02em; }
+  .header p { color: var(--pale-sage); font-size: 0.82rem; font-style: italic; margin-top: 3px; }
+
+  .main {
+    background: var(--cream);
+    border-radius: 0 0 10px 10px;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    min-height: 400px;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .context-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+  }
+
+  .context-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 10px; }
+  .context-box p { font-size: 0.95rem; line-height: 1.75; color: var(--text-body); margin-bottom: 10px; }
+  .context-box p:last-child { margin-bottom: 0; }
+
+  .question { font-size: 1.05rem; font-weight: 700; color: var(--ivey-green); line-height: 1.5; margin-bottom: 20px; }
+
+  .choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+
+  .choice-btn {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-body);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+
+  .choice-btn:hover { border-color: var(--ivey-green); background: #f0f7f5; transform: translateX(4px); }
+  .choice-btn .choice-label { font-weight: 700; color: var(--ivey-green); margin-right: 8px; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .feedback-box { border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .feedback-box.correct { background: #eef7f0; border: 1px solid #b8dfc0; }
+  .feedback-box.incorrect { background: #fdf3f0; border: 1px solid #e8c4b8; }
+  .feedback-box.neutral { background: #f0f4fa; border: 1px solid #b8c8df; }
+
+  .feedback-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .feedback-box.correct .feedback-label { color: #2a6a40; }
+  .feedback-box.incorrect .feedback-label { color: #8a3a20; }
+  .feedback-box.neutral .feedback-label { color: #2a4a7a; }
+  .feedback-box p { font-size: 0.92rem; line-height: 1.75; color: var(--text-body); margin-bottom: 8px; }
+  .feedback-box p:last-child { margin-bottom: 0; }
+
+  .next-btn {
+    background: var(--ivey-green);
+    color: var(--cream);
+    border: none;
+    border-radius: 6px;
+    padding: 12px 28px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .next-btn:hover { background: #045a49; transform: translateY(-1px); }
+
+  .restart-btn {
+    background: transparent;
+    color: var(--ivey-green);
+    border: 2px solid var(--ivey-green);
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 12px;
+    transition: background 0.2s;
+  }
+
+  .restart-btn:hover { background: #f0f7f5; }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 24px; }
+  .progress-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pale-sage); transition: background 0.3s; }
+  .progress-dot.active { background: var(--ivey-green); }
+  .progress-dot.done { background: var(--pale-blue); }
+
+  .summary-header { font-size: 1.1rem; font-weight: 700; color: var(--ivey-green); margin-bottom: 16px; }
+
+  .summary-box { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+  .summary-box p { font-size: 0.92rem; line-height: 1.75; color: var(--text-body); margin-bottom: 8px; }
+  .summary-box p:last-child { margin-bottom: 0; }
+
+  .button-row { display: flex; align-items: center; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="outer">
+  <div class="header">
+    <h1>Scenario: The Forma Chair</h1>
+    <p>Apply what you have learned about coherence, timing, and the manager's role</p>
+  </div>
+  <div class="main">
+
+    <div class="screen active" id="screen-1">
+      <div class="progress">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+      </div>
+
+      <div class="context-box">
+        <div class="context-label">The Situation</div>
+        <p>Meridian, a design-forward furniture company, has just launched the Forma chair. It was developed by a celebrated designer, Elena Voss, who was given complete creative autonomy throughout the process. The result is striking: an unconventional form that does not resemble any chair currently on the market.</p>
+        <p>Before launch, Meridian's market research team assessed the Forma against the bestselling ergonomic office chairs of the past three years. Their forecast was weak. They projected modest sales based on the fact that the Forma did not share the features, proportions, or aesthetic language of those successful products. Leadership proceeded anyway, trusting Voss.</p>
+        <p>Six months after launch, sales are quiet. The chair has received almost no press. A small number of buyers are passionate about it. The majority of consumers seem unaware it exists. You have been brought in as a consultant to diagnose what went wrong.</p>
+      </div>
+
+      <div class="question">What is your initial diagnosis of the Forma's poor reception?</div>
+
+      <div class="choices">
+        <button class="choice-btn" onclick="showFeedback1A()">
+          <span class="choice-label">A</span>
+          The market research was right. The Forma does not resemble successful products, which suggests it lacks the qualities that make chairs commercially viable. The problem is likely incoherence in the design itself.
+        </button>
+        <button class="choice-btn" onclick="showFeedback1B()">
+          <span class="choice-label">B</span>
+          The market research was the wrong tool for this job. Category comparisons cannot tell us whether the Forma has coherence. The quiet reception may be a timing problem: customers may not yet be equipped to see what makes it special.
+        </button>
+        <button class="choice-btn" onclick="showFeedback1C()">
+          <span class="choice-label">C</span>
+          The problem is that Voss was given too much creative autonomy. A more collaborative design process, with greater input from the market research team, would have produced a more commercially viable product.
+        </button>
+      </div>
+
+      <div id="feedback-1" style="display:none; margin-top:20px;"></div>
+    </div>
+
+    <div class="screen" id="screen-2">
+      <div class="progress">
+        <div class="progress-dot done"></div>
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+      </div>
+
+      <div class="context-box">
+        <div class="context-label">New Information</div>
+        <p>You dig deeper. You arrange for a small group of design-literate consumers to spend time with the Forma before giving their reactions. Their response is striking: once they understand what Voss was trying to do, once someone explains the thinking behind the form, they are enthusiastic. Several say it is unlike anything they have seen, but that it makes complete sense once you see it.</p>
+        <p>This confirms your suspicion: the Forma is not incoherent. The parts fit together. There are no loose ends. The problem is that most customers have not yet been equipped to see what makes it special.</p>
+      </div>
+
+      <div class="question">Given this, what do you recommend to Meridian's leadership?</div>
+
+      <div class="choices">
+        <button class="choice-btn" onclick="showFeedback2A()">
+          <span class="choice-label">A</span>
+          Pull the Forma from the market. A product that requires explanation before customers can appreciate it is not commercially viable, regardless of its coherence.
+        </button>
+        <button class="choice-btn" onclick="showFeedback2B()">
+          <span class="choice-label">B</span>
+          Reposition the marketing. Customers need to be equipped to see the patterns from which the Forma's coherence is constructed. The problem is not the product; it is that the launch did not do the work of helping customers see what makes it special.
+        </button>
+        <button class="choice-btn" onclick="showFeedback2C()">
+          <span class="choice-label">C</span>
+          Hand the decision back to Voss. She created the product; she should decide whether it continues or is withdrawn.
+        </button>
+      </div>
+
+      <div id="feedback-2" style="display:none; margin-top:20px;"></div>
+    </div>
+
+    <div class="screen" id="screen-3">
+      <div class="progress">
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot active"></div>
+      </div>
+
+      <div class="summary-header">What This Scenario Illustrates</div>
+
+      <div class="summary-box">
+        <p>The Forma scenario is designed to surface two of the most common mistakes in managing creative products. The first is using category comparisons to assess coherence. The market research team's forecast was not wrong because they were bad at their jobs; it was wrong because category comparisons are the wrong tool for predicting the success of a coherent creative product. As your instructor notes, it is not about whether a thing resembles something else, but about how well put together this particular thing is.</p>
+        <p>The second mistake is conflating a perception problem with a coherence problem. The Forma's quiet reception was not evidence of incoherence. It was evidence that customers had not yet been equipped to see the patterns from which its coherence was constructed. That is a marketing problem, not a design problem. And it is a problem the manager must solve, not the designer.</p>
+        <p>Notice also where the decision about commercial viability belongs: with leadership, not with Voss. The creative's job is to defend coherence. The manager's job is to decide how far out on the cliff the company can afford to go.</p>
+      </div>
+
+      <div class="button-row">
+        <button class="restart-btn" onclick="restart()">Start Again</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function showFeedback1A() {
+    const fb = document.getElementById('feedback-1');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box incorrect">
+        <div class="feedback-label">Consider This</div>
+        <p>This diagnosis relies on the same logic as Meridian's market research team: because the Forma does not resemble successful products, it must lack the qualities that make a product commercially viable. But as your instructor points out, coherence has nothing to do with resemblance to other made things. Every coherent special thing is put together in a different way than other coherent things. That is what makes it original. Category comparisons cannot tell us whether a product has coherence; they can only tell us how similar it is to things that have already succeeded, which is a different question entirely.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen2()">Try the next decision</button>
+    `;
+  }
+
+  function showFeedback1B() {
+    const fb = document.getElementById('feedback-1');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box correct">
+        <div class="feedback-label">Well Reasoned</div>
+        <p>This is the sharper diagnosis. Category comparisons tell us how similar a product is to things that have already succeeded; they do not tell us whether a product has coherence. The reactions of people who actually spend time with the Forma would be a much better guide. And the quiet reception is consistent with what your instructor describes as a timing problem: customers may not yet be equipped to see the patterns from which the Forma's coherence is constructed. That is worth investigating before drawing conclusions about the design itself.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen2()">Continue to the next decision</button>
+    `;
+  }
+
+  function showFeedback1C() {
+    const fb = document.getElementById('feedback-1');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box incorrect">
+        <div class="feedback-label">Consider This</div>
+        <p>This conclusion moves too quickly. Creatives who have deep insights into original ways to create coherence need to be given room to do their thing. If Voss had been required to design by committee, incorporating the market research team's preferences for features and proportions drawn from existing bestsellers, the result might well have been a product with no loose ends at all — perfectly resembling what already sells, and perfectly unremarkable. The problem here is not that Voss had too much autonomy. The problem may be that the launch did not do the work of helping customers see what makes the Forma special.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen2()">Try the next decision</button>
+    `;
+  }
+
+  function showFeedback2A() {
+    const fb = document.getElementById('feedback-2');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box incorrect">
+        <div class="feedback-label">Consider This</div>
+        <p>Withdrawing the product treats a perception problem as a coherence problem. But the evidence points the other way: design-literate consumers who were helped to see the Forma's patterns responded with genuine enthusiasm. The product is not incoherent. Customers simply have not been equipped to perceive its form. Your instructor notes that this is exactly what designers mean when they talk about the need to "educate" customers: marketing needs to include elements that help customers see the patterns from which coherence is constructed. Pulling the product skips that step entirely.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen3()">See what this scenario illustrates</button>
+    `;
+  }
+
+  function showFeedback2B() {
+    const fb = document.getElementById('feedback-2');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box correct">
+        <div class="feedback-label">Well Reasoned</div>
+        <p>This is the right call, and it follows directly from the theory. Customers must be able to perceive the form and coherence of a thing, or none of this works. The Forma's quiet reception is not evidence of incoherence; it is evidence that the launch did not do the work of equipping customers to see what makes it special. That is a marketing problem, and it is one the manager can address without touching the product. The creative's job was to build something coherent. That job is done. Now it is the manager's turn.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen3()">See what this scenario illustrates</button>
+    `;
+  }
+
+  function showFeedback2C() {
+    const fb = document.getElementById('feedback-2');
+    fb.style.display = 'block';
+    fb.innerHTML = `
+      <div class="feedback-box incorrect">
+        <div class="feedback-label">Consider This</div>
+        <p>Handing the commercial decision back to Voss confuses the two roles that must coexist in a creative firm. Voss's job is to defend coherence, and she has done that. But decisions about commercial viability belong to the manager. As your instructor describes it, a designer might decide to walk out on the cliff because that is an interesting thing to try creatively. It is the manager's job to make sure the company does not go over the cliff also. That is not a failure of trust in Voss; it is the manager doing their job.</p>
+      </div>
+      <button class="next-btn" onclick="goToScreen3()">See what this scenario illustrates</button>
+    `;
+  }
+
+  function goToScreen2() {
+    document.getElementById('screen-1').classList.remove('active');
+    document.getElementById('screen-2').classList.add('active');
+  }
+
+  function goToScreen3() {
+    document.getElementById('screen-2').classList.remove('active');
+    document.getElementById('screen-3').classList.add('active');
+  }
+
+  function restart() {
+    document.getElementById('screen-3').classList.remove('active');
+    document.getElementById('feedback-1').style.display = 'none';
+    document.getElementById('feedback-2').style.display = 'none';
+    document.getElementById('screen-1').classList.add('active');
+  }
+</script>
+
+</body></html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governance Gap Investigation Activity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #faf9f5;
+            padding: 30px 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #034638;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .intro {
+            background: #c0d1cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .step-header h2 {
+            color: #034638;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .step-header p {
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .scenario-box {
+            background: #faf9f5;
+            border-left: 4px solid #034638;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .scenario-box ul {
+            margin: 15px 0 15px 20px;
+        }
+        
+        .scenario-box li {
+            margin: 8px 0;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #c0d1cd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            margin: 15px 0;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #034638;
+        }
+        
+        .gap-box {
+            background: #faf9f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #d5cae0;
+        }
+        
+        .gap-box h3 {
+            color: #034638;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .gap-detail {
+            margin: 10px 0;
+            padding-left: 15px;
+        }
+        
+        .gap-detail strong {
+            color: #034638;
+        }
+        
+        .question-block {
+            background: white;
+            border: 2px solid #bfe5e7;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .question-block h3 {
+            color: #034638;
+            margin-bottom: 15px;
+            font-size: 1.15em;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            padding: 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .checkbox-option:hover {
+            background: #faf9f5;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-option label {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .button {
+            background: #034638;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 10px 10px 0;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .button:hover {
+            background: #045a48;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(3, 70, 56, 0.3);
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .button-secondary {
+            background: #c0d1cd;
+            color: #034638;
+        }
+        
+        .button-secondary:hover {
+            background: #a8bfba;
+        }
+        
+        .feedback {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #d5cae0;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .feedback h4 {
+            color: #034638;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .feedback-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .correct {
+            color: #034638;
+            font-weight: 600;
+        }
+        
+        .incorrect {
+            color: #7D4E57;
+            font-weight: 600;
+        }
+        
+        .reflection-box {
+            background: #bfe5e7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .reflection-box h4 {
+            color: #034638;
+            margin-bottom: 10px;
+        }
+        
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d5cae0;
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.active {
+            background: #034638;
+            transform: scale(1.3);
+        }
+        
+        .progress-dot.completed {
+            background: #034638;
+        }
+        
+        .comparison {
+            background: #faf9f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #034638;
+        }
+        
+        .user-response {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #c0d1cd;
+            white-space: pre-wrap;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagnosing Governance Gaps</h1>
+        
+        <div class="intro">
+            <p><strong>Activity Overview:</strong> In this activity, you'll practice identifying governance failures and determining appropriate interventions. Real-world AI governance often begins with incident response—something goes wrong, and you need to diagnose the systemic gaps that allowed it to happen.</p>
+        </div>
+        
+        <div class="progress-indicator">
+            <div class="progress-dot active" id="dot1"></div>
+            <div class="progress-dot" id="dot2"></div>
+            <div class="progress-dot" id="dot3"></div>
+            <div class="progress-dot" id="dot4"></div>
+        </div>
+        
+        <!-- STEP 1 -->
+        <div class="step active" id="step1">
+            <div class="step-header">
+                <h2>Step 1: Initial Investigation</h2>
+                <p>Identify the governance problems in this scenario</p>
+            </div>
+            
+            <p>Read the following scenario carefully:</p>
+            
+            <div class="scenario-box">
+                <p><strong>Scenario: Governance Gap</strong></p>
+                <p>A retail company deployed an AI-powered customer service agent six months ago. The agent can answer questions, process returns, and issue refunds up to $50. Recently, they discovered:</p>
+                <ul>
+                    <li>The agent occasionally issues refunds for products the customer never purchased</li>
+                    <li>Refund rates vary significantly across customer demographics</li>
+                    <li>No one has formally reviewed the agent's performance since launch</li>
+                    <li>The vendor updated the underlying model twice without notifying the company</li>
+                </ul>
+            </div>
+            
+            <p><strong>Your task:</strong> Based on what you've learned about AI governance, what went wrong here? What governance gaps does this scenario reveal?</p>
+            
+            <p style="margin-top: 15px; font-size: 0.95em; color: #666;">In the text box below, list the governance problems you identify. Aim for 3-5 specific gaps.</p>
+            
+            <textarea id="step1-response" placeholder="Type your response here..."></textarea>
+            
+            <button class="button" onclick="submitStep1()">Continue to Expert Analysis</button>
+        </div>
+        
+        <!-- STEP 2 -->
+        <div class="step" id="step2">
+            <div class="step-header">
+                <h2>Step 2: Expert Analysis</h2>
+                <p>Compare your initial diagnosis to expert analysis</p>
+            </div>
+            
+            <p>Here are the five critical governance gaps this scenario reveals:</p>
+            
+            <div class="gap-box">
+                <h3>1. Monitoring and Audit</h3>
+                <div class="gap-detail">
+                    <p><strong>The Problem:</strong> No ongoing performance review means problems went undetected for months.</p>
+                    <p><strong>The Gap:</strong> Governance should require regular monitoring of AI system outcomes—not just at launch, but continuously throughout deployment.</p>
+                </div>
+            </div>
+            
+            <div class="gap-box">
+                <h3>2. Fairness Testing</h3>
+                <div class="gap-detail">
+                    <p><strong>The Problem:</strong> Demographic variation in refund rates suggests potential disparate impact.</p>
+                    <p><strong>The Gap:</strong> Governance should require disaggregated performance analysis to detect bias across different customer groups.</p>
+                </div>
+            </div>
+            
+            <div class="gap-box">
+                <h3>3. Vendor Management</h3>
+                <div class="gap-detail">
+                    <p><strong>The Problem:</strong> Model updates without notification indicate inadequate vendor governance.</p>
+                    <p><strong>The Gap:</strong> Contracts should require notification of material changes; governance should require re-evaluation after updates.</p>
+                </div>
+            </div>
+            
+            <div class="gap-box">
+                <h3>4. Action Boundaries</h3>
+                <div class="gap-detail">
+                    <p><strong>The Problem:</strong> An agent that can issue incorrect refunds may have insufficient guardrails.</p>
+                    <p><strong>The Gap:</strong> Governance should define verification requirements for actions with financial impact.</p>
+                </div>
+            </div>
+            
+            <div class="gap-box">
+                <h3>5. Accountability</h3>
+                <div class="gap-detail">
+                    <p><strong>The Problem:</strong> "No one" reviewing the agent suggests unclear ownership.</p>
+                    <p><strong>The Gap:</strong> Governance should assign ongoing accountability for deployed systems—someone must be responsible.</p>
+                </div>
+            </div>
+            
+            <div class="reflection-box">
+                <h4>Reflection:</h4>
+                <p>Compare this expert analysis to your initial response. Did you identify similar gaps? Did the expert analysis surface issues you hadn't considered?</p>
+                <div class="comparison">
+                    <strong>Your Initial Response:</strong>
+                    <div class="user-response" id="user-response-display"></div>
+                </div>
+            </div>
+            
+            <button class="button" onclick="continueToStep3()">Continue to Designing Interventions</button>
+            <button class="button button-secondary" onclick="backToStep1()">Back to Step 1</button>
+        </div>
+        
+        <!-- STEP 3 -->
+        <div class="step" id="step3">
+            <div class="step-header">
+                <h2>Step 3: Designing Interventions</h2>
+                <p>Determine what the company should implement to fix each gap</p>
+            </div>
+            
+            <p>For each governance gap below, <strong>select all appropriate interventions</strong> the company should implement:</p>
+            
+            <!-- Gap 1 Questions -->
+            <div class="question-block">
+                <h3>Gap 1: Monitoring and Audit</h3>
+                <p style="margin-bottom: 15px; color: #666;">To address the lack of ongoing oversight, the company should implement:</p>
+                
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q1-1" data-correct="true">
+                    <label for="q1-1">Quarterly comprehensive performance reviews of the AI agent</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q1-2" data-correct="true">
+                    <label for="q1-2">Weekly automated monitoring of refund rates and anomalies</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q1-3" data-correct="true">
+                    <label for="q1-3">Real-time alerts when refund patterns exceed normal thresholds</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q1-4" data-correct="true">
+                    <label for="q1-4">Monthly reports to leadership on AI system performance</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q1-5" data-correct="false">
+                    <label for="q1-5">Annual audits only (to minimize overhead)</label>
+                </div>
+            </div>
+            
+            <!-- Gap 2 Questions -->
+            <div class="question-block">
+                <h3>Gap 2: Fairness Testing</h3>
+                <p style="margin-bottom: 15px; color: #666;">To address potential disparate impact across demographics, the company should:</p>
+                
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q2-1" data-correct="true">
+                    <label for="q2-1">Analyze refund rates disaggregated by customer demographic groups</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q2-2" data-correct="true">
+                    <label for="q2-2">Establish acceptable variance thresholds for fairness metrics</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q2-3" data-correct="true">
+                    <label for="q2-3">Conduct bias testing before any model updates</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q2-4" data-correct="false">
+                    <label for="q2-4">Remove demographic data entirely to ensure fairness</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q2-5" data-correct="true">
+                    <label for="q2-5">Create dashboards showing performance across customer segments</label>
+                </div>
+            </div>
+            
+            <!-- Gap 3 Questions -->
+            <div class="question-block">
+                <h3>Gap 3: Vendor Management</h3>
+                <p style="margin-bottom: 15px; color: #666;">To address inadequate vendor oversight, the company should:</p>
+                
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q3-1" data-correct="true">
+                    <label for="q3-1">Require contractual notification of any model updates or changes</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q3-2" data-correct="true">
+                    <label for="q3-2">Mandate re-testing and approval before deploying vendor updates</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q3-3" data-correct="true">
+                    <label for="q3-3">Request documentation of what changed in each model version</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q3-4" data-correct="false">
+                    <label for="q3-4">Switch to a different vendor immediately</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q3-5" data-correct="true">
+                    <label for="q3-5">Establish a vendor review process that includes technical evaluation</label>
+                </div>
+            </div>
+            
+            <!-- Gap 4 Questions -->
+            <div class="question-block">
+                <h3>Gap 4: Action Boundaries</h3>
+                <p style="margin-bottom: 15px; color: #666;">To address insufficient guardrails on autonomous actions, the company should:</p>
+                
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q4-1" data-correct="true">
+                    <label for="q4-1">Require the agent to verify purchase history before issuing refunds</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q4-2" data-correct="true">
+                    <label for="q4-2">Implement human approval for refunds over $25</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q4-3" data-correct="true">
+                    <label for="q4-3">Create audit logs of all refund decisions with reasoning</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q4-4" data-correct="false">
+                    <label for="q4-4">Disable the refund capability entirely</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q4-5" data-correct="true">
+                    <label for="q4-5">Add confidence thresholds—low-confidence cases require human review</label>
+                </div>
+            </div>
+            
+            <!-- Gap 5 Questions -->
+            <div class="question-block">
+                <h3>Gap 5: Accountability</h3>
+                <p style="margin-bottom: 15px; color: #666;">To address unclear ownership, the company should:</p>
+                
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q5-1" data-correct="true">
+                    <label for="q5-1">Assign a specific individual as the system owner responsible for ongoing oversight</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q5-2" data-correct="true">
+                    <label for="q5-2">Create a cross-functional governance committee for AI systems</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q5-3" data-correct="true">
+                    <label for="q5-3">Define escalation paths for when issues are detected</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q5-4" data-correct="false">
+                    <label for="q5-4">Make the vendor responsible for all outcomes</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="q5-5" data-correct="true">
+                    <label for="q5-5">Document who is accountable for different aspects (deployment, monitoring, incidents)</label>
+                </div>
+            </div>
+            
+            <button class="button" onclick="submitStep3()">Submit Answers</button>
+            <button class="button button-secondary" onclick="backToStep2()">Back to Step 2</button>
+        </div>
+        
+        <!-- STEP 4 -->
+        <div class="step" id="step4">
+            <div class="step-header">
+                <h2>Step 4: Feedback and Reflection</h2>
+                <p>Review your answers and understand the reasoning</p>
+            </div>
+            
+            <div id="feedback-container">
+                <!-- Feedback will be generated here -->
+            </div>
+            
+            <div class="reflection-box" style="margin-top: 30px;">
+                <h4>Final Reflection:</h4>
+                <p>Consider this scenario from a maturity model perspective. Where would you place this company on the governance maturity scale?</p>
+                <ul style="margin: 15px 0 15px 20px;">
+                    <li><strong>Stage 1: Ad Hoc</strong></li>
+                    <li><strong>Stage 2: Emerging</strong></li>
+                    <li><strong>Stage 3: Defined</strong></li>
+                    <li><strong>Stage 4: Managed</strong></li>
+                    <li><strong>Stage 5: Optimized</strong></li>
+                </ul>
+                <p style="margin-top: 15px;">What would moving up one level of maturity require them to implement?</p>
+                <textarea id="final-reflection" placeholder="Type your reflection here..."></textarea>
+            </div>
+            
+            <button class="button" onclick="restartActivity()">Restart Activity</button>
+            <button class="button button-secondary" onclick="backToStep3()">Review Your Answers</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        let userResponses = {
+            step1: '',
+            step3: {}
+        };
+        
+        function submitStep1() {
+            const response = document.getElementById('step1-response').value.trim();
+            if (response === '') {
+                alert('Please provide a response before continuing.');
+                return;
+            }
+            userResponses.step1 = response;
+            document.getElementById('user-response-display').textContent = response;
+            goToStep(2);
+        }
+        
+        function continueToStep3() {
+            goToStep(3);
+        }
+        
+        function submitStep3() {
+            // Collect all responses
+            const gaps = ['q1', 'q2', 'q3', 'q4', 'q5'];
+            gaps.forEach(gap => {
+                userResponses.step3[gap] = [];
+                for (let i = 1; i <= 5; i++) {
+                    const checkbox = document.getElementById(`${gap}-${i}`);
+                    if (checkbox && checkbox.checked) {
+                        userResponses.step3[gap].push({
+                            id: `${gap}-${i}`,
+                            correct: checkbox.dataset.correct === 'true'
+                        });
+                    }
+                }
+            });
+            
+            generateFeedback();
+            goToStep(4);
+        }
+        
+        function generateFeedback() {
+            const feedbackContainer = document.getElementById('feedback-container');
+            
+            const feedbackData = {
+                q1: {
+                    title: 'Gap 1: Monitoring and Audit',
+                    correct: [
+                        'Quarterly comprehensive performance reviews - Regular deep-dive analysis catches systemic issues',
+                        'Weekly automated monitoring - Frequent checks detect problems before they escalate',
+                        'Real-time alerts for anomalies - Immediate notification allows rapid response',
+                        'Monthly reports to leadership - Keeps stakeholders informed and maintains accountability'
+                    ],
+                    incorrect: [
+                        'Annual audits only - Too infrequent for a system taking autonomous financial actions'
+                    ],
+                    why: 'A customer service agent with financial authority needs frequent oversight. Weekly monitoring catches emerging problems; quarterly reviews analyze root causes; real-time alerts enable immediate intervention.'
+                },
+                q2: {
+                    title: 'Gap 2: Fairness Testing',
+                    correct: [
+                        'Analyze refund rates by demographic groups - Essential for detecting disparate impact',
+                        'Establish acceptable variance thresholds - Define what "fair" means quantitatively',
+                        'Conduct bias testing before model updates - Prevent regression in fairness',
+                        'Create performance dashboards by segment - Make fairness monitoring ongoing'
+                    ],
+                    incorrect: [
+                        'Remove demographic data entirely - "Fairness through blindness" doesn\'t work—you need demographic data to detect and prevent bias'
+                    ],
+                    why: 'You can\'t address bias you can\'t measure. Disaggregated analysis reveals whether the system treats different customer groups equitably.'
+                },
+                q3: {
+                    title: 'Gap 3: Vendor Management',
+                    correct: [
+                        'Require contractual notification of changes - Establish legal obligation for transparency',
+                        'Mandate re-testing before deploying updates - Treat vendor updates like new deployments',
+                        'Request documentation of changes - Understand what changed and why',
+                        'Establish vendor review process - Systematic evaluation of vendor practices'
+                    ],
+                    incorrect: [
+                        'Switch vendors immediately - The problem isn\'t the vendor per se, it\'s the lack of governance around vendor relationships'
+                    ],
+                    why: 'When you use third-party AI, vendor governance extends your internal governance. You remain accountable for outcomes even when you didn\'t build the model.'
+                },
+                q4: {
+                    title: 'Gap 4: Action Boundaries',
+                    correct: [
+                        'Verify purchase history before refunds - Basic verification prevents obvious errors',
+                        'Implement human approval for larger refunds - Escalate higher-risk actions',
+                        'Create audit logs with reasoning - Enable investigation when problems occur',
+                        'Add confidence thresholds for human review - Uncertain cases need human judgment'
+                    ],
+                    incorrect: [
+                        'Disable refund capability entirely - Overreaction that eliminates the system\'s value'
+                    ],
+                    why: 'Agentic AI needs guardrails proportionate to risk. Financial actions require verification; uncertain situations require human oversight.'
+                },
+                q5: {
+                    title: 'Gap 5: Accountability',
+                    correct: [
+                        'Assign a specific system owner - Clear individual accountability',
+                        'Create cross-functional governance committee - Diverse expertise and oversight',
+                        'Define escalation paths - Clear process when problems emerge',
+                        'Document accountability structure - Everyone knows who owns what'
+                    ],
+                    incorrect: [
+                        'Make the vendor responsible for outcomes - You deployed it, you\'re accountable—even for vendor-built systems'
+                    ],
+                    why: '"No one is responsible" means problems persist. Governance requires clear ownership at both individual and organizational levels.'
+                }
+            };
+            
+            let html = '';
+            
+            Object.keys(feedbackData).forEach(gap => {
+                const data = feedbackData[gap];
+                html += `<div class="gap-box">
+                    <h3>${data.title} - Recommended Interventions</h3>
+                    <div style="margin-top: 15px;">
+                        <p style="margin-bottom: 10px;"><strong class="correct">✓ Correct Interventions:</strong></p>
+                        <ul style="margin-left: 20px;">`;
+                
+                data.correct.forEach(item => {
+                    html += `<li style="margin: 8px 0;">${item}</li>`;
+                });
+                
+                html += `</ul>
+                        <p style="margin: 15px 0 10px 0;"><strong class="incorrect">✗ Incorrect Option:</strong></p>
+                        <ul style="margin-left: 20px;">`;
+                
+                data.incorrect.forEach(item => {
+                    html += `<li style="margin: 8px 0;">${item}</li>`;
+                });
+                
+                html += `</ul>
+                        <div style="background: #bfe5e7; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                            <strong>Why these matter:</strong> ${data.why}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            feedbackContainer.innerHTML = html;
+        }
+        
+        function goToStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show target step
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            
+            // Update progress dots
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index < stepNumber - 1) {
+                    dot.classList.add('completed');
+                } else if (index === stepNumber - 1) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('completed');
+                }
+            });
+            
+            currentStep = stepNumber;
+            window.scrollTo(0, 0);
+        }
+        
+        function backToStep1() {
+            goToStep(1);
+        }
+        
+        function backToStep2() {
+            goToStep(2);
+        }
+        
+        function backToStep3() {
+            goToStep(3);
+        }
+        
+        function restartActivity() {
+            // Clear all inputs
+            document.getElementById('step1-response').value = '';
+            document.getElementById('final-reflection').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Reset responses
+            userResponses = {
+                step1: '',
+                step3: {}
+            };
+            
+            // Go back to step 1
+            goToStep(1);
+        }
+    </script>
+</body>
+</html>

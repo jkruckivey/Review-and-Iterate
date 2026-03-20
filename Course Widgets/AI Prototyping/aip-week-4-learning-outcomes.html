@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Outcomes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            --color-wlo: #5a9ea1;
+            --color-clo: #6b9085;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, sans-serif;
+            background: white;
+            color: var(--color-neutral-900);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .outcomes-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .header h3 {
+            color: var(--color-neutral-900);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: var(--color-neutral-600);
+            font-size: 0.875rem;
+        }
+
+        .outcomes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .week-outcomes {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .week-outcomes h4 {
+            color: var(--color-neutral-900);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .week-badge {
+            background: var(--color-wlo);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .wlo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+
+        .wlo-item {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .wlo-item:hover {
+            border-color: var(--color-wlo);
+            box-shadow: 0 2px 8px rgba(122, 153, 133, 0.15);
+        }
+
+        .wlo-item:focus {
+            outline: 2px solid #3182ce;
+            outline-offset: 2px;
+        }
+
+        .wlo-item.active {
+            border-color: var(--color-wlo);
+            border-width: 2px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(122, 153, 133, 0.2);
+        }
+
+        .wlo-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.625rem;
+        }
+
+        .wlo-code {
+            background: var(--color-wlo);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .wlo-text {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+
+        .connection-badges {
+            display: flex;
+            gap: 0.375rem;
+            margin-top: 0.5rem;
+            padding-left: calc(0.625rem + 52px);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .wlo-item.active .connection-badges {
+            opacity: 1;
+        }
+
+        .connection-badge {
+            background: var(--color-clo);
+            color: white;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .course-outcomes {
+            background: var(--color-neutral-50);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .course-outcomes h4 {
+            color: var(--color-neutral-900);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-badge {
+            background: var(--color-clo);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .clo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+
+        .clo-item {
+            background: white;
+            border: 2px solid var(--color-neutral-200);
+            border-radius: 6px;
+            padding: 0.875rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .clo-item.highlighted {
+            opacity: 1;
+            border-color: var(--color-clo);
+            background: white;
+            box-shadow: 0 4px 12px rgba(82, 107, 105, 0.2);
+        }
+
+        .clo-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.625rem;
+        }
+
+        .clo-code {
+            background: var(--color-neutral-400);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+
+        .clo-item.highlighted .clo-code {
+            background: var(--color-clo);
+        }
+
+        .clo-text {
+            color: var(--color-neutral-700);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .help-text {
+            background: var(--color-neutral-50);
+            border-left: 3px solid var(--color-wlo);
+            padding: 0.75rem 1rem;
+            margin-top: 1.25rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .help-text p {
+            color: var(--color-neutral-600);
+            font-size: 0.8rem;
+        }
+
+        .help-text strong {
+            color: var(--color-neutral-900);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .outcomes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body { padding: 1rem; }
+
+            .wlo-header, .clo-header {
+                flex-direction: column;
+                gap: 0.375rem;
+            }
+
+            .connection-badges {
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="outcomes-container">
+        <div class="header">
+            <h3>Learning Outcomes</h3>
+            <p>Click any weekly outcome to see how it connects to course-level goals</p>
+        </div>
+
+        <div class="outcomes-grid">
+            <div class="week-outcomes">
+                <h4>
+                    <span>Week 4: Advanced AI</span>
+                </h4>
+                <div class="wlo-list" role="list" id="wlo-list"></div>
+            </div>
+
+            <div class="course-outcomes">
+                <h4>
+                    <span class="course-badge">Course</span>
+                    <span>Learning Outcomes</span>
+                </h4>
+                <div class="clo-list" role="list" id="clo-list"></div>
+            </div>
+        </div>
+
+        <div class="help-text">
+            <p><strong>How to use:</strong> Each weekly outcome contributes to broader course-level goals. Click outcomes to explore the connections.</p>
+        </div>
+    </div>
+
+    <div role="status" aria-live="polite" class="sr-only" id="announcements"></div>
+
+    <script>
+        const courseOutcomes = [
+            { code: 'CLO 1', text: 'Explain how artificial intelligence and machine learning work, including key concepts like supervised learning, neural networks, and large language models, in plain language suitable for business contexts.' },
+            { code: 'CLO 2', text: 'Build functional AI prototypes including chatbots, Custom GPTs, and knowledge-based assistants, using no-code and low-code tools.' },
+            { code: 'CLO 3', text: 'Apply prompt engineering techniques to improve AI outputs, including zero-shot, few-shot, persona, and constraint patterns.' },
+            { code: 'CLO 4', text: 'Evaluate AI systems using appropriate metrics (precision, recall, F1) and identify potential issues including bias, drift, and disparate impact across user groups.' },
+            { code: 'CLO 5', text: 'Distinguish between AI customization approaches (prompt engineering, RAG, and fine-tuning) and recommend the appropriate approach for different business use cases.' },
+            { code: 'CLO 6', text: 'Analyze the technical foundations of modern AI (transformer architecture, retrieval augmented generation, and agentic AI) to make informed decisions about AI adoption and implementation.' },
+            { code: 'CLO 7', text: 'Implement responsible AI practices throughout the AI lifecycle, including guardrails, human oversight, fairness testing, and governance frameworks.' },
+            { code: 'CLO 8', text: 'Communicate AI concepts, capabilities, limitations, and risks to both technical and non-technical stakeholders.' }
+        ];
+
+        const wlos = [
+            {
+                code: 'WLO 1',
+                text: 'Explain how transformers overcame RNN limitations through parallel processing and the attention mechanism.',
+                clos: ['CLO 1', 'CLO 6']
+            },
+            {
+                code: 'WLO 2',
+                text: 'Describe how self-attention works (Query, Key, Value) and why multi-head attention captures different types of relationships.',
+                clos: ['CLO 6']
+            },
+            {
+                code: 'WLO 3',
+                text: 'Differentiate between encoder-only, decoder-only, and encoder-decoder architectures and identify appropriate use cases for each.',
+                clos: ['CLO 6']
+            },
+            {
+                code: 'WLO 4',
+                text: 'Analyze the complete RAG pipeline (embedding models, vector databases, chunking strategies, and retrieval) and troubleshoot common RAG failures.',
+                clos: ['CLO 5', 'CLO 6']
+            },
+            {
+                code: 'WLO 5',
+                text: 'Distinguish between AI assistants and AI agents, positioning them on the capability spectrum from basic chatbots to autonomous agents.',
+                clos: ['CLO 5', 'CLO 6']
+            },
+            {
+                code: 'WLO 6',
+                text: 'Explain how agents reason and act using Chain of Thought and ReAct patterns, and describe the role of tool use, memory, and reflection.',
+                clos: ['CLO 6']
+            },
+            {
+                code: 'WLO 7',
+                text: 'Evaluate the challenges and risks of agentic AI (reliability, cost, safety, observability, and trust) and describe appropriate mitigation strategies.',
+                clos: ['CLO 6', 'CLO 7']
+            },
+            {
+                code: 'WLO 8',
+                text: 'Describe the AI regulatory landscape (EU AI Act, NIST framework) and explain how risk-based classification applies to different AI applications.',
+                clos: ['CLO 7']
+            },
+            {
+                code: 'WLO 9',
+                text: 'Assess organizational AI governance maturity and identify key components of effective governance frameworks.',
+                clos: ['CLO 7']
+            }
+        ];
+
+        const wloList = document.getElementById('wlo-list');
+        const cloList = document.getElementById('clo-list');
+
+        wlos.forEach(wlo => {
+            const div = document.createElement('div');
+            div.className = 'wlo-item';
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('role', 'button');
+            div.setAttribute('aria-label', `${wlo.code}: ${wlo.text}. Press to see connected course outcomes.`);
+
+            const badges = wlo.clos.map(c => `<span class="connection-badge">${c}</span>`).join('');
+
+            div.innerHTML = `
+                <div class="wlo-header">
+                    <span class="wlo-code">${wlo.code}</span>
+                    <span class="wlo-text">${wlo.text}</span>
+                </div>
+                <div class="connection-badges">${badges}</div>
+            `;
+
+            div.onclick = () => highlight(wlo.clos, div, wlo.code);
+            div.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    highlight(wlo.clos, div, wlo.code);
+                }
+            };
+            wloList.appendChild(div);
+        });
+
+        courseOutcomes.forEach(clo => {
+            const div = document.createElement('div');
+            div.className = 'clo-item';
+            div.dataset.code = clo.code;
+            div.setAttribute('aria-label', `${clo.code}: ${clo.text}`);
+            div.innerHTML = `
+                <div class="clo-header">
+                    <span class="clo-code">${clo.code}</span>
+                    <span class="clo-text">${clo.text}</span>
+                </div>
+            `;
+            cloList.appendChild(div);
+        });
+
+        function highlight(cloCodes, wloEl, wloCode) {
+            const wasActive = wloEl.classList.contains('active');
+            document.querySelectorAll('.wlo-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.clo-item').forEach(el => el.classList.remove('highlighted'));
+
+            if (!wasActive) {
+                wloEl.classList.add('active');
+                cloCodes.forEach(code => {
+                    const cloEl = document.querySelector(`.clo-item[data-code="${code}"]`);
+                    if (cloEl) cloEl.classList.add('highlighted');
+                });
+                announce(`${wloCode} selected. Contributes to ${cloCodes.join(', ')}.`);
+            } else {
+                announce('Selection cleared.');
+            }
+        }
+
+        function announce(message) {
+            const announcer = document.getElementById('announcements');
+            announcer.textContent = message;
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+    </script>
+</body>
+</html>

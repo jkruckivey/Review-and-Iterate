@@ -1,0 +1,319 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patterns, Trajectories, and Closure</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --text-dark: #1a1a1a;
+    --text-body: #3a3a3a;
+    --text-light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+    margin: 0;
+  }
+
+  .outer {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--ivey-green);
+    padding: 18px 32px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .header h1 {
+    color: var(--cream);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .header p {
+    color: var(--pale-sage);
+    font-size: 0.82rem;
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  .main {
+    background: var(--cream);
+    border-radius: 0 0 10px 10px;
+    padding: 32px 32px 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  }
+
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+
+  .concept {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .concept-inner {
+    border-radius: 8px;
+    padding: 20px 18px 18px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .concept-number {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .concept-term {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .concept-def {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .concept-1 .concept-inner { background: var(--pale-purple); border: 1px solid #c5b8d8; }
+  .concept-1 .concept-number { color: #6a4f8a; }
+  .concept-1 .concept-term { color: var(--ivey-green); }
+  .concept-1 .concept-def { color: var(--text-body); }
+
+  .concept-2 .concept-inner { background: var(--pale-sage); border: 1px solid #aabfbc; }
+  .concept-2 .concept-number { color: #3a6b5f; }
+  .concept-2 .concept-term { color: var(--ivey-green); }
+  .concept-2 .concept-def { color: var(--text-body); }
+
+  .concept-3 .concept-inner { background: var(--pale-blue); border: 1px solid #a0d0d2; }
+  .concept-3 .concept-number { color: #2a7a80; }
+  .concept-3 .concept-term { color: var(--ivey-green); }
+  .concept-3 .concept-def { color: var(--text-body); }
+
+  .arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .arrow-col svg { display: block; }
+
+  .example-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  .example-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 24px;
+  }
+
+  .example-block {
+    flex: 1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    background: white;
+  }
+
+  .example-block .ex-tag {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+
+  .example-block .ex-text {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--text-body);
+  }
+
+  .example-block .ex-quote {
+    display: inline-block;
+    margin-top: 6px;
+    background: var(--pale-purple);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.78rem;
+    color: var(--ivey-green);
+    font-weight: 600;
+  }
+
+  .example-block .ex-quote + .ex-quote { margin-left: 4px; }
+
+  .arrow-spacer { width: 44px; flex-shrink: 0; }
+
+  .closure-split {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .closure-type {
+    flex: 1;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .closure-type.expected { background: #eef7f0; border: 1px solid #b8dfc0; }
+  .closure-type.surprising { background: #f0f4fa; border: 1px solid #b8c8df; }
+
+  .closure-type .ct-label {
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .closure-type.expected .ct-label { color: #2a6a40; }
+  .closure-type.surprising .ct-label { color: #2a4a7a; }
+  .closure-type .ct-text { color: var(--text-body); }
+
+  .footer-note {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-style: italic;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .footer-note strong { color: var(--ivey-green); font-style: normal; }
+</style>
+</head>
+<body>
+<div class="outer">
+  <div class="header">
+    <h1>Patterns, Trajectories, and Closure</h1>
+    <p>The three concepts that make up aesthetic coherence</p>
+  </div>
+  <div class="main">
+
+    <div class="flow">
+      <div class="concept concept-1">
+        <div class="concept-inner">
+          <div class="concept-number">Step 1</div>
+          <div class="concept-term">Patterns</div>
+          <div class="concept-def">Basic units of meaning that audiences already know from prior experience. The director or designer does not create them from scratch; they count on the audience bringing them into the room.</div>
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <svg width="44" height="40" viewBox="0 0 44 40">
+          <line x1="4" y1="20" x2="36" y2="20" stroke="#034638" stroke-width="2"></line>
+          <polygon points="36,14 44,20 36,26" fill="#034638"></polygon>
+          <text x="22" y="13" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" fill="#5a6a68">combine</text>
+        </svg>
+      </div>
+
+      <div class="concept concept-2">
+        <div class="concept-inner">
+          <div class="concept-number">Step 2</div>
+          <div class="concept-term">Trajectories</div>
+          <div class="concept-def">What patterns combine to form. When two or more patterns are juxtaposed, they point in a direction and generate expectations about what is likely to happen next.</div>
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <svg width="44" height="40" viewBox="0 0 44 40">
+          <line x1="4" y1="20" x2="36" y2="20" stroke="#034638" stroke-width="2"></line>
+          <polygon points="36,14 44,20 36,26" fill="#034638"></polygon>
+          <text x="22" y="13" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" fill="#5a6a68">lead to</text>
+        </svg>
+      </div>
+
+      <div class="concept concept-3">
+        <div class="concept-inner">
+          <div class="concept-number">Step 3</div>
+          <div class="concept-term">Closure</div>
+          <div class="concept-def">The moment expectations are met or surprised. When a surprising closure feels right, it produces an emotional reaction. We get chills. We say: "I did not see that coming."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="example-label">In the opening of <em>The Sixth Sense</em></div>
+    <div class="example-row">
+      <div class="example-block">
+        <div class="ex-tag">Patterns</div>
+        <div class="ex-text">Two patterns, drawn from the audience's prior experience of films and stories:</div>
+        <div style="margin-top:8px;">
+          <span class="ex-quote">"There's someone in the house"</span>
+          <span class="ex-quote">"The proud shall stumble and fall"</span>
+        </div>
+      </div>
+
+      <div class="arrow-spacer"></div>
+
+      <div class="example-block traj-block">
+        <div class="ex-tag">Trajectory</div>
+        <div class="ex-text">Juxtaposed, the two patterns point toward a likely outcome: whoever is in the house will be the instrument by which the proud hero is laid low.</div>
+      </div>
+
+      <div class="arrow-spacer"></div>
+
+      <div class="example-block closure-block">
+        <div class="ex-tag">Closure</div>
+        <div class="closure-split">
+          <div class="closure-type expected">
+            <div class="ct-label">Expected</div>
+            <div class="ct-text">A former patient confronts Malcolm, accuses him of failing, and shoots him. The expectation is met. Short-term closure.</div>
+          </div>
+          <div class="closure-type surprising">
+            <div class="ct-label">Surprising</div>
+            <div class="ct-text">The film's ending causes audiences to re-evaluate everything they thought was happening. A closure that surprises and yet makes sense.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>Coherence</strong> is the overall quality of a made thing whose patterns, trajectories, and closures fit together without loose ends, in a way the audience recognizes as exactly right.
+    </div>
+
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hybrid Organizational Model</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #ffffff; color: #374151; display: flex; justify-content: center; padding: 12px 0; }
+    .container { width: 760px; padding: 12px 16px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+    .widget-layout { display: flex; gap: 24px; align-items: flex-start; }
+    .zones-col { flex-shrink: 0; width: 310px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .zones-instruction { font-size: 11px; font-weight: 500; color: #9ca3af; text-align: center; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.6px; }
+    .zone-stack { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 100%; }
+    .zone-bar { cursor: pointer; border-radius: 8px; padding: 14px 16px; text-align: center; transition: opacity 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease; border: 2px solid transparent; position: relative; }
+    .zone-bar:focus { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    .zone-bar:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .zone-bar.dimmed { opacity: 0.35; transform: none; box-shadow: none; }
+    .zone-bar.dimmed:hover { opacity: 0.55; }
+    .zone-bar.active { border-color: rgba(0,0,0,0.15); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .zone-bar.edge { width: 100%; background: #f3f4f6; }
+    .zone-bar.edge .zone-bar-name { color: #374151; }
+    .zone-bar.edge .zone-bar-sub { color: #6b7280; }
+    .zone-bar.edge.active { background: #e5e7eb; border-color: #9ca3af; }
+    .zone-bar.middle { width: 78%; background: #e8f0ec; }
+    .zone-bar.middle .zone-bar-name { color: #5a7f74; }
+    .zone-bar.middle .zone-bar-sub { color: #6b9085; }
+    .zone-bar.middle.active { background: #d5e5de; border-color: #6b9085; }
+    .zone-bar.core { width: 56%; background: #374151; }
+    .zone-bar.core .zone-bar-name { color: #ffffff; }
+    .zone-bar.core .zone-bar-sub { color: rgba(255,255,255,0.7); }
+    .zone-bar.core.active { background: #1a1a1a; border-color: #000000; }
+    .zone-bar-name { font-size: 12px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 2px; }
+    .zone-bar-sub { font-size: 11px; font-weight: 400; line-height: 1.35; }
+    .nesting-label { display: flex; align-items: center; gap: 8px; margin-top: 14px; width: 100%; }
+    .nesting-label .label-line { flex: 1; height: 1px; background: #e5e7eb; }
+    .nesting-label span { font-size: 10px; font-weight: 500; color: #9ca3af; letter-spacing: 0.4px; white-space: nowrap; }
+    .detail-col { flex: 1; min-height: 320px; }
+    .detail-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 320px; border: 1.5px dashed #d1d5db; border-radius: 10px; padding: 28px; text-align: center; gap: 10px; }
+    .detail-empty .empty-icon { width: 36px; height: 36px; color: #d1d5db; }
+    .detail-empty p { font-size: 13px; color: #9ca3af; line-height: 1.55; }
+    .detail-card { display: none; border-radius: 10px; overflow: hidden; border: 1.5px solid #e5e7eb; animation: fadeSlide 0.22s ease; }
+    .detail-card.visible { display: block; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .detail-card[data-zone="core"] .card-header { background: linear-gradient(135deg, #374151 0%, #1a1a1a 100%); }
+    .detail-card[data-zone="core"] .card-meta .meta-badge { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+    .detail-card[data-zone="middle"] .card-header { background: linear-gradient(135deg, #6b9085 0%, #5a7f74 100%); }
+    .detail-card[data-zone="middle"] .card-meta .meta-badge { background: #f0f5f3; color: #5a7f74; border-color: #a3c4b8; }
+    .detail-card[data-zone="edge"] .card-header { background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%); }
+    .detail-card[data-zone="edge"] .card-meta .meta-badge { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+    .card-header { padding: 16px 18px 14px; }
+    .card-header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 5px; }
+    .zone-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; padding: 3px 9px; border-radius: 4px; background: rgba(255,255,255,0.75); color: #fff; }
+    .close-btn { background: rgba(255,255,255,0.15); border: none; border-radius: 4px; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1; transition: background 0.15s; }
+    .close-btn:hover { background: rgba(255,255,255,0.28); }
+    .close-btn:focus { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    .card-header h2 { font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 3px; letter-spacing: -0.2px; }
+    .card-header .card-tagline { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.72); line-height: 1.45; }
+    .card-meta { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 18px; border-bottom: 1px solid #e5e7eb; background: #fafafa; }
+    .meta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #9ca3af; width: 100%; margin-bottom: 2px; }
+    .meta-badge { font-size: 11.5px; font-weight: 500; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
+    .card-body { padding: 14px 18px 18px; }
+    .detail-row { margin-bottom: 12px; }
+    .detail-row:last-child { margin-bottom: 0; }
+    .detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #6b7280; margin-bottom: 4px; }
+    .detail-value { font-size: 13px; font-weight: 400; color: #1a1a1a; line-height: 1.6; }
+    .detail-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px; }
+    .detail-list li { font-size: 13px; color: #374151; line-height: 1.5; padding-left: 14px; position: relative; }
+    .detail-list li::before { content: ""; position: absolute; left: 0; top: 8px; width: 5px; height: 2px; background: #9ca3af; border-radius: 1px; }
+    .detail-divider { height: 1px; background: #f3f4f6; margin: 12px 0; }
+    .synthesis { margin-top: 20px; padding: 14px 20px; background: #f9fafb; border-radius: 8px; border-left: 3px solid #374151; }
+    .synthesis p { font-size: 13px; font-weight: 500; line-height: 1.65; color: #1a1a1a; }
+    .synthesis strong { font-weight: 700; }
+    @media (max-width: 680px) {
+      body { padding: 12px 0; }
+      .container { width: 100%; padding: 12px; }
+      .widget-layout { flex-direction: column; }
+      .zones-col { width: 100%; }
+      .detail-col { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="widget-layout">
+
+      <!-- Left: Zone Selector -->
+      <div class="zones-col">
+        <p class="zones-instruction" aria-hidden="true">Select a zone to explore</p>
+        <div class="zone-stack" role="group" aria-label="Three organizational zones. Select a zone to see details.">
+          <div class="zone-bar edge" id="bar-edge" role="button" tabindex="0" aria-pressed="false"
+               aria-label="Adhocratic Edge: Innovation teams, R&amp;D, new ventures. Select to see details."
+               onclick="selectZone('edge')" onkeydown="handleKey(event,'edge')">
+            <div class="zone-bar-name">Adhocratic Edge</div>
+            <div class="zone-bar-sub">R&amp;D, Innovation, New Ventures</div>
+          </div>
+          <div class="zone-bar middle" id="bar-middle" role="button" tabindex="0" aria-pressed="false"
+               aria-label="Meritocratic Middle: Business units in competitive markets. Select to see details."
+               onclick="selectZone('middle')" onkeydown="handleKey(event,'middle')">
+            <div class="zone-bar-name">Meritocratic Middle</div>
+            <div class="zone-bar-sub">Business Units, Sales, Markets</div>
+          </div>
+          <div class="zone-bar core" id="bar-core" role="button" tabindex="0" aria-pressed="false"
+               aria-label="Bureaucratic Core: Finance, HR, legal, compliance. Select to see details."
+               onclick="selectZone('core')" onkeydown="handleKey(event,'core')">
+            <div class="zone-bar-name">Bureaucratic Core</div>
+            <div class="zone-bar-sub">Finance, HR, Legal, Compliance</div>
+          </div>
+        </div>
+        <div class="nesting-label">
+          <div class="label-line"></div>
+          <span>Outer &rarr; Inner</span>
+          <div class="label-line"></div>
+        </div>
+      </div>
+
+      <!-- Right: Detail Panel -->
+      <div class="detail-col" id="detail-col" aria-live="polite" aria-atomic="true">
+
+        <div class="detail-empty" id="detail-empty">
+          <svg class="empty-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="28" height="8" rx="3" stroke="#d1d5db" stroke-width="2"/>
+            <rect x="8" y="15" width="20" height="8" rx="3" stroke="#d1d5db" stroke-width="2"/>
+            <rect x="12" y="26" width="12" height="7" rx="3" stroke="#d1d5db" stroke-width="2" fill="#d1d5db"/>
+          </svg>
+          <p>Select any zone to explore its role, strengths, and key challenges in a hybrid organizational structure.</p>
+        </div>
+
+        <!-- Core card -->
+        <div class="detail-card" id="card-core" data-zone="core" role="region" aria-label="Bureaucratic Core details">
+          <div class="card-header">
+            <div class="card-header-top">
+              <span class="zone-label">Inner Zone</span>
+              <button class="close-btn" onclick="clearSelection()" aria-label="Close detail panel">&times;</button>
+            </div>
+            <h2>Bureaucratic Core</h2>
+            <p class="card-tagline">Stable operations governed by standardized processes</p>
+          </div>
+          <div class="card-meta">
+            <span class="meta-label">Where it applies</span>
+            <span class="meta-badge">Finance</span>
+            <span class="meta-badge">Human Resources</span>
+            <span class="meta-badge">Legal</span>
+            <span class="meta-badge">Compliance</span>
+          </div>
+          <div class="card-body">
+            <div class="detail-row">
+              <div class="detail-label">Cultural Logic</div>
+              <div class="detail-value">Authority derives from formal position and established procedures. Success means executing processes correctly and consistently.</div>
+            </div>
+            <div class="detail-divider"></div>
+            <div class="detail-row">
+              <div class="detail-label">Why apply here</div>
+              <div class="detail-value">When errors have severe consequences and predictability matters most. Standardized processes ensure compliance and protect the organization.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key strengths</div>
+              <ul class="detail-list">
+                <li>Consistency and reliability across large-scale operations</li>
+                <li>Regulatory compliance and legal protection</li>
+                <li>Clear accountability through defined roles</li>
+              </ul>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key challenge</div>
+              <div class="detail-value">Bureaucratic inertia slows adaptation. Updating procedures is itself bureaucratic, creating resistance to change.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Middle card -->
+        <div class="detail-card" id="card-middle" data-zone="middle" role="region" aria-label="Meritocratic Middle details">
+          <div class="card-header">
+            <div class="card-header-top">
+              <span class="zone-label">Middle Zone</span>
+              <button class="close-btn" onclick="clearSelection()" aria-label="Close detail panel">&times;</button>
+            </div>
+            <h2>Meritocratic Middle</h2>
+            <p class="card-tagline">Performance-driven business units competing in established markets</p>
+          </div>
+          <div class="card-meta">
+            <span class="meta-label">Where it applies</span>
+            <span class="meta-badge">Business Units</span>
+            <span class="meta-badge">Sales</span>
+            <span class="meta-badge">Consulting Divisions</span>
+            <span class="meta-badge">Competitive Markets</span>
+          </div>
+          <div class="card-body">
+            <div class="detail-row">
+              <div class="detail-label">Cultural Logic</div>
+              <div class="detail-value">Authority derives from demonstrated expertise and results. Success means achieving measurable performance targets.</div>
+            </div>
+            <div class="detail-divider"></div>
+            <div class="detail-row">
+              <div class="detail-label">Why apply here</div>
+              <div class="detail-value">When measurable outcomes and individual excellence create competitive advantage. Performance incentives drive accountability and results.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key strengths</div>
+              <ul class="detail-list">
+                <li>High achievement through clear performance standards</li>
+                <li>Talent retention via competitive incentives</li>
+                <li>Data-driven resource allocation</li>
+              </ul>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key challenge</div>
+              <div class="detail-value">Performance metrics reward short-term results over long-term bets. Individual incentives can create knowledge hoarding and resistance to tools that threaten established expertise.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edge card -->
+        <div class="detail-card" id="card-edge" data-zone="edge" role="region" aria-label="Adhocratic Edge details">
+          <div class="card-header">
+            <div class="card-header-top">
+              <span class="zone-label">Outer Zone</span>
+              <button class="close-btn" onclick="clearSelection()" aria-label="Close detail panel">&times;</button>
+            </div>
+            <h2>Adhocratic Edge</h2>
+            <p class="card-tagline">Innovation teams exploring new technologies and business models</p>
+          </div>
+          <div class="card-meta">
+            <span class="meta-label">Where it applies</span>
+            <span class="meta-badge">R&amp;D</span>
+            <span class="meta-badge">Innovation Labs</span>
+            <span class="meta-badge">New Ventures</span>
+            <span class="meta-badge">Digital Pilots</span>
+          </div>
+          <div class="card-body">
+            <div class="detail-row">
+              <div class="detail-label">Cultural Logic</div>
+              <div class="detail-value">Authority derives from situational expertise for the problem at hand. Success means creating novel solutions through rapid experimentation.</div>
+            </div>
+            <div class="detail-divider"></div>
+            <div class="detail-row">
+              <div class="detail-label">Why apply here</div>
+              <div class="detail-value">When the problem is novel and speed of learning matters more than consistency. Fluid teams can pivot quickly as new information emerges.</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key strengths</div>
+              <ul class="detail-list">
+                <li>Rapid adaptation and disruptive thinking</li>
+                <li>Innovation speed through experimentation culture</li>
+                <li>Cross-functional collaboration breaks down silos</li>
+              </ul>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Key challenge</div>
+              <div class="detail-value">Scaling and integration: what works at 50 people breaks at 500. Successful innovations must eventually connect back to core operations.</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /detail-col -->
+    </div><!-- /widget-layout -->
+
+    <div class="synthesis">
+      <p>The design question is not "which model should we adopt?" but rather: <strong>which model should govern each part of the organization,</strong> given the work being done and the transformation goals being pursued?</p>
+    </div>
+  </div>
+
+  <script>
+    var activeZone = null;
+    var ZONES = ['core', 'middle', 'edge'];
+    var ZONE_NAMES = { core: 'Bureaucratic Core', middle: 'Meritocratic Middle', edge: 'Adhocratic Edge' };
+
+    function selectZone(zone) {
+      if (activeZone === zone) { clearSelection(); return; }
+      activeZone = zone;
+      ZONES.forEach(function(z) {
+        var bar = document.getElementById('bar-' + z);
+        if (z === zone) {
+          bar.classList.remove('dimmed'); bar.classList.add('active'); bar.setAttribute('aria-pressed', 'true');
+        } else {
+          bar.classList.add('dimmed'); bar.classList.remove('active'); bar.setAttribute('aria-pressed', 'false');
+        }
+      });
+      document.getElementById('detail-empty').style.display = 'none';
+      ZONES.forEach(function(z) {
+        var card = document.getElementById('card-' + z);
+        if (z === zone) { card.classList.add('visible'); } else { card.classList.remove('visible'); }
+      });
+      announceToScreenReader(ZONE_NAMES[zone] + ' details now shown.');
+    }
+
+    function clearSelection() {
+      activeZone = null;
+      ZONES.forEach(function(z) {
+        var bar = document.getElementById('bar-' + z);
+        bar.classList.remove('dimmed', 'active');
+        bar.setAttribute('aria-pressed', 'false');
+      });
+      ZONES.forEach(function(z) { document.getElementById('card-' + z).classList.remove('visible'); });
+      document.getElementById('detail-empty').style.display = '';
+      announceToScreenReader('Selection cleared.');
+    }
+
+    function handleKey(event, zone) {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); selectZone(zone); }
+    }
+
+    function announceToScreenReader(message) {
+      var el = document.createElement('div');
+      el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); el.className = 'sr-only';
+      el.textContent = message; document.body.appendChild(el);
+      setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
+    }
+  </script>
+</body>
+</html>

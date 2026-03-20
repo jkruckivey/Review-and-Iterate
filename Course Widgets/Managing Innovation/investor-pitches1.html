@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Would You Invest?</title>
+<style>
+  :root {
+    --ivey-green: #034638;
+    --pale-sage: #c0d1cd;
+    --pale-blue: #bfe5e7;
+    --pale-purple: #d5cae0;
+    --cream: #faf9f5;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a6a68;
+    --border: #dde8e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #c0d1cd 0%, #bfe5e7 100%);
+    padding: 0;
+  }
+
+  .widget {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .inf-header {
+    background: var(--ivey-green);
+    padding: 24px 40px;
+  }
+
+  .inf-header h1 {
+    color: var(--cream);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .inf-header p {
+    color: var(--pale-sage);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .content {
+    padding: 32px 40px 40px;
+  }
+
+  .instructions {
+    font-size: 0.88rem;
+    color: var(--light);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .pitches {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .pitch-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .pitch-card.voted-yes { border-color: var(--ivey-green); }
+  .pitch-card.voted-no { border-color: var(--pale-sage); }
+
+  .pitch-header {
+    padding: 14px 20px;
+    background: #f7faf9;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pitch-number {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--light);
+  }
+
+  .pitch-voted-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: none;
+  }
+
+  .pitch-card.voted-yes .pitch-voted-tag { display: inline-block; background: var(--ivey-green); color: var(--cream); }
+  .pitch-card.voted-no .pitch-voted-tag { display: inline-block; background: var(--pale-sage); color: var(--ivey-green); }
+
+  .pitch-body { padding: 20px; }
+
+  .pitch-text {
+    font-size: 0.92rem;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  .vote-row { display: flex; gap: 10px; }
+
+  .vote-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--mid);
+  }
+
+  .vote-btn:hover { border-color: var(--ivey-green); color: var(--ivey-green); }
+  .vote-btn.yes-btn.selected { background: var(--ivey-green); border-color: var(--ivey-green); color: var(--cream); }
+  .vote-btn.no-btn.selected { background: var(--pale-sage); border-color: var(--pale-sage); color: var(--ivey-green); }
+  .vote-btn:disabled { cursor: default; }
+
+  .reveal-block {
+    display: none;
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    animation: fadeSlide 0.35s ease;
+  }
+
+  .reveal-block.visible { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ivey-green); margin-bottom: 8px; }
+  .reveal-name { font-size: 1rem; font-weight: 700; color: var(--ivey-green); margin-bottom: 8px; }
+  .reveal-text { font-size: 0.88rem; color: var(--mid); line-height: 1.65; }
+
+  .reveal-all-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: var(--ivey-green);
+    color: var(--cream);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+
+  .reveal-all-btn:hover { opacity: 0.88; }
+  .reveal-all-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .insight-bar {
+    background: var(--pale-purple);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .insight-bar.visible { display: block; }
+
+  .ib-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ivey-green); margin-bottom: 10px; }
+  .insight-bar p { font-size: 0.93rem; color: var(--mid); line-height: 1.6; }
+
+  .progress-note { font-size: 0.8rem; color: var(--light); text-align: center; margin-bottom: 16px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="inf-header">
+    <h1>Would You Invest?</h1>
+    <p>Four pitches for creative projects. Vote before you see what they became.</p>
+  </div>
+  <div class="content">
+    <p class="instructions">Read each pitch and decide: would you invest? Vote on all four, then reveal what each one actually was.</p>
+    <div class="pitches" id="pitches"></div>
+    <p class="progress-note" id="progressNote">Vote on all four pitches to reveal the answers.</p>
+    <button class="reveal-all-btn" id="revealAllBtn" disabled onclick="revealAll()">See what the market made of each one</button>
+    <div class="insight-bar" id="insightBar">
+      <div class="ib-label">The point</div>
+      <p>Probably you recognized these pitches and said you would invest, given the benefit of hindsight. But at the time, people mostly got these wrong. The Blair Witch Project was a passion project by newcomers with no greenlight process applied to it. Star Wars was passed on by United Artists, Universal, and Disney. Fox agreed reluctantly, kept the budget low, and let Lucas keep the merchandising and sequel rights because they considered them worthless. Star Trek was cancelled after three seasons. Cats seemed, to most people, like a very strange idea. The template predicted none of it.</p>
+    </div>
+  </div>
+</div>
+<script>
+  const pitches = [
+    { id: 'blair', text: '"We\'re going to create a sort of mock documentary about a bunch of kids going missing while exploring a remote, supposedly haunted area of forest. They\'re videotaping everything with their amateur cameras. We tell the story by piecing together \'found footage\' recovered from their campsites and the woods where they were last seen. The video seems authentic because it is shaky, blurry, and unprofessional. The shaking and blurring adds to the tension, as it keeps viewers from seeing everything they are hearing about."', revealName: 'The Blair Witch Project', revealText: 'By any standard template, this pitch had nothing going for it: no known stars, an amateur aesthetic, and a marketing campaign that most executives found baffling. Most investors would have passed. It grossed $278 million worldwide on a $60,000 production budget and is the most profitable film of any genre ever made, with an ROI between 1,200 and 4,000 times. No category comparison predicted it. No greenlight process would have green-lit it.' },
+    { id: 'cats', text: '"We want to create a Broadway musical about a band of cats competing to be chosen for rebirth into a new life, as decided by a wise old cat. The entire musical is sung by people dressed in cat costumes. The lyrics are based on poetry by the British poet T.S. Eliot."', revealName: 'Cats', revealText: 'The concept struck most people as genuinely strange, and by any template-based assessment it had no comparable precedent to point to. Most investors would have passed. Andrew Lloyd Webber\'s Cats became the fifth longest running musical in Broadway history and grossed more than $2 billion worldwide as of 1994, making it the highest grossing musical of all time at that point.' },
+    { id: 'startrek', text: '"We propose a science fiction TV series, a sort of Western in outer space, a Wagon Train to the stars. We will model it on Jonathan Swift\'s Gulliver\'s Travels. Each episode will operate on two levels: as a suspenseful adventure story and as a morality tale. The conflicts will be allegories of contemporary cultural realities."', revealName: 'Star Trek', revealText: 'Network executives found it too slow, cerebral, and philosophical. It was moved to the Friday evening death slot for its third season, then cancelled. By standard prediction logic, it looked like a niche product with limited commercial appeal. It became one of the most commercially successful franchises in entertainment history. Lucille Ball\'s investment company kept it alive long enough to launch.' },
+    { id: 'starwars', text: '"We want to make a movie that is not hard science fiction but rather a mythic fairytale set in space, aimed at broad audiences, especially younger viewers. We will base it on Joseph Campbell\'s hero myth, emphasizing clear moral archetypes, fast-paced adventure, and emotional simplicity rather than realism. We intend to rely heavily on visual storytelling."', revealName: 'Star Wars', revealText: 'United Artists, Universal, and Disney all passed. Fox agreed reluctantly, kept the budget low, and let George Lucas keep the merchandising and sequel rights because they considered them worthless. When it was released, people lined up around city blocks and theatres sold out for days. Fox had to scramble to create more prints. It was one of the more colossal misjudgments in the history of the movies. The template saw nothing special. The audience saw something else entirely.' }
+  ];
+  const votes = {};
+  function renderPitches() {
+    const container = document.getElementById('pitches');
+    pitches.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'pitch-card'; card.id = 'card-' + p.id;
+      card.innerHTML = `<div class="pitch-header"><span class="pitch-number">Pitch ${i+1} of ${pitches.length}</span><span class="pitch-voted-tag" id="tag-${p.id}"></span></div><div class="pitch-body"><p class="pitch-text">${p.text}</p><div class="vote-row"><button class="vote-btn yes-btn" id="yes-${p.id}" onclick="vote('${p.id}', true)">Yes, I would invest</button><button class="vote-btn no-btn" id="no-${p.id}" onclick="vote('${p.id}', false)">No, I would not invest</button></div><div class="reveal-block" id="reveal-${p.id}"><div class="reveal-title">This pitch was for...</div><div class="reveal-name">${p.revealName}</div><p class="reveal-text">${p.revealText}</p></div></div>`;
+      container.appendChild(card);
+    });
+  }
+  function vote(id, yes) {
+    if (votes[id] !== undefined) return;
+    votes[id] = yes;
+    document.getElementById('card-' + id).classList.add(yes ? 'voted-yes' : 'voted-no');
+    document.getElementById('tag-' + id).textContent = yes ? 'Would invest' : 'Would not invest';
+    document.getElementById('yes-' + id).classList.toggle('selected', yes); document.getElementById('yes-' + id).disabled = true;
+    document.getElementById('no-' + id).classList.toggle('selected', !yes); document.getElementById('no-' + id).disabled = true;
+    const rem = pitches.length - Object.keys(votes).length;
+    if (rem === 0) { document.getElementById('progressNote').textContent = 'You have voted on all four. Ready to see what they were?'; document.getElementById('revealAllBtn').disabled = false; }
+    else { document.getElementById('progressNote').textContent = `${rem} pitch${rem > 1 ? 'es' : ''} remaining.`; }
+  }
+  function revealAll() {
+    pitches.forEach(p => document.getElementById('reveal-' + p.id).classList.add('visible'));
+    document.getElementById('revealAllBtn').disabled = true; document.getElementById('revealAllBtn').textContent = 'Answers revealed';
+    document.getElementById('insightBar').classList.add('visible');
+  }
+  renderPitches();
+</script>
+</body></html>

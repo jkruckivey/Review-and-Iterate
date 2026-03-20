@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Are Financial Ratios - Scenario-Based Knowledge Check</title>
+    <style>
+        :root {
+            --ivey-green: #005951;
+            --bright-green: #A4B544;
+            --purple: #5B2C6F;
+            --turquoise: #0093A9;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --medium-gray: #E0E0E0;
+            --dark-gray: #333333;
+            --correct-green: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 89, 81, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--ivey-green) 0%, var(--turquoise) 100%);
+            color: var(--white);
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .badge-liquidity {
+            background: rgba(0, 147, 169, 0.2);
+            color: var(--white);
+            border: 1px solid var(--white);
+        }
+
+        .badge-profitability {
+            background: rgba(164, 181, 68, 0.2);
+            color: var(--white);
+            border: 1px solid var(--white);
+        }
+
+        .badge-leverage {
+            background: rgba(91, 44, 111, 0.2);
+            color: var(--white);
+            border: 1px solid var(--white);
+        }
+
+        .badge-efficiency {
+            background: rgba(0, 89, 81, 0.2);
+            color: var(--white);
+            border: 1px solid var(--white);
+        }
+
+        .progress-container {
+            background: var(--light-gray);
+            padding: 20px 30px;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--medium-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ivey-green) 0%, var(--bright-green) 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .quiz-content {
+            padding: 30px;
+        }
+
+        .scenario-card {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .scenario-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scenario-number {
+            display: inline-block;
+            background: var(--ivey-green);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(0, 89, 81, 0.08) 0%, rgba(0, 147, 169, 0.05) 100%);
+            border-left: 5px solid var(--turquoise);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .scenario-title {
+            font-weight: 600;
+            color: var(--ivey-green);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .scenario-description {
+            color: var(--dark-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 25px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-button {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .option-button:hover:not(:disabled) {
+            border-color: var(--ivey-green);
+            background: var(--light-gray);
+            transform: translateX(5px);
+        }
+
+        .option-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .option-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .option-button.selected {
+            border-width: 3px;
+        }
+
+        .option-button.correct {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-color: var(--correct-green);
+        }
+
+        .option-button.incorrect {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.1) 0%, rgba(91, 44, 111, 0.05) 100%);
+            border-color: var(--purple);
+        }
+
+        .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .option-button.correct .option-letter {
+            background: var(--correct-green);
+            color: var(--white);
+        }
+
+        .option-button.incorrect .option-letter {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            color: var(--dark-gray);
+        }
+
+        .option-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .category-liquidity {
+            background: rgba(0, 147, 169, 0.15);
+            color: var(--turquoise);
+        }
+
+        .category-profitability {
+            background: rgba(164, 181, 68, 0.15);
+            color: var(--bright-green);
+        }
+
+        .category-leverage {
+            background: rgba(91, 44, 111, 0.15);
+            color: var(--purple);
+        }
+
+        .category-efficiency {
+            background: rgba(0, 89, 81, 0.15);
+            color: var(--ivey-green);
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-box.correct {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 5px solid var(--correct-green);
+        }
+
+        .feedback-box.incorrect {
+            background: linear-gradient(135deg, rgba(91, 44, 111, 0.15) 0%, rgba(91, 44, 111, 0.05) 100%);
+            border-left: 5px solid var(--purple);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .feedback-text {
+            line-height: 1.8;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+        }
+
+        .feedback-explanation {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--ivey-green);
+        }
+
+        .feedback-explanation strong {
+            color: var(--ivey-green);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .nav-button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-button.primary {
+            background: var(--ivey-green);
+            color: var(--white);
+        }
+
+        .nav-button.primary:hover:not(:disabled) {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 89, 81, 0.3);
+        }
+
+        .nav-button.secondary {
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .nav-button.secondary:hover:not(:disabled) {
+            background: var(--dark-gray);
+            color: var(--white);
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .results-screen.show {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            color: var(--ivey-green);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin: 20px 0;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+        }
+
+        .performance-message {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid var(--bright-green);
+        }
+
+        .performance-message h3 {
+            color: var(--ivey-green);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .performance-message p {
+            color: var(--dark-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .category-breakdown {
+            background: var(--white);
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .breakdown-title {
+            color: var(--ivey-green);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .breakdown-card {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .breakdown-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .breakdown-score {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .restart-button {
+            margin-top: 30px;
+            padding: 16px 40px;
+            background: var(--ivey-green);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: var(--turquoise);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 89, 81, 0.3);
+        }
+
+        .restart-button:focus {
+            outline: 3px solid var(--bright-green);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .legend {
+                gap: 10px;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .option-button {
+                padding: 15px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-display {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .option-button {
+                border-width: 3px;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" role="main">
+        <header>
+            <h1>What Are Financial Ratios?</h1>
+            <p class="subtitle">Scenario-Based Knowledge Check</p>
+            <div class="legend" role="list" aria-label="Ratio category legend">
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge badge-liquidity">Liquidity</span>
+                    <span>Short-term obligations</span>
+                </div>
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge badge-profitability">Profitability</span>
+                    <span>Profit generation</span>
+                </div>
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge badge-leverage">Leverage</span>
+                    <span>Debt financing</span>
+                </div>
+                <div class="legend-item" role="listitem">
+                    <span class="legend-badge badge-efficiency">Efficiency</span>
+                    <span>Asset utilization</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-container" role="region" aria-label="Quiz progress">
+            <div class="progress-info">
+                <span id="progressText">Scenario <span id="currentScenario">0</span> of <span id="totalScenarios">8</span></span>
+                <span id="scoreText">Score: <span id="currentScore">0</span>/8</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Quiz completion progress">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="quiz-content" id="quizContent">
+            <!-- Scenarios will be dynamically generated here -->
+        </div>
+
+        <div class="results-screen" id="resultsScreen" role="region" aria-label="Quiz results">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                id: 1,
+                title: "Bank Loan Evaluation",
+                description: "Maple Community Bank is evaluating whether to approve a $500,000 loan to TechStart Inc. The loan officer wants to assess if TechStart can pay its bills over the next 6-12 months while the loan is being repaid.",
+                question: "Which ratio should the bank examine to assess TechStart's short-term financial health?",
+                options: [
+                    { letter: "A", label: "Return on Equity (ROE)", category: "profitability", correct: false },
+                    { letter: "B", label: "Current Ratio", category: "liquidity", correct: true },
+                    { letter: "C", label: "Asset Turnover", category: "efficiency", correct: false },
+                    { letter: "D", label: "Debt-to-Equity Ratio", category: "leverage", correct: false }
+                ],
+                feedback: {
+                    correct: "Excellent! The Current Ratio is a liquidity ratio that measures a company's ability to meet short-term obligations. Banks use this to assess whether a company has enough current assets (cash, receivables, inventory) to cover current liabilities (bills due within a year). A ratio above 1.5-2.0 typically indicates healthy short-term liquidity.",
+                    incorrect: "Not quite. While other ratios provide valuable information, the bank needs to assess short-term financial health. The Current Ratio (a liquidity ratio) specifically measures whether TechStart has enough current assets to pay its short-term bills. This is critical for loan approval decisions.",
+                    explanation: "Liquidity ratios answer the question: 'Can this company pay its bills?' This is exactly what a bank needs to know before approving a short-term loan."
+                }
+            },
+            {
+                id: 2,
+                title: "Investor Comparison",
+                description: "Sarah is comparing two investment opportunities: Company A (retail chain) with $5 million net income and Company B (tech startup) with $2 million net income. She wants to know which company generates better returns for shareholders relative to their investment.",
+                question: "Which ratio should Sarah use to compare shareholder returns between these two companies?",
+                options: [
+                    { letter: "A", label: "Days of Receivables", category: "efficiency", correct: false },
+                    { letter: "B", label: "Current Ratio", category: "liquidity", correct: false },
+                    { letter: "C", label: "Return on Equity (ROE)", category: "profitability", correct: true },
+                    { letter: "D", label: "Debt-to-Assets Ratio", category: "leverage", correct: false }
+                ],
+                feedback: {
+                    correct: "Perfect! Return on Equity (ROE) measures how much profit a company generates for each dollar of shareholder investment. This allows Sarah to compare profitability across companies of different sizes. A company with $2M net income might actually deliver better shareholder returns than one with $5M if it requires less equity investment.",
+                    incorrect: "Raw net income numbers don't tell the full story. Return on Equity (ROE) is the profitability ratio that shows how efficiently each company generates profit relative to shareholder investment. This is the key metric for comparing investment opportunities of different sizes.",
+                    explanation: "ROE = Net Income ÷ Shareholders' Equity. It standardizes profitability by showing returns per dollar invested, making it perfect for comparing companies of different sizes."
+                }
+            },
+            {
+                id: 3,
+                title: "Supplier Credit Decision",
+                description: "Mountain Manufacturing wants to offer 90-day payment terms to a new customer, Valley Retailers. Before extending this credit, Mountain needs to assess whether Valley has too much debt and might struggle to pay suppliers if business slows down.",
+                question: "Which ratio should Mountain examine to evaluate Valley's debt load and financial risk?",
+                options: [
+                    { letter: "A", label: "Gross Profit Margin", category: "profitability", correct: false },
+                    { letter: "B", label: "Debt-to-Equity Ratio", category: "leverage", correct: true },
+                    { letter: "C", label: "Asset Turnover", category: "efficiency", correct: false },
+                    { letter: "D", label: "Quick Ratio", category: "liquidity", correct: false }
+                ],
+                feedback: {
+                    correct: "Exactly right! The Debt-to-Equity Ratio is a leverage ratio that shows how much debt a company uses relative to owner investment. A high ratio indicates heavy debt reliance, which increases financial risk—especially if business slows and the company struggles to make debt payments while also paying suppliers.",
+                    incorrect: "Mountain needs to assess debt levels and long-term financial risk. The Debt-to-Equity Ratio (a leverage ratio) compares creditor claims versus owner claims, revealing how much financial risk Valley is carrying. High debt increases the risk that Valley won't be able to pay suppliers during tough times.",
+                    explanation: "Leverage ratios answer: 'How much debt does this company use, and can it handle it?' This is crucial for suppliers deciding whether to extend credit terms."
+                }
+            },
+            {
+                id: 4,
+                title: "Retail Inventory Management",
+                description: "FreshMart Groceries is struggling with cash flow despite decent sales. The CFO suspects inventory is sitting on shelves too long before being sold, tying up cash that could be used elsewhere. She needs to measure how quickly inventory is moving.",
+                question: "Which ratio should the CFO examine to assess inventory management efficiency?",
+                options: [
+                    { letter: "A", label: "Days of Inventory", category: "efficiency", correct: true },
+                    { letter: "B", label: "Net Profit Margin", category: "profitability", correct: false },
+                    { letter: "C", label: "Current Ratio", category: "liquidity", correct: false },
+                    { letter: "D", label: "Return on Assets (ROA)", category: "profitability", correct: false }
+                ],
+                feedback: {
+                    correct: "Outstanding! Days of Inventory is an efficiency ratio that measures the average number of days inventory sits before being sold. Lower is better—it means faster turnover and less cash tied up in stock. For groceries, you'd expect very low days (perhaps 7-14 days) since products are perishable.",
+                    incorrect: "The CFO needs to measure how efficiently inventory is being managed. Days of Inventory (an efficiency ratio) specifically calculates how long inventory sits on shelves before being sold. Slow-moving inventory ties up cash and can hurt profitability.",
+                    explanation: "Efficiency ratios answer: 'How efficiently is this company managing inventory, receivables, and assets?' Days of Inventory directly measures inventory turnover speed."
+                }
+            },
+            {
+                id: 5,
+                title: "Profitability After All Expenses",
+                description: "Investors are evaluating two competing restaurant chains. Both have similar revenues, but they want to understand which chain is more profitable after accounting for ALL expenses—including food costs, labor, rent, marketing, interest, and taxes.",
+                question: "Which ratio reveals overall profitability after all expenses have been deducted?",
+                options: [
+                    { letter: "A", label: "Debt-to-Assets Ratio", category: "leverage", correct: false },
+                    { letter: "B", label: "Days of Receivables", category: "efficiency", correct: false },
+                    { letter: "C", label: "Net Profit Margin", category: "profitability", correct: true },
+                    { letter: "D", label: "Acid Test Ratio", category: "liquidity", correct: false }
+                ],
+                feedback: {
+                    correct: "Perfect! Net Profit Margin is the 'bottom line' profitability ratio. It shows what percentage of every sales dollar remains as profit after ALL expenses (COGS, operating expenses, interest, taxes). This is the ultimate measure of overall profitability and allows direct comparison between companies of different sizes.",
+                    incorrect: "Investors need to see the 'bottom line' profitability. Net Profit Margin (a profitability ratio) reveals what percentage of revenue remains as profit after every single expense is paid. This is the ultimate test of how profitable operations truly are.",
+                    explanation: "Net Profit Margin = Net Income ÷ Revenues × 100%. It captures the full picture of profitability after all costs, making it ideal for comparing competing businesses."
+                }
+            },
+            {
+                id: 6,
+                title: "Asset Utilization Efficiency",
+                description: "Tech Innovations owns $10 million in assets (equipment, buildings, patents) and generates $15 million in annual sales. Management wants to benchmark how efficiently they're using assets to generate revenue compared to competitors in their industry.",
+                question: "Which ratio measures how efficiently assets are being used to generate sales?",
+                options: [
+                    { letter: "A", label: "Asset Turnover", category: "efficiency", correct: true },
+                    { letter: "B", label: "Return on Equity (ROE)", category: "profitability", correct: false },
+                    { letter: "C", label: "Current Ratio", category: "liquidity", correct: false },
+                    { letter: "D", label: "Debt-to-Equity Ratio", category: "leverage", correct: false }
+                ],
+                feedback: {
+                    correct: "Excellent! Asset Turnover is an efficiency ratio that measures how many dollars of sales are generated per dollar of assets. In this case: $15M ÷ $10M = 1.5, meaning every dollar of assets generates $1.50 in sales. Higher ratios indicate better asset productivity. This is a key benchmark for comparing operational efficiency across competitors.",
+                    incorrect: "Management needs to measure asset productivity. Asset Turnover (an efficiency ratio) calculates how much revenue is generated per dollar of assets. This reveals how efficiently Tech Innovations is using equipment, buildings, and other assets compared to industry competitors.",
+                    explanation: "Asset Turnover = Net Sales ÷ Total Assets. It's the definitive measure of asset productivity and operational efficiency."
+                }
+            },
+            {
+                id: 7,
+                title: "Customer Payment Collection",
+                description: "Consulting Partners Inc. has been extending 30-day payment terms to clients, but cash flow is tight. The CFO suspects clients are taking much longer than 30 days to pay invoices, creating a cash crunch. She needs to measure how long it actually takes to collect payments.",
+                question: "Which ratio measures the average time it takes to collect payment from customers?",
+                options: [
+                    { letter: "A", label: "Days of Receivables", category: "efficiency", correct: true },
+                    { letter: "B", label: "Gross Profit Margin", category: "profitability", correct: false },
+                    { letter: "C", label: "Quick Ratio", category: "liquidity", correct: false },
+                    { letter: "D", label: "Debt-to-Assets Ratio", category: "leverage", correct: false }
+                ],
+                feedback: {
+                    correct: "Perfect! Days of Receivables (also called Days Sales Outstanding) is an efficiency ratio that calculates the average number of days to collect payment from customers. If the result is 45 days but terms are 30 days, customers are paying late, which hurts cash flow. Lower is better—it means faster cash collection.",
+                    incorrect: "The CFO needs to measure collection speed. Days of Receivables (an efficiency ratio) specifically calculates how long it takes customers to pay invoices. If it's significantly higher than the 30-day terms, it explains the cash flow problems and indicates a need for better credit management.",
+                    explanation: "Days of Receivables = (Accounts Receivable ÷ Revenues) × 365. It reveals whether customers are paying on time or if collections are slowing down cash flow."
+                }
+            },
+            {
+                id: 8,
+                title: "Strict Liquidity Assessment",
+                description: "A venture capital firm is considering investing in GreenTech Startup. They're concerned the company might not be able to pay immediate obligations if its inventory doesn't sell quickly. They want the strictest measure of short-term liquidity that excludes inventory entirely.",
+                question: "Which ratio provides the strictest assessment of immediate liquidity without relying on inventory?",
+                options: [
+                    { letter: "A", label: "Current Ratio", category: "liquidity", correct: false },
+                    { letter: "B", label: "Acid Test (Quick Ratio)", category: "liquidity", correct: true },
+                    { letter: "C", label: "Return on Assets (ROA)", category: "profitability", correct: false },
+                    { letter: "D", label: "Days of Inventory", category: "efficiency", correct: false }
+                ],
+                feedback: {
+                    correct: "Excellent! The Acid Test (Quick Ratio) is the strictest liquidity ratio. It excludes inventory from current assets because inventory might not convert to cash quickly. It only includes cash, marketable securities, and receivables. A ratio > 1.0 indicates strong immediate liquidity without depending on selling inventory. This is critical for startups with uncertain inventory turnover.",
+                    incorrect: "The VC firm needs the strictest liquidity test. The Acid Test (Quick Ratio) is more conservative than the Current Ratio because it excludes inventory entirely, focusing only on the most liquid assets (cash, securities, receivables). This reveals whether GreenTech can pay bills immediately without selling inventory.",
+                    explanation: "Acid Test = (Cash + Marketable Securities + Receivables) ÷ Current Liabilities. It's the 'worst case' liquidity test for when inventory might not sell quickly."
+                }
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let answered = false;
+        let categoryScores = {
+            liquidity: { correct: 0, total: 0 },
+            profitability: { correct: 0, total: 0 },
+            leverage: { correct: 0, total: 0 },
+            efficiency: { correct: 0, total: 0 }
+        };
+
+        function initializeQuiz() {
+            document.getElementById('totalScenarios').textContent = scenarios.length;
+            renderScenario();
+        }
+
+        function renderScenario() {
+            const scenario = scenarios[currentScenarioIndex];
+            const quizContent = document.getElementById('quizContent');
+
+            document.getElementById('currentScenario').textContent = currentScenarioIndex + 1;
+            updateProgress();
+
+            let optionsHTML = '';
+            scenario.options.forEach((option, index) => {
+                optionsHTML += `
+                    <button class="option-button"
+                            id="option${index}"
+                            onclick="selectAnswer(${index})"
+                            aria-describedby="scenario${scenario.id}">
+                        <span class="option-letter" aria-hidden="true">${option.letter}</span>
+                        <div class="option-content">
+                            <span class="option-label">${option.label}</span>
+                            <span class="option-category category-${option.category}">${option.category.charAt(0).toUpperCase() + option.category.slice(1)}</span>
+                        </div>
+                    </button>
+                `;
+            });
+
+            quizContent.innerHTML = `
+                <div class="scenario-card active" role="article" aria-labelledby="scenarioNumber${scenario.id}">
+                    <span class="scenario-number" id="scenarioNumber${scenario.id}">Scenario ${scenario.id} of ${scenarios.length}</span>
+
+                    <div class="scenario-box">
+                        <div class="scenario-title">${scenario.title}</div>
+                        <div class="scenario-description">${scenario.description}</div>
+                    </div>
+
+                    <h2 class="question-text" id="scenario${scenario.id}">${scenario.question}</h2>
+
+                    <div class="options-container" role="radiogroup" aria-labelledby="scenario${scenario.id}">
+                        ${optionsHTML}
+                    </div>
+
+                    <div class="feedback-box" id="feedbackBox" role="status" aria-live="polite"></div>
+
+                    <div class="navigation-buttons">
+                        <button class="nav-button secondary"
+                                onclick="previousScenario()"
+                                id="prevButton"
+                                ${currentScenarioIndex === 0 ? 'disabled' : ''}>
+                            Previous
+                        </button>
+                        <button class="nav-button primary"
+                                onclick="nextScenario()"
+                                id="nextButton"
+                                disabled>
+                            ${currentScenarioIndex === scenarios.length - 1 ? 'View Results' : 'Next Scenario'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            answered = false;
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+
+            const scenario = scenarios[currentScenarioIndex];
+            const selectedOption = scenario.options[selectedIndex];
+            const isCorrect = selectedOption.correct;
+
+            // Track category scores
+            categoryScores[selectedOption.category].total++;
+            if (isCorrect) {
+                score++;
+                categoryScores[selectedOption.category].correct++;
+            }
+            document.getElementById('currentScore').textContent = score;
+
+            // Disable all options and mark selected
+            scenario.options.forEach((option, index) => {
+                const button = document.getElementById(`option${index}`);
+                button.disabled = true;
+
+                if (index === selectedIndex) {
+                    button.classList.add('selected');
+                    button.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (option.correct) {
+                    button.classList.add('correct');
+                }
+            });
+
+            // Show feedback
+            showFeedback(isCorrect, scenario);
+
+            // Enable next button
+            document.getElementById('nextButton').disabled = false;
+            answered = true;
+
+            // Announce result to screen readers
+            const announcement = isCorrect ? 'Correct answer!' : 'Incorrect answer.';
+            announceToScreenReader(announcement);
+        }
+
+        function showFeedback(isCorrect, scenario) {
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const feedbackTitle = isCorrect ? 'Correct!' : 'Not Quite';
+            const feedbackText = isCorrect ? scenario.feedback.correct : scenario.feedback.incorrect;
+
+            feedbackBox.className = `feedback-box ${feedbackClass} show`;
+            feedbackBox.innerHTML = `
+                <div class="feedback-header">${feedbackTitle}</div>
+                <div class="feedback-text">${feedbackText}</div>
+                <div class="feedback-explanation">
+                    <strong>Why This Matters:</strong>
+                    ${scenario.feedback.explanation}
+                </div>
+            `;
+        }
+
+        function nextScenario() {
+            if (!answered) return;
+
+            if (currentScenarioIndex < scenarios.length - 1) {
+                currentScenarioIndex++;
+                renderScenario();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showResults();
+            }
+        }
+
+        function previousScenario() {
+            if (currentScenarioIndex > 0) {
+                currentScenarioIndex--;
+                renderScenario();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScenarioIndex + 1) / scenarios.length) * 100;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${progress}%`;
+
+            const progressBar = progressFill.parentElement;
+            progressBar.setAttribute('aria-valuenow', Math.round(progress));
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / scenarios.length) * 100);
+            let performanceLevel, performanceMessage, performanceDescription;
+
+            if (percentage >= 88) {
+                performanceLevel = 'Excellent Work!';
+                performanceMessage = 'Outstanding Understanding';
+                performanceDescription = 'You have demonstrated excellent judgment in matching business scenarios to the appropriate financial ratios. You understand the purpose of each ratio category and when to apply them in real-world situations.';
+            } else if (percentage >= 63) {
+                performanceLevel = 'Good Effort!';
+                performanceMessage = 'Solid Foundation';
+                performanceDescription = 'You have a good understanding of financial ratio categories and their applications. Review the scenarios where you needed more practice to strengthen your ability to identify the right ratio for each business situation.';
+            } else {
+                performanceLevel = 'Keep Learning!';
+                performanceMessage = 'Room for Growth';
+                performanceDescription = 'Financial ratio analysis takes practice. Review the feedback for each scenario to strengthen your understanding of when to use liquidity, profitability, leverage, and efficiency ratios. Focus on understanding the key question each category answers.';
+            }
+
+            document.getElementById('quizContent').style.display = 'none';
+            const resultsScreen = document.getElementById('resultsScreen');
+
+            // Calculate category percentages
+            const categoryResults = Object.keys(categoryScores).map(category => {
+                const data = categoryScores[category];
+                const percent = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
+                return { category, correct: data.correct, total: data.total, percent };
+            }).filter(result => result.total > 0);
+
+            let breakdownHTML = '';
+            categoryResults.forEach(result => {
+                const color = result.category === 'liquidity' ? 'var(--turquoise)' :
+                              result.category === 'profitability' ? 'var(--bright-green)' :
+                              result.category === 'leverage' ? 'var(--purple)' :
+                              'var(--ivey-green)';
+
+                breakdownHTML += `
+                    <div class="breakdown-card">
+                        <h4 style="color: ${color};">${result.category.charAt(0).toUpperCase() + result.category.slice(1)}</h4>
+                        <div class="breakdown-score" style="color: ${color};">${result.correct}/${result.total}</div>
+                        <p>${result.percent}% Correct</p>
+                    </div>
+                `;
+            });
+
+            resultsScreen.innerHTML = `
+                <h2 class="results-title">${performanceLevel}</h2>
+                <div class="score-display" aria-label="Your score is ${score} out of ${scenarios.length}">${score}/${scenarios.length}</div>
+                <p class="score-label">${percentage}% Correct</p>
+
+                <div class="performance-message">
+                    <h3>${performanceMessage}</h3>
+                    <p>${performanceDescription}</p>
+                </div>
+
+                <div class="category-breakdown">
+                    <h3 class="breakdown-title">Performance by Ratio Category</h3>
+                    <div class="breakdown-grid">
+                        ${breakdownHTML}
+                    </div>
+                </div>
+
+                <button class="restart-button" onclick="restartQuiz()">Retake Quiz</button>
+            `;
+
+            resultsScreen.classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            announceToScreenReader(`Quiz completed. Your final score is ${score} out of ${scenarios.length}. ${percentage}% correct.`);
+        }
+
+        function restartQuiz() {
+            currentScenarioIndex = 0;
+            score = 0;
+            answered = false;
+            categoryScores = {
+                liquidity: { correct: 0, total: 0 },
+                profitability: { correct: 0, total: 0 },
+                leverage: { correct: 0, total: 0 },
+                efficiency: { correct: 0, total: 0 }
+            };
+
+            document.getElementById('currentScore').textContent = '0';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('resultsScreen').classList.remove('show');
+
+            renderScenario();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && !document.getElementById('nextButton').disabled) {
+                nextScenario();
+            } else if (e.key === 'ArrowLeft' && currentScenarioIndex > 0) {
+                previousScenario();
+            }
+        });
+
+        // Initialize quiz on page load
+        window.addEventListener('DOMContentLoaded', initializeQuiz);
+    </script>
+</body>
+</html>
